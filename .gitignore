@@ -1,0 +1,21 @@
+# Installed compiler tree (build locally via forge)
+/bin/
+/lib/
+/lib64/
+/libexec/
+/include/
+/share/
+
+# Generated at install
+/VERSION
+/SELFHOST.json
+/cmake/grok16-toolchain.cmake
+/data/grok16-toolchain.json
+/data/rebuild.log
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.la
+*.log

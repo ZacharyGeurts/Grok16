@@ -1,0 +1,6 @@
+Grok16 — G16 field compiler distribution
+Copyright (c) 2026 Zachary Geurts. All rights reserved.
+
+Beta software. Scripts and metadata in this repository are proprietary unless
+otherwise noted. Compiler binaries produced from GCC source are subject to the
+GNU General Public License v3.
