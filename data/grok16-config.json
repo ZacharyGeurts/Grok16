@@ -1,5 +1,5 @@
 {
-  "schema": "grok16-config/v1",
+  "schema": "grok16-config/v2",
   "description": "Defaults for Grok16 paths and forge options. Every value is overridden by environment variables (see ARCHITECTURE.md).",
   "paths": {
     "grok16_root": "${GROK16_ROOT}",
@@ -16,8 +16,12 @@
     "cxx_std": "${G16_CXX_STD}",
     "disable_bootstrap": "${G16_DISABLE_BOOTSTRAP}",
     "fast_rebuild": "${G16_FAST_REBUILD}",
+    "full_rebuild": "${G16_FULL_REBUILD}",
+    "release_profile": "${G16_RELEASE_PROFILE}",
+    "field_speed": "${G16_FIELD_SPEED}",
     "enable_lto": "${G16_ENABLE_LTO}",
     "enable_pgo": "${G16_ENABLE_PGO}",
+    "pgo_generate": "${G16_PGO_GENERATE}",
     "use_ccache": "${GROK16_USE_CCACHE}",
     "build_jobs": "${GROK16_BUILD_JOBS}"
   },
@@ -29,16 +33,16 @@
     "GROK16_QUEEN_ROOT": "$GROK16_SG_ROOT/NewLatest/Queen",
     "GROK16_GCC_SRC": "$GROK16_ROOT/vendor/gcc",
     "GROK16_GCC_BUILD": "$GROK16_ROOT/build/gcc",
-    "GROK16_GCC_REPO": "https://gcc.gnu.org/git/gcc.git",
-    "GROK16_GCC_BRANCH": "releases/gcc-15",
-    "G16_PKGVERSION": "Grok16-16.0.0",
+    "GROK16_PKGVERSION": "Grok16-16.0.0",
     "G16_CXX_STD": "gnu++26",
-    "G16_DISABLE_BOOTSTRAP": "unset (bootstrap enabled on rebuild)",
-    "G16_FAST_REBUILD": "1 → skip distclean, incremental make, auto G16_DISABLE_BOOTSTRAP=1",
-    "G16_ENABLE_LTO": "1 → --enable-lto + resolved -flto/-flto=thin on make",
-    "G16_ENABLE_PGO": "1 → profile flags for bench/consumer builds",
-    "GROK16_USE_CCACHE": "1 → wrap CC/CXX with ccache when installed",
+    "G16_FAST_REBUILD": "1 by default (set G16_FULL_REBUILD=1 for full bootstrap)",
+    "G16_RELEASE_PROFILE": "1 → LTO + PGO + G16_FIELD_SPEED",
+    "G16_FIELD_SPEED": "1 → field_opt profile for bench and consumer builds",
+    "G16_ENABLE_LTO": "1 → --enable-lto + resolved -flto on make",
+    "G16_ENABLE_PGO": "1 → -fprofile-use on bench/consumer builds",
+    "G16_PGO_GENERATE": "1 with profile command → -fprofile-generate",
+    "GROK16_USE_CCACHE": "auto 1 when ccache installed",
     "GROK16_BUILD_JOBS": "nproc",
-    "G16_BENCH_PROFILE": "ai | field_compute | vulkan_rtx"
+    "G16_BENCH_PROFILE": "field_opt | ai | field_compute | vulkan_rtx"
   }
 }

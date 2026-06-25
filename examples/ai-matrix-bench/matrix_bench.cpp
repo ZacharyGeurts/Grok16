@@ -5,7 +5,9 @@
 #include <iostream>
 #include <vector>
 
-#if defined(GROK16_PROFILE_AI)
+#if defined(GROK16_PROFILE_FIELD_OPT)
+constexpr const char* kProfile = "field_opt";
+#elif defined(GROK16_PROFILE_AI)
 constexpr const char* kProfile = "ai";
 #elif defined(GROK16_PROFILE_FIELD)
 constexpr const char* kProfile = "field_compute";

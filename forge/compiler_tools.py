@@ -47,6 +47,10 @@ def _make_env(ctx: ForgeContext, *, selfhost: bool) -> dict[str, str]:
         env["CFLAGS"] = f"{env.get('CFLAGS', '')} {extra}".strip()
         env["CXXFLAGS"] = f"{env.get('CXXFLAGS', '')} {extra}".strip()
         env["LDFLAGS"] = f"{env.get('LDFLAGS', '')} {extra}".strip()
+    if _env_true("G16_FIELD_SPEED") or _env_true("G16_RELEASE_PROFILE"):
+        field = "-O3 -ftree-vectorize -funroll-loops -finline-functions"
+        env["CFLAGS"] = f"{env.get('CFLAGS', '')} {field}".strip()
+        env["CXXFLAGS"] = f"{env.get('CXXFLAGS', '')} {field}".strip()
     return env
 
 
@@ -56,9 +60,13 @@ def _use_ccache() -> bool:
 
 def _append_configure_speedups(argv: list[str]) -> str:
     notes: list[str] = []
-    if _env_true("G16_ENABLE_LTO"):
+    if _env_true("G16_ENABLE_LTO") or _env_true("G16_RELEASE_PROFILE"):
         argv.append("--enable-lto")
-        notes.append("thin-lto")
+        notes.append("lto")
+    if _env_true("G16_RELEASE_PROFILE"):
+        notes.append("release-profile")
+    if _env_true("G16_FIELD_SPEED"):
+        notes.append("field-speed")
     if _fast_rebuild() or _env_true("G16_DISABLE_BOOTSTRAP"):
         if "--disable-bootstrap" not in argv:
             argv.append("--disable-bootstrap")

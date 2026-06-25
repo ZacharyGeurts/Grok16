@@ -61,13 +61,27 @@ Queen forge integration and `forge/compiler_tools.py` share speed controls:
 
 **Bench** (`grok16-toolchain.sh bench`) compiles `examples/ai-matrix-bench` with profile flags from `scripts/grok16-profile-flags.py` and reports compile time, run time, and binary size to `data/bench/` (gitignored).
 
+## Field-aware compiler (vs stock GCC)
+
+Grok16 does not ship a forked GCC IR — it **configures and profiles** the field build for measurable throughput on representative workloads:
+
+| Layer | Field tuning |
+|-------|----------------|
+| Forge rebuild | `G16_FIELD_SPEED` / `G16_RELEASE_PROFILE` → LTO, vectorize, unroll on `make` |
+| Consumer profiles | `field_opt`, `ai`, `field_compute`, `vulkan_rtx` in `data/grok16-profiles.json` |
+| Benchmarks | `field-bench` (FieldX86 + entropy + NEXUS), `bench-all`, PGO via `profile` |
+| Macros | `FIELD_ENTROPY_DISPATCH`, `FIELD_X86_DIE`, `FIELD_WAVE_PHASE`, `G16_FIELD_SPEED` |
+
+Default rebuild is **fast iteration** (`G16_FAST_REBUILD=1`). Production: `G16_RELEASE_PROFILE=1` enables LTO + PGO + field_opt.
+
 ## AI / gnu++26 profiles
 
-`data/grok16-profiles.json` defines three consumer profiles:
+`data/grok16-profiles.json` defines four consumer profiles:
 
 | Profile | Focus |
 |---------|--------|
-| `ai` | Matrix-friendly `-O3`, unrolling, inlining; `GROK16_PROFILE_AI`, `FIELD_ENTROPY_DISPATCH` |
+| `field_opt` | **Primary** — entropy fold, wave phase, FieldX86 dispatch, NEXUS scoring |
+| `ai` | Matrix-friendly `-O3`, vectorize, unroll; `GROK16_PROFILE_AI` |
 | `field_compute` | OpenMP SIMD, vector cost model; `FIELD_X86_DIE`, CANVAS-style kernels |
 | `vulkan_rtx` | AVX2/FMA, AMOURANTHRTX-style CPU prep |
 

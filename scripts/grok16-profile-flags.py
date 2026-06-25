@@ -13,7 +13,7 @@ from grok16_lto import normalize_lto_flags  # noqa: E402
 
 def main() -> int:
     root = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
-    profile = sys.argv[1] if len(sys.argv) > 1 else "ai"
+    profile = sys.argv[1] if len(sys.argv) > 1 else _default_profile()
     kind = sys.argv[2] if len(sys.argv) > 2 else "cxx"
     path = root / "data" / "grok16-profiles.json"
     if not path.is_file():
@@ -26,18 +26,33 @@ def main() -> int:
         print(" ".join(normalize_lto_flags(prof.get("link_flags", []))))
     elif kind == "defs":
         print(" ".join(defs))
+    elif kind == "source":
+        src = prof.get("bench_source", "")
+        if not src:
+            src = doc.get("profiles", {}).get("field_opt", {}).get("bench_source", "")
+        print(src)
     else:
         parts = prof.get("cxx_flags", []) + defs
-        if _env_true("G16_ENABLE_PGO") and kind == "cxx_pgo_use":
-            parts.extend(doc.get("pgo", {}).get("use_flags", []))
-        elif _env_true("G16_ENABLE_PGO") and kind == "cxx_pgo_gen":
-            parts.extend(doc.get("pgo", {}).get("generate_flags", []))
+        pgo = doc.get("pgo", {})
+        root_s = str(root)
+        if kind == "cxx_pgo_gen":
+            gen = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("generate_flags", [])]
+            parts.extend(gen)
+        elif kind == "cxx_pgo_use" or (_env_true("G16_ENABLE_PGO") and kind == "cxx"):
+            use = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("use_flags", [])]
+            parts.extend(use)
         print(" ".join(parts))
     return 0
 
 
 def _env_true(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _default_profile() -> str:
+    if _env_true("G16_FIELD_SPEED"):
+        return "field_opt"
+    return os.environ.get("G16_BENCH_PROFILE", "field_opt")
 
 
 if __name__ == "__main__":

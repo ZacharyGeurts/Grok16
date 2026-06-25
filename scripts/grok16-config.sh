@@ -20,14 +20,29 @@ _grok16_config_resolve() {
   G16_PKGVERSION="${G16_PKGVERSION:-Grok16-16.0.0}"
   G16_CXX_STD="${G16_CXX_STD:-gnu++26}"
   GROK16_BUILD_JOBS="${GROK16_BUILD_JOBS:-${QUEEN_BUILD_JOBS:-$(nproc 2>/dev/null || echo 4)}}"
-  # Dev fast path: skip 3-stage bootstrap unless caller overrides
+  if [[ -z ${GROK16_USE_CCACHE:-} ]] && command -v ccache >/dev/null 2>&1; then
+    GROK16_USE_CCACHE=1
+  fi
+  if [[ ${G16_RELEASE_PROFILE:-} == 1 || ${G16_RELEASE_PROFILE:-} == true ]]; then
+    : "${G16_ENABLE_LTO:=1}"
+    : "${G16_ENABLE_PGO:=1}"
+    : "${G16_FIELD_SPEED:=1}"
+  fi
+  if [[ ${G16_FIELD_SPEED:-} == 1 || ${G16_FIELD_SPEED:-} == true ]]; then
+    : "${G16_BENCH_PROFILE:=field_opt}"
+  fi
+  # Dev fast path default for rebuild iteration (override with G16_FULL_REBUILD=1)
+  if [[ -z ${G16_FULL_REBUILD:-} && -z ${G16_FAST_REBUILD:-} ]]; then
+    G16_FAST_REBUILD=1
+  fi
   if [[ ${G16_FAST_REBUILD:-} == 1 || ${G16_FAST_REBUILD:-} == true || ${G16_FAST_REBUILD:-} == yes ]]; then
     : "${G16_DISABLE_BOOTSTRAP:=1}"
   fi
   export GROK16_ROOT GROK16_SCRIPTS G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
   export GROK16_GCC_SRC GROK16_GCC_BUILD GROK16_GCC_REPO GROK16_GCC_BRANCH
-  export G16_PKGVERSION G16_CXX_STD GROK16_BUILD_JOBS
-  export GROK16_ROOT G16_DISABLE_BOOTSTRAP
+  export G16_PKGVERSION G16_CXX_STD GROK16_BUILD_JOBS GROK16_USE_CCACHE
+  export G16_RELEASE_PROFILE G16_FIELD_SPEED G16_FAST_REBUILD G16_FULL_REBUILD
+  export GROK16_ROOT G16_DISABLE_BOOTSTRAP G16_ENABLE_LTO G16_ENABLE_PGO G16_BENCH_PROFILE
 }
 
 # Extra driver flags when install prefix lacks full lib/gcc (dev/consolidated layouts).

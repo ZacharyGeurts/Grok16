@@ -17,7 +17,7 @@
 | `g16` / `g++16` | C and C++ drivers (pkgversion `Grok16-16.0.0`) |
 | `grok16-toolchain.cmake` | CMake toolchain file |
 | `grok16-profile-*.cmake` | AI / Field / Vulkan-RTX build profiles |
-| `grok16-toolchain.sh` | bootstrap · rebuild · verify · bench · status · paths |
+| `grok16-toolchain.sh` | bootstrap · rebuild · verify · bench · field-bench · profile · status |
 | `forge/grok16-forge.py` | Fetch → configure → build → self-host |
 | `data/grok16-profiles.json` | AI / Field / RTX flag presets |
 | `examples/` | Minimal CMake, matrix bench, Field dispatch kernel |
@@ -69,46 +69,49 @@ export G16_PKGVERSION=Grok16-16.0.0
 
 **Requirements:** Linux x86_64, `git`, host `gcc`/`g++`, build deps for GCC (see upstream docs). Bootstrap takes significant time and disk.
 
-## Speedups (rebuild path)
+## True Field Speed (rebuild + profiles)
 
-Parallel make, LTO, PGO, and fast dev rebuild are controlled by environment variables:
+Grok16 is tuned for Field workloads — entropy folding, wave-phase dispatch, FieldX86 emulation, NEXUS scoring — not stock GCC defaults.
+
+**Rebuild defaults (iteration):** `G16_FAST_REBUILD=1`, parallel `-j$(nproc)`, ccache when installed. Full bootstrap: `G16_FULL_REBUILD=1 ./scripts/grok16-toolchain.sh rebuild`.
+
+**Release / Field-Opt:**
 
 ```bash
-export G16_FAST_REBUILD=1      # skip distclean, incremental make, auto G16_DISABLE_BOOTSTRAP=1
-export G16_ENABLE_LTO=1        # --enable-lto at configure; -flto on make (thin when supported)
-export G16_ENABLE_PGO=1        # profile-generate/use flags for bench and consumers
-export GROK16_USE_CCACHE=1     # wrap CC/CXX with ccache when installed
-export GROK16_BUILD_JOBS=$(nproc)
+export G16_RELEASE_PROFILE=1   # LTO + PGO + field_opt (production)
+export G16_FIELD_SPEED=1       # field_opt profile flags on forge + consumers
+export G16_ENABLE_LTO=1
+export GROK16_USE_CCACHE=1
 
 ./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh profile      # collect PGO → data/pgo/
+./scripts/grok16-toolchain.sh field-bench  # re-run with G16_ENABLE_PGO=1
 ```
 
 | Mode | Typical use |
 |------|-------------|
-| Default rebuild | Full distclean + 3-stage bootstrap |
-| `G16_FAST_REBUILD=1` | Day-to-day dev: incremental link, no bootstrap |
-| `G16_ENABLE_LTO=1` | Toolchain built with LTO; profiles use resolved `-flto` / `-flto=thin` |
-| `GROK16_USE_CCACHE=1` | Cache reuse across repeated forge runs |
+| Default `rebuild` | Fast incremental (no distclean, no 3-stage bootstrap) |
+| `G16_FULL_REBUILD=1` | Full distclean + 3-stage bootstrap |
+| `G16_RELEASE_PROFILE=1` | Production: LTO + PGO + Field-Opt scheduling |
+| `G16_FIELD_SPEED=1` | Consumer builds use `field_opt` profile |
+| `GROK16_USE_CCACHE=1` | Auto-on when `ccache` is in PATH |
 
-### Bench metrics
+### Bench metrics (local x86_64, gnu++26 @ 16.0.0)
 
-`bench` compiles `examples/ai-matrix-bench` with a profile from `data/grok16-profiles.json` and reports wall time + binary size:
+| Profile | Kernel workload | compile_ms | run_ms | binary_bytes | kernel wall_ms |
+|---------|-----------------|------------|--------|--------------|----------------|
+| `field_opt` | FieldX86 + entropy + NEXUS (`field-nexus-bench`) | 828 | 5 | 22616 | **2.10** |
+| `ai` | NEXUS matrix scoring (`ai-matrix-bench`) | 741 | 7 | 18232 | 4.12 |
+| `field_compute` | CANVAS wave dispatch (`field-canvas-kernel`) | 552 | 2 | 16240 | — |
+| `vulkan_rtx` | AVX2/FMA field kernel | 864 | 5 | 22728 | 2.14 |
 
 ```bash
-./scripts/grok16-toolchain.sh bench
-G16_BENCH_PROFILE=field_compute ./scripts/grok16-toolchain.sh bench
-G16_BENCH_PROFILE=vulkan_rtx ./scripts/grok16-toolchain.sh bench
+./scripts/grok16-toolchain.sh field-bench   # primary Field-Opt metric
+./scripts/grok16-toolchain.sh bench-all     # all profiles → data/bench/latest.json
+./scripts/grok16-toolchain.sh profile       # PGO training run
 ```
 
-Example output:
-
-```
-bench: profile=ai std=gnu++26
-bench: compile_ms=842 run_ms=12 binary_bytes=24576
-bench: PASS
-```
-
-Record numbers before/after `G16_ENABLE_LTO=1` rebuild or `GROK16_USE_CCACHE=1` to track local speedups.
+Results persist to `data/bench/latest.json`. Re-run after `G16_RELEASE_PROFILE=1` rebuild to measure LTO/PGO gains.
 
 ## AI integration (gnu++26 profiles)
 
@@ -116,7 +119,8 @@ Grok16 defaults to **gnu++26** (`G16_CXX_STD`). Build profiles target AI / Field
 
 | Profile | CMake include | Use case |
 |---------|---------------|----------|
-| `ai` | `cmake/grok16-profile-ai.cmake` | NEXUS scoring, matrix-heavy loops |
+| `field_opt` | `cmake/grok16-profile-field-opt.cmake` | **Primary** — entropy/oracle, wave phase, FieldX86 throughput |
+| `ai` | `cmake/grok16-profile-ai.cmake` | NEXUS scoring, matrix/simd/mdspan paths |
 | `field_compute` | `cmake/grok16-profile-field.cmake` | FieldX86 / CANVAS dispatch kernels |
 | `vulkan_rtx` | `cmake/grok16-profile-vulkan.cmake` | AMOURANTHRTX-style SIMD CPU prep |
 
@@ -129,7 +133,15 @@ cmake --build examples/field-canvas-kernel/build
 
 Profiles set Field macros (`FIELD_ENTROPY_DISPATCH`, `FIELD_X86_DIE`) and aggressive vectorization flags. See `data/grok16-profiles.json` for the full flag list.
 
-**Field_Primer / redata:** Grok16 is the sovereign C/C++ layer for World_Redata L2 — bootstrap once, `verify`, export `G16_PREFIX`, point downstream CMake at `grok16-toolchain.cmake`. L0–L1 plates roundtrip through the native engine compiled with G16; Queen `compiler_probe` and `g16-toolchain.json` should resolve the same prefix after `consolidate`.
+### Building Field Technology with Grok16 (Field_Primer)
+
+1. Bootstrap Grok16 once; `verify` + `field-bench` must pass.
+2. Export `G16_PREFIX`; World_Redata `build-cpp.sh` consumes Grok16 directly.
+3. Hot paths (entropy fold, wave dispatch, snap/wrzc) compile with `g16-field-mandate.cmake` + `gnu++26` contracts.
+4. AMOURANTHRTX / NEXUS consumers: include `grok16-profile-field-opt.cmake` or `grok16-profile-ai.cmake` for CANVAS.compute-adjacent CPU and behavioral scoring.
+5. Low-power / high-throughput: `G16_FIELD_SPEED=1` enables vectorization + unrolling tuned for Field Die emulation (AmmoOS/FieldX86).
+
+**redata pipeline:** L0–L1 plates roundtrip through World_Redata L2 built with G16. Hostess7/ZAC layers stay orthogonal; Grok16 compiles the native engine that reads/writes WRDT/WRZC contracts.
 
 ## Configuration
 
@@ -151,7 +163,10 @@ No hardcoded Desktop paths. Override via environment:
 | `G16_FAST_REBUILD` | `1` → dev fast path (implies bootstrap off) |
 | `G16_ENABLE_LTO` / `G16_ENABLE_PGO` | LTO and PGO for forge + profiles |
 | `GROK16_USE_CCACHE` | ccache wrapper when available |
-| `G16_BENCH_PROFILE` | `ai` \| `field_compute` \| `vulkan_rtx` |
+| `G16_FIELD_SPEED` | `1` → Field-Opt profile (default bench) |
+| `G16_RELEASE_PROFILE` | `1` → production LTO + PGO + field_opt |
+| `G16_FULL_REBUILD` | `1` → disable fast-rebuild default |
+| `G16_BENCH_PROFILE` | `field_opt` \| `ai` \| `field_compute` \| `vulkan_rtx` |
 
 Template: `data/grok16-config.json`.
 
@@ -180,7 +195,9 @@ cmake --build examples/minimal-cmake-project/build
 ./scripts/grok16-toolchain.sh bootstrap   # first-time fetch + build
 ./scripts/grok16-toolchain.sh rebuild     # self-host (see speedup env vars)
 ./scripts/grok16-toolchain.sh verify      # gnu++26 compile smoke test
-./scripts/grok16-toolchain.sh bench       # matrix benchmark + timings
+./scripts/grok16-toolchain.sh field-bench # Field-Opt benchmark (primary)
+./scripts/grok16-toolchain.sh bench-all   # all profiles + JSON report
+./scripts/grok16-toolchain.sh profile     # PGO training collection
 ./scripts/grok16-toolchain.sh status
 ./scripts/grok16-toolchain.sh paths
 python3 forge/grok16-forge.py status      # JSON toolchain state
@@ -208,7 +225,7 @@ Grok16/
 
 ## CI
 
-GitHub Actions runs script lint, Python compile, `paths`, and forge `status` on Linux x86_64. Full bootstrap is local/optional (too heavy for default CI).
+GitHub Actions runs script lint, Python compile, `paths`, forge `status`, and `field-bench` when `bin/g++16` is present. Full bootstrap: local or `docker build -t grok16 .`.
 
 ## License
 

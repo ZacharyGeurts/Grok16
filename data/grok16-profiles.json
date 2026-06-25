@@ -1,18 +1,59 @@
 {
-  "schema": "grok16-profiles/v1",
+  "schema": "grok16-profiles/v2",
   "product": "Grok16",
   "cxx_std_default": "gnu++26",
+  "release_profile": {
+    "description": "Production Field build — LTO + PGO + field_opt flags",
+    "env": {
+      "G16_RELEASE_PROFILE": "1",
+      "G16_ENABLE_LTO": "1",
+      "G16_ENABLE_PGO": "1",
+      "G16_FIELD_SPEED": "1"
+    },
+    "default_bench_profile": "field_opt"
+  },
   "field_macros": {
     "FIELD_ENTROPY_DISPATCH": "Queen/Hostess7 wave-dispatch entropy gate",
     "FIELD_X86_DIE": "FieldX86 die layout (KILROY / CANVAS ABI)",
+    "FIELD_WAVE_PHASE": "Wave phase decoupling for CANVAS.compute paths",
+    "G16_FIELD_SPEED": "Field-Opt speed profile active (unroll/vector/entropy scheduling)",
     "GROK16_PROFILE_AI": "AI build profile active",
     "GROK16_PROFILE_FIELD": "Field compute profile active",
+    "GROK16_PROFILE_FIELD_OPT": "Field-Opt throughput profile active",
     "GROK16_PROFILE_VULKAN": "Vulkan/RTX-oriented CPU kernel profile"
   },
   "profiles": {
-    "ai": {
-      "description": "AI / NEXUS behavioral scoring — matrix-friendly, aggressive inlining",
+    "field_opt": {
+      "description": "Field-Opt — entropy/oracle, wave phase, FieldX86 emulation throughput",
       "cxx_std": "gnu++26",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-mtune=native",
+        "-ftree-vectorize",
+        "-fvect-cost-model=unlimited",
+        "-funroll-loops",
+        "-finline-functions",
+        "-fomit-frame-pointer",
+        "-ffast-math",
+        "-fno-trapping-math",
+        "-fopenmp-simd"
+      ],
+      "link_flags": ["-flto=thin"],
+      "definitions": [
+        "GROK16_PROFILE_FIELD_OPT=1",
+        "G16_FIELD_SPEED=1",
+        "FIELD_ENTROPY_DISPATCH=1",
+        "FIELD_X86_DIE=1",
+        "FIELD_WAVE_PHASE=1"
+      ]
+    },
+    "ai": {
+      "description": "AI / NEXUS behavioral scoring — matrix-friendly, simd/mdspan paths",
+      "cxx_std": "gnu++26",
+      "bench_source": "examples/ai-matrix-bench/matrix_bench.cpp",
       "cxx_flags": [
         "-std=gnu++26",
         "-O3",
@@ -22,7 +63,8 @@
         "-funroll-loops",
         "-finline-functions",
         "-fomit-frame-pointer",
-        "-fno-semantic-interposition"
+        "-fno-semantic-interposition",
+        "-ftree-vectorize"
       ],
       "link_flags": ["-flto=thin"],
       "definitions": ["GROK16_PROFILE_AI=1", "FIELD_ENTROPY_DISPATCH=1"]
@@ -30,6 +72,7 @@
     "field_compute": {
       "description": "Field compute / FieldX86 / CANVAS-style CPU kernels",
       "cxx_std": "gnu++26",
+      "bench_source": "examples/field-canvas-kernel/field_dispatch.cpp",
       "cxx_flags": [
         "-std=gnu++26",
         "-O3",
@@ -44,6 +87,7 @@
     "vulkan_rtx": {
       "description": "AMOURANTHRTX-style RTX prep — SIMD vectorization, shader-adjacent CPU paths",
       "cxx_std": "gnu++26",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
       "cxx_flags": [
         "-std=gnu++26",
         "-O3",
@@ -59,16 +103,16 @@
     }
   },
   "pgo": {
-    "generate_flags": ["-fprofile-generate"],
-    "use_flags": ["-fprofile-use", "-fprofile-correction"],
-    "data_dir": "${GROK16_ROOT}/data/pgo"
+    "generate_flags": ["-fprofile-generate=${GROK16_ROOT}/data/pgo"],
+    "use_flags": ["-fprofile-use=${GROK16_ROOT}/data/pgo", "-fprofile-correction"],
+    "data_dir": "${GROK16_ROOT}/data/pgo",
+    "workloads": ["field-nexus-bench", "ai-matrix-bench"]
   },
   "speedups": {
     "parallel_jobs": "${GROK16_BUILD_JOBS}",
-    "fast_rebuild_env": "G16_FAST_REBUILD=1",
-    "disable_bootstrap_dev_default": "G16_DISABLE_BOOTSTRAP=1 with G16_FAST_REBUILD",
-    "lto_env": "G16_ENABLE_LTO=1",
-    "pgo_env": "G16_ENABLE_PGO=1",
-    "ccache_env": "GROK16_USE_CCACHE=1"
+    "fast_rebuild_default": "G16_FAST_REBUILD=1 unless G16_FULL_REBUILD=1",
+    "ccache_auto": "GROK16_USE_CCACHE=1 when ccache installed",
+    "field_speed_env": "G16_FIELD_SPEED=1 → field_opt profile + forge scheduling opts",
+    "release_env": "G16_RELEASE_PROFILE=1 → LTO + PGO + field_opt"
   }
 }
