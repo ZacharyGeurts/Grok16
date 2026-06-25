@@ -4,5 +4,5 @@
 
 int main() {
   std::cout << "Grok16 minimal example: __cplusplus=" << __cplusplus << '\n';
-  return __cplusplus >= 202002L ? 0 : 1;
+  return __cplusplus >= 202400L ? 0 : 1;
 }
