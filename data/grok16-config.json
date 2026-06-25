@@ -33,7 +33,7 @@
     "GROK16_QUEEN_ROOT": "$GROK16_SG_ROOT/NewLatest/Queen",
     "GROK16_GCC_SRC": "$GROK16_ROOT/vendor/gcc",
     "GROK16_GCC_BUILD": "$GROK16_ROOT/build/gcc",
-    "GROK16_PKGVERSION": "Grok16-16.1.0",
+    "GROK16_PKGVERSION": "Grok16-16.1.1",
     "G16_CXX_STD": "gnu++26",
     "G16_FAST_REBUILD": "1 by default (set G16_FULL_REBUILD=1 for full bootstrap)",
     "G16_RELEASE_PROFILE": "1 → LTO + PGO + G16_FIELD_SPEED",

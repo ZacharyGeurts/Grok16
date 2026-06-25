@@ -32,8 +32,8 @@ for key in ("g16_version", "pkgversion", "cxx_std_default", "c_std_default"):
 PY
 )"
   fi
-  G16_VERSION="${G16_VERSION:-16.1.0}"
-  G16_PKGVERSION="${G16_PKGVERSION:-Grok16-16.1.0}"
+  G16_VERSION="${G16_VERSION:-16.1.1}"
+  G16_PKGVERSION="${G16_PKGVERSION:-Grok16-16.1.1}"
   G16_CXX_STD="${G16_CXX_STD:-gnu++26}"
   G16_C_STD="${G16_C_STD:-gnu17}"
   GROK16_BUILD_JOBS="${GROK16_BUILD_JOBS:-${QUEEN_BUILD_JOBS:-$(nproc 2>/dev/null || echo 4)}}"
@@ -64,7 +64,7 @@ PY
 
 # Extra driver flags when install prefix lacks full lib/gcc (dev/consolidated layouts).
 grok16_driver_extra_flags() {
-  local ver="${G16_VERSION:-16.1.0}"
+  local ver="${G16_VERSION:-16.1.1}"
   local inc="$G16_PREFIX/lib/gcc/x86_64-pc-linux-gnu/${ver}/include"
   if [[ ! -d "$inc" && -d "$GROK16_GCC_BUILD/gcc" ]]; then
     printf -- '-B%s/gcc/\n' "$GROK16_GCC_BUILD"

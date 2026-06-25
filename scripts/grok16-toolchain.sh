@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Grok16 — G16 unified field compiler @ 16.1.0 (g16 auto-detects C/C++)
+# Grok16 — G16 unified field compiler @ 16.1.1 (g16 auto-detects C/C++)
 # Copyright (C) 2026 Zachary Geurts
 # License: GNU General Public License v3 or later — see LICENSE
 # Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/grok16-config.sh"
 
 BIN="$G16_PREFIX/bin"
-G16_VERSION="${G16_VERSION:-16.1.0}"
+G16_VERSION="${G16_VERSION:-16.1.1}"
 FORGE="$GROK16_ROOT/forge/grok16-forge.py"
 G16_DRIVER="$BIN/g16"
 VERIFY_SRC="$GROK16_ROOT/examples/minimal-cmake-project/main.cpp"
@@ -178,9 +178,12 @@ cmd_rebuild() {
   [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
   export G16_PREFIX G16_PKGVERSION GROK16_GCC_SRC GROK16_GCC_BUILD GROK16_BUILD_JOBS
   export G16_FAST_REBUILD G16_FULL_REBUILD G16_RELEASE_PROFILE G16_FIELD_SPEED
-  export G16_ENABLE_LTO G16_ENABLE_PGO GROK16_USE_CCACHE G16_DISABLE_BOOTSTRAP
+  export G16_ENABLE_LTO="${G16_ENABLE_LTO:-}"
+  export G16_ENABLE_PGO="${G16_ENABLE_PGO:-}"
+  export GROK16_USE_CCACHE="${GROK16_USE_CCACHE:-}"
+  export G16_DISABLE_BOOTSTRAP="${G16_DISABLE_BOOTSTRAP:-}"
   echo "  jobs=$GROK16_BUILD_JOBS fast=$G16_FAST_REBUILD field_speed=$G16_FIELD_SPEED release=$G16_RELEASE_PROFILE"
-  echo "  lto=$G16_ENABLE_LTO pgo=$G16_ENABLE_PGO ccache=$GROK16_USE_CCACHE bootstrap_off=$G16_DISABLE_BOOTSTRAP"
+  echo "  lto=${G16_ENABLE_LTO:-0} pgo=${G16_ENABLE_PGO:-0} ccache=${GROK16_USE_CCACHE:-0} bootstrap_off=${G16_DISABLE_BOOTSTRAP:-0}"
   python3 "$FORGE" run gcc_rebuild || exit 1
   cmd_install
 }

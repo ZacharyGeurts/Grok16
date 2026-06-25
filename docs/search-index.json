@@ -31,7 +31,7 @@
   {"t":"consolidate","p":"integration.html#queen","g":"Integration","d":"Queen vendor migration into Grok16"},
   {"t":"cmake toolchain","p":"getting-started.html#bootstrap","g":"CMake","d":"grok16-toolchain.cmake both compilers g16"},
   {"t":"install","p":"reference.html#cmd-install","g":"Workflow","d":"Write VERSION cmake manifest"},
-  {"t":"status","p":"reference.html#cmd-status","g":"Workflow","d":"Check g16 ready dumpversion 16.1.0"},
+  {"t":"status","p":"reference.html#cmd-status","g":"Workflow","d":"Check g16 ready dumpversion 16.1.1"},
   {"t":"paths","p":"reference.html#cmd-paths","g":"Workflow","d":"Print all resolved paths and env"},
   {"t":"g16_field_mandate","p":"profiles.html#mandate","g":"CMake","d":"Security flags fortify RELRO PIE"},
   {"t":"G16_FORCE_CXX","p":"reference.html#env-force-cxx","g":"Env","d":"Force g16-cxx backend"},

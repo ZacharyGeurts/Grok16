@@ -1,12 +1,12 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-16.1.0-green)
-![Version](https://img.shields.io/badge/G16-16.1.0-blue)
+![Status](https://img.shields.io/badge/release-16.1.1-green)
+![Version](https://img.shields.io/badge/G16-16.1.1-blue)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.1.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. Scripts and CMake integration ship in git; **no prebuilt binaries** (reproducible bootstrap from GPL GCC sources).
+**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.1.1** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. Scripts and CMake integration ship in git; **no prebuilt binaries** (reproducible bootstrap from GPL GCC sources).
 
 > **Grok16 @ 16.0.0** — sovereign G16 field compiler. Upstream tree is **gcc-15** with BASE-VER **16.0.0** (not upstream `releases/gcc-16`). See [PERFORMANCE.md](PERFORMANCE.md) for benchmark numbers.
 

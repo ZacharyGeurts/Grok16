@@ -5,7 +5,7 @@ from __future__ import annotations
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent
-VER = "16.1.0"
+VER = "16.1.1"
 
 HEAD = f"""<!DOCTYPE html>
 <html lang="en">
@@ -105,11 +105,11 @@ C_ROWS = [
     ("profiles.html#flags-c", "PROFILE c_pgo_use", "C PGO use", "Adds -fprofile-use for C builds after training. Pairs with cxx_pgo_use for mixed projects."),
     ("reference.html#env-g16-c-std", "G16_C_STD", "C standard env", "Exported by grok16-config.sh from data/grok16-version.json. Default gnu17. Used by verify, CMake GROK16_C_STD, and manual g16 invocations."),
     ("reference.html#env-force-c", "G16_FORCE_C=1", "Force C backend", "Override detection — unified g16 always execs g16-cc even for .cpp (debug only)."),
-    ("getting-started.html#bootstrap", "bootstrap", "First build", "Fetch GCC 15, patch BASE-VER 16.1.0, host-build, install, relocate backends, install unified g16. Produces working C path without separate gcc binary name."),
+    ("getting-started.html#bootstrap", "bootstrap", "First build", "Fetch GCC 15, patch BASE-VER 16.1.1, host-build, install, relocate backends, install unified g16. Produces working C path without separate gcc binary name."),
     ("getting-started.html#rebuild", "rebuild", "Self-host", "Self-host uses libexec/g16-cc and g16-cxx as CC/CXX during gcc_rebuild — not the unified wrapper — avoiding bootstrap recursion."),
-    ("reference.html#cmd-install", "install", "Post-install", "Regenerates VERSION, cmake, manifest. Confirms g16 -dumpversion == 16.1.0. Re-runs driver/Makefile install if present."),
+    ("reference.html#cmd-install", "install", "Post-install", "Regenerates VERSION, cmake, manifest. Confirms g16 -dumpversion == 16.1.1. Re-runs driver/Makefile install if present."),
     ("reference.html#cmd-paths", "paths", "Paths dump", "Prints G16_DRIVER, G16_BACKEND_CC, G16_C_STD, GROK16_ROOT, G16_PREFIX. Use before scripting C builds."),
-    ("performance.html#bench", "bench (C future)", "C benchmarks", "16.1.0 benches remain CXX-first; C flags available via PROFILE c for mixed stacks. Add examples/minimal-c-project to CI smoke."),
+    ("performance.html#bench", "bench (C future)", "C benchmarks", "16.1.1 benches remain CXX-first; C flags available via PROFILE c for mixed stacks. Add examples/minimal-c-project to CI smoke."),
     ("integration.html#gates", "build-cpp.sh", "WRDT L2", "World_Redata C++ engine; C sources in redata use host python. Grok16 C path validates toolchain for embedded .c in future L2 splits."),
     ("architecture.html#unified-driver", "libexec/grok16/", "Backend dir", "g16-cc and g16-cxx live here after relocate. Marker .relocated prevents double-move on reinstall."),
 ]
@@ -134,7 +134,7 @@ CXX_ROWS = [
     ("performance.html#bench-all", "bench-all", "All profiles", "Runs field_opt, ai, field_compute, vulkan_rtx sequentially."),
     ("profiles.html#mandate", "g16_field_mandate", "CMake security", "fortify, stack protector, RELRO, PIE on field targets. Required for World_Redata L2."),
     ("reference.html#env-force-cxx", "G16_FORCE_CXX=1", "Force C++ backend", "Skip detection — always g16-cxx. Useful when linking C++ objects with ambiguous argv."),
-    ("integration.html#gates", "redata.cli parity", "Parity gate", "Python ↔ C++ WRDT bytes. Requires real g16 @ 16.1.0 dumpversion in manifest."),
+    ("integration.html#gates", "redata.cli parity", "Parity gate", "Python ↔ C++ WRDT bytes. Requires real g16 @ 16.1.1 dumpversion in manifest."),
 ]
 
 HUB_BODY = f"""
@@ -149,7 +149,7 @@ HUB_BODY = f"""
     <tr><td><a href="concepts.html"><strong>C/C++ Concepts</strong></a></td><td class="tip">Textbook visuals</td><td class="idx-detail">Pointers, arrays, sorting, memory, templates, RAII, move — SVG diagrams and short examples. Press Ctrl+K to jump here from search.</td></tr>
   </table>
 
-  <h2>Unified driver (16.1.0)</h2>
+  <h2>Unified driver (16.1.1)</h2>
   <p>One binary: <code>$G16_PREFIX/bin/g16</code>. Backends: <code>libexec/grok16/g16-cc</code>, <code>libexec/grok16/g16-cxx</code>. <code>g++16</code> → symlink to <code>g16</code>. CMake sets both CMAKE_C_COMPILER and CMAKE_CXX_COMPILER to g16.</p>
 
   <h2>1 — Toolchain commands</h2>
@@ -157,9 +157,9 @@ HUB_BODY = f"""
 
 # Append shortened original sections - read from existing master-coder and adapt
 TOOLCHAIN = [
-    ("getting-started.html#bootstrap", "bootstrap", "First-time build", "Fetch GCC 15, patch BASE-VER 16.1.0, host compile, install prefix, relocate backends, install unified g16, write manifest."),
+    ("getting-started.html#bootstrap", "bootstrap", "First-time build", "Fetch GCC 15, patch BASE-VER 16.1.1, host compile, install prefix, relocate backends, install unified g16, write manifest."),
     ("getting-started.html#rebuild", "rebuild", "Self-host", "Incremental (G16_FAST_REBUILD=1) or full bootstrap. Uses libexec backends as CC/CXX for GCC build. Stamp SELFHOST.json."),
-    ("reference.html#cmd-install", "install", "Metadata", "VERSION, grok16-toolchain.cmake, grok16-toolchain.json. Requires g16 -dumpversion 16.1.0."),
+    ("reference.html#cmd-install", "install", "Metadata", "VERSION, grok16-toolchain.cmake, grok16-toolchain.json. Requires g16 -dumpversion 16.1.1."),
     ("getting-started.html#verify", "verify", "Smoke tests", "C verify.c + C++ verify.cpp via unified g16; optional CMake example."),
     ("reference.html#cmd-status", "status", "Ready probe", "Exit 0 when g16 is real ELF and dumpversion matches."),
     ("performance.html#field-bench", "field-bench", "Field-Opt bench", "field-nexus-bench with G16_FIELD_SPEED. Primary perf gate."),

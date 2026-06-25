@@ -1,10 +1,10 @@
 # Grok16 Manual
 
-Programmer reference for Grok16 @ **16.1.0** — unified `g16` (auto C/C++), default `gnu++26` / `gnu17`.
+Programmer reference for Grok16 @ **16.1.1** — unified `g16` (auto C/C++), default `gnu++26` / `gnu17`.
 
 - **Web:** https://zacharygeurts.github.io/Grok16/
 - **Repo:** https://github.com/ZacharyGeurts/Grok16
-- **Tag:** `v16.1.0`
+- **Tag:** `v16.1.1`
 
 ## Manuals
 

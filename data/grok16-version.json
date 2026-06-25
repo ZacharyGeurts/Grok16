@@ -1,9 +1,15 @@
 {
-  "g16_version": "16.1.0",
-  "pkgversion": "Grok16-16.1.0",
-  "tag": "v16.1.0",
+  "g16_version": "16.1.1",
+  "pkgversion": "Grok16-16.1.1",
+  "tag": "v16.1.1",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
-  "notes": "g16 auto-detects C vs C++; g++16 is a compat symlink to the same driver"
+  "notes": "g16 auto-detects C vs C++; g++16 is a compat symlink to the same driver",
+  "changelog": [
+    "gcc_rebuild: skip make distclean — avoids autogen when BASE-VER changes",
+    "Self-host configure uses host gcc when unified libexec backends are relocated",
+    "install_unified_driver copies backends (no move) so cc1 paths stay valid",
+    "grok16-toolchain.sh: safe defaults for optional speedup env vars under set -u"
+  ]
 }

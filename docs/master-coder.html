@@ -25,7 +25,7 @@
 <body>
   <nav>
     <div class="nav-top">
-      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.1.0</span></div>
+      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.1.1</span></div>
       <div class="nav-controls" aria-label="Display preferences">
         <div class="control-chip">
           <label class="control-label" for="g16-font-scale">Size</label>
@@ -64,24 +64,25 @@
   </nav>
 
   <h1>Master Coder Index</h1>
-  <p>Grok16 @ <strong>16.1.0</strong> — unified <code>g16</code> driver auto-detects C vs C++. Pick a language index for every command with full detail columns.</p>
+  <p>Grok16 @ <strong>16.1.1</strong> — unified <code>g16</code> driver auto-detects C vs C++. Pick a language index for every command with full detail columns.</p>
 
   <h2>Language indexes</h2>
   <table class="idx idx-rich">
     <tr><th>Index</th><th>Scope</th><th>Detail</th></tr>
     <tr><td><a href="master-coder-c.html"><strong>Master Coder C</strong></a></td><td class="tip">C / gnu17 / g16-cc</td><td class="idx-detail">Every C-facing command, flag mode, env var, and backend path. Unified g16 dispatches to g16-cc for .c sources and -std=gnu17. No separate C driver name.</td></tr>
     <tr><td><a href="master-coder-cxx.html"><strong>Master Coder C++</strong></a></td><td class="tip">C++ / gnu++26 / g16-cxx</td><td class="idx-detail">Every C++ command, profile, benchmark, and macro path. Same g16 binary; .cpp and g++16 symlink select g16-cxx. Profiles, PGO, Field-Opt, World_Redata gates.</td></tr>
+    <tr><td><a href="concepts.html"><strong>C/C++ Concepts</strong></a></td><td class="tip">Textbook visuals</td><td class="idx-detail">Pointers, arrays, sorting, memory, templates, RAII, move — SVG diagrams and short examples. Press Ctrl+K to jump here from search.</td></tr>
   </table>
 
-  <h2>Unified driver (16.1.0)</h2>
+  <h2>Unified driver (16.1.1)</h2>
   <p>One binary: <code>$G16_PREFIX/bin/g16</code>. Backends: <code>libexec/grok16/g16-cc</code>, <code>libexec/grok16/g16-cxx</code>. <code>g++16</code> → symlink to <code>g16</code>. CMake sets both CMAKE_C_COMPILER and CMAKE_CXX_COMPILER to g16.</p>
 
   <h2>1 — Toolchain commands</h2>
   <table class="idx idx-rich">
     <tr><th>#</th><th>Item</th><th>Short</th><th>Detail</th></tr>
-    <tr><td class="idx-num">1</td><td><a href="getting-started.html#bootstrap">bootstrap</a></td><td class="tip">First-time build</td><td class="idx-detail">Fetch GCC 15, patch BASE-VER 16.1.0, host compile, install prefix, relocate backends, install unified g16, write manifest.</td></tr>
+    <tr><td class="idx-num">1</td><td><a href="getting-started.html#bootstrap">bootstrap</a></td><td class="tip">First-time build</td><td class="idx-detail">Fetch GCC 15, patch BASE-VER 16.1.1, host compile, install prefix, relocate backends, install unified g16, write manifest.</td></tr>
     <tr><td class="idx-num">2</td><td><a href="getting-started.html#rebuild">rebuild</a></td><td class="tip">Self-host</td><td class="idx-detail">Incremental (G16_FAST_REBUILD=1) or full bootstrap. Uses libexec backends as CC/CXX for GCC build. Stamp SELFHOST.json.</td></tr>
-    <tr><td class="idx-num">3</td><td><a href="reference.html#cmd-install">install</a></td><td class="tip">Metadata</td><td class="idx-detail">VERSION, grok16-toolchain.cmake, grok16-toolchain.json. Requires g16 -dumpversion 16.1.0.</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="reference.html#cmd-install">install</a></td><td class="tip">Metadata</td><td class="idx-detail">VERSION, grok16-toolchain.cmake, grok16-toolchain.json. Requires g16 -dumpversion 16.1.1.</td></tr>
     <tr><td class="idx-num">4</td><td><a href="getting-started.html#verify">verify</a></td><td class="tip">Smoke tests</td><td class="idx-detail">C verify.c + C++ verify.cpp via unified g16; optional CMake example.</td></tr>
     <tr><td class="idx-num">5</td><td><a href="reference.html#cmd-status">status</a></td><td class="tip">Ready probe</td><td class="idx-detail">Exit 0 when g16 is real ELF and dumpversion matches.</td></tr>
     <tr><td class="idx-num">6</td><td><a href="performance.html#field-bench">field-bench</a></td><td class="tip">Field-Opt bench</td><td class="idx-detail">field-nexus-bench with G16_FIELD_SPEED. Primary perf gate.</td></tr>

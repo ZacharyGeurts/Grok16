@@ -5,8 +5,8 @@
     "strategy": "Clone releases/gcc-15, patch gcc/BASE-VER to 16.0.0, configure with program-transform-name for g16/g++16",
     "upstream_branch": "releases/gcc-15",
     "upstream_base_ver": "15.3.1",
-    "field_version": "16.1.0",
-    "pkgversion": "Grok16-16.1.0",
+    "field_version": "16.1.1",
+    "pkgversion": "Grok16-16.1.1",
     "note": "This is the G16 field rewrite — not upstream releases/gcc-16"
   },
   "paths": {

@@ -1,4 +1,4 @@
-"""Grok16 forge — G16 unified compiler @ 16.1.0. GPLv3."""
+"""Grok16 forge — G16 unified compiler @ 16.1.1. GPLv3."""
 from __future__ import annotations
 
 import json
@@ -18,7 +18,7 @@ G16_VERSION = g16_version()
 G16_CC = "g16"
 G16_CXX = "g++16"
 GCC_REPO = os.environ.get("GROK16_GCC_REPO", "https://gcc.gnu.org/git/gcc.git")
-# G16 field rewrite: gcc-15 tree, BASE-VER 16.1.0, unified g16 + libexec backends
+# G16 field rewrite: gcc-15 tree, BASE-VER 16.1.1, unified g16 + libexec backends
 GCC_BRANCH = os.environ.get("GROK16_GCC_BRANCH", "releases/gcc-15")
 FIELD_REWRITE = "gcc-15 → field 16.0.0 (BASE-VER + program-transform-name)"
 MANIFEST_NAME = "grok16-toolchain.json"
@@ -292,10 +292,10 @@ def install_unified_driver(ctx: ForgeContext, engine: ForgeEngine | None = None)
 
     if not marker.is_file():
         if g16.is_file() and _is_real_compiler(g16) and not cc_backend.is_file():
-            shutil.move(str(g16), str(cc_backend))
+            shutil.copy2(str(g16), str(cc_backend))
         if gxx.is_file() and gxx.resolve() != g16.resolve() and _is_real_compiler(gxx) and not cxx_backend.is_file():
-            shutil.move(str(gxx), str(cxx_backend))
-        marker.write_text(f"relocated @ {G16_VERSION}\n", encoding="utf-8")
+            shutil.copy2(str(gxx), str(cxx_backend))
+        marker.write_text(f"copied @ {G16_VERSION}\n", encoding="utf-8")
         if engine:
             engine.log(f"g16: relocated backends → {libexec}")
 
@@ -432,13 +432,41 @@ def _gcc_configure_argv(ctx: ForgeContext, *, selfhost: bool) -> tuple[list[str]
     return argv, note
 
 
+def _unified_driver_installed(ctx: ForgeContext) -> bool:
+    g16 = g16_bin(ctx, G16_CC)
+    if not g16.is_file():
+        return False
+    try:
+        return g16.stat().st_size < 512_000
+    except OSError:
+        return False
+
+
+def _backend_usable(backend: Path) -> bool:
+    if not (backend.is_file() and _is_real_compiler(backend)):
+        return False
+    try:
+        proc = subprocess.run(
+            [str(backend), "-dumpversion"],
+            capture_output=True, text=True, timeout=10,
+        )
+        return proc.returncode == 0 and bool(proc.stdout.strip())
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
 def _compiler_for_selfhost(ctx: ForgeContext, name: str) -> Path:
+    # Relocated libexec backends lose cc1 paths — validate before use.
+    if (g16_libexec(ctx) / ".relocated").is_file():
+        host = shutil.which("g++" if name == G16_CXX else "gcc")
+        if host:
+            return Path(host)
     lang = "cxx" if name == G16_CXX else "cc"
     backend = g16_backend(ctx, lang)
-    if backend.is_file() and _is_real_compiler(backend):
+    if _backend_usable(backend):
         return backend
     p = g16_bin(ctx, name)
-    if p.is_file() and _is_real_compiler(p) and not p.is_symlink():
+    if p.is_file() and _is_real_compiler(p) and not p.is_symlink() and not _unified_driver_installed(ctx):
         return p
     host = shutil.which("g++" if name == G16_CXX else "gcc")
     if host:
@@ -473,11 +501,11 @@ def run_gcc_configure(ctx: ForgeContext, engine: ForgeEngine) -> ForgeResult:
 
 
 def run_gcc_distclean(ctx: ForgeContext, engine: ForgeEngine) -> ForgeResult:
+    """Remove build tree without make distclean (avoids autogen when BASE-VER changes)."""
     bdir = gcc_build_dir(ctx)
     if not bdir.exists():
         return ok_result(engine, "gcc_distclean", "no build tree")
-    if (bdir / "Makefile").is_file():
-        engine.run_stream(["make", "distclean"], cwd=bdir, timeout=600)
+    engine.log(f"gcc_distclean — remove {bdir} (no make distclean)")
     shutil.rmtree(bdir, ignore_errors=True)
     bdir.mkdir(parents=True, exist_ok=True)
     return ok_result(engine, "gcc_distclean")
