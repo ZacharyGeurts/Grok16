@@ -10,12 +10,14 @@ from pathlib import Path
 def _gxx_path() -> Path | None:
     prefix = os.environ.get("G16_PREFIX", "").strip()
     if prefix:
-        candidate = Path(prefix) / "bin" / "g++16"
+        backend = Path(prefix) / "libexec" / "grok16" / "g16-cxx"
+        candidate = backend if backend.is_file() else Path(prefix) / "bin" / "g16"
         if candidate.is_file():
             return candidate
     root = os.environ.get("GROK16_ROOT", "").strip()
     if root:
-        candidate = Path(root) / "bin" / "g++16"
+        backend = Path(root) / "libexec" / "grok16" / "g16-cxx"
+        candidate = backend if backend.is_file() else Path(root) / "bin" / "g16"
         if candidate.is_file():
             return candidate
     return None

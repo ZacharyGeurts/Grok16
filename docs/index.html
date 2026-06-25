@@ -18,13 +18,13 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v=5"></script>
-  <link rel="stylesheet" href="manual.css?v=5" />
+  <script src="manual-theme.js?v=6"></script>
+  <link rel="stylesheet" href="manual.css?v=6" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
-      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.0.0</span></div>
+      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.1.0</span></div>
       <div class="nav-controls" aria-label="Display preferences">
         <div class="control-chip">
           <label class="control-label" for="g16-font-scale">Size</label>
@@ -49,6 +49,8 @@
     <div class="nav-links">
       <a href="index.html">Index</a>
       <a href="master-coder.html">Master Coder</a>
+      <a href="master-coder-c.html">Master Coder C</a>
+      <a href="master-coder-cxx.html">Master Coder C++</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="profiles.html">Profiles</a>
@@ -60,12 +62,19 @@
   </nav>
 
   <h1>Grok16 Programmer Reference — Index</h1>
-  <p>Self-hosted <code>g16</code>/<code>g++16</code> @ 16.0.0, default <code>gnu++26</code>. Scripts + forge only; bootstrap GPL GCC locally.</p>
+  <p>Unified <code>g16</code> @ <strong>16.1.0</strong> — one driver auto-detects C (<code>gnu17</code>) and C++ (<code>gnu++26</code>). <code>g++16</code> is a symlink alias. Bootstrap GPL GCC locally.</p>
+
+  <h2>Master Coder indexes</h2>
+  <table>
+    <tr><th>Index</th><th>Contents</th></tr>
+    <tr><td><a href="master-coder.html">Master Coder</a></td><td>Hub — toolchain, forge, profiles, env (all languages)</td></tr>
+    <tr><td><a href="master-coder-c.html">Master Coder C</a></td><td>Every C command, PROFILE c/c_link, G16_C_STD, g16-cc backend</td></tr>
+    <tr><td><a href="master-coder-cxx.html">Master Coder C++</a></td><td>Every C++ command, profiles, benches, PGO, g16-cxx backend</td></tr>
+  </table>
 
   <h2>Manuals</h2>
   <table>
     <tr><th>Document</th><th>Contents</th></tr>
-    <tr><td><a href="master-coder.html">Master Coder</a></td><td>Ordered index of all commands/functions + tooltips</td></tr>
     <tr><td><a href="getting-started.html">Getting Started</a></td><td>Bootstrap, rebuild, verify, bench</td></tr>
     <tr><td><a href="architecture.html">Architecture</a></td><td>Forge flow, field rewrite, directories</td></tr>
     <tr><td><a href="profiles.html">Profiles</a></td><td>field_opt, ai, field_compute, vulkan_rtx; CMake</td></tr>
@@ -79,8 +88,8 @@
   <p>Same content in Markdown: <a href="https://github.com/ZacharyGeurts/Grok16/wiki">github.com/ZacharyGeurts/Grok16/wiki</a></p>
 
   <h2>Repository</h2>
-  <p><a href="https://github.com/ZacharyGeurts/Grok16">github.com/ZacharyGeurts/Grok16</a> — tag <code>v16.0.0</code></p>
+  <p><a href="https://github.com/ZacharyGeurts/Grok16">github.com/ZacharyGeurts/Grok16</a> — tag <code>v16.1.0</code></p>
 
-  <footer>Grok16 @ 16.0.0 — GPLv3 — Copyright (C) 2026 Zachary Geurts</footer>
+  <footer>Grok16 @ 16.1.0 — GPLv3 — Copyright (C) 2026 Zachary Geurts</footer>
 </body>
 </html>

@@ -1,16 +1,18 @@
 # Grok16 Manual
 
-Programmer reference for Grok16 @ **16.0.0** — self-hosted `g16`/`g++16`, default `gnu++26`.
+Programmer reference for Grok16 @ **16.1.0** — unified `g16` (auto C/C++), default `gnu++26` / `gnu17`.
 
 - **Web:** https://zacharygeurts.github.io/Grok16/
 - **Repo:** https://github.com/ZacharyGeurts/Grok16
-- **Tag:** `v16.0.0`
+- **Tag:** `v16.1.0`
 
 ## Manuals
 
 | Page | Topic |
 |------|-------|
-| [Master Coder](Master-Coder) | Ordered index of all commands/functions + tooltips |
+| [Master Coder](Master-Coder) | Hub — all commands/functions |
+| [Master Coder C](Master-Coder-C) | C / gnu17 / g16-cc index |
+| [Master Coder C++](Master-Coder-Cxx) | C++ / gnu++26 / profiles index |
 | [Getting Started](Getting-Started) | Bootstrap, rebuild, verify, bench |
 | [Architecture](Architecture) | Forge, field rewrite, directories |
 | [Profiles](Profiles) | field_opt, ai, field_compute, vulkan_rtx |

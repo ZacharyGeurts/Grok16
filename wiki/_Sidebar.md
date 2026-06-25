@@ -1,6 +1,8 @@
 **[Home](Home)**
 
 - [Master Coder](Master-Coder)
+- [Master Coder C](Master-Coder-C)
+- [Master Coder C++](Master-Coder-Cxx)
 - [Getting Started](Getting-Started)
 - [Architecture](Architecture)
 - [Profiles](Profiles)

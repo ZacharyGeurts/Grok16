@@ -1,4 +1,4 @@
-"""Grok16 forge — G16 compiler build (g16 / g++16 @ 16.0.0). GPLv3."""
+"""Grok16 forge — G16 unified compiler @ 16.1.0. GPLv3."""
 from __future__ import annotations
 
 import json
@@ -12,12 +12,13 @@ from typing import Any
 from common import fail_result, ok_result
 from engine import ForgeContext, ForgeEngine, ForgeResult
 from grok16_lto import resolve_lto_flag
+from grok16_version import g16_pkgversion, g16_version, load_version
 
-G16_VERSION = "16.0.0"
+G16_VERSION = g16_version()
 G16_CC = "g16"
 G16_CXX = "g++16"
 GCC_REPO = os.environ.get("GROK16_GCC_REPO", "https://gcc.gnu.org/git/gcc.git")
-# G16 field rewrite: gcc-15 tree, BASE-VER 16.0.0, g16/g++16 binary names
+# G16 field rewrite: gcc-15 tree, BASE-VER 16.1.0, unified g16 + libexec backends
 GCC_BRANCH = os.environ.get("GROK16_GCC_BRANCH", "releases/gcc-15")
 FIELD_REWRITE = "gcc-15 → field 16.0.0 (BASE-VER + program-transform-name)"
 MANIFEST_NAME = "grok16-toolchain.json"
@@ -101,6 +102,14 @@ def g16_bin(ctx: ForgeContext, name: str) -> Path:
     return g16_prefix(ctx) / "bin" / name
 
 
+def g16_libexec(ctx: ForgeContext) -> Path:
+    return g16_prefix(ctx) / "libexec" / "grok16"
+
+
+def g16_backend(ctx: ForgeContext, lang: str) -> Path:
+    return g16_libexec(ctx) / ("g16-cxx" if lang == "cxx" else "g16-cc")
+
+
 def _is_real_compiler(bin_path: Path) -> bool:
     if not (bin_path.is_file() and os.access(bin_path, os.X_OK)):
         return False
@@ -112,7 +121,7 @@ def _is_real_compiler(bin_path: Path) -> bool:
 
 def _pkgversion(ctx: ForgeContext) -> str:
     override = os.environ.get("G16_PKGVERSION", "").strip()
-    return override or f"Grok16-{G16_VERSION}"
+    return override or g16_pkgversion()
 
 
 def patch_gcc_field_version(ctx: ForgeContext, engine: ForgeEngine) -> None:
@@ -126,7 +135,9 @@ def patch_gcc_field_version(ctx: ForgeContext, engine: ForgeEngine) -> None:
 
 
 def apply_grok16_patches(ctx: ForgeContext, engine: ForgeEngine) -> None:
-    patch = ctx.queen / "patches/gcc-base-ver-16.0.0.patch"
+    patch = ctx.queen / f"patches/gcc-base-ver-{G16_VERSION}.patch"
+    if not patch.is_file():
+        patch = ctx.queen / "patches/gcc-base-ver-16.0.0.patch"
     src = gcc_src(ctx)
     if not patch.is_file() or not (src / ".git").is_dir():
         return
@@ -149,9 +160,15 @@ def g16_status(ctx: ForgeContext) -> dict[str, Any]:
     gxx_ok = gxx.is_file() and os.access(gxx, os.X_OK)
     g16_ok = g16.is_file() and os.access(g16, os.X_OK)
     stamp = read_selfhost_stamp(ctx)
+    backend_cc = g16_backend(ctx, "cc")
+    backend_cxx = g16_backend(ctx, "cxx")
+    unified = backend_cc.is_file() and backend_cxx.is_file()
+    probe = g16 if g16_ok else gxx
+    ver_meta = load_version()
     return {
         "product": "Grok16",
         "g16_version": G16_VERSION,
+        "driver_mode": ver_meta.get("driver", "unified"),
         "field_rewrite": FIELD_REWRITE,
         "branch": GCC_BRANCH,
         "repo": GCC_REPO,
@@ -160,14 +177,17 @@ def g16_status(ctx: ForgeContext) -> dict[str, Any]:
         "prereqs_ready": check_gcc_prereqs(ctx),
         "build_dir": str(gcc_build_dir(ctx)),
         "prefix": str(g16_prefix(ctx)),
-        "engine_real": _is_real_compiler(gxx) if gxx_ok else False,
+        "engine_real": _is_real_compiler(g16) if g16_ok else False,
         "ready": gxx_ok and g16_ok,
+        "unified_driver": unified,
         "selfhosted": bool(stamp.get("selfhosted")),
-        "dumpversion": _run_version(gxx, "-dumpversion") if gxx_ok else "",
-        "version": _run_version(gxx, "--version").splitlines()[0] if gxx_ok else "",
+        "dumpversion": _run_version(probe, "-dumpversion") if probe.is_file() else "",
+        "version": _run_version(probe, "--version").splitlines()[0] if probe.is_file() else "",
         "paths": {
             "g16": str(g16) if g16_ok else "",
             "g++16": str(gxx) if gxx_ok else "",
+            "backend_cc": str(backend_cc) if backend_cc.is_file() else "",
+            "backend_cxx": str(backend_cxx) if backend_cxx.is_file() else "",
             "cmake": str(ctx.queen / "cmake" / CMAKE_FILE),
         },
     }
@@ -238,47 +258,108 @@ def write_manifest(ctx: ForgeContext) -> Path:
 
 
 def write_cmake_toolchain(ctx: ForgeContext) -> Path | None:
-    cc = g16_bin(ctx, G16_CC)
-    cxx = g16_bin(ctx, G16_CXX)
-    if not (cc.is_file() and cxx.is_file()):
+    driver = g16_bin(ctx, G16_CC)
+    if not driver.is_file():
         return None
     path = ctx.queen / "cmake" / CMAKE_FILE
     path.parent.mkdir(parents=True, exist_ok=True)
     prefix = g16_prefix(ctx)
+    cxx_std = load_version().get("cxx_std_default", "gnu++26")
+    c_std = load_version().get("c_std_default", "gnu17")
     path.write_text(
-        f'set(CMAKE_C_COMPILER "{cc}" CACHE FILEPATH "Grok16 G16 C compiler" FORCE)\n'
-        f'set(CMAKE_CXX_COMPILER "{cxx}" CACHE FILEPATH "Grok16 G16 C++ compiler" FORCE)\n'
+        f'set(CMAKE_C_COMPILER "{driver}" CACHE FILEPATH "Grok16 unified g16 (C mode)" FORCE)\n'
+        f'set(CMAKE_CXX_COMPILER "{driver}" CACHE FILEPATH "Grok16 unified g16 (C++ mode)" FORCE)\n'
         f'set(WRDT_G16_VERSION "{G16_VERSION}" CACHE STRING "G16 version" FORCE)\n'
-        f'set(GROK16_PREFIX "{prefix}" CACHE PATH "Grok16 install prefix" FORCE)\n',
+        f'set(GROK16_PREFIX "{prefix}" CACHE PATH "Grok16 install prefix" FORCE)\n'
+        f'set(GROK16_CXX_STD "{cxx_std}" CACHE STRING "Grok16 default C++ standard" FORCE)\n'
+        f'set(GROK16_C_STD "{c_std}" CACHE STRING "Grok16 default C standard" FORCE)\n',
         encoding="utf-8",
     )
     return path
 
 
+def install_unified_driver(ctx: ForgeContext, engine: ForgeEngine | None = None) -> bool:
+    """Relocate GCC backends to libexec and install unified g16 front door."""
+    prefix = g16_prefix(ctx)
+    bin_dir = prefix / "bin"
+    libexec = g16_libexec(ctx)
+    libexec.mkdir(parents=True, exist_ok=True)
+    marker = libexec / ".relocated"
+    cc_backend = g16_backend(ctx, "cc")
+    cxx_backend = g16_backend(ctx, "cxx")
+    g16 = bin_dir / G16_CC
+    gxx = bin_dir / G16_CXX
+
+    if not marker.is_file():
+        if g16.is_file() and _is_real_compiler(g16) and not cc_backend.is_file():
+            shutil.move(str(g16), str(cc_backend))
+        if gxx.is_file() and gxx.resolve() != g16.resolve() and _is_real_compiler(gxx) and not cxx_backend.is_file():
+            shutil.move(str(gxx), str(cxx_backend))
+        marker.write_text(f"relocated @ {G16_VERSION}\n", encoding="utf-8")
+        if engine:
+            engine.log(f"g16: relocated backends → {libexec}")
+
+    driver_dir = ctx.queen / "driver"
+    makefile = driver_dir / "Makefile"
+    if not makefile.is_file():
+        if engine:
+            engine.log("g16: driver/Makefile missing — skip unified install")
+        return cc_backend.is_file() and cxx_backend.is_file()
+
+    host_cc = shutil.which("gcc") or shutil.which("cc")
+    if not host_cc:
+        if engine:
+            engine.log("g16: host gcc missing — cannot build unified driver")
+        return False
+
+    if engine:
+        engine.log("g16: building unified driver")
+    rc = subprocess.call(
+        ["make", "-C", str(driver_dir), f"PREFIX={prefix}", "install"],
+        env={**os.environ, "CC": host_cc},
+    )
+    if rc != 0:
+        if engine:
+            engine.log("g16: unified driver build failed")
+        return False
+
+    gxx_link = bin_dir / G16_CXX
+    if gxx_link.exists() or gxx_link.is_symlink():
+        gxx_link.unlink()
+    gxx_link.symlink_to(G16_CC)
+    if engine:
+        engine.log(f"g16: unified driver @ {g16} (g++16 → g16)")
+    return True
+
+
 def verify_g16_install(ctx: ForgeContext, engine: ForgeEngine | None = None) -> bool:
+    install_unified_driver(ctx, engine)
     g16 = g16_bin(ctx, G16_CC)
     gxx = g16_bin(ctx, G16_CXX)
     if not (g16.is_file() and gxx.is_file()):
         if engine:
             engine.log("g16: missing g16/g++16 in prefix")
         return False
-    if not (_is_real_compiler(g16) and _is_real_compiler(gxx)):
+    if not (_is_real_compiler(g16) and (gxx.is_symlink() or _is_real_compiler(gxx))):
         if engine:
             engine.log("g16: refuse shell wrappers")
         return False
-    if _run_version(gxx, "-dumpversion") != G16_VERSION:
+    if _run_version(g16, "-dumpversion") != G16_VERSION:
         if engine:
             engine.log(f"g16: bad dumpversion (expected {G16_VERSION})")
         return False
     prefix = g16_prefix(ctx)
+    ver_meta = load_version()
     (prefix / "VERSION").write_text(
         f"GROK16={G16_VERSION}\nG16_FIELD_GCC={G16_VERSION}\n"
-        f"G16_CXX=g++16\nG16_CC=g16\nG16_PREFIX={prefix}\n"
+        f"G16_DRIVER=unified\nG16_CC=g16\nG16_CXX=g++16\nG16_PREFIX={prefix}\n"
+        f"G16_C_STD={ver_meta.get('c_std_default', 'gnu17')}\n"
+        f"G16_CXX_STD={ver_meta.get('cxx_std_default', 'gnu++26')}\n"
         f"PRODUCT=Grok16\nROOT={ctx.queen}\n",
         encoding="utf-8",
     )
     if engine:
-        engine.log(f"g16: verified {gxx} ({_run_version(gxx, '--version').splitlines()[0]})")
+        engine.log(f"g16: verified unified {g16} ({_run_version(g16, '--version').splitlines()[0]})")
     return True
 
 
@@ -352,8 +433,12 @@ def _gcc_configure_argv(ctx: ForgeContext, *, selfhost: bool) -> tuple[list[str]
 
 
 def _compiler_for_selfhost(ctx: ForgeContext, name: str) -> Path:
+    lang = "cxx" if name == G16_CXX else "cc"
+    backend = g16_backend(ctx, lang)
+    if backend.is_file() and _is_real_compiler(backend):
+        return backend
     p = g16_bin(ctx, name)
-    if p.is_file() and _is_real_compiler(p):
+    if p.is_file() and _is_real_compiler(p) and not p.is_symlink():
         return p
     host = shutil.which("g++" if name == G16_CXX else "gcc")
     if host:
@@ -442,7 +527,7 @@ def check_gcc_rebuild(_ctx: ForgeContext) -> bool:
 
 def run_gcc_rebuild(ctx: ForgeContext, engine: ForgeEngine) -> ForgeResult:
     mode = "fast incremental" if _fast_rebuild() else "full self-host"
-    engine.log(f"=== grok16:gcc_rebuild — {mode} @ 16.0.0 ===")
+    engine.log(f"=== grok16:gcc_rebuild — {mode} @ {G16_VERSION} ===")
     try:
         _compiler_for_selfhost(ctx, G16_CC)
         _compiler_for_selfhost(ctx, G16_CXX)

@@ -22,7 +22,8 @@ def main() -> int:
     doc = json.loads(path.read_text(encoding="utf-8"))
     prof = doc.get("profiles", {}).get(profile, {})
     defs = [f"-D{d}" for d in prof.get("definitions", [])]
-    if kind == "link":
+    c_std = prof.get("c_std") or doc.get("c_std_default", "gnu17")
+    if kind == "link" or kind == "c_link":
         print(" ".join(normalize_lto_flags(prof.get("link_flags", []))))
     elif kind == "defs":
         print(" ".join(defs))
@@ -31,6 +32,20 @@ def main() -> int:
         if not src:
             src = doc.get("profiles", {}).get("field_opt", {}).get("bench_source", "")
         print(src)
+    elif kind in ("c", "c_pgo_gen", "c_pgo_use"):
+        parts = list(prof.get("c_flags", [])) or [
+            f"-std={c_std}", "-O3", "-march=native", "-mtune=native",
+        ]
+        parts.extend(defs)
+        pgo = doc.get("pgo", {})
+        root_s = str(root)
+        if kind == "c_pgo_gen":
+            gen = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("generate_flags", [])]
+            parts.extend(gen)
+        elif kind == "c_pgo_use" or (_env_true("G16_ENABLE_PGO") and kind == "c"):
+            use = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("use_flags", [])]
+            parts.extend(use)
+        print(" ".join(parts))
     else:
         parts = prof.get("cxx_flags", []) + defs
         pgo = doc.get("pgo", {})

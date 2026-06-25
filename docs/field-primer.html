@@ -17,13 +17,13 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v=5"></script>
-  <link rel="stylesheet" href="manual.css?v=5" />
+  <script src="manual-theme.js?v=6"></script>
+  <link rel="stylesheet" href="manual.css?v=6" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
-      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.0.0</span></div>
+      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.1.0</span></div>
       <div class="nav-controls" aria-label="Display preferences">
         <div class="control-chip">
           <label class="control-label" for="g16-font-scale">Size</label>
@@ -48,6 +48,8 @@
     <div class="nav-links">
       <a href="index.html">Index</a>
       <a href="master-coder.html">Master Coder</a>
+      <a href="master-coder-c.html">Master Coder C</a>
+      <a href="master-coder-cxx.html">Master Coder C++</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="profiles.html">Profiles</a>
@@ -70,6 +72,9 @@
     <li>Run World_Redata <code>parity</code> before push.</li>
   </ol>
 
+  <h2 id="standard-c">C standard</h2>
+  <p>Default: <code>gnu17</code> (<code>G16_C_STD</code>). Compile with unified <code>g16</code> on <code>.c</code> sources — no separate C driver command.</p>
+
   <h2 id="standard">C++ standard</h2>
   <p>Default: <code>gnu++26</code> (<code>G16_CXX_STD</code>). World_Redata: <code>field_g16.hh</code> requires <code>__cplusplus >= 202400</code>.</p>
 
@@ -86,7 +91,7 @@
   <ul>
     <li>Use <code>-std=gnu++26 -fcontracts</code> where contracts are required.</li>
     <li>Bounded I/O: <code>core::read_file_bounded</code> (World_Redata pattern).</li>
-    <li>No fake g16 wrappers — gates check ELF + dumpversion 16.0.0.</li>
+    <li>No fake g16 wrappers — gates check ELF + dumpversion 16.1.0.</li>
   </ul>
 
   <h2>CMake example</h2>

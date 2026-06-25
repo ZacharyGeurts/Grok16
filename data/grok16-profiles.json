@@ -2,6 +2,7 @@
   "schema": "grok16-profiles/v2",
   "product": "Grok16",
   "cxx_std_default": "gnu++26",
+  "c_std_default": "gnu17",
   "release_profile": {
     "description": "Production Field build — LTO + PGO + field_opt flags",
     "env": {
@@ -26,6 +27,8 @@
     "field_opt": {
       "description": "Field-Opt — entropy/oracle, wave phase, FieldX86 emulation throughput",
       "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-mtune=native", "-ftree-vectorize", "-funroll-loops", "-fomit-frame-pointer"],
       "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
       "cxx_flags": [
         "-std=gnu++26",

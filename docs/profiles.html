@@ -17,13 +17,13 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v=5"></script>
-  <link rel="stylesheet" href="manual.css?v=5" />
+  <script src="manual-theme.js?v=6"></script>
+  <link rel="stylesheet" href="manual.css?v=6" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
-      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.0.0</span></div>
+      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.1.0</span></div>
       <div class="nav-controls" aria-label="Display preferences">
         <div class="control-chip">
           <label class="control-label" for="g16-font-scale">Size</label>
@@ -48,6 +48,8 @@
     <div class="nav-links">
       <a href="index.html">Index</a>
       <a href="master-coder.html">Master Coder</a>
+      <a href="master-coder-c.html">Master Coder C</a>
+      <a href="master-coder-cxx.html">Master Coder C++</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="profiles.html">Profiles</a>
@@ -89,7 +91,12 @@
   <pre><code>G16_BENCH_PROFILE=field_opt ./scripts/grok16-toolchain.sh bench
 G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
 
-  <h2>Flag emission</h2>
+  <h2 id="flags-c">C flag emission</h2>
+  <pre><code>python3 scripts/grok16-profile-flags.py field_opt c
+python3 scripts/grok16-profile-flags.py field_opt c_link
+python3 scripts/grok16-profile-flags.py field_opt c_pgo_gen</code></pre>
+
+  <h2>Flag emission (C++)</h2>
   <pre><code id="flags-cxx">python3 scripts/grok16-profile-flags.py field_opt cxx
 python3 scripts/grok16-profile-flags.py field_opt link
 python3 scripts/grok16-profile-flags.py field_opt source</code></pre>

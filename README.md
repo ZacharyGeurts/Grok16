@@ -1,12 +1,12 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-16.0.0-green)
-![Version](https://img.shields.io/badge/G16-16.0.0-blue)
+![Status](https://img.shields.io/badge/release-16.1.0-green)
+![Version](https://img.shields.io/badge/G16-16.1.0-blue)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-**Grok16** is a **self-hosted G16 field compiler** — real ELF `g16` / `g++16` @ **16.0.0**, **gnu++26**-capable, built via the Grok16 forge. Scripts and CMake integration ship in git; **no prebuilt binaries** (reproducible bootstrap from GPL GCC sources).
+**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.1.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. Scripts and CMake integration ship in git; **no prebuilt binaries** (reproducible bootstrap from GPL GCC sources).
 
 > **Grok16 @ 16.0.0** — sovereign G16 field compiler. Upstream tree is **gcc-15** with BASE-VER **16.0.0** (not upstream `releases/gcc-16`). See [PERFORMANCE.md](PERFORMANCE.md) for benchmark numbers.
 
@@ -14,7 +14,7 @@
 
 | Artifact | Role |
 |----------|------|
-| `g16` / `g++16` | C and C++ drivers (pkgversion `Grok16-16.0.0`) |
+| `g16` (unified) | Single driver — auto C/C++; backends in `libexec/grok16/` |
 | `grok16-toolchain.cmake` | CMake toolchain file |
 | `grok16-profile-*.cmake` | AI / Field / Vulkan-RTX build profiles |
 | `grok16-toolchain.sh` | bootstrap · rebuild · verify · bench · field-bench · profile · status |

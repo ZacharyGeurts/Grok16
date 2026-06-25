@@ -25,6 +25,9 @@
 /.grok16-forge.log
 /.grok16-state/
 
+# Built unified driver (source in driver/g16-unified.c)
+/driver/g16-unified
+
 # Example build dirs
 /examples/**/build/
 

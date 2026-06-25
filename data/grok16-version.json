@@ -1,0 +1,9 @@
+{
+  "g16_version": "16.1.0",
+  "pkgversion": "Grok16-16.1.0",
+  "tag": "v16.1.0",
+  "cxx_std_default": "gnu++26",
+  "c_std_default": "gnu17",
+  "driver": "unified",
+  "notes": "g16 auto-detects C vs C++; g++16 is a compat symlink to the same driver"
+}

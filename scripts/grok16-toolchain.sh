@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Grok16 — G16 field compiler @ 16.0.0 (real ELF g16/g++16, no wrappers)
+# Grok16 — G16 unified field compiler @ 16.1.0 (g16 auto-detects C/C++)
 # Copyright (C) 2026 Zachary Geurts
 # License: GNU General Public License v3 or later — see LICENSE
 # Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
@@ -10,8 +10,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/grok16-config.sh"
 
 BIN="$G16_PREFIX/bin"
-G16_VERSION="16.0.0"
+G16_VERSION="${G16_VERSION:-16.1.0}"
 FORGE="$GROK16_ROOT/forge/grok16-forge.py"
+G16_DRIVER="$BIN/g16"
 VERIFY_SRC="$GROK16_ROOT/examples/minimal-cmake-project/main.cpp"
 EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
@@ -22,7 +23,7 @@ Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|bench|field-bench|
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
   GROK16_GCC_SRC GROK16_GCC_BUILD GROK16_GCC_REPO GROK16_GCC_BRANCH
-  G16_PKGVERSION G16_CXX_STD G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
+  G16_PKGVERSION G16_CXX_STD G16_C_STD G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
   G16_FAST_REBUILD G16_FULL_REBUILD G16_RELEASE_PROFILE G16_FIELD_SPEED
   G16_ENABLE_LTO G16_ENABLE_PGO G16_PGO_GENERATE GROK16_USE_CCACHE
   G16_BENCH_PROFILE (field_opt|ai|field_compute|vulkan_rtx)
@@ -44,8 +45,11 @@ write_version_file() {
   cat >"$G16_PREFIX/VERSION" <<EOF
 GROK16=${G16_VERSION}
 G16_FIELD_GCC=${G16_VERSION}
-G16_CXX=g++16
+G16_DRIVER=unified
 G16_CC=g16
+G16_CXX=g++16
+G16_C_STD=${G16_C_STD:-gnu17}
+G16_CXX_STD=${G16_CXX_STD:-gnu++26}
 G16_PREFIX=${G16_PREFIX}
 PRODUCT=Grok16
 ROOT=${GROK16_ROOT}
@@ -55,19 +59,20 @@ EOF
 write_cmake_toolchain() {
   mkdir -p "$GROK16_ROOT/cmake"
   cat >"$GROK16_ROOT/cmake/grok16-toolchain.cmake" <<EOF
-set(CMAKE_C_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 G16 C compiler" FORCE)
-set(CMAKE_CXX_COMPILER "${G16_PREFIX}/bin/g++16" CACHE FILEPATH "Grok16 G16 C++ compiler" FORCE)
+set(CMAKE_C_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 unified g16 (C mode)" FORCE)
+set(CMAKE_CXX_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 unified g16 (C++ mode)" FORCE)
 set(WRDT_G16_VERSION "${G16_VERSION}" CACHE STRING "G16 version" FORCE)
 set(GROK16_PREFIX "${G16_PREFIX}" CACHE PATH "Grok16 install prefix" FORCE)
 set(GROK16_CXX_STD "${G16_CXX_STD:-gnu++26}" CACHE STRING "Grok16 default C++ standard" FORCE)
+set(GROK16_C_STD "${G16_C_STD:-gnu17}" CACHE STRING "Grok16 default C standard" FORCE)
 EOF
 }
 
 write_manifest() {
   mkdir -p "$GROK16_ROOT/data"
   local ver dv selfhosted_py
-  ver="$("$BIN/g++16" --version 2>/dev/null | head -1 || true)"
-  dv="$("$BIN/g++16" -dumpversion 2>/dev/null || true)"
+  ver="$("$G16_DRIVER" --version 2>/dev/null | head -1 || true)"
+  dv="$("$G16_DRIVER" -dumpversion 2>/dev/null || true)"
   if [[ -f "$G16_PREFIX/SELFHOST.json" ]]; then
     selfhosted_py="True"
   else
@@ -115,6 +120,9 @@ doc = {
     "paths": {
         "g16": "${G16_PREFIX}/bin/g16",
         "g++16": "${G16_PREFIX}/bin/g++16",
+        "backend_cc": "${G16_PREFIX}/libexec/grok16/g16-cc",
+        "backend_cxx": "${G16_PREFIX}/libexec/grok16/g16-cxx",
+        "driver_mode": "unified",
         "gcc_src": "${GROK16_GCC_SRC}",
         "gcc_build": "${GROK16_GCC_BUILD}",
         "cmake": "${GROK16_ROOT}/cmake/grok16-toolchain.cmake",
@@ -138,20 +146,23 @@ PY
 }
 
 cmd_install() {
-  if ! is_real_compiler "$BIN/g++16" || ! is_real_compiler "$BIN/g16"; then
-    echo "Grok16 binaries missing at $BIN — run: $0 rebuild" >&2
+  if ! is_real_compiler "$G16_DRIVER"; then
+    echo "Grok16 unified g16 missing at $G16_DRIVER — run: $0 rebuild" >&2
     exit 1
   fi
-  dv="$("$BIN/g++16" -dumpversion 2>/dev/null || true)"
+  dv="$("$G16_DRIVER" -dumpversion 2>/dev/null || true)"
   if [[ "$dv" != "$G16_VERSION" ]]; then
-    echo "g++16 reports $dv; expected $G16_VERSION — rebuild" >&2
+    echo "g16 reports $dv; expected $G16_VERSION — rebuild" >&2
     exit 1
+  fi
+  if [[ -x "$GROK16_ROOT/driver/Makefile" || -f "$GROK16_ROOT/driver/Makefile" ]]; then
+    make -C "$GROK16_ROOT/driver" "PREFIX=$G16_PREFIX" install >/dev/null 2>&1 || true
   fi
   write_version_file
   write_cmake_toolchain
   write_manifest
   echo "Grok16 prefix: $G16_PREFIX"
-  echo "g++16: $("$BIN/g++16" --version | head -1)"
+  echo "g16 (unified): $("$G16_DRIVER" --version | head -1)"
 }
 
 cmd_bootstrap() {
@@ -175,13 +186,13 @@ cmd_rebuild() {
 }
 
 grok16_ready() {
-  is_real_compiler "$BIN/g++16" && [[ "$("$BIN/g++16" -dumpversion)" == "$G16_VERSION" ]]
+  is_real_compiler "$G16_DRIVER" && [[ "$("$G16_DRIVER" -dumpversion)" == "$G16_VERSION" ]]
 }
 
 cmd_status() {
   if grok16_ready; then
-    echo "ready Grok16 g++16=$BIN/g++16"
-    "$BIN/g++16" --version | head -1
+    echo "ready Grok16 unified g16=$G16_DRIVER"
+    "$G16_DRIVER" --version | head -1
     exit 0
   fi
   echo "not ready — run: $0 bootstrap"
@@ -193,14 +204,22 @@ cmd_verify() {
     echo "not ready — run: $0 bootstrap" >&2
     exit 1
   fi
-  echo "ready Grok16 g++16=$BIN/g++16"
-  "$BIN/g++16" --version | head -1
-  local tmpdir obj
+  echo "ready Grok16 unified g16=$G16_DRIVER"
+  "$G16_DRIVER" --version | head -1
+  local tmpdir obj_c obj_cpp
   tmpdir="$(mktemp -d)"
   trap 'rm -rf "${tmpdir:-}"' EXIT
-  obj="$tmpdir/verify.o"
+  obj_c="$tmpdir/verify.o"
+  obj_cpp="$tmpdir/verify_cpp.o"
 
-  echo "verify: ${G16_CXX_STD} compile (driver + frontend)"
+  echo "verify: C ${G16_C_STD} via unified g16"
+  cat >"$tmpdir/verify.c" <<'EOF'
+int main(void) { return 0; }
+EOF
+  "$G16_DRIVER" -std="${G16_C_STD}" -c -o "$obj_c" "$tmpdir/verify.c"
+  echo "verify: C compile OK"
+
+  echo "verify: C++ ${G16_CXX_STD} via unified g16 (auto-detect .cpp)"
   cat >"$tmpdir/verify.cpp" <<'EOF'
 #if __cplusplus >= 202400L
 int main() { return 0; }
@@ -208,8 +227,8 @@ int main() { return 0; }
 int main() { return 1; }
 #endif
 EOF
-  "$BIN/g++16" -std="${G16_CXX_STD}" -c -o "$obj" "$tmpdir/verify.cpp"
-  echo "verify: compile OK"
+  "$G16_DRIVER" -std="${G16_CXX_STD}" -c -o "$obj_cpp" "$tmpdir/verify.cpp"
+  echo "verify: C++ compile OK"
 
   if [[ -f "$VERIFY_SRC" ]]; then
     echo "verify: example source present ($VERIFY_SRC)"
@@ -239,11 +258,14 @@ cmd_paths() {
     "$GROK16_ROOT" "$G16_PREFIX" "$GROK16_SG_ROOT" "$GROK16_QUEEN_ROOT"
   printf 'GROK16_GCC_SRC=%s\nGROK16_GCC_BUILD=%s\n' \
     "$GROK16_GCC_SRC" "$GROK16_GCC_BUILD"
-  printf 'G16_CC=%s/bin/g16\nG16_CXX=%s/bin/g++16\nCMAKE_TOOLCHAIN=%s/cmake/grok16-toolchain.cmake\n' \
-    "$G16_PREFIX" "$G16_PREFIX" "$GROK16_ROOT"
+  printf 'G16_DRIVER=%s/bin/g16\nG16_CC=%s/bin/g16\nG16_CXX=%s/bin/g++16\n' \
+    "$G16_PREFIX" "$G16_PREFIX" "$G16_PREFIX"
+  printf 'G16_BACKEND_CC=%s/libexec/grok16/g16-cc\nG16_BACKEND_CXX=%s/libexec/grok16/g16-cxx\n' \
+    "$G16_PREFIX" "$G16_PREFIX"
+  printf 'CMAKE_TOOLCHAIN=%s/cmake/grok16-toolchain.cmake\n' "$GROK16_ROOT"
   printf 'GROK16_GCC_REPO=%s\nGROK16_GCC_BRANCH=%s\nG16_PKGVERSION=%s\n' \
     "$GROK16_GCC_REPO" "$GROK16_GCC_BRANCH" "$G16_PKGVERSION"
-  printf 'G16_CXX_STD=%s\nGROK16_BUILD_JOBS=%s\n' "$G16_CXX_STD" "$GROK16_BUILD_JOBS"
+  printf 'G16_C_STD=%s\nG16_CXX_STD=%s\nGROK16_BUILD_JOBS=%s\n' "$G16_C_STD" "$G16_CXX_STD" "$GROK16_BUILD_JOBS"
   [[ -n ${G16_DISABLE_BOOTSTRAP:-} ]] && printf 'G16_DISABLE_BOOTSTRAP=%s\n' "$G16_DISABLE_BOOTSTRAP"
   [[ -n ${G16_FAST_REBUILD:-} ]] && printf 'G16_FAST_REBUILD=%s\n' "$G16_FAST_REBUILD"
   [[ -n ${G16_ENABLE_LTO:-} ]] && printf 'G16_ENABLE_LTO=%s\n' "$G16_ENABLE_LTO"
@@ -278,7 +300,7 @@ _bench_run_one() {
   local t0 t1 compile_ms run_ms bytes
   t0=$(date +%s%3N)
   # shellcheck disable=SC2086
-  "$BIN/g++16" $xflags $pflags $lflags -o "$out" "$src"
+  "$G16_DRIVER" $xflags $pflags $lflags -o "$out" "$src"
   t1=$(date +%s%3N)
   compile_ms=$((t1 - t0))
 
