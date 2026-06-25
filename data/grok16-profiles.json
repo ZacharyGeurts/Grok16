@@ -1,0 +1,74 @@
+{
+  "schema": "grok16-profiles/v1",
+  "product": "Grok16",
+  "cxx_std_default": "gnu++26",
+  "field_macros": {
+    "FIELD_ENTROPY_DISPATCH": "Queen/Hostess7 wave-dispatch entropy gate",
+    "FIELD_X86_DIE": "FieldX86 die layout (KILROY / CANVAS ABI)",
+    "GROK16_PROFILE_AI": "AI build profile active",
+    "GROK16_PROFILE_FIELD": "Field compute profile active",
+    "GROK16_PROFILE_VULKAN": "Vulkan/RTX-oriented CPU kernel profile"
+  },
+  "profiles": {
+    "ai": {
+      "description": "AI / NEXUS behavioral scoring — matrix-friendly, aggressive inlining",
+      "cxx_std": "gnu++26",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-mtune=native",
+        "-ffast-math",
+        "-funroll-loops",
+        "-finline-functions",
+        "-fomit-frame-pointer",
+        "-fno-semantic-interposition"
+      ],
+      "link_flags": ["-flto=thin"],
+      "definitions": ["GROK16_PROFILE_AI=1", "FIELD_ENTROPY_DISPATCH=1"]
+    },
+    "field_compute": {
+      "description": "Field compute / FieldX86 / CANVAS-style CPU kernels",
+      "cxx_std": "gnu++26",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-fopenmp-simd",
+        "-fvect-cost-model=unlimited",
+        "-fno-trapping-math"
+      ],
+      "link_flags": ["-fopenmp"],
+      "definitions": ["GROK16_PROFILE_FIELD=1", "FIELD_X86_DIE=1", "FIELD_ENTROPY_DISPATCH=1"]
+    },
+    "vulkan_rtx": {
+      "description": "AMOURANTHRTX-style RTX prep — SIMD vectorization, shader-adjacent CPU paths",
+      "cxx_std": "gnu++26",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-msse4.2",
+        "-mavx2",
+        "-mfma",
+        "-ffast-math",
+        "-funroll-loops"
+      ],
+      "link_flags": ["-flto=thin"],
+      "definitions": ["GROK16_PROFILE_VULKAN=1", "FIELD_X86_DIE=1"]
+    }
+  },
+  "pgo": {
+    "generate_flags": ["-fprofile-generate"],
+    "use_flags": ["-fprofile-use", "-fprofile-correction"],
+    "data_dir": "${GROK16_ROOT}/data/pgo"
+  },
+  "speedups": {
+    "parallel_jobs": "${GROK16_BUILD_JOBS}",
+    "fast_rebuild_env": "G16_FAST_REBUILD=1",
+    "disable_bootstrap_dev_default": "G16_DISABLE_BOOTSTRAP=1 with G16_FAST_REBUILD",
+    "lto_env": "G16_ENABLE_LTO=1",
+    "pgo_env": "G16_ENABLE_PGO=1",
+    "ccache_env": "GROK16_USE_CCACHE=1"
+  }
+}

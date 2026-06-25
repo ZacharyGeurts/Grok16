@@ -17,12 +17,14 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|bench|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
   GROK16_GCC_SRC GROK16_GCC_BUILD GROK16_GCC_REPO GROK16_GCC_BRANCH
-  G16_PKGVERSION G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
+  G16_PKGVERSION G16_CXX_STD G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
+  G16_FAST_REBUILD G16_ENABLE_LTO G16_ENABLE_PGO GROK16_USE_CCACHE
+  G16_BENCH_PROFILE (ai|field_compute|vulkan_rtx)
 EOF
   exit 2
 }
@@ -56,6 +58,7 @@ set(CMAKE_C_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 G16 C compil
 set(CMAKE_CXX_COMPILER "${G16_PREFIX}/bin/g++16" CACHE FILEPATH "Grok16 G16 C++ compiler" FORCE)
 set(WRDT_G16_VERSION "${G16_VERSION}" CACHE STRING "G16 version" FORCE)
 set(GROK16_PREFIX "${G16_PREFIX}" CACHE PATH "Grok16 install prefix" FORCE)
+set(GROK16_CXX_STD "${G16_CXX_STD:-gnu++26}" CACHE STRING "Grok16 default C++ standard" FORCE)
 EOF
 }
 
@@ -70,13 +73,25 @@ write_manifest() {
     selfhosted_py="False"
   fi
   python3 - <<PY
-import json
+import json, os
 from datetime import datetime, timezone
+from pathlib import Path
+root = Path("${GROK16_ROOT}")
+profiles_path = root / "data" / "grok16-profiles.json"
+profiles = {}
+if profiles_path.is_file():
+    try:
+        profiles = json.loads(profiles_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        pass
+def _flag(name):
+    return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")
 doc = {
     "product": "Grok16",
     "schema": "grok16-toolchain/v1",
     "updated": datetime.now(timezone.utc).isoformat(),
     "g16_version": "${G16_VERSION}",
+    "cxx_std_default": profiles.get("cxx_std_default", "${G16_CXX_STD:-gnu++26}"),
     "prefix": "${G16_PREFIX}",
     "root": "${GROK16_ROOT}",
     "sg_root": "${GROK16_SG_ROOT}",
@@ -86,18 +101,30 @@ doc = {
     "selfhosted": ${selfhosted_py},
     "dumpversion": "${dv}",
     "version": "${ver}",
+    "profiles": profiles.get("profiles", {}),
+    "ai": profiles.get("profiles", {}).get("ai", {}),
+    "speedups": {
+        "jobs": int("${GROK16_BUILD_JOBS}"),
+        "fast_rebuild": _flag("G16_FAST_REBUILD"),
+        "lto": _flag("G16_ENABLE_LTO"),
+        "pgo": _flag("G16_ENABLE_PGO"),
+        "ccache": _flag("GROK16_USE_CCACHE"),
+        "disable_bootstrap": _flag("G16_DISABLE_BOOTSTRAP") or _flag("G16_FAST_REBUILD"),
+    },
     "paths": {
         "g16": "${G16_PREFIX}/bin/g16",
         "g++16": "${G16_PREFIX}/bin/g++16",
         "gcc_src": "${GROK16_GCC_SRC}",
         "gcc_build": "${GROK16_GCC_BUILD}",
         "cmake": "${GROK16_ROOT}/cmake/grok16-toolchain.cmake",
+        "profiles_json": str(profiles_path),
         "version_file": "${G16_PREFIX}/VERSION",
         "selfhost_stamp": "${G16_PREFIX}/SELFHOST.json",
     },
     "usage": {
         "status": "${GROK16_ROOT}/scripts/grok16-toolchain.sh status",
         "verify": "${GROK16_ROOT}/scripts/grok16-toolchain.sh verify",
+        "bench": "${GROK16_ROOT}/scripts/grok16-toolchain.sh bench",
         "rebuild": "${GROK16_ROOT}/scripts/grok16-toolchain.sh rebuild",
         "paths": "${GROK16_ROOT}/scripts/grok16-toolchain.sh paths",
     },
@@ -137,7 +164,9 @@ cmd_bootstrap() {
 cmd_rebuild() {
   echo "Grok16 rebuild → prefix $G16_PREFIX (self-host gcc_rebuild)"
   [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
-  export G16_PREFIX G16_PKGVERSION GROK16_GCC_SRC GROK16_GCC_BUILD
+  export G16_PREFIX G16_PKGVERSION GROK16_GCC_SRC GROK16_GCC_BUILD GROK16_BUILD_JOBS
+  export G16_FAST_REBUILD G16_ENABLE_LTO G16_ENABLE_PGO GROK16_USE_CCACHE G16_DISABLE_BOOTSTRAP
+  echo "  jobs=$GROK16_BUILD_JOBS fast=$G16_FAST_REBUILD lto=$G16_ENABLE_LTO pgo=$G16_ENABLE_PGO ccache=$GROK16_USE_CCACHE"
   python3 "$FORGE" run gcc_rebuild || exit 1
   cmd_install
 }
@@ -168,15 +197,15 @@ cmd_verify() {
   trap 'rm -rf "${tmpdir:-}"' EXIT
   obj="$tmpdir/verify.o"
 
-  echo "verify: C++20 compile (driver + frontend)"
+  echo "verify: ${G16_CXX_STD} compile (driver + frontend)"
   cat >"$tmpdir/verify.cpp" <<'EOF'
-#if __cplusplus >= 202002L
+#if __cplusplus >= 202302L
 int main() { return 0; }
 #else
 int main() { return 1; }
 #endif
 EOF
-  "$BIN/g++16" -std=c++20 -c -o "$obj" "$tmpdir/verify.cpp"
+  "$BIN/g++16" -std="${G16_CXX_STD}" -c -o "$obj" "$tmpdir/verify.cpp"
   echo "verify: compile OK"
 
   if [[ -f "$VERIFY_SRC" ]]; then
@@ -211,15 +240,52 @@ cmd_paths() {
     "$G16_PREFIX" "$G16_PREFIX" "$GROK16_ROOT"
   printf 'GROK16_GCC_REPO=%s\nGROK16_GCC_BRANCH=%s\nG16_PKGVERSION=%s\n' \
     "$GROK16_GCC_REPO" "$GROK16_GCC_BRANCH" "$G16_PKGVERSION"
-  if [[ -n ${G16_DISABLE_BOOTSTRAP:-} ]]; then
-    printf 'G16_DISABLE_BOOTSTRAP=%s\n' "$G16_DISABLE_BOOTSTRAP"
-  fi
+  printf 'G16_CXX_STD=%s\nGROK16_BUILD_JOBS=%s\n' "$G16_CXX_STD" "$GROK16_BUILD_JOBS"
+  [[ -n ${G16_DISABLE_BOOTSTRAP:-} ]] && printf 'G16_DISABLE_BOOTSTRAP=%s\n' "$G16_DISABLE_BOOTSTRAP"
+  [[ -n ${G16_FAST_REBUILD:-} ]] && printf 'G16_FAST_REBUILD=%s\n' "$G16_FAST_REBUILD"
+  [[ -n ${G16_ENABLE_LTO:-} ]] && printf 'G16_ENABLE_LTO=%s\n' "$G16_ENABLE_LTO"
+  [[ -n ${G16_ENABLE_PGO:-} ]] && printf 'G16_ENABLE_PGO=%s\n' "$G16_ENABLE_PGO"
 }
 
 cmd_config() {
   cmd_paths
   echo "---"
   echo "config template: $GROK16_ROOT/data/grok16-config.json"
+}
+
+cmd_bench() {
+  if ! grok16_ready; then
+    echo "not ready — run: $0 bootstrap" >&2
+    exit 1
+  fi
+  local profile="${G16_BENCH_PROFILE:-ai}"
+  local src="$GROK16_ROOT/examples/ai-matrix-bench/matrix_bench.cpp"
+  local outdir="$GROK16_ROOT/data/bench"
+  local out="$outdir/grok16_matrix_bench"
+  local pflags lflags xflags
+  mkdir -p "$outdir"
+  chmod +x "$GROK16_SCRIPTS/grok16-profile-flags.py" 2>/dev/null || true
+  pflags="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" python3 "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" cxx || echo "-std=gnu++26 -O3")"
+  lflags="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" python3 "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" link || true)"
+  xflags="$(grok16_driver_extra_flags)"
+
+  echo "bench: profile=$profile std=${G16_CXX_STD}"
+  local t0 t1 compile_ms
+  t0=$(date +%s%3N)
+  # shellcheck disable=SC2086
+  "$BIN/g++16" $xflags $pflags $lflags -o "$out" "$src"
+  t1=$(date +%s%3N)
+  compile_ms=$((t1 - t0))
+
+  t0=$(date +%s%3N)
+  "$out"
+  t1=$(date +%s%3N)
+  local run_ms=$((t1 - t0))
+  local bytes
+  bytes=$(stat -c%s "$out" 2>/dev/null || stat -f%z "$out")
+
+  echo "bench: compile_ms=$compile_ms run_ms=$run_ms binary_bytes=$bytes"
+  echo "bench: PASS"
 }
 
 cmd_consolidate() {
@@ -233,6 +299,7 @@ case "${1:-}" in
   consolidate) cmd_consolidate ;;
   status) cmd_status ;;
   verify) cmd_verify ;;
+  bench) cmd_bench ;;
   paths) cmd_paths ;;
   config) cmd_config ;;
   manifest) write_cmake_toolchain; write_manifest ;;

@@ -11,6 +11,7 @@ from typing import Any
 
 from common import fail_result, ok_result
 from engine import ForgeContext, ForgeEngine, ForgeResult
+from grok16_lto import resolve_lto_flag
 
 G16_VERSION = "16.0.0"
 G16_CC = "g16"
@@ -22,6 +23,47 @@ FIELD_REWRITE = "gcc-15 → field 16.0.0 (BASE-VER + program-transform-name)"
 MANIFEST_NAME = "grok16-toolchain.json"
 CMAKE_FILE = "grok16-toolchain.cmake"
 G16_PROGRAM_TRANSFORM = "s/^gcc$/g16/; s/^g++$/g++16/; s/^gcc-/g16-/"
+
+
+def _env_true(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _fast_rebuild() -> bool:
+    return _env_true("G16_FAST_REBUILD")
+
+
+def _make_env(ctx: ForgeContext, *, selfhost: bool) -> dict[str, str]:
+    env = _gcc_configure_env(ctx, selfhost=selfhost)
+    env["MAKEFLAGS"] = f"-j{ctx.jobs}"
+    if _use_ccache():
+        for key in ("CC", "CXX"):
+            if key in env and not str(env[key]).startswith("ccache "):
+                env[key] = f"ccache {env[key]}"
+    if _env_true("G16_ENABLE_LTO"):
+        extra = resolve_lto_flag()
+        if not extra:
+            extra = "-flto"
+        env["CFLAGS"] = f"{env.get('CFLAGS', '')} {extra}".strip()
+        env["CXXFLAGS"] = f"{env.get('CXXFLAGS', '')} {extra}".strip()
+        env["LDFLAGS"] = f"{env.get('LDFLAGS', '')} {extra}".strip()
+    return env
+
+
+def _use_ccache() -> bool:
+    return _env_true("GROK16_USE_CCACHE") and shutil.which("ccache") is not None
+
+
+def _append_configure_speedups(argv: list[str]) -> str:
+    notes: list[str] = []
+    if _env_true("G16_ENABLE_LTO"):
+        argv.append("--enable-lto")
+        notes.append("thin-lto")
+    if _fast_rebuild() or _env_true("G16_DISABLE_BOOTSTRAP"):
+        if "--disable-bootstrap" not in argv:
+            argv.append("--disable-bootstrap")
+            notes.append("bootstrap-off")
+    return ", ".join(notes) if notes else ""
 
 
 def _ts() -> str:
@@ -152,12 +194,34 @@ def write_selfhost_stamp(ctx: ForgeContext, *, bootstrap: bool) -> Path:
     return path
 
 
+def _load_profiles() -> dict[str, Any]:
+    path = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1])) / "data" / "grok16-profiles.json"
+    if not path.is_file():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
 def write_manifest(ctx: ForgeContext) -> Path:
+    profiles = _load_profiles()
     doc = {
         "product": "Grok16",
         "schema": "grok16-toolchain/v1",
         "updated": _ts(),
         **g16_status(ctx),
+        "cxx_std_default": profiles.get("cxx_std_default", "gnu++26"),
+        "ai": profiles.get("profiles", {}).get("ai", {}),
+        "profiles": profiles.get("profiles", {}),
+        "speedups": {
+            "jobs": ctx.jobs,
+            "fast_rebuild": _fast_rebuild(),
+            "lto": _env_true("G16_ENABLE_LTO"),
+            "pgo": _env_true("G16_ENABLE_PGO"),
+            "ccache": _use_ccache(),
+            "disable_bootstrap": _fast_rebuild() or _env_true("G16_DISABLE_BOOTSTRAP"),
+        },
     }
     out = ctx.queen / "data" / MANIFEST_NAME
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -265,7 +329,7 @@ def _gcc_configure_argv(ctx: ForgeContext, *, selfhost: bool) -> tuple[list[str]
         f"--program-transform-name={G16_PROGRAM_TRANSFORM}",
     ]
     if selfhost:
-        if os.environ.get("G16_DISABLE_BOOTSTRAP", "").strip() in ("1", "true", "yes"):
+        if _fast_rebuild() or _env_true("G16_DISABLE_BOOTSTRAP"):
             argv.append("--disable-bootstrap")
             note = "bootstrap disabled"
         else:
@@ -273,6 +337,9 @@ def _gcc_configure_argv(ctx: ForgeContext, *, selfhost: bool) -> tuple[list[str]
     else:
         argv.append("--disable-bootstrap")
         note = "host gcc build"
+    speed = _append_configure_speedups(argv)
+    if speed:
+        note = f"{note}; {speed}"
     return argv, note
 
 
@@ -349,7 +416,8 @@ def run_gcc_build(ctx: ForgeContext, engine: ForgeEngine) -> ForgeResult:
     bdir = gcc_build_dir(ctx)
     if not (bdir / "Makefile").is_file():
         return fail_result(engine, "gcc_build", "run gcc_configure first")
-    if engine.run_stream(["make", f"-j{ctx.jobs}"], cwd=bdir, timeout=None) != 0:
+    menv = _make_env(ctx, selfhost=False)
+    if engine.run_stream(["make", f"-j{ctx.jobs}"], cwd=bdir, env=menv, timeout=None) != 0:
         return fail_result(engine, "gcc_build", "make failed")
     if engine.run_stream(["make", "install"], cwd=bdir, timeout=None) != 0:
         return fail_result(engine, "gcc_build", "install failed")
@@ -365,19 +433,25 @@ def check_gcc_rebuild(_ctx: ForgeContext) -> bool:
 
 
 def run_gcc_rebuild(ctx: ForgeContext, engine: ForgeEngine) -> ForgeResult:
-    engine.log("=== grok16:gcc_rebuild — self-host @ 16.0.0 ===")
+    mode = "fast incremental" if _fast_rebuild() else "full self-host"
+    engine.log(f"=== grok16:gcc_rebuild — {mode} @ 16.0.0 ===")
     try:
         _compiler_for_selfhost(ctx, G16_CC)
         _compiler_for_selfhost(ctx, G16_CXX)
     except RuntimeError as exc:
         return fail_result(engine, "gcc_rebuild", str(exc))
-    bootstrap = os.environ.get("G16_DISABLE_BOOTSTRAP", "").strip() not in ("1", "true", "yes")
-    build_env = _gcc_configure_env(ctx, selfhost=True)
-    for run_fn in (run_gcc_distclean, run_gcc_configure_selfhost):
-        r = run_fn(ctx, engine)
-        if not r.ok:
-            return fail_result(engine, "gcc_rebuild", r.message)
+    bootstrap = not (_fast_rebuild() or _env_true("G16_DISABLE_BOOTSTRAP"))
+    build_env = _make_env(ctx, selfhost=True)
     bdir = gcc_build_dir(ctx)
+
+    if _fast_rebuild() and (bdir / "Makefile").is_file():
+        engine.log("gcc_rebuild — G16_FAST_REBUILD: skip distclean, incremental make -j")
+    else:
+        for run_fn in (run_gcc_distclean, run_gcc_configure_selfhost):
+            r = run_fn(ctx, engine)
+            if not r.ok:
+                return fail_result(engine, "gcc_rebuild", r.message)
+
     target = "bootstrap" if bootstrap else "all"
     if engine.run_stream(["make", target, f"-j{ctx.jobs}"], cwd=bdir, env=build_env, timeout=None) != 0:
         return fail_result(engine, "gcc_rebuild", f"make {target} failed")

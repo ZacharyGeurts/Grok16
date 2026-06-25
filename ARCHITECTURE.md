@@ -2,6 +2,8 @@
 
 Grok16 is a **self-hosted G16 field compiler distribution**: real ELF `g16` / `g++16` drivers at version **16.0.0**, built from upstream **GCC `releases/gcc-15`** with a documented field rewrite. This repository ships **scripts, forge, patches, and CMake metadata** — not prebuilt binaries (GPL source is fetched and built locally).
 
+Default consumer standard is **gnu++26** (`G16_CXX_STD`).
+
 ## Field rewrite vs stock GCC
 
 | Aspect | Stock GCC 15 | Grok16 G16 field build |
@@ -40,20 +42,57 @@ flowchart LR
 
 **Bootstrap** (`grok16-toolchain.sh bootstrap`) runs the full host pipeline via `forge/grok16-forge.py run gcc`.
 
-**Rebuild** (`grok16-toolchain.sh rebuild`) distcleans, reconfigures with `g16`/`g++16` as CC/CXX, runs `make bootstrap` (or `make all` when `G16_DISABLE_BOOTSTRAP=1`), installs, and writes `SELFHOST.json`.
+**Rebuild** (`grok16-toolchain.sh rebuild`) distcleans (unless fast mode), reconfigures with `g16`/`g++16` as CC/CXX, runs `make bootstrap` (or `make all` when `G16_DISABLE_BOOTSTRAP=1`), installs, and writes `SELFHOST.json`.
+
+## Speedups (forge + scripts)
+
+Queen forge integration and `forge/compiler_tools.py` share speed controls:
+
+| Env var | Effect |
+|---------|--------|
+| `GROK16_BUILD_JOBS` | `MAKEFLAGS=-jN` (default `nproc`) |
+| `G16_FAST_REBUILD=1` | Skip `distclean`; incremental `make`; auto `G16_DISABLE_BOOTSTRAP=1` |
+| `G16_DISABLE_BOOTSTRAP=1` | `make all` instead of 3-stage bootstrap |
+| `G16_ENABLE_LTO=1` | `--enable-lto` at configure; LTO flags on make (thin when g++16 supports it) |
+| `G16_ENABLE_PGO=1` | Profile-generate/use flags from `data/grok16-profiles.json` |
+| `GROK16_USE_CCACHE=1` | Prefix CC/CXX with `ccache` when installed |
+
+`forge/grok16_lto.py` probes the installed `g++16` and picks `-flto=thin` or `-flto` for profile link flags and rebuild make env.
+
+**Bench** (`grok16-toolchain.sh bench`) compiles `examples/ai-matrix-bench` with profile flags from `scripts/grok16-profile-flags.py` and reports compile time, run time, and binary size to `data/bench/` (gitignored).
+
+## AI / gnu++26 profiles
+
+`data/grok16-profiles.json` defines three consumer profiles:
+
+| Profile | Focus |
+|---------|--------|
+| `ai` | Matrix-friendly `-O3`, unrolling, inlining; `GROK16_PROFILE_AI`, `FIELD_ENTROPY_DISPATCH` |
+| `field_compute` | OpenMP SIMD, vector cost model; `FIELD_X86_DIE`, CANVAS-style kernels |
+| `vulkan_rtx` | AVX2/FMA, AMOURANTHRTX-style CPU prep |
+
+CMake wrappers: `cmake/grok16-profile-{ai,field,vulkan}.cmake` — include via `-DCMAKE_PROJECT_INCLUDE=...` after `grok16-toolchain.cmake`.
+
+Examples:
+
+- `examples/ai-matrix-bench/` — bench source
+- `examples/field-canvas-kernel/` — entropy/wave dispatch kernel
+- `examples/minimal-cmake-project/` — smoke consumer
 
 ## Directory roles
 
 | Path | Role |
 |------|------|
-| `forge/` | Python forge — `compiler_tools.py`, `grok16-forge.py` |
+| `forge/` | Python forge — `compiler_tools.py`, `grok16-forge.py`, `grok16_lto.py` |
 | `vendor/gcc/` | Upstream clone (local, ~1.6G, gitignored) |
 | `build/gcc/` | Configure/make tree (local, ~4G, gitignored) |
 | `bin/` `lib/` `libexec/` | Install prefix (`G16_PREFIX`, gitignored) |
-| `cmake/grok16-toolchain.cmake` | Generated CMake toolchain file |
-| `data/grok16-toolchain.json` | Machine-readable status manifest |
+| `cmake/grok16-toolchain.cmake` | Generated CMake toolchain file (local) |
+| `cmake/grok16-profile-*.cmake` | AI / Field / RTX profile fragments (in git) |
+| `data/grok16-toolchain.json` | Machine-readable status manifest (generated) |
+| `data/grok16-profiles.json` | Profile and PGO flag definitions |
 | `patches/` | Documented field deltas |
-| `examples/` | Minimal CMake consumer |
+| `examples/` | CMake consumers and benchmarks |
 
 ## Configuration
 
@@ -70,7 +109,9 @@ All paths are **environment-driven** (no hardcoded Desktop layout). See `data/gr
 | `GROK16_GCC_REPO` | `https://gcc.gnu.org/git/gcc.git` |
 | `GROK16_GCC_BRANCH` | `releases/gcc-15` |
 | `G16_PKGVERSION` | `Grok16-16.0.0` |
+| `G16_CXX_STD` | `gnu++26` |
 | `G16_DISABLE_BOOTSTRAP` | unset → bootstrap on rebuild |
+| `G16_FAST_REBUILD` | unset; `1` → dev fast path |
 | `GROK16_BUILD_JOBS` | `nproc` |
 
 `scripts/grok16-config.sh` resolves these for shell entry points; `ForgeContext.from_env()` reads `GROK16_ROOT` and job count for Python.
@@ -83,7 +124,9 @@ After rebuild, `G16_PREFIX/SELFHOST.json` records:
 - `bootstrap` flag (whether 3-stage bootstrap ran)
 - Paths to `g16` / `g++16` and pkgversion
 
-`./scripts/grok16-toolchain.sh verify` checks driver version, compiles the C++20 example (`-c`), and optionally builds `examples/minimal-cmake-project` when CMake is available.
+`./scripts/grok16-toolchain.sh verify` checks driver version, compiles a gnu++26 probe (`-c`), and optionally builds `examples/minimal-cmake-project` when CMake is available.
+
+`./scripts/grok16-toolchain.sh bench` exercises AI profile flags end-to-end (compile + run).
 
 ## Queen and consolidate
 
@@ -97,9 +140,9 @@ Grok16 is the **L5 toolchain layer** in the World_Redata methodology (assembly v
 
 - **World_Redata L2** — C++ engine built with `g++16` via `build-cpp.sh` and `field_g16.hh` contracts.
 - **World_Redata gates** — `security`, `asm`, and `parity` assume a real G16 @ 16.0.0 (no bash wrappers).
-- **Queen forge** — `compiler_probe` writes `g16-toolchain.json`; Grok16 forge is the standalone equivalent.
+- **Queen forge** — `compiler_probe` writes `g16-toolchain.json`; Grok16 forge is the standalone equivalent with cache/LTO/PGO hooks.
 - **Hostess7 / ZAC / redata** — lossless segments and plates are format layers (L0–L1); Grok16 compiles the native L2 engine that roundtrips those bytes.
-- **Field_Primer** — treat Grok16 as the sovereign C/C++ build requirement: bootstrap once, verify, then point CMake at `grok16-toolchain.cmake`.
+- **Field_Primer** — treat Grok16 as the sovereign C/C++ build requirement: bootstrap once, verify, bench, then point CMake at `grok16-toolchain.cmake` and optional AI profiles.
 
 Set `G16_PREFIX` (or symlink Queen prefix) so downstream manifests resolve the same ELF drivers.
 

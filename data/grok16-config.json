@@ -13,9 +13,15 @@
     "gcc_repo": "${GROK16_GCC_REPO}",
     "gcc_branch": "${GROK16_GCC_BRANCH}",
     "pkgversion": "${G16_PKGVERSION}",
+    "cxx_std": "${G16_CXX_STD}",
     "disable_bootstrap": "${G16_DISABLE_BOOTSTRAP}",
+    "fast_rebuild": "${G16_FAST_REBUILD}",
+    "enable_lto": "${G16_ENABLE_LTO}",
+    "enable_pgo": "${G16_ENABLE_PGO}",
+    "use_ccache": "${GROK16_USE_CCACHE}",
     "build_jobs": "${GROK16_BUILD_JOBS}"
   },
+  "profiles_file": "data/grok16-profiles.json",
   "defaults_when_unset": {
     "GROK16_ROOT": "directory containing this repo (auto-detected from scripts/)",
     "G16_PREFIX": "same as GROK16_ROOT",
@@ -26,7 +32,13 @@
     "GROK16_GCC_REPO": "https://gcc.gnu.org/git/gcc.git",
     "GROK16_GCC_BRANCH": "releases/gcc-15",
     "G16_PKGVERSION": "Grok16-16.0.0",
+    "G16_CXX_STD": "gnu++26",
     "G16_DISABLE_BOOTSTRAP": "unset (bootstrap enabled on rebuild)",
-    "GROK16_BUILD_JOBS": "nproc"
+    "G16_FAST_REBUILD": "1 → skip distclean, incremental make, auto G16_DISABLE_BOOTSTRAP=1",
+    "G16_ENABLE_LTO": "1 → --enable-lto + resolved -flto/-flto=thin on make",
+    "G16_ENABLE_PGO": "1 → profile flags for bench/consumer builds",
+    "GROK16_USE_CCACHE": "1 → wrap CC/CXX with ccache when installed",
+    "GROK16_BUILD_JOBS": "nproc",
+    "G16_BENCH_PROFILE": "ai | field_compute | vulkan_rtx"
   }
 }

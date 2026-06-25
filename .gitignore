@@ -19,6 +19,8 @@
 /SELFHOST.json
 /cmake/grok16-toolchain.cmake
 /data/grok16-toolchain.json
+/data/bench/
+/data/pgo/
 /data/rebuild.log
 /.grok16-forge.log
 /.grok16-state/
