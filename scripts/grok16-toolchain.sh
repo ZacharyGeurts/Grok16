@@ -12,7 +12,7 @@ FORGE="$GROK16/forge/grok16-forge.py"
 export GROK16_ROOT="$GROK16"
 
 usage() {
-  echo "Usage: $0 install|bootstrap|rebuild|status|paths|manifest" >&2
+  echo "Usage: $0 install|bootstrap|rebuild|consolidate|status|paths|manifest" >&2
   exit 2
 }
 
@@ -142,10 +142,15 @@ cmd_paths() {
     "$GROK16" "$G16_PREFIX" "$G16_PREFIX" "$G16_PREFIX" "$GROK16"
 }
 
+cmd_consolidate() {
+  exec "$GROK16/scripts/consolidate.sh"
+}
+
 case "${1:-}" in
   install) cmd_install ;;
   bootstrap) cmd_bootstrap ;;
   rebuild) cmd_rebuild ;;
+  consolidate) cmd_consolidate ;;
   status) cmd_status ;;
   paths) cmd_paths ;;
   manifest) write_cmake_toolchain; write_manifest ;;

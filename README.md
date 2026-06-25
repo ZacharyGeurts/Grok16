@@ -3,107 +3,88 @@
 ![Status](https://img.shields.io/badge/status-beta-orange)
 ![Version](https://img.shields.io/badge/G16-16.0.0-blue)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
-![Compiler](https://img.shields.io/badge/binaries-g16%20%2F%20g++16-lightgrey)
+![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 
-**Grok16** is a self-hosted **G16 field compiler** distribution — real ELF `g16` / `g++16` binaries at **16.0.0**, not shell wrappers.
+**Grok16** is the **whole G16 field rewrite** — one folder on your Desktop under `SG/Grok16`:
 
-> **Beta** — toolchain layout, forge integration, and install paths may change before a stable 1.0 release. Build from source via Queen forge; prebuilt binaries are not published in this repository.
+- **`vendor/gcc`** — cloned `releases/gcc-15`, field `BASE-VER` **16.0.0**
+- **`build/gcc`** — configured GCC build tree
+- **`bin/g16` `bin/g++16`** — installed ELF compilers (pkgversion `Grok16-16.0.0`)
+- **`forge/`** — build orchestrator (no Queen dependency)
+- **`patches/`** — documented field deltas
 
-## What you get
+> **Beta** — layout and forge APIs may change before 1.0. This is **not** upstream `releases/gcc-16`; it is a **gcc-15 field rewrite** branded G16 @ 16.0.0.
 
-| Tool | Role |
-|------|------|
-| `g16` | C compiler (GCC 16 field build) |
-| `g++16` | C++ compiler (`gnu++26`) |
-| `grok16-toolchain.cmake` | CMake toolchain file |
-| `grok16-toolchain.sh` | install · rebuild · status · paths |
+## Field rewrite (what G16 means here)
 
-Pkgversion string: `Grok16-16.0.0`.
+| Layer | Value |
+|-------|--------|
+| Upstream clone | `releases/gcc-15` |
+| Field `gcc/BASE-VER` | `16.0.0` (was `15.3.1`) |
+| Binary names | `g16`, `g++16` via `program-transform-name` |
+| Pkgversion | `Grok16-16.0.0` |
+| Install prefix | `Grok16/` (`G16_PREFIX`) |
 
-## Source in this repo
+See `data/gcc-source.json` and `patches/gcc-base-ver-16.0.0.patch`.
 
-| Path | What |
-|------|------|
-| `forge/grok16-forge.py` | Build orchestrator (fetch → configure → install) |
-| `forge/` | Engine + `compiler_tools.py` (Grok16 field configure) |
-| `patches/` | Documented GCC deltas (`gcc/BASE-VER` → 16.0.0) |
-| `scripts/grok16-toolchain.sh` | Human/CI entry: bootstrap · rebuild · status |
+## Whole folder layout
 
-**Not in git:** `vendor/gcc` (~1.6 GB upstream clone) and installed `bin/`/`lib/` — produced locally.
+```
+SG/Grok16/
+  vendor/gcc/           # gcc-15 clone + field BASE-VER (local, ~1.6G)
+  build/gcc/            # make tree (local, ~4G)
+  bin/ lib/ libexec/ …  # installed compiler prefix
+  forge/                # grok16-forge.py + compiler_tools
+  scripts/              # grok16-toolchain.sh, consolidate.sh
+  patches/              # field rewrite patches
+  data/gcc-source.json  # source manifest (in git)
+```
 
-## Quick start
+**GitHub** ships `forge/`, `scripts/`, `patches/`, docs — not `vendor/` or `bin/` (too large; GPL source fetched/built locally).
+
+## Quick start (fresh clone from GitHub)
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
-
 export G16_PREFIX="$(pwd)"
 export G16_PKGVERSION=Grok16-16.0.0
 
-# First time: clone GCC + host build + install into repo root
-./scripts/grok16-toolchain.sh bootstrap
+./scripts/grok16-toolchain.sh bootstrap   # gcc_fetch gcc-15 + host build + install
+./scripts/grok16-toolchain.sh status
+```
 
-# Later: self-host rebuild with existing g16/g++16 (or host gcc)
-export G16_DISABLE_BOOTSTRAP=1   # optional faster single-pass
+## SG desktop (already have Queen gcc-15 clone)
+
+If gcc lived under `NewLatest/Queen/vendor/gcc`, consolidate into Grok16:
+
+```bash
+chmod +x scripts/consolidate.sh
+./scripts/consolidate.sh
+```
+
+Then rebuild/self-host:
+
+```bash
+export G16_DISABLE_BOOTSTRAP=1   # optional faster pass
 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh status
 ```
 
-Export paths:
+## Commands
 
 ```bash
-eval "$(./scripts/grok16-toolchain.sh paths)"
-g++16 --version
+./scripts/grok16-toolchain.sh bootstrap   # first-time: fetch gcc-15 + build
+./scripts/grok16-toolchain.sh rebuild     # self-host with g16/g++16
+./scripts/grok16-toolchain.sh status
+./scripts/grok16-toolchain.sh paths
+python3 forge/grok16-forge.py run gcc_fetch
 ```
-
-CMake:
-
-```bash
-cmake -DCMAKE_TOOLCHAIN_FILE="$(pwd)/cmake/grok16-toolchain.cmake" ...
-```
-
-## Layout (after build)
-
-```
-Grok16/
-  bin/g16  bin/g++16      # installed by forge (gitignored)
-  lib/ libexec/ share/    # installed by forge (gitignored)
-  scripts/grok16-toolchain.sh
-  cmake/grok16-toolchain.cmake
-  data/grok16-toolchain.json
-  VERSION  SELFHOST.json
-```
-
-Compiler binaries are produced locally by **grok16-forge** (`forge/grok16-forge.py`).
-
-## Requirements
-
-- Linux x86_64
-- `git`, `make`, `python3`, host `gcc`/`g++` (for first bootstrap)
-- Network for `gcc_fetch` (clone https://gcc.gnu.org/git/gcc.git)
-- ~2 GB disk for `vendor/gcc` + build tree
-
-## Beta limitations
-
-- No full 3-stage bootstrap by default (`G16_DISABLE_BOOTSTRAP=1` for dev rebuilds)
-- Install prefix assumed to be the repo root (`G16_PREFIX`)
-- Upstream GCC must be fetched locally (`vendor/gcc` not committed)
-- No prebuilt binary releases on GitHub yet
 
 ## License
 
-**GNU General Public License v3** — see [LICENSE](LICENSE).
-
-Grok16 scripts and metadata: Copyright (C) 2026 Zachary Geurts, licensed under GPLv3.
-
-Compiler binaries produced from [GCC](https://gcc.gnu.org/) are **Copyright (C) Free
-Software Foundation, Inc.** and GCC contributors, also under GPLv3 (runtime
-libraries may use the GCC Runtime Library Exception where applicable).
+**GNU General Public License v3** — see [LICENSE](LICENSE). GCC: Copyright (C) Free Software Foundation, Inc. Grok16 scripts: Copyright (C) 2026 Zachary Geurts.
 
 ## Credits
 
-Full attribution: [CREDITS.md](CREDITS.md).
-
-- [GNU Compiler Collection](https://gcc.gnu.org/) — Free Software Foundation, Inc. and contributors
-- [Free Software Foundation](https://www.fsf.org/) — GCC, GPL, and free software infrastructure
-- Zachary Geurts — Grok16 beta packaging and toolchain scripts
+[CREDITS.md](CREDITS.md) — FSF, GCC contributors, Grok16 maintainers.

@@ -8,7 +8,7 @@ unless a file states otherwise.
 
 - **Project:** [GNU Compiler Collection](https://gcc.gnu.org/)
 - **Source repository:** https://gcc.gnu.org/git/gcc.git
-- **Branch used:** `releases/gcc-16`
+- **Branch used:** `releases/gcc-15` (field rewrite → G16 @ 16.0.0)
 - **Copyright:** Free Software Foundation, Inc. and GCC contributors
 - **License:** GPLv3; runtime components may use the [GCC Runtime Library Exception](https://www.gnu.org/licenses/gcc-exception-3.1.html)
 

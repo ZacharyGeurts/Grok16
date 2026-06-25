@@ -15,8 +15,10 @@ from engine import ForgeContext, ForgeEngine, ForgeResult
 G16_VERSION = "16.0.0"
 G16_CC = "g16"
 G16_CXX = "g++16"
-GCC_REPO = os.environ.get("GROK16_GCC_REPO", os.environ.get("QUEEN_GCC_REPO", "https://gcc.gnu.org/git/gcc.git"))
-GCC_BRANCH = os.environ.get("GROK16_GCC_BRANCH", os.environ.get("QUEEN_GCC_BRANCH", "releases/gcc-16"))
+GCC_REPO = os.environ.get("GROK16_GCC_REPO", "https://gcc.gnu.org/git/gcc.git")
+# G16 field rewrite: gcc-15 tree, BASE-VER 16.0.0, g16/g++16 binary names
+GCC_BRANCH = os.environ.get("GROK16_GCC_BRANCH", "releases/gcc-15")
+FIELD_REWRITE = "gcc-15 → field 16.0.0 (BASE-VER + program-transform-name)"
 MANIFEST_NAME = "grok16-toolchain.json"
 CMAKE_FILE = "grok16-toolchain.cmake"
 G16_PROGRAM_TRANSFORM = "s/^gcc$/g16/; s/^g++$/g++16/; s/^gcc-/g16-/"
@@ -27,6 +29,9 @@ def _ts() -> str:
 
 
 def gcc_src(ctx: ForgeContext) -> Path:
+    override = os.environ.get("GROK16_GCC_SRC", "").strip()
+    if override:
+        return Path(override)
     return ctx.vendor / "gcc"
 
 
@@ -94,6 +99,7 @@ def g16_status(ctx: ForgeContext) -> dict[str, Any]:
     return {
         "product": "Grok16",
         "g16_version": G16_VERSION,
+        "field_rewrite": FIELD_REWRITE,
         "branch": GCC_BRANCH,
         "repo": GCC_REPO,
         "src": str(gcc_src(ctx)),
