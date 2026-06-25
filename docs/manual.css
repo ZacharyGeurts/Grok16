@@ -1,6 +1,6 @@
 /* Grok16 programmer reference — themed, responsive */
 
-:root,
+html,
 html[data-theme="light"] {
   color-scheme: light;
   --bg: #f8f6f2;
@@ -29,7 +29,8 @@ html[data-theme="light"] {
   --nav-sticky-offset: 0px;
 }
 
-html[data-theme="dark"] {
+html[data-theme="dark"],
+html.theme-dark {
   color-scheme: dark;
   --bg: #0e1117;
   --bg-elevated: #151a23;

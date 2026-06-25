@@ -2,17 +2,41 @@
   var STORAGE_THEME = "g16-theme";
   var STORAGE_SCALE = "g16-font-scale";
   var root = document.documentElement;
+  var currentTheme = "light";
+
+  function storageGet(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function storageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      /* private mode / blocked storage */
+    }
+  }
 
   function preferredTheme() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
+  function normalizeTheme(value) {
+    return value === "dark" ? "dark" : "light";
+  }
+
   function applyTheme(theme) {
-    root.setAttribute("data-theme", theme);
-    localStorage.setItem(STORAGE_THEME, theme);
+    currentTheme = normalizeTheme(theme);
+    root.setAttribute("data-theme", currentTheme);
+    root.classList.toggle("theme-dark", currentTheme === "dark");
+    storageSet(STORAGE_THEME, currentTheme);
+
     var btn = document.getElementById("g16-theme-toggle");
     if (btn) {
-      var dark = theme === "dark";
+      var dark = currentTheme === "dark";
       btn.setAttribute("aria-pressed", dark ? "true" : "false");
       btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
       btn.title = dark ? "Light mode" : "Dark mode";
@@ -21,21 +45,39 @@
   }
 
   function applyScale(scale) {
+    var allowed = { "0.875": 1, "1": 1, "1.125": 1, "1.25": 1, "1.5": 1 };
+    if (!allowed[scale]) scale = "1";
     root.setAttribute("data-font-scale", scale);
-    localStorage.setItem(STORAGE_SCALE, scale);
+    storageSet(STORAGE_SCALE, scale);
     var sel = document.getElementById("g16-font-scale");
     if (sel) sel.value = scale;
   }
 
-  var theme = localStorage.getItem(STORAGE_THEME) || preferredTheme();
-  var scale = localStorage.getItem(STORAGE_SCALE) || "1";
-  applyTheme(theme);
-  applyScale(scale);
+  function readInitialTheme() {
+    var stored = storageGet(STORAGE_THEME);
+    if (stored === "dark" || stored === "light") return stored;
+    var attr = root.getAttribute("data-theme");
+    if (attr === "dark" || attr === "light") return attr;
+    return preferredTheme();
+  }
+
+  applyTheme(readInitialTheme());
+  applyScale(storageGet(STORAGE_SCALE) || "1");
+
+  function navDirectChildren(nav, tag) {
+    var out = [];
+    var node = nav.firstChild;
+    while (node) {
+      if (node.nodeType === 1 && node.tagName === tag) out.push(node);
+      node = node.nextSibling;
+    }
+    return out;
+  }
 
   function structureNav(nav) {
     if (!nav || nav.dataset.structured) return;
 
-    var links = Array.prototype.slice.call(nav.querySelectorAll(":scope > a"));
+    var links = navDirectChildren(nav, "A");
     if (!links.length) return;
 
     var top = document.createElement("div");
@@ -43,8 +85,8 @@
 
     var brand = document.createElement("div");
     brand.className = "nav-brand";
-    var strong = nav.querySelector(":scope > strong");
-    if (strong) {
+    var strong = nav.querySelector("strong");
+    if (strong && strong.parentNode === nav) {
       brand.appendChild(strong);
       var ver = document.createElement("span");
       ver.className = "nav-version";
@@ -119,7 +161,7 @@
       o.textContent = opt[1];
       scaleSelect.appendChild(o);
     });
-    scaleSelect.value = scale;
+    scaleSelect.value = root.getAttribute("data-font-scale") || "1";
 
     var themeBtn = document.createElement("button");
     themeBtn.type = "button";
@@ -131,15 +173,15 @@
     controls.appendChild(themeBtn);
     top.appendChild(controls);
 
-    applyTheme(theme);
+    applyTheme(currentTheme);
 
     scaleSelect.addEventListener("change", function () {
       applyScale(scaleSelect.value);
     });
 
-    themeBtn.addEventListener("click", function () {
-      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      applyTheme(next);
+    themeBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      applyTheme(currentTheme === "dark" ? "light" : "dark");
     });
   }
 
