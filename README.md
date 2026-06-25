@@ -24,8 +24,8 @@ Pkgversion string: `Grok16-16.0.0`.
 
 | Path | What |
 |------|------|
-| `lib/grok16-forge.py` | Build orchestrator (fetch → configure → install) |
-| `lib/forge/` | Forge engine + `compiler_tools.py` (Grok16 field configure) |
+| `forge/grok16-forge.py` | Build orchestrator (fetch → configure → install) |
+| `forge/` | Engine + `compiler_tools.py` (Grok16 field configure) |
 | `patches/` | Documented GCC deltas (`gcc/BASE-VER` → 16.0.0) |
 | `scripts/grok16-toolchain.sh` | Human/CI entry: bootstrap · rebuild · status |
 
@@ -74,7 +74,7 @@ Grok16/
   VERSION  SELFHOST.json
 ```
 
-Compiler binaries are produced locally by **grok16-forge** (`lib/grok16-forge.py`).
+Compiler binaries are produced locally by **grok16-forge** (`forge/grok16-forge.py`).
 
 ## Requirements
 

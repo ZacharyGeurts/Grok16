@@ -7,10 +7,12 @@
 /share/
 
 # Upstream GCC clone (~1.6G) — fetched by grok16-forge gcc_fetch
-/vendor/
+/vendor/*
+!/vendor/.gitkeep
 
-# Local build tree
-/build/
+# Local build tree (keep .gitkeep only)
+/build/*
+!/build/.gitkeep
 
 # Generated at install
 /VERSION

@@ -8,7 +8,7 @@ GROK16="$(cd "$(dirname "$0")/.." && pwd)"
 G16_PREFIX="${G16_PREFIX:-$GROK16}"
 BIN="$G16_PREFIX/bin"
 G16_VERSION="16.0.0"
-FORGE="$GROK16/lib/grok16-forge.py"
+FORGE="$GROK16/forge/grok16-forge.py"
 export GROK16_ROOT="$GROK16"
 
 usage() {
