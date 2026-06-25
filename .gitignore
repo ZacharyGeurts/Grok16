@@ -6,12 +6,20 @@
 /include/
 /share/
 
+# Upstream GCC clone (~1.6G) — fetched by grok16-forge gcc_fetch
+/vendor/
+
+# Local build tree
+/build/
+
 # Generated at install
 /VERSION
 /SELFHOST.json
 /cmake/grok16-toolchain.cmake
 /data/grok16-toolchain.json
 /data/rebuild.log
+/.grok16-forge.log
+/.grok16-state/
 
 # Build artifacts
 *.o

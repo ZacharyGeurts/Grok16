@@ -20,9 +20,18 @@
 
 Pkgversion string: `Grok16-16.0.0`.
 
-## Quick start
+## Source in this repo
 
-Clone beside an **SG** workspace that includes `NewLatest/Queen` (forge + GCC source), then rebuild into a local prefix:
+| Path | What |
+|------|------|
+| `lib/grok16-forge.py` | Build orchestrator (fetch → configure → install) |
+| `lib/forge/` | Forge engine + `compiler_tools.py` (Grok16 field configure) |
+| `patches/` | Documented GCC deltas (`gcc/BASE-VER` → 16.0.0) |
+| `scripts/grok16-toolchain.sh` | Human/CI entry: bootstrap · rebuild · status |
+
+**Not in git:** `vendor/gcc` (~1.6 GB upstream clone) and installed `bin/`/`lib/` — produced locally.
+
+## Quick start
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
@@ -30,11 +39,13 @@ cd Grok16
 
 export G16_PREFIX="$(pwd)"
 export G16_PKGVERSION=Grok16-16.0.0
-# Optional faster single-pass self-host:
-export G16_DISABLE_BOOTSTRAP=1
 
-./scripts/grok16-toolchain.sh rebuild   # requires Queen forge
-./scripts/grok16-toolchain.sh install
+# First time: clone GCC + host build + install into repo root
+./scripts/grok16-toolchain.sh bootstrap
+
+# Later: self-host rebuild with existing g16/g++16 (or host gcc)
+export G16_DISABLE_BOOTSTRAP=1   # optional faster single-pass
+./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh status
 ```
 
@@ -63,22 +74,36 @@ Grok16/
   VERSION  SELFHOST.json
 ```
 
-This repo ships **scripts and metadata only**. Compiler binaries are produced locally by the Queen forge (`gcc_rebuild`).
+Compiler binaries are produced locally by **grok16-forge** (`lib/grok16-forge.py`).
 
 ## Requirements
 
 - Linux x86_64
-- `NewLatest/Queen` forge at `../NewLatest/Queen` relative to SG (or set paths in the script)
-- GCC 16 source fetched by Queen (`releases/gcc-16`)
-- Existing `g16`/`g++16` or legacy prefix for self-host bootstrap
+- `git`, `make`, `python3`, host `gcc`/`g++` (for first bootstrap)
+- Network for `gcc_fetch` (clone https://gcc.gnu.org/git/gcc.git)
+- ~2 GB disk for `vendor/gcc` + build tree
 
 ## Beta limitations
 
 - No full 3-stage bootstrap by default (`G16_DISABLE_BOOTSTRAP=1` for dev rebuilds)
 - Install prefix assumed to be the repo root (`G16_PREFIX`)
-- Queen forge path is hardcoded relative to SG desktop layout
-- No binary releases on GitHub yet
+- Upstream GCC must be fetched locally (`vendor/gcc` not committed)
+- No prebuilt binary releases on GitHub yet
 
 ## License
 
-Compiler binaries built from GCC are under **GPLv3** (GCC runtime libraries follow GCC's exception policy). Grok16 scripts and metadata in this repository are **Copyright (c) 2026 Zachary Geurts** — proprietary; all rights reserved unless otherwise stated.
+**GNU General Public License v3** — see [LICENSE](LICENSE).
+
+Grok16 scripts and metadata: Copyright (C) 2026 Zachary Geurts, licensed under GPLv3.
+
+Compiler binaries produced from [GCC](https://gcc.gnu.org/) are **Copyright (C) Free
+Software Foundation, Inc.** and GCC contributors, also under GPLv3 (runtime
+libraries may use the GCC Runtime Library Exception where applicable).
+
+## Credits
+
+Full attribution: [CREDITS.md](CREDITS.md).
+
+- [GNU Compiler Collection](https://gcc.gnu.org/) — Free Software Foundation, Inc. and contributors
+- [Free Software Foundation](https://www.fsf.org/) — GCC, GPL, and free software infrastructure
+- Zachary Geurts — Grok16 beta packaging and toolchain scripts

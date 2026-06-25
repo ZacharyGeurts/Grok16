@@ -5,15 +5,14 @@
 # Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
 set -euo pipefail
 GROK16="$(cd "$(dirname "$0")/.." && pwd)"
-SG="$(cd "$GROK16/.." && pwd)"
-QUEEN="$SG/NewLatest/Queen"
 G16_PREFIX="${G16_PREFIX:-$GROK16}"
 BIN="$G16_PREFIX/bin"
 G16_VERSION="16.0.0"
-FORGE="$QUEEN/lib/queen-forge.py"
+FORGE="$GROK16/lib/grok16-forge.py"
+export GROK16_ROOT="$GROK16"
 
 usage() {
-  echo "Usage: $0 install|rebuild|status|paths|manifest" >&2
+  echo "Usage: $0 install|bootstrap|rebuild|status|paths|manifest" >&2
   exit 2
 }
 
@@ -70,7 +69,7 @@ doc = {
     "prefix": "${G16_PREFIX}",
     "root": "${GROK16}",
     "sg_root": "${SG}",
-    "forge": "${QUEEN}",
+    "forge": "${FORGE}",
     "engine_real": True,
     "selfhosted": ${selfhosted_py},
     "dumpversion": "${dv}",
@@ -112,15 +111,20 @@ cmd_install() {
   echo "g++16: $("$BIN/g++16" --version | head -1)"
 }
 
+cmd_bootstrap() {
+  echo "Grok16 bootstrap → fetch GCC, host build, install to $G16_PREFIX"
+  [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
+  export G16_PREFIX G16_PKGVERSION="Grok16-${G16_VERSION}"
+  python3 "$FORGE" run gcc || exit 1
+  cmd_install
+}
+
 cmd_rebuild() {
-  echo "Grok16 rebuild → prefix $G16_PREFIX (forge gcc_rebuild)"
-  if [[ ! -f "$FORGE" ]]; then
-    echo "Queen forge missing: $FORGE" >&2
-    exit 1
-  fi
-  export G16_PREFIX
-  export G16_PKGVERSION="Grok16-${G16_VERSION}"
-  exec python3 "$FORGE" run gcc_rebuild
+  echo "Grok16 rebuild → prefix $G16_PREFIX (self-host gcc_rebuild)"
+  [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
+  export G16_PREFIX G16_PKGVERSION="Grok16-${G16_VERSION}"
+  python3 "$FORGE" run gcc_rebuild || exit 1
+  cmd_install
 }
 
 cmd_status() {
@@ -140,6 +144,7 @@ cmd_paths() {
 
 case "${1:-}" in
   install) cmd_install ;;
+  bootstrap) cmd_bootstrap ;;
   rebuild) cmd_rebuild ;;
   status) cmd_status ;;
   paths) cmd_paths ;;
