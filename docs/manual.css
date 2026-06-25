@@ -1,6 +1,5 @@
 /* Grok16 programmer reference — themed, responsive */
 
-html,
 html[data-theme="light"] {
   color-scheme: light;
   --bg: #f8f6f2;
@@ -12,25 +11,26 @@ html[data-theme="light"] {
   --border-subtle: #e8e4dc;
   --accent: #2d6a6a;
   --accent-hover: #1f4f4f;
+  --accent-on: #ffffff;
   --link: #2d6a6a;
   --link-hover: #1a4545;
   --th-bg: #ebe6dc;
   --pre-bg: #f0ece4;
   --pre-border: #d0c9bc;
-  --nav-bg: rgba(255, 254, 251, 0.92);
-  --control-bg: #fffefb;
+  --nav-bg: rgba(255, 254, 251, 0.94);
+  --panel-bg: rgba(255, 254, 251, 0.88);
+  --control-bg: #ffffff;
   --control-border: #cfc8bc;
   --control-hover: #f3efe8;
-  --shadow: 0 1px 3px rgba(28, 27, 25, 0.06);
-  --radius: 6px;
+  --shadow: 0 2px 8px rgba(28, 27, 25, 0.08);
+  --radius: 8px;
   --font-scale: 1;
   --page-pad-x: 1.25rem;
   --page-pad-y: 1.5rem;
   --nav-sticky-offset: 0px;
 }
 
-html[data-theme="dark"],
-html.theme-dark {
+html[data-theme="dark"] {
   color-scheme: dark;
   --bg: #0e1117;
   --bg-elevated: #151a23;
@@ -39,18 +39,30 @@ html.theme-dark {
   --text-faint: #6e6a63;
   --border: #2a3140;
   --border-subtle: #1f2530;
-  --accent: #7eb8c9;
-  --accent-hover: #9ecee0;
+  --accent: #5fa8bc;
+  --accent-hover: #7eb8c9;
+  --accent-on: #0e1117;
   --link: #8ec8d8;
   --link-hover: #b5dce8;
   --th-bg: #1a2130;
   --pre-bg: #12161f;
   --pre-border: #2a3140;
-  --nav-bg: rgba(14, 17, 23, 0.94);
-  --control-bg: #151a23;
-  --control-border: #343d4f;
-  --control-hover: #1c2433;
-  --shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  --nav-bg: rgba(14, 17, 23, 0.96);
+  --panel-bg: rgba(21, 26, 35, 0.92);
+  --control-bg: #1a2130;
+  --control-border: #3a4558;
+  --control-hover: #243044;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="light"] body {
+  background-color: #f8f6f2;
+  color: #1c1b19;
+}
+
+html[data-theme="dark"] body {
+  background-color: #0e1117;
+  color: #e6e4df;
 }
 
 html[data-font-scale="0.875"] { --font-scale: 0.875; }
@@ -175,52 +187,121 @@ nav {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.55rem;
   margin-left: auto;
   flex-shrink: 0;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  background: var(--panel-bg);
+  box-shadow: var(--shadow);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.control-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .control-label {
-  font-size: 0.78rem;
+  font-size: 0.68rem;
+  font-weight: 600;
   color: var(--text-faint);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
-.control-select,
-.control-btn {
-  font: inherit;
-  font-size: 0.82rem;
+.g16-select {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
   border: 1px solid var(--control-border);
-  border-radius: var(--radius);
+  border-radius: 999px;
   background: var(--control-bg);
   color: var(--text);
-  padding: 0.4rem 0.6rem;
-  min-height: 2.25rem;
+  padding: 0.45rem 1.6rem 0.45rem 0.75rem;
+  min-height: 2.1rem;
   cursor: pointer;
-  box-shadow: var(--shadow);
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) calc(50% - 2px),
+    calc(100% - 9px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.control-select {
-  max-width: 100%;
-}
-
-.control-select:hover,
-.control-btn:hover {
-  background: var(--control-hover);
+.g16-select:hover {
   border-color: var(--accent);
+  background-color: var(--control-hover);
 }
 
-.control-select:focus-visible,
-.control-btn:focus-visible {
+.g16-select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-.theme-toggle {
-  min-width: 5.5rem;
-  text-align: center;
+.theme-switch {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--control-bg);
+}
+
+.g16-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 0;
+  margin: 0;
+  padding: 0.45rem 0.8rem;
+  min-height: 2.1rem;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.g16-seg + .g16-seg {
+  border-left: 1px solid var(--control-border);
+}
+
+.g16-seg:hover {
+  color: var(--text);
+  background: var(--control-hover);
+}
+
+.g16-seg[aria-pressed="true"] {
+  color: var(--accent-on);
+  background: var(--accent);
+}
+
+.g16-seg[aria-pressed="true"]:hover {
+  background: var(--accent-hover);
+  color: var(--accent-on);
+}
+
+.g16-seg:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.seg-icon {
+  font-size: 0.95em;
+  line-height: 1;
 }
 
 h1 {
@@ -348,7 +429,8 @@ footer {
 }
 
 @media (max-width: 720px) {
-  :root {
+  html[data-theme="light"],
+  html[data-theme="dark"] {
     --page-pad-x: 1rem;
     --page-pad-y: 1.15rem;
   }
@@ -390,24 +472,24 @@ footer {
 }
 
 @media (max-width: 480px) {
-  :root {
+  html[data-theme="light"],
+  html[data-theme="dark"] {
     --page-pad-x: 0.75rem;
     --page-pad-y: 0.85rem;
   }
 
-  .control-label {
-    flex: 1 0 100%;
-    text-align: right;
+  .nav-controls {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: var(--radius);
   }
 
-  .control-select {
-    flex: 1 1 auto;
-    min-width: 0;
+  .seg-text {
+    display: none;
   }
 
-  .theme-toggle {
-    flex: 1 1 auto;
-    min-width: 0;
+  .g16-seg {
+    padding: 0.45rem 0.65rem;
   }
 
   th, td {
@@ -429,10 +511,9 @@ footer {
     font-size: 0.95em;
   }
 
-  .control-select,
-  .control-btn {
+  .g16-select,
+  .g16-seg {
     font-size: 0.78rem;
-    padding: 0.35rem 0.45rem;
   }
 }
 
@@ -443,8 +524,8 @@ footer {
     align-items: center;
   }
 
-  .control-select,
-  .control-btn {
+  .g16-select,
+  .g16-seg {
     min-height: 2.75rem;
   }
 }
@@ -456,5 +537,5 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html, a, .control-select, .control-btn { transition: none; }
+  html, a, .g16-select, .g16-seg { transition: none; }
 }

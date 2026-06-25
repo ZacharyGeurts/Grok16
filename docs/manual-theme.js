@@ -2,7 +2,6 @@
   var STORAGE_THEME = "g16-theme";
   var STORAGE_SCALE = "g16-font-scale";
   var root = document.documentElement;
-  var currentTheme = "light";
 
   function storageGet(key) {
     try {
@@ -15,9 +14,7 @@
   function storageSet(key, value) {
     try {
       localStorage.setItem(key, value);
-    } catch (e) {
-      /* private mode / blocked storage */
-    }
+    } catch (e) {}
   }
 
   function preferredTheme() {
@@ -28,20 +25,26 @@
     return value === "dark" ? "dark" : "light";
   }
 
-  function applyTheme(theme) {
-    currentTheme = normalizeTheme(theme);
-    root.setAttribute("data-theme", currentTheme);
-    root.classList.toggle("theme-dark", currentTheme === "dark");
-    storageSet(STORAGE_THEME, currentTheme);
+  function clearInlineBodyPaint() {
+    var body = document.body;
+    if (!body) return;
+    body.style.removeProperty("background-color");
+    body.style.removeProperty("color");
+  }
 
-    var btn = document.getElementById("g16-theme-toggle");
-    if (btn) {
-      var dark = currentTheme === "dark";
-      btn.setAttribute("aria-pressed", dark ? "true" : "false");
-      btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-      btn.title = dark ? "Light mode" : "Dark mode";
-      btn.textContent = dark ? "☀ Light" : "☾ Dark";
-    }
+  function updateThemeButtons(theme) {
+    var lightBtn = document.getElementById("g16-theme-light");
+    var darkBtn = document.getElementById("g16-theme-dark");
+    if (lightBtn) lightBtn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+    if (darkBtn) darkBtn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+  }
+
+  function applyTheme(theme) {
+    theme = normalizeTheme(theme);
+    root.setAttribute("data-theme", theme);
+    clearInlineBodyPaint();
+    updateThemeButtons(theme);
+    storageSet(STORAGE_THEME, theme);
   }
 
   function applyScale(scale) {
@@ -61,56 +64,30 @@
     return preferredTheme();
   }
 
-  applyTheme(readInitialTheme());
-  applyScale(storageGet(STORAGE_SCALE) || "1");
-
-  function navDirectChildren(nav, tag) {
-    var out = [];
-    var node = nav.firstChild;
-    while (node) {
-      if (node.nodeType === 1 && node.tagName === tag) out.push(node);
-      node = node.nextSibling;
-    }
-    return out;
-  }
-
-  function structureNav(nav) {
-    if (!nav || nav.dataset.structured) return;
-
-    var links = navDirectChildren(nav, "A");
-    if (!links.length) return;
-
-    var top = document.createElement("div");
-    top.className = "nav-top";
-
-    var brand = document.createElement("div");
-    brand.className = "nav-brand";
-    var strong = nav.querySelector("strong");
-    if (strong && strong.parentNode === nav) {
-      brand.appendChild(strong);
-      var ver = document.createElement("span");
-      ver.className = "nav-version";
-      ver.textContent = "v16.0.0";
-      brand.appendChild(ver);
+  function bindControls() {
+    var scaleSelect = document.getElementById("g16-font-scale");
+    if (scaleSelect) {
+      scaleSelect.addEventListener("change", function () {
+        applyScale(scaleSelect.value);
+      });
     }
 
-    top.appendChild(brand);
-    nav.insertBefore(top, nav.firstChild);
+    var lightBtn = document.getElementById("g16-theme-light");
+    var darkBtn = document.getElementById("g16-theme-dark");
 
-    var linksWrap = document.createElement("div");
-    linksWrap.className = "nav-links";
-    links.forEach(function (a) {
-      linksWrap.appendChild(a);
-    });
-    nav.appendChild(linksWrap);
+    if (lightBtn) {
+      lightBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        applyTheme("light");
+      });
+    }
 
-    Array.prototype.slice.call(nav.childNodes).forEach(function (node) {
-      if (node.nodeType === 3 && node.textContent.trim()) {
-        node.parentNode.removeChild(node);
-      }
-    });
-
-    nav.dataset.structured = "1";
+    if (darkBtn) {
+      darkBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        applyTheme("dark");
+      });
+    }
   }
 
   function wrapTables() {
@@ -127,66 +104,10 @@
     });
   }
 
-  function mountControls() {
-    var nav = document.querySelector("nav");
-    if (!nav) return;
-
-    structureNav(nav);
-
-    if (document.getElementById("g16-theme-toggle")) return;
-
-    var top = nav.querySelector(".nav-top") || nav;
-    var controls = document.createElement("div");
-    controls.className = "nav-controls";
-    controls.setAttribute("aria-label", "Display preferences");
-
-    var scaleLabel = document.createElement("label");
-    scaleLabel.className = "control-label";
-    scaleLabel.setAttribute("for", "g16-font-scale");
-    scaleLabel.textContent = "Size";
-
-    var scaleSelect = document.createElement("select");
-    scaleSelect.id = "g16-font-scale";
-    scaleSelect.className = "control-select";
-    scaleSelect.setAttribute("aria-label", "Font size");
-    [
-      ["0.875", "Small"],
-      ["1", "Default"],
-      ["1.125", "Large"],
-      ["1.25", "XL"],
-      ["1.5", "XXL"],
-    ].forEach(function (opt) {
-      var o = document.createElement("option");
-      o.value = opt[0];
-      o.textContent = opt[1];
-      scaleSelect.appendChild(o);
-    });
-    scaleSelect.value = root.getAttribute("data-font-scale") || "1";
-
-    var themeBtn = document.createElement("button");
-    themeBtn.type = "button";
-    themeBtn.id = "g16-theme-toggle";
-    themeBtn.className = "control-btn theme-toggle";
-
-    controls.appendChild(scaleLabel);
-    controls.appendChild(scaleSelect);
-    controls.appendChild(themeBtn);
-    top.appendChild(controls);
-
-    applyTheme(currentTheme);
-
-    scaleSelect.addEventListener("change", function () {
-      applyScale(scaleSelect.value);
-    });
-
-    themeBtn.addEventListener("click", function (event) {
-      event.preventDefault();
-      applyTheme(currentTheme === "dark" ? "light" : "dark");
-    });
-  }
-
   function init() {
-    mountControls();
+    applyTheme(readInitialTheme());
+    applyScale(storageGet(STORAGE_SCALE) || "1");
+    bindControls();
     wrapTables();
   }
 

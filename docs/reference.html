@@ -12,27 +12,50 @@
         t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
       d.documentElement.setAttribute("data-theme", t);
-      d.documentElement.classList.toggle("theme-dark", t === "dark");
     } catch (e) {
       d.documentElement.setAttribute("data-theme", "light");
     }
   })(document);
   </script>
-  <script src="manual-theme.js"></script>
-  <link rel="stylesheet" href="manual.css" />
+  <script src="manual-theme.js?v=5"></script>
+  <link rel="stylesheet" href="manual.css?v=5" />
 </head>
 <body>
   <nav>
-    <strong>Grok16 Manual</strong> v16.0.0 —
-    <a href="index.html">Index</a>
-    <a href="master-coder.html">Master Coder</a>
-    <a href="getting-started.html">Getting Started</a>
-    <a href="architecture.html">Architecture</a>
-    <a href="profiles.html">Profiles</a>
-    <a href="performance.html">Performance</a>
-    <a href="integration.html">Integration</a>
-    <a href="field-primer.html">Field Primer</a>
-    <a href="reference.html">Reference</a>
+    <div class="nav-top">
+      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v16.0.0</span></div>
+      <div class="nav-controls" aria-label="Display preferences">
+        <div class="control-chip">
+          <label class="control-label" for="g16-font-scale">Size</label>
+          <select id="g16-font-scale" class="g16-select" aria-label="Font size">
+            <option value="0.875">S</option>
+            <option value="1" selected>M</option>
+            <option value="1.125">L</option>
+            <option value="1.25">XL</option>
+            <option value="1.5">XXL</option>
+          </select>
+        </div>
+        <div class="theme-switch" role="group" aria-label="Color theme">
+          <button type="button" class="g16-seg" id="g16-theme-light" data-theme="light" aria-pressed="false">
+            <span class="seg-icon" aria-hidden="true">☀</span><span class="seg-text">Light</span>
+          </button>
+          <button type="button" class="g16-seg" id="g16-theme-dark" data-theme="dark" aria-pressed="false">
+            <span class="seg-icon" aria-hidden="true">☾</span><span class="seg-text">Dark</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Index</a>
+      <a href="master-coder.html">Master Coder</a>
+      <a href="getting-started.html">Getting Started</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="profiles.html">Profiles</a>
+      <a href="performance.html">Performance</a>
+      <a href="integration.html">Integration</a>
+      <a href="field-primer.html">Field Primer</a>
+      <a href="reference.html">Reference</a>
+    </div>
   </nav>
 
   <h1>Reference</h1>
