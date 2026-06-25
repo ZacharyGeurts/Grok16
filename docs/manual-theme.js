@@ -32,10 +32,68 @@
   applyTheme(theme);
   applyScale(scale);
 
+  function structureNav(nav) {
+    if (!nav || nav.dataset.structured) return;
+
+    var links = Array.prototype.slice.call(nav.querySelectorAll(":scope > a"));
+    if (!links.length) return;
+
+    var top = document.createElement("div");
+    top.className = "nav-top";
+
+    var brand = document.createElement("div");
+    brand.className = "nav-brand";
+    var strong = nav.querySelector(":scope > strong");
+    if (strong) {
+      brand.appendChild(strong);
+      var ver = document.createElement("span");
+      ver.className = "nav-version";
+      ver.textContent = "v16.0.0";
+      brand.appendChild(ver);
+    }
+
+    top.appendChild(brand);
+    nav.insertBefore(top, nav.firstChild);
+
+    var linksWrap = document.createElement("div");
+    linksWrap.className = "nav-links";
+    links.forEach(function (a) {
+      linksWrap.appendChild(a);
+    });
+    nav.appendChild(linksWrap);
+
+    Array.prototype.slice.call(nav.childNodes).forEach(function (node) {
+      if (node.nodeType === 3 && node.textContent.trim()) {
+        node.parentNode.removeChild(node);
+      }
+    });
+
+    nav.dataset.structured = "1";
+  }
+
+  function wrapTables() {
+    Array.prototype.forEach.call(document.querySelectorAll("table"), function (table) {
+      var parent = table.parentElement;
+      if (parent && parent.classList.contains("table-scroll")) return;
+      var wrap = document.createElement("div");
+      wrap.className = "table-scroll";
+      wrap.setAttribute("tabindex", "0");
+      wrap.setAttribute("role", "region");
+      wrap.setAttribute("aria-label", "Scrollable table");
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
+  }
+
   function mountControls() {
     var nav = document.querySelector("nav");
-    if (!nav || document.getElementById("g16-theme-toggle")) return;
+    if (!nav) return;
 
+    structureNav(nav);
+
+    if (document.getElementById("g16-theme-toggle")) return;
+
+    var top = nav.querySelector(".nav-top") || nav;
     var controls = document.createElement("div");
     controls.className = "nav-controls";
     controls.setAttribute("aria-label", "Display preferences");
@@ -71,7 +129,7 @@
     controls.appendChild(scaleLabel);
     controls.appendChild(scaleSelect);
     controls.appendChild(themeBtn);
-    nav.appendChild(controls);
+    top.appendChild(controls);
 
     applyTheme(theme);
 
@@ -85,9 +143,14 @@
     });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountControls);
-  } else {
+  function init() {
     mountControls();
+    wrapTables();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
   }
 })();
