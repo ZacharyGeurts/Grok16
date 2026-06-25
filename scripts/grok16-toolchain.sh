@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Grok16 — G16 field compiler @ 16.0.0 (real ELF g16/g++16, no wrappers)
-# Install prefix: /home/default/Desktop/SG/Grok16
+# Copyright (C) 2026 Zachary Geurts
+# License: GNU General Public License v3 or later — see LICENSE
+# Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
 set -euo pipefail
 GROK16="$(cd "$(dirname "$0")/.." && pwd)"
 SG="$(cd "$GROK16/.." && pwd)"

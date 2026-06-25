@@ -2,6 +2,7 @@
 
 ![Status](https://img.shields.io/badge/status-beta-orange)
 ![Version](https://img.shields.io/badge/G16-16.0.0-blue)
+![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Compiler](https://img.shields.io/badge/binaries-g16%20%2F%20g++16-lightgrey)
 
 **Grok16** is a self-hosted **G16 field compiler** distribution — real ELF `g16` / `g++16` binaries at **16.0.0**, not shell wrappers.
