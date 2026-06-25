@@ -26,8 +26,10 @@ HEAD = f"""<!DOCTYPE html>
     }}
   }})(document);
   </script>
-  <script src="manual-theme.js?v=6"></script>
-  <link rel="stylesheet" href="manual.css?v=6" />
+  <script src="manual-theme.js?v=7"></script>
+  <script src="manual-search.js?v=7"></script>
+  <script src="manual-layout.js?v=7"></script>
+  <link rel="stylesheet" href="manual.css?v=7" />
 </head>
 <body>
 """
@@ -58,6 +60,7 @@ NAV = f"""  <nav>
     </div>
     <div class="nav-links">
       <a href="index.html">Index</a>
+      <a href="concepts.html">Concepts</a>
       <a href="master-coder.html">Master Coder</a>
       <a href="master-coder-c.html">Master Coder C</a>
       <a href="master-coder-cxx.html">Master Coder C++</a>
@@ -143,6 +146,7 @@ HUB_BODY = f"""
     <tr><th>Index</th><th>Scope</th><th>Detail</th></tr>
     <tr><td><a href="master-coder-c.html"><strong>Master Coder C</strong></a></td><td class="tip">C / gnu17 / g16-cc</td><td class="idx-detail">Every C-facing command, flag mode, env var, and backend path. Unified g16 dispatches to g16-cc for .c sources and -std=gnu17. No separate C driver name.</td></tr>
     <tr><td><a href="master-coder-cxx.html"><strong>Master Coder C++</strong></a></td><td class="tip">C++ / gnu++26 / g16-cxx</td><td class="idx-detail">Every C++ command, profile, benchmark, and macro path. Same g16 binary; .cpp and g++16 symlink select g16-cxx. Profiles, PGO, Field-Opt, World_Redata gates.</td></tr>
+    <tr><td><a href="concepts.html"><strong>C/C++ Concepts</strong></a></td><td class="tip">Textbook visuals</td><td class="idx-detail">Pointers, arrays, sorting, memory, templates, RAII, move — SVG diagrams and short examples. Press Ctrl+K to jump here from search.</td></tr>
   </table>
 
   <h2>Unified driver (16.1.0)</h2>

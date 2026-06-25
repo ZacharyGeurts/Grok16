@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 Manual — Index</title>
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/" />
+  <meta name="description" content="Grok16 programmer reference — unified g16, Master Coder indexes, C/C++ concepts, toolchain workflow." />
   <script>
   (function (d) {
     try {
@@ -18,8 +19,10 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v=6"></script>
-  <link rel="stylesheet" href="manual.css?v=6" />
+  <script src="manual-theme.js?v=7"></script>
+  <script src="manual-search.js?v=7"></script>
+  <script src="manual-layout.js?v=7"></script>
+  <link rel="stylesheet" href="manual.css?v=7" />
 </head>
 <body>
   <nav>
@@ -48,6 +51,7 @@
     </div>
     <div class="nav-links">
       <a href="index.html">Index</a>
+      <a href="concepts.html">Concepts</a>
       <a href="master-coder.html">Master Coder</a>
       <a href="master-coder-c.html">Master Coder C</a>
       <a href="master-coder-cxx.html">Master Coder C++</a>
@@ -61,34 +65,44 @@
     </div>
   </nav>
 
-  <h1>Grok16 Programmer Reference — Index</h1>
-  <p>Unified <code>g16</code> @ <strong>16.1.0</strong> — one driver auto-detects C (<code>gnu17</code>) and C++ (<code>gnu++26</code>). <code>g++16</code> is a symlink alias. Bootstrap GPL GCC locally.</p>
+  <div class="hero">
+    <h1>Grok16 Programmer Reference</h1>
+    <p class="lead">Unified <code>g16</code> @ <strong>16.1.0</strong> — one driver, C and C++, field toolchain from bootstrap to bench. Reference manuals with textbook clarity.</p>
+    <p>Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search commands, profiles, env vars, and C/C++ concepts.</p>
+  </div>
+
+  <h2>Workflow — start here</h2>
+  <div class="workflow">
+    <a href="getting-started.html#bootstrap"><strong>1 bootstrap</strong>Fetch GCC, first install</a>
+    <a href="getting-started.html#rebuild"><strong>2 rebuild</strong>Self-host unified g16</a>
+    <a href="getting-started.html#verify"><strong>3 verify</strong>C + C++ smoke</a>
+    <a href="performance.html#field-bench"><strong>4 field-bench</strong>Field-Opt metrics</a>
+    <a href="integration.html#gates"><strong>5 gates</strong>World_Redata parity</a>
+  </div>
 
   <h2>Master Coder indexes</h2>
   <table>
     <tr><th>Index</th><th>Contents</th></tr>
-    <tr><td><a href="master-coder.html">Master Coder</a></td><td>Hub — toolchain, forge, profiles, env (all languages)</td></tr>
-    <tr><td><a href="master-coder-c.html">Master Coder C</a></td><td>Every C command, PROFILE c/c_link, G16_C_STD, g16-cc backend</td></tr>
-    <tr><td><a href="master-coder-cxx.html">Master Coder C++</a></td><td>Every C++ command, profiles, benches, PGO, g16-cxx backend</td></tr>
+    <tr><td><a href="master-coder.html">Master Coder</a></td><td>Hub — toolchain, forge, profiles, env</td></tr>
+    <tr><td><a href="master-coder-c.html">Master Coder C</a></td><td>Every C command, PROFILE c, G16_C_STD, g16-cc</td></tr>
+    <tr><td><a href="master-coder-cxx.html">Master Coder C++</a></td><td>Profiles, benches, PGO, gnu++26, gates</td></tr>
+    <tr><td><a href="concepts.html">C/C++ Concepts</a></td><td>Pointers, arrays, sorting — illustrated primers</td></tr>
   </table>
 
   <h2>Manuals</h2>
   <table>
     <tr><th>Document</th><th>Contents</th></tr>
     <tr><td><a href="getting-started.html">Getting Started</a></td><td>Bootstrap, rebuild, verify, bench</td></tr>
-    <tr><td><a href="architecture.html">Architecture</a></td><td>Forge flow, field rewrite, directories</td></tr>
-    <tr><td><a href="profiles.html">Profiles</a></td><td>field_opt, ai, field_compute, vulkan_rtx; CMake</td></tr>
+    <tr><td><a href="architecture.html">Architecture</a></td><td>Unified driver, forge, directories</td></tr>
+    <tr><td><a href="profiles.html">Profiles</a></td><td>field_opt, ai, field_compute, vulkan_rtx</td></tr>
     <tr><td><a href="performance.html">Performance</a></td><td>Benchmarks, PGO, env flags</td></tr>
     <tr><td><a href="integration.html">Integration</a></td><td>World_Redata, Queen, stack gates</td></tr>
     <tr><td><a href="field-primer.html">Field Primer</a></td><td>Consumer build requirements</td></tr>
     <tr><td><a href="reference.html">Reference</a></td><td>Commands, environment variables, files</td></tr>
   </table>
 
-  <h2>Wiki</h2>
-  <p>Same content in Markdown: <a href="https://github.com/ZacharyGeurts/Grok16/wiki">github.com/ZacharyGeurts/Grok16/wiki</a></p>
-
   <h2>Repository</h2>
-  <p><a href="https://github.com/ZacharyGeurts/Grok16">github.com/ZacharyGeurts/Grok16</a> — tag <code>v16.1.0</code></p>
+  <p><a href="https://github.com/ZacharyGeurts/Grok16">github.com/ZacharyGeurts/Grok16</a> — release <a href="https://github.com/ZacharyGeurts/Grok16/releases/tag/v16.1.0">v16.1.0</a></p>
 
   <footer>Grok16 @ 16.1.0 — GPLv3 — Copyright (C) 2026 Zachary Geurts</footer>
 </body>
