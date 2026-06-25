@@ -1,6 +1,6 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/status-beta-orange)
+![Status](https://img.shields.io/badge/release-16.0.0-green)
 ![Version](https://img.shields.io/badge/G16-16.0.0-blue)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
@@ -8,7 +8,7 @@
 
 **Grok16** is a **self-hosted G16 field compiler** — real ELF `g16` / `g++16` @ **16.0.0**, **gnu++26**-capable, built via the Grok16 forge. Scripts and CMake integration ship in git; **no prebuilt binaries** (reproducible bootstrap from GPL GCC sources).
 
-> **Beta** — APIs and layout may change before 1.0. This is a **gcc-15 field rewrite** (BASE-VER 16.0.0), not upstream `releases/gcc-16`.
+> **Grok16 @ 16.0.0** — sovereign G16 field compiler. Upstream tree is **gcc-15** with BASE-VER **16.0.0** (not upstream `releases/gcc-16`). See [PERFORMANCE.md](PERFORMANCE.md) for benchmark numbers.
 
 ## What you get
 
@@ -20,7 +20,8 @@
 | `grok16-toolchain.sh` | bootstrap · rebuild · verify · bench · field-bench · profile · status |
 | `forge/grok16-forge.py` | Fetch → configure → build → self-host |
 | `data/grok16-profiles.json` | AI / Field / RTX flag presets |
-| `examples/` | Minimal CMake, matrix bench, Field dispatch kernel |
+| `examples/` | minimal-cmake, field-nexus-bench, ai-matrix-bench, field-canvas-kernel |
+| `PERFORMANCE.md` | Field-Opt before/after metrics + reproduction steps |
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G). See [ARCHITECTURE.md](ARCHITECTURE.md).
 
@@ -141,7 +142,7 @@ Profiles set Field macros (`FIELD_ENTROPY_DISPATCH`, `FIELD_X86_DIE`) and aggres
 4. AMOURANTHRTX / NEXUS consumers: include `grok16-profile-field-opt.cmake` or `grok16-profile-ai.cmake` for CANVAS.compute-adjacent CPU and behavioral scoring.
 5. Low-power / high-throughput: `G16_FIELD_SPEED=1` enables vectorization + unrolling tuned for Field Die emulation (AmmoOS/FieldX86).
 
-**redata pipeline:** L0–L1 plates roundtrip through World_Redata L2 built with G16. Hostess7/ZAC layers stay orthogonal; Grok16 compiles the native engine that reads/writes WRDT/WRZC contracts.
+**redata / ZAC round-trip:** After `build-cpp.sh`, run `python3 -m redata.cli parity` — confirms Python ↔ C++ WRDT/WRZC bytes through the G16-built engine. `security` and `mandate` gates validate hardening + Grok16 manifest. Hostess7/ZAC stay orthogonal; Grok16 compiles the L2 native layer.
 
 ## Configuration
 
@@ -226,6 +227,17 @@ Grok16/
 ## CI
 
 GitHub Actions runs script lint, Python compile, `paths`, forge `status`, and `field-bench` when `bin/g++16` is present. Full bootstrap: local or `docker build -t grok16 .`.
+
+## Release 16.0.0
+
+Tagged **v16.0.0** — self-hosted G16 @ 16.0.0, gnu++26, Field-Opt + AI profiles, `field-bench`, Queen `consolidate.sh`, World_Redata integration.
+
+```bash
+git checkout v16.0.0
+./scripts/grok16-toolchain.sh bootstrap   # first clone only
+./scripts/grok16-toolchain.sh verify
+./scripts/grok16-toolchain.sh field-bench
+```
 
 ## License
 

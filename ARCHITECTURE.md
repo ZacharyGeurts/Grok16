@@ -89,8 +89,9 @@ CMake wrappers: `cmake/grok16-profile-{ai,field,vulkan}.cmake` — include via `
 
 Examples:
 
-- `examples/ai-matrix-bench/` — bench source
-- `examples/field-canvas-kernel/` — entropy/wave dispatch kernel
+- `examples/field-nexus-bench/` — Field-Opt primary benchmark (FieldX86 + NEXUS)
+- `examples/ai-matrix-bench/` — NEXUS matrix bench
+- `examples/field-canvas-kernel/` — CANVAS wave dispatch kernel
 - `examples/minimal-cmake-project/` — smoke consumer
 
 ## Directory roles
@@ -167,6 +168,10 @@ Set `G16_PREFIX` (or symlink Queen prefix) so downstream manifests resolve the s
 
 See [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md).
 
-## Releases (planned)
+## Release 16.0.0
 
-When stable: tag `v16.0.0-beta.1`, document optional binary tarball **outside git** (install prefix archive), keep source-of-truth in forge bootstrap.
+**Tag:** `v16.0.0` (2026-06-25)
+
+Shipped: self-hosted `g16`/`g++16`, gnu++26, Field-Opt + AI profiles, `field-bench`/`bench-all`/`profile`, env-driven paths, `consolidate.sh`, World_Redata L2 integration, [PERFORMANCE.md](PERFORMANCE.md).
+
+Optional binary tarball of the install prefix may be published **outside git**; source-of-truth remains forge bootstrap.

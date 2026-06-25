@@ -1,0 +1,69 @@
+# Grok16 Performance — G16 @ 16.0.0
+
+Measured on **Linux x86_64** with self-hosted `g++16 (Grok16-16.0.0) 16.0.0`, **gnu++26** (`__cplusplus=202400`).
+
+Host: local SG desktop build (partial prefix layout; driver uses `-B$GROK16_GCC_BUILD/gcc/` when needed).
+
+## Field-Opt vs baseline (field-nexus-bench)
+
+Workload: 240 frames × 512 FieldX86 ops + entropy fold + wave phase decouple + NEXUS behavioral scoring.
+
+| Build | Flags | kernel wall_ms | binary bytes |
+|-------|-------|----------------|--------------|
+| Baseline | `-std=gnu++26 -O2` | 2.65 | 17144 |
+| **Field-Opt** | `field_opt` profile (`-O3 -march=native -ftree-vectorize -funroll-loops -ffast-math -fopenmp-simd`) | **2.11–2.19** | 22616 |
+
+**Throughput gain:** ~**19%** faster kernel wall time vs `-O2` baseline on the same source (2.65 ms → 2.15 ms avg).
+
+## Profile suite (`./scripts/grok16-toolchain.sh bench-all`)
+
+Results from `data/bench/latest.json` (2026-06-25):
+
+| Profile | Workload | compile_ms | run_ms | binary_bytes | kernel metric |
+|---------|----------|------------|--------|--------------|---------------|
+| `field_opt` | field-nexus-bench | 874 | 4 | 22616 | wall_ms **2.19** |
+| `ai` | ai-matrix-bench 64×64 | 735 | 6 | 18232 | wall_ms **4.01** |
+| `field_compute` | field-canvas-kernel | 543 | 3 | 16240 | wave dispatch OK |
+| `vulkan_rtx` | field-nexus + AVX2/FMA flags | 876 | 4 | 22728 | wall_ms **2.14** |
+
+## Reproduce
+
+```bash
+export G16_PREFIX="$(pwd)"
+./scripts/grok16-toolchain.sh field-bench
+./scripts/grok16-toolchain.sh bench-all
+cat data/bench/latest.json
+```
+
+### PGO (optional next step)
+
+```bash
+./scripts/grok16-toolchain.sh profile          # → data/pgo/
+G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench
+```
+
+### Production toolchain rebuild
+
+```bash
+G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh field-bench
+```
+
+## Stack verification (redata / ZAC)
+
+Grok16 compiles **World_Redata L2** (`build-cpp.sh`). Gates:
+
+```bash
+cd ../World_Redata
+./build-cpp.sh
+PYTHONPATH=. python3 -m redata.cli parity    # PYTHON ↔ C++ roundtrip
+PYTHONPATH=. python3 -m redata.cli security  # binary hardening + Grok16 manifest
+```
+
+Parity confirms WRDT/WRZC bytes roundtrip through the G16-built `world-redata` binary — the redata pipeline contract for L0–L1 → L2.
+
+## Notes
+
+- `nexus_checksum` under `-ffast-math` may report `-nan`; wall_ms is the primary throughput metric.
+- Thin LTO (`-flto=thin`) falls back to `-flto` when the installed g++16 does not support thin.
+- Full install prefix (`lib/gcc/.../include`) removes the need for `-B` driver workaround.
