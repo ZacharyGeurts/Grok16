@@ -1,33 +1,36 @@
 #!/usr/bin/env bash
 # One-time: pull Queen gcc/build into Grok16 and symlink Queen → Grok16 source
 set -euo pipefail
-GROK16="$(cd "$(dirname "$0")/.." && pwd)"
-SG="$(cd "$GROK16/.." && pwd)"
-QUEEN="$SG/NewLatest/Queen"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=grok16-config.sh
+source "$SCRIPT_DIR/grok16-config.sh"
 
-echo "Grok16 consolidate — whole G16 in $GROK16"
+QUEEN="$GROK16_QUEEN_ROOT"
 
-if [[ ! -d "$GROK16/vendor/gcc/.git" ]]; then
+echo "Grok16 consolidate — whole G16 in $GROK16_ROOT"
+echo "  queen=$QUEEN"
+
+if [[ ! -d "$GROK16_GCC_SRC/.git" ]]; then
   if [[ -d "$QUEEN/vendor/gcc/.git" && ! -L "$QUEEN/vendor/gcc" ]]; then
-    echo "Moving $QUEEN/vendor/gcc → $GROK16/vendor/gcc"
-    mkdir -p "$GROK16/vendor"
-    mv "$QUEEN/vendor/gcc" "$GROK16/vendor/gcc"
+    echo "Moving $QUEEN/vendor/gcc → $GROK16_GCC_SRC"
+    mkdir -p "$(dirname "$GROK16_GCC_SRC")"
+    mv "$QUEEN/vendor/gcc" "$GROK16_GCC_SRC"
   else
-    echo "No gcc source — run: $GROK16/scripts/grok16-toolchain.sh bootstrap" >&2
+    echo "No gcc source — run: $GROK16_ROOT/scripts/grok16-toolchain.sh bootstrap" >&2
     exit 1
   fi
 fi
 
-if [[ -d "$QUEEN/build/gcc" && ! -d "$GROK16/build/gcc" ]]; then
-  echo "Moving $QUEEN/build/gcc → $GROK16/build/gcc"
-  mkdir -p "$GROK16/build"
-  mv "$QUEEN/build/gcc" "$GROK16/build/gcc"
+if [[ -d "$QUEEN/build/gcc" && ! -d "$GROK16_GCC_BUILD" ]]; then
+  echo "Moving $QUEEN/build/gcc → $GROK16_GCC_BUILD"
+  mkdir -p "$(dirname "$GROK16_GCC_BUILD")"
+  mv "$QUEEN/build/gcc" "$GROK16_GCC_BUILD"
 fi
 
 mkdir -p "$QUEEN/vendor"
-ln -sfn "$GROK16/vendor/gcc" "$QUEEN/vendor/gcc"
-echo "Queen vendor/gcc → Grok16/vendor/gcc"
+ln -sfn "$GROK16_GCC_SRC" "$QUEEN/vendor/gcc"
+echo "Queen vendor/gcc → $GROK16_GCC_SRC"
 
-cat "$GROK16/vendor/gcc/gcc/BASE-VER"
-git -C "$GROK16/vendor/gcc" branch --show-current
-"$GROK16/scripts/grok16-toolchain.sh" status
+cat "$GROK16_GCC_SRC/gcc/BASE-VER"
+git -C "$GROK16_GCC_SRC" branch --show-current
+"$GROK16_ROOT/scripts/grok16-toolchain.sh" status

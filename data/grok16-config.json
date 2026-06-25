@@ -1,0 +1,32 @@
+{
+  "schema": "grok16-config/v1",
+  "description": "Defaults for Grok16 paths and forge options. Every value is overridden by environment variables (see ARCHITECTURE.md).",
+  "paths": {
+    "grok16_root": "${GROK16_ROOT}",
+    "g16_prefix": "${G16_PREFIX}",
+    "sg_root": "${GROK16_SG_ROOT}",
+    "queen_root": "${GROK16_QUEEN_ROOT}",
+    "gcc_src": "${GROK16_GCC_SRC}",
+    "gcc_build": "${GROK16_GCC_BUILD}"
+  },
+  "forge": {
+    "gcc_repo": "${GROK16_GCC_REPO}",
+    "gcc_branch": "${GROK16_GCC_BRANCH}",
+    "pkgversion": "${G16_PKGVERSION}",
+    "disable_bootstrap": "${G16_DISABLE_BOOTSTRAP}",
+    "build_jobs": "${GROK16_BUILD_JOBS}"
+  },
+  "defaults_when_unset": {
+    "GROK16_ROOT": "directory containing this repo (auto-detected from scripts/)",
+    "G16_PREFIX": "same as GROK16_ROOT",
+    "GROK16_SG_ROOT": "parent of GROK16_ROOT",
+    "GROK16_QUEEN_ROOT": "$GROK16_SG_ROOT/NewLatest/Queen",
+    "GROK16_GCC_SRC": "$GROK16_ROOT/vendor/gcc",
+    "GROK16_GCC_BUILD": "$GROK16_ROOT/build/gcc",
+    "GROK16_GCC_REPO": "https://gcc.gnu.org/git/gcc.git",
+    "GROK16_GCC_BRANCH": "releases/gcc-15",
+    "G16_PKGVERSION": "Grok16-16.0.0",
+    "G16_DISABLE_BOOTSTRAP": "unset (bootstrap enabled on rebuild)",
+    "GROK16_BUILD_JOBS": "nproc"
+  }
+}

@@ -10,10 +10,12 @@
     "note": "This is the G16 field rewrite — not upstream releases/gcc-16"
   },
   "paths": {
-    "grok16_root": "Grok16/",
-    "gcc_src": "Grok16/vendor/gcc",
-    "gcc_build": "Grok16/build/gcc",
-    "install_prefix": "Grok16/ (G16_PREFIX)"
+    "grok16_root": "${GROK16_ROOT}",
+    "gcc_src": "${GROK16_GCC_SRC}",
+    "gcc_build": "${GROK16_GCC_BUILD}",
+    "install_prefix": "${G16_PREFIX}",
+    "queen_root": "${GROK16_QUEEN_ROOT}",
+    "config": "data/grok16-config.json"
   },
   "patches": [
     "patches/gcc-base-ver-16.0.0.patch"

@@ -36,6 +36,9 @@ def gcc_src(ctx: ForgeContext) -> Path:
 
 
 def gcc_build_dir(ctx: ForgeContext) -> Path:
+    override = os.environ.get("GROK16_GCC_BUILD", "").strip()
+    if override:
+        return Path(override)
     return ctx.queen / "build/gcc"
 
 

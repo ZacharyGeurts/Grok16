@@ -10,8 +10,13 @@ _LIB = Path(__file__).resolve().parent
 if str(_LIB) not in sys.path:
     sys.path.insert(0, str(_LIB))
 
-from compiler_tools import GCC_TOOLS  # noqa: E402
+from compiler_tools import GCC_TOOLS, g16_status  # noqa: E402
 from engine import ForgeContext, ForgeEngine  # noqa: E402
+
+
+def forge_status() -> dict:
+    ctx = ForgeContext.from_env()
+    return {"product": "Grok16", "ok": True, **g16_status(ctx)}
 
 
 def run_tool(tool_id: str) -> dict:
@@ -25,10 +30,13 @@ def run_tool(tool_id: str) -> dict:
 
 
 def main() -> int:
+    if len(sys.argv) >= 2 and sys.argv[1] == "status":
+        print(json.dumps(forge_status(), indent=2))
+        return 0
     if len(sys.argv) < 3 or sys.argv[1] != "run":
         print(json.dumps({
             "product": "Grok16",
-            "usage": "grok16-forge.py run TOOL",
+            "usage": "grok16-forge.py status | grok16-forge.py run TOOL",
             "tools": list(GCC_TOOLS),
         }, indent=2))
         return 2

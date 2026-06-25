@@ -4,15 +4,26 @@
 # License: GNU General Public License v3 or later — see LICENSE
 # Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
 set -euo pipefail
-GROK16="$(cd "$(dirname "$0")/.." && pwd)"
-G16_PREFIX="${G16_PREFIX:-$GROK16}"
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=grok16-config.sh
+source "$SCRIPT_DIR/grok16-config.sh"
+
 BIN="$G16_PREFIX/bin"
 G16_VERSION="16.0.0"
-FORGE="$GROK16/forge/grok16-forge.py"
-export GROK16_ROOT="$GROK16"
+FORGE="$GROK16_ROOT/forge/grok16-forge.py"
+VERIFY_SRC="$GROK16_ROOT/examples/minimal-cmake-project/main.cpp"
+EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
-  echo "Usage: $0 install|bootstrap|rebuild|consolidate|status|paths|manifest" >&2
+  cat >&2 <<EOF
+Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|paths|manifest|config
+
+Environment (see data/grok16-config.json):
+  GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
+  GROK16_GCC_SRC GROK16_GCC_BUILD GROK16_GCC_REPO GROK16_GCC_BRANCH
+  G16_PKGVERSION G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
+EOF
   exit 2
 }
 
@@ -34,13 +45,13 @@ G16_CXX=g++16
 G16_CC=g16
 G16_PREFIX=${G16_PREFIX}
 PRODUCT=Grok16
-ROOT=${GROK16}
+ROOT=${GROK16_ROOT}
 EOF
 }
 
 write_cmake_toolchain() {
-  mkdir -p "$GROK16/cmake"
-  cat >"$GROK16/cmake/grok16-toolchain.cmake" <<EOF
+  mkdir -p "$GROK16_ROOT/cmake"
+  cat >"$GROK16_ROOT/cmake/grok16-toolchain.cmake" <<EOF
 set(CMAKE_C_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 G16 C compiler" FORCE)
 set(CMAKE_CXX_COMPILER "${G16_PREFIX}/bin/g++16" CACHE FILEPATH "Grok16 G16 C++ compiler" FORCE)
 set(WRDT_G16_VERSION "${G16_VERSION}" CACHE STRING "G16 version" FORCE)
@@ -49,7 +60,7 @@ EOF
 }
 
 write_manifest() {
-  mkdir -p "$GROK16/data"
+  mkdir -p "$GROK16_ROOT/data"
   local ver dv selfhosted_py
   ver="$("$BIN/g++16" --version 2>/dev/null | head -1 || true)"
   dv="$("$BIN/g++16" -dumpversion 2>/dev/null || true)"
@@ -67,8 +78,9 @@ doc = {
     "updated": datetime.now(timezone.utc).isoformat(),
     "g16_version": "${G16_VERSION}",
     "prefix": "${G16_PREFIX}",
-    "root": "${GROK16}",
-    "sg_root": "${SG}",
+    "root": "${GROK16_ROOT}",
+    "sg_root": "${GROK16_SG_ROOT}",
+    "queen_root": "${GROK16_QUEEN_ROOT}",
     "forge": "${FORGE}",
     "engine_real": True,
     "selfhosted": ${selfhosted_py},
@@ -77,21 +89,24 @@ doc = {
     "paths": {
         "g16": "${G16_PREFIX}/bin/g16",
         "g++16": "${G16_PREFIX}/bin/g++16",
-        "cmake": "${GROK16}/cmake/grok16-toolchain.cmake",
+        "gcc_src": "${GROK16_GCC_SRC}",
+        "gcc_build": "${GROK16_GCC_BUILD}",
+        "cmake": "${GROK16_ROOT}/cmake/grok16-toolchain.cmake",
         "version_file": "${G16_PREFIX}/VERSION",
         "selfhost_stamp": "${G16_PREFIX}/SELFHOST.json",
     },
     "usage": {
-        "status": "${GROK16}/scripts/grok16-toolchain.sh status",
-        "rebuild": "${GROK16}/scripts/grok16-toolchain.sh rebuild",
-        "paths": "${GROK16}/scripts/grok16-toolchain.sh paths",
+        "status": "${GROK16_ROOT}/scripts/grok16-toolchain.sh status",
+        "verify": "${GROK16_ROOT}/scripts/grok16-toolchain.sh verify",
+        "rebuild": "${GROK16_ROOT}/scripts/grok16-toolchain.sh rebuild",
+        "paths": "${GROK16_ROOT}/scripts/grok16-toolchain.sh paths",
     },
 }
-open("${GROK16}/data/grok16-toolchain.json", "w", encoding="utf-8").write(
+open("${GROK16_ROOT}/data/grok16-toolchain.json", "w", encoding="utf-8").write(
     json.dumps(doc, indent=2) + "\\n"
 )
 PY
-  echo "manifest: $GROK16/data/grok16-toolchain.json"
+  echo "manifest: $GROK16_ROOT/data/grok16-toolchain.json"
 }
 
 cmd_install() {
@@ -114,7 +129,7 @@ cmd_install() {
 cmd_bootstrap() {
   echo "Grok16 bootstrap → fetch GCC, host build, install to $G16_PREFIX"
   [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
-  export G16_PREFIX G16_PKGVERSION="Grok16-${G16_VERSION}"
+  export G16_PREFIX G16_PKGVERSION GROK16_GCC_SRC GROK16_GCC_BUILD
   python3 "$FORGE" run gcc || exit 1
   cmd_install
 }
@@ -122,28 +137,93 @@ cmd_bootstrap() {
 cmd_rebuild() {
   echo "Grok16 rebuild → prefix $G16_PREFIX (self-host gcc_rebuild)"
   [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
-  export G16_PREFIX G16_PKGVERSION="Grok16-${G16_VERSION}"
+  export G16_PREFIX G16_PKGVERSION GROK16_GCC_SRC GROK16_GCC_BUILD
   python3 "$FORGE" run gcc_rebuild || exit 1
   cmd_install
 }
 
+grok16_ready() {
+  is_real_compiler "$BIN/g++16" && [[ "$("$BIN/g++16" -dumpversion)" == "$G16_VERSION" ]]
+}
+
 cmd_status() {
-  if is_real_compiler "$BIN/g++16" && [[ "$("$BIN/g++16" -dumpversion)" == "$G16_VERSION" ]]; then
+  if grok16_ready; then
     echo "ready Grok16 g++16=$BIN/g++16"
     "$BIN/g++16" --version | head -1
     exit 0
   fi
-  echo "not ready — run: $0 rebuild"
+  echo "not ready — run: $0 bootstrap"
   exit 1
 }
 
+cmd_verify() {
+  if ! grok16_ready; then
+    echo "not ready — run: $0 bootstrap" >&2
+    exit 1
+  fi
+  echo "ready Grok16 g++16=$BIN/g++16"
+  "$BIN/g++16" --version | head -1
+  local tmpdir obj
+  tmpdir="$(mktemp -d)"
+  trap 'rm -rf "${tmpdir:-}"' EXIT
+  obj="$tmpdir/verify.o"
+
+  echo "verify: C++20 compile (driver + frontend)"
+  cat >"$tmpdir/verify.cpp" <<'EOF'
+#if __cplusplus >= 202002L
+int main() { return 0; }
+#else
+int main() { return 1; }
+#endif
+EOF
+  "$BIN/g++16" -std=c++20 -c -o "$obj" "$tmpdir/verify.cpp"
+  echo "verify: compile OK"
+
+  if [[ -f "$VERIFY_SRC" ]]; then
+    echo "verify: example source present ($VERIFY_SRC)"
+  fi
+
+  if command -v cmake >/dev/null 2>&1 && [[ -f "$GROK16_ROOT/cmake/grok16-toolchain.cmake" ]]; then
+    local bdir="$tmpdir/cmake-build"
+    echo "verify: CMake example (optional)"
+    if cmake -S "$EXAMPLE_CMAKE" -B "$bdir" \
+      -DCMAKE_TOOLCHAIN_FILE="$GROK16_ROOT/cmake/grok16-toolchain.cmake" \
+      -DCMAKE_BUILD_TYPE=Release >/dev/null 2>&1 \
+      && cmake --build "$bdir" >/dev/null 2>&1; then
+      "$bdir/grok16_smoke"
+      echo "verify: CMake example OK"
+    else
+      echo "verify: CMake example skipped (link/stdlib layout — run rebuild if needed)"
+    fi
+  else
+    echo "verify: skip CMake (cmake not installed or toolchain file missing)"
+  fi
+
+  echo "verify: PASS"
+}
+
 cmd_paths() {
-  printf 'GROK16=%s\nG16_PREFIX=%s\nG16_CC=%s/bin/g16\nG16_CXX=%s/bin/g++16\nCMAKE_TOOLCHAIN=%s/cmake/grok16-toolchain.cmake\n' \
-    "$GROK16" "$G16_PREFIX" "$G16_PREFIX" "$G16_PREFIX" "$GROK16"
+  printf 'GROK16_ROOT=%s\nG16_PREFIX=%s\nGROK16_SG_ROOT=%s\nGROK16_QUEEN_ROOT=%s\n' \
+    "$GROK16_ROOT" "$G16_PREFIX" "$GROK16_SG_ROOT" "$GROK16_QUEEN_ROOT"
+  printf 'GROK16_GCC_SRC=%s\nGROK16_GCC_BUILD=%s\n' \
+    "$GROK16_GCC_SRC" "$GROK16_GCC_BUILD"
+  printf 'G16_CC=%s/bin/g16\nG16_CXX=%s/bin/g++16\nCMAKE_TOOLCHAIN=%s/cmake/grok16-toolchain.cmake\n' \
+    "$G16_PREFIX" "$G16_PREFIX" "$GROK16_ROOT"
+  printf 'GROK16_GCC_REPO=%s\nGROK16_GCC_BRANCH=%s\nG16_PKGVERSION=%s\n' \
+    "$GROK16_GCC_REPO" "$GROK16_GCC_BRANCH" "$G16_PKGVERSION"
+  if [[ -n ${G16_DISABLE_BOOTSTRAP:-} ]]; then
+    printf 'G16_DISABLE_BOOTSTRAP=%s\n' "$G16_DISABLE_BOOTSTRAP"
+  fi
+}
+
+cmd_config() {
+  cmd_paths
+  echo "---"
+  echo "config template: $GROK16_ROOT/data/grok16-config.json"
 }
 
 cmd_consolidate() {
-  exec "$GROK16/scripts/consolidate.sh"
+  exec "$GROK16_ROOT/scripts/consolidate.sh"
 }
 
 case "${1:-}" in
@@ -152,7 +232,9 @@ case "${1:-}" in
   rebuild) cmd_rebuild ;;
   consolidate) cmd_consolidate ;;
   status) cmd_status ;;
+  verify) cmd_verify ;;
   paths) cmd_paths ;;
+  config) cmd_config ;;
   manifest) write_cmake_toolchain; write_manifest ;;
   *) usage ;;
 esac
