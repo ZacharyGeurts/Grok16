@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok16 Manual — Master Coder Index</title>
+  <link rel="stylesheet" href="manual.css" />
+</head>
+<body>
+  <nav>
+    <strong>Grok16 Manual</strong> v16.0.0 —
+    <a href="index.html">Index</a>
+    <a href="master-coder.html">Master Coder</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="profiles.html">Profiles</a>
+    <a href="performance.html">Performance</a>
+    <a href="integration.html">Integration</a>
+    <a href="field-primer.html">Field Primer</a>
+    <a href="reference.html">Reference</a>
+  </nav>
+
+  <h1>Master Coder Index</h1>
+  <p>All commands and functions in workflow order. Hover name for short tooltip; click for detail page.</p>
+
+  <h2>1 — Toolchain commands (<code>grok16-toolchain.sh</code>)</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Command</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="getting-started.html#bootstrap" title="First-time: fetch GCC, host build, install to G16_PREFIX">bootstrap</a></td><td class="tip">Fetch GCC, host build, install</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="getting-started.html#rebuild" title="Self-host: g16/g++16 compile GCC; default fast incremental">rebuild</a></td><td class="tip">Self-host with g16/g++16</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="reference.html#cmd-install" title="Regenerate VERSION, cmake toolchain, grok16-toolchain.json">install</a></td><td class="tip">Write metadata (needs bin/g++16)</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="getting-started.html#verify" title="gnu++26 compile probe; optional CMake smoke">verify</a></td><td class="tip">Compile smoke test</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="reference.html#cmd-status" title="Exit 0 if real ELF g++16 @ 16.0.0">status</a></td><td class="tip">Ready check</td></tr>
+    <tr><td class="idx-num">6</td><td><a href="performance.html#field-bench" title="Primary Field-Opt benchmark (field-nexus-bench)">field-bench</a></td><td class="tip">Field-Opt benchmark</td></tr>
+    <tr><td class="idx-num">7</td><td><a href="performance.html#bench" title="Run one profile benchmark (G16_BENCH_PROFILE)">bench</a></td><td class="tip">Single profile bench</td></tr>
+    <tr><td class="idx-num">8</td><td><a href="performance.html#bench-all" title="All four profiles → data/bench/latest.json">bench-all</a></td><td class="tip">All profile benches</td></tr>
+    <tr><td class="idx-num">9</td><td><a href="performance.html#pgo" title="Compile/run with -fprofile-generate → data/pgo/">profile</a></td><td class="tip">PGO training run</td></tr>
+    <tr><td class="idx-num">10</td><td><a href="reference.html#cmd-paths" title="Print GROK16_ROOT, G16_PREFIX, gcc paths, env">paths</a></td><td class="tip">Resolved paths/env</td></tr>
+    <tr><td class="idx-num">11</td><td><a href="reference.html#cmd-config" title="paths + grok16-config.json location">config</a></td><td class="tip">Paths + config template</td></tr>
+    <tr><td class="idx-num">12</td><td><a href="reference.html#cmd-manifest" title="Regenerate grok16-toolchain.cmake and JSON manifest">manifest</a></td><td class="tip">Regenerate cmake + JSON</td></tr>
+    <tr><td class="idx-num">13</td><td><a href="integration.html#queen" title="Move Queen vendor/build into Grok16; symlink">consolidate</a></td><td class="tip">Queen → Grok16 migration</td></tr>
+  </table>
+
+  <h2>2 — Forge (<code>grok16-forge.py</code>)</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Invocation</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="reference.html#forge-status" title="JSON: engine_real, selfhosted, paths, profiles">status</a></td><td class="tip">Toolchain state JSON</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="architecture.html#forge-flow" title="Clone vendor/gcc, patch BASE-VER 16.0.0">run gcc_fetch</a></td><td class="tip">Fetch upstream GCC</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="architecture.html#forge-flow" title="contrib/download_prerequisites">run gcc_prereqs</a></td><td class="tip">GCC prerequisites</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="architecture.html#forge-flow" title="configure with host gcc, --prefix=G16_PREFIX">run gcc_configure</a></td><td class="tip">Host configure</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="architecture.html#forge-flow" title="make -j && make install">run gcc_build</a></td><td class="tip">Host build + install</td></tr>
+    <tr><td class="idx-num">6</td><td><a href="getting-started.html#rebuild" title="distclean/configure self-host, bootstrap or make all, install">run gcc_rebuild</a></td><td class="tip">Self-host rebuild</td></tr>
+    <tr><td class="idx-num">7</td><td><a href="getting-started.html#bootstrap" title="fetch → prereqs → configure → build (full pipeline)">run gcc</a></td><td class="tip">Full bootstrap pipeline</td></tr>
+  </table>
+
+  <h2>3 — Profile flags (<code>grok16-profile-flags.py</code>)</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Mode</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="profiles.html#flags-cxx" title="PROFILE cxx — emit CXX flags + -D definitions">PROFILE cxx</a></td><td class="tip">Compile flags + defs</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="profiles.html#flags-link" title="PROFILE link — LTO/link flags (normalized)">PROFILE link</a></td><td class="tip">Link flags</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="profiles.html#flags-source" title="PROFILE source — bench .cpp path from profiles.json">PROFILE source</a></td><td class="tip">Bench source path</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="profiles.html#flags-defs" title="PROFILE defs — -D macros only">PROFILE defs</a></td><td class="tip">Definition flags only</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="performance.html#pgo" title="PROFILE cxx_pgo_gen — -fprofile-generate">PROFILE cxx_pgo_gen</a></td><td class="tip">PGO generate flags</td></tr>
+    <tr><td class="idx-num">6</td><td><a href="performance.html#pgo" title="PROFILE cxx_pgo_use — -fprofile-use">PROFILE cxx_pgo_use</a></td><td class="tip">PGO use flags</td></tr>
+  </table>
+
+  <h2>4 — Shell functions</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Function</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="architecture.html#scripts" title="Resolve all GROK16_* paths and export env defaults">_grok16_config_resolve</a></td><td class="tip">Path/env resolution (grok16-config.sh)</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="reference.html#fn-driver-extra" title="-B$GROK16_GCC_BUILD/gcc/ when lib/gcc include missing">grok16_driver_extra_flags</a></td><td class="tip">Dev layout driver -B flag</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="reference.html#fn-ready" title="ELF g++16 exists and dumpversion == 16.0.0">grok16_ready</a></td><td class="tip">Compiler ready probe</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="performance.html#bench" title="Compile+run one profile; write data/bench/latest_*.json">_bench_run_one</a></td><td class="tip">Internal bench runner</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="profiles.html#mandate" title="CMake: fortify, stack protector, RELRO, PIE on target">g16_field_mandate</a></td><td class="tip">CMake security function</td></tr>
+  </table>
+
+  <h2>5 — Build profiles</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Profile</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="profiles.html#field-opt" title="FieldX86 + entropy + wave + NEXUS; G16_FIELD_SPEED">field_opt</a></td><td class="tip">Primary Field throughput</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="profiles.html#ai" title="Matrix scoring, vectorize, -flto">ai</a></td><td class="tip">NEXUS / matrix</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="profiles.html#field-compute" title="CANVAS dispatch, OpenMP SIMD">field_compute</a></td><td class="tip">Field compute kernels</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="profiles.html#vulkan-rtx" title="AVX2/FMA, AMOURANTHRTX CPU prep">vulkan_rtx</a></td><td class="tip">RTX-oriented SIMD</td></tr>
+  </table>
+
+  <h2>6 — Environment variables</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Variable</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="reference.html#env-grok16-root" title="Repository root; auto from scripts/">GROK16_ROOT</a></td><td class="tip">Repo root</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="reference.html#env-g16-prefix" title="Install prefix: bin/g16, lib/, include/">G16_PREFIX</a></td><td class="tip">Install prefix</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="reference.html#env-gcc-src" title="vendor/gcc clone path">GROK16_GCC_SRC</a></td><td class="tip">GCC source tree</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="reference.html#env-gcc-build" title="build/gcc configure/make tree">GROK16_GCC_BUILD</a></td><td class="tip">GCC build tree</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="integration.html#queen" title="Queen tree for consolidate.sh">GROK16_QUEEN_ROOT</a></td><td class="tip">Queen path</td></tr>
+    <tr><td class="idx-num">6</td><td><a href="field-primer.html#standard" title="Default gnu++26">G16_CXX_STD</a></td><td class="tip">C++ standard</td></tr>
+    <tr><td class="idx-num">7</td><td><a href="reference.html#env-pkgversion" title="Compiler --with-pkgversion string">G16_PKGVERSION</a></td><td class="tip">Pkgversion stamp</td></tr>
+    <tr><td class="idx-num">8</td><td><a href="performance.html#forge-speed" title="MAKEFLAGS=-jN; default nproc">GROK16_BUILD_JOBS</a></td><td class="tip">Parallel make jobs</td></tr>
+    <tr><td class="idx-num">9</td><td><a href="getting-started.html#rebuild" title="Default 1: skip distclean, G16_DISABLE_BOOTSTRAP=1">G16_FAST_REBUILD</a></td><td class="tip">Incremental rebuild</td></tr>
+    <tr><td class="idx-num">10</td><td><a href="getting-started.html#rebuild" title="Set 1 to force full distclean + 3-stage bootstrap">G16_FULL_REBUILD</a></td><td class="tip">Full bootstrap rebuild</td></tr>
+    <tr><td class="idx-num">11</td><td><a href="performance.html#forge-speed" title="Sets LTO+PGO+G16_FIELD_SPEED=1">G16_RELEASE_PROFILE</a></td><td class="tip">Production profile</td></tr>
+    <tr><td class="idx-num">12</td><td><a href="profiles.html#field-opt" title="Sets G16_BENCH_PROFILE=field_opt">G16_FIELD_SPEED</a></td><td class="tip">Field-Opt enable</td></tr>
+    <tr><td class="idx-num">13</td><td><a href="performance.html#forge-speed" title="--enable-lto + -flto on make">G16_ENABLE_LTO</a></td><td class="tip">Link-time optimization</td></tr>
+    <tr><td class="idx-num">14</td><td><a href="performance.html#pgo" title="-fprofile-use on consumer builds">G16_ENABLE_PGO</a></td><td class="tip">PGO use</td></tr>
+    <tr><td class="idx-num">15</td><td><a href="performance.html#pgo" title="Set by profile command; -fprofile-generate">G16_PGO_GENERATE</a></td><td class="tip">PGO generate</td></tr>
+    <tr><td class="idx-num">16</td><td><a href="performance.html#forge-speed" title="Auto 1 when ccache in PATH">GROK16_USE_CCACHE</a></td><td class="tip">ccache wrapper</td></tr>
+    <tr><td class="idx-num">17</td><td><a href="getting-started.html#rebuild" title="Auto with fast rebuild: make all not bootstrap">G16_DISABLE_BOOTSTRAP</a></td><td class="tip">Skip 3-stage</td></tr>
+    <tr><td class="idx-num">18</td><td><a href="profiles.html#bench" title="field_opt | ai | field_compute | vulkan_rtx">G16_BENCH_PROFILE</a></td><td class="tip">Bench profile name</td></tr>
+    <tr><td class="idx-num">19</td><td><a href="integration.html#env" title="World_Redata install prefix override">WRDT_G16_PREFIX</a></td><td class="tip">WRDT prefix override</td></tr>
+    <tr><td class="idx-num">20</td><td><a href="integration.html#env" title="Override path to grok16-toolchain.sh">WRDT_G16_TOOLCHAIN</a></td><td class="tip">WRDT script override</td></tr>
+  </table>
+
+  <h2>7 — Forge Python (key)</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Function</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="reference.html#py-g16-status" title="Return toolchain dict for manifest">g16_status</a></td><td class="tip">Status dict builder</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="architecture.html#forge-flow" title="Patch gcc/BASE-VER to 16.0.0">patch_gcc_field_version</a></td><td class="tip">Field version patch</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="architecture.html#selfhost" title="Write G16_PREFIX/SELFHOST.json">write_selfhost_stamp</a></td><td class="tip">Self-host JSON stamp</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="reference.html#py-manifest" title="Write data/grok16-toolchain.json">write_manifest</a></td><td class="tip">JSON manifest</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="reference.html#py-cmake" title="Write cmake/grok16-toolchain.cmake">write_cmake_toolchain</a></td><td class="tip">CMake toolchain file</td></tr>
+    <tr><td class="idx-num">6</td><td><a href="profiles.html#flags-link" title="Probe g++16; return -flto=thin or -flto">resolve_lto_flag</a></td><td class="tip">LTO flag resolver</td></tr>
+    <tr><td class="idx-num">7</td><td><a href="reference.html#py-verify" title="ELF check + dumpversion 16.0.0">verify_g16_install</a></td><td class="tip">Install verification</td></tr>
+  </table>
+
+  <h2>8 — Integration gates (World_Redata)</h2>
+  <table class="idx">
+    <tr><th>#</th><th>Command</th><th>Tooltip</th></tr>
+    <tr><td class="idx-num">1</td><td><a href="integration.html#gates" title="World_Redata/cpp build via Grok16">build-cpp.sh</a></td><td class="tip">Build L2 engine</td></tr>
+    <tr><td class="idx-num">2</td><td><a href="integration.html#gates" title="Python ↔ C++ WRDT/WRZC bytes">redata.cli parity</a></td><td class="tip">Format parity gate</td></tr>
+    <tr><td class="idx-num">3</td><td><a href="integration.html#gates" title="RELRO, PIE, real g++16 ELF">redata.cli security</a></td><td class="tip">Security gate</td></tr>
+    <tr><td class="idx-num">4</td><td><a href="integration.html#gates" title="Per-file core safety audit">redata.cli mandate</a></td><td class="tip">Mandate gate</td></tr>
+  </table>
+
+  <footer><a href="index.html">Index</a> · <a href="reference.html">Reference</a></footer>
+</body>
+</html>

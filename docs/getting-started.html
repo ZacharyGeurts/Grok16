@@ -10,6 +10,7 @@
   <nav>
     <strong>Grok16 Manual</strong> v16.0.0 —
     <a href="index.html">Index</a>
+    <a href="master-coder.html">Master Coder</a>
     <a href="getting-started.html">Getting Started</a>
     <a href="architecture.html">Architecture</a>
     <a href="profiles.html">Profiles</a>
@@ -29,7 +30,7 @@
     <li>~6 GB disk for vendor + build + prefix</li>
   </ul>
 
-  <h2>First bootstrap</h2>
+  <h2 id="bootstrap">First bootstrap</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
 git checkout v16.0.0
@@ -40,7 +41,7 @@ export G16_PREFIX="$(pwd)"
 ./scripts/grok16-toolchain.sh verify
 ./scripts/grok16-toolchain.sh field-bench</code></pre>
 
-  <h2>Rebuild modes</h2>
+  <h2 id="rebuild">Rebuild modes</h2>
   <table>
     <tr><th>Mode</th><th>Env</th><th>Behavior</th></tr>
     <tr><td>Default</td><td>(none)</td><td><code>G16_FAST_REBUILD=1</code> — incremental, no 3-stage bootstrap</td></tr>
@@ -51,7 +52,7 @@ export G16_PREFIX="$(pwd)"
 G16_FULL_REBUILD=1 ./scripts/grok16-toolchain.sh rebuild
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></pre>
 
-  <h2>Verify</h2>
+  <h2 id="verify">Verify</h2>
   <pre><code>./scripts/grok16-toolchain.sh verify
 ./scripts/grok16-toolchain.sh status
 ./scripts/grok16-toolchain.sh paths</code></pre>

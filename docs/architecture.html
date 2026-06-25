@@ -10,6 +10,7 @@
   <nav>
     <strong>Grok16 Manual</strong> v16.0.0 —
     <a href="index.html">Index</a>
+    <a href="master-coder.html">Master Coder</a>
     <a href="getting-started.html">Getting Started</a>
     <a href="architecture.html">Architecture</a>
     <a href="profiles.html">Profiles</a>
@@ -30,18 +31,18 @@
     <tr><td>Pkgversion</td><td>default</td><td>Grok16-16.0.0</td></tr>
   </table>
 
-  <h2>Build flow</h2>
+  <h2 id="forge-flow">Build flow</h2>
   <pre><code>grok16-forge gcc_fetch  → vendor/gcc
 patch BASE-VER 16.0.0
 gcc_configure (host gcc) → make install → G16_PREFIX
 gcc_rebuild (g16/g++16) → SELFHOST.json
 install → grok16-toolchain.cmake, grok16-toolchain.json</code></pre>
 
-  <h2>Scripts</h2>
+  <h2 id="scripts">Scripts</h2>
   <table>
     <tr><th>Entry</th><th>Role</th></tr>
     <tr><td>scripts/grok16-toolchain.sh</td><td>bootstrap, rebuild, verify, bench, paths</td></tr>
-    <tr><td>scripts/grok16-config.sh</td><td>Path/env resolution</td></tr>
+    <tr><td>scripts/grok16-config.sh</td><td><code>_grok16_config_resolve</code> — path/env resolution</td></tr>
     <tr><td>scripts/grok16-profile-flags.py</td><td>Emit profile CXX/link flags</td></tr>
     <tr><td>scripts/consolidate.sh</td><td>Queen vendor → Grok16</td></tr>
     <tr><td>forge/grok16-forge.py</td><td>Forge orchestrator</td></tr>
@@ -59,7 +60,7 @@ install → grok16-toolchain.cmake, grok16-toolchain.json</code></pre>
     <tr><td>cmake/grok16-toolchain.cmake</td><td>generated</td><td>At install</td></tr>
   </table>
 
-  <h2>Self-host stamp</h2>
+  <h2 id="selfhost">Self-host stamp</h2>
   <p><code>G16_PREFIX/SELFHOST.json</code> — selfhosted, bootstrap flag, g16/g++16 paths.</p>
 
   <h2>Configuration</h2>

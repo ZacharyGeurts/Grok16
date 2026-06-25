@@ -10,6 +10,7 @@
   <nav>
     <strong>Grok16 Manual</strong> v16.0.0 —
     <a href="index.html">Index</a>
+    <a href="master-coder.html">Master Coder</a>
     <a href="getting-started.html">Getting Started</a>
     <a href="architecture.html">Architecture</a>
     <a href="profiles.html">Profiles</a>
@@ -27,7 +28,7 @@
 # uses ../Grok16/scripts/grok16-toolchain.sh by default</code></pre>
   <p>CMake: <code>cpp/CMakeLists.txt</code> — gnu++26, <code>g16-field-mandate.cmake</code> from Grok16.</p>
 
-  <h2>Gates</h2>
+  <h2 id="gates">Gates</h2>
   <pre><code>PYTHONPATH=. python3 -m redata.cli parity
 PYTHONPATH=. python3 -m redata.cli security
 PYTHONPATH=. python3 -m redata.cli mandate</code></pre>
@@ -38,7 +39,7 @@ PYTHONPATH=. python3 -m redata.cli mandate</code></pre>
     <tr><td>mandate</td><td>Per-file safety audit, grok16_forge map</td></tr>
   </table>
 
-  <h2>Queen</h2>
+  <h2 id="queen">Queen</h2>
   <pre><code>./scripts/consolidate.sh
 # GROK16_QUEEN_ROOT — Queen vendor/gcc → symlink to Grok16 vendor</code></pre>
 
@@ -52,7 +53,7 @@ PYTHONPATH=. python3 -m redata.cli mandate</code></pre>
     <tr><td>L5</td><td>Grok16 toolchain</td></tr>
   </table>
 
-  <h2>Downstream env</h2>
+  <h2 id="env">Downstream env</h2>
   <pre><code>export G16_PREFIX=/path/to/Grok16
 export WRDT_G16_PREFIX="$G16_PREFIX"
 export GROK16_ROOT=/path/to/Grok16</code></pre>

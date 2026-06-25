@@ -25,7 +25,7 @@
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 
-**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Master Coder index](https://zacharygeurts.github.io/Grok16/master-coder.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## Architecture (short)
 

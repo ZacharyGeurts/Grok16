@@ -10,6 +10,7 @@
   <nav>
     <strong>Grok16 Manual</strong> v16.0.0 —
     <a href="index.html">Index</a>
+    <a href="master-coder.html">Master Coder</a>
     <a href="getting-started.html">Getting Started</a>
     <a href="architecture.html">Architecture</a>
     <a href="profiles.html">Profiles</a>
@@ -22,7 +23,7 @@
   <h1>Performance</h1>
   <p>Measured: Linux x86_64, <code>g++16 (Grok16-16.0.0) 16.0.0</code>, gnu++26. See also repo <code>PERFORMANCE.md</code>.</p>
 
-  <h2>Field-Opt vs baseline</h2>
+  <h2 id="field-bench">Field-Opt vs baseline</h2>
   <p>Workload: <code>examples/field-nexus-bench</code> — 240 frames, 512 FieldX86 ops, entropy + NEXUS.</p>
   <table>
     <tr><th>Build</th><th>Flags</th><th>kernel wall_ms</th><th>binary bytes</th></tr>
@@ -31,7 +32,7 @@
   </table>
   <p>Delta: ~19% faster kernel vs -O2 on same source.</p>
 
-  <h2>Profile suite (bench-all)</h2>
+  <h2 id="bench-all">Profile suite (bench-all)</h2>
   <table>
     <tr><th>Profile</th><th>compile_ms</th><th>run_ms</th><th>bytes</th><th>kernel</th></tr>
     <tr><td>field_opt</td><td>828–874</td><td>4–5</td><td>22616</td><td>wall_ms ~2.1</td></tr>
@@ -40,18 +41,22 @@
     <tr><td>vulkan_rtx</td><td>864–876</td><td>4–5</td><td>22728</td><td>wall_ms ~2.1</td></tr>
   </table>
 
+  <h2 id="bench">Single profile bench</h2>
+  <pre><code>G16_BENCH_PROFILE=field_opt ./scripts/grok16-toolchain.sh bench</code></pre>
+  <p>Internal runner: <code>_bench_run_one</code> — compile+run one profile; writes <code>data/bench/latest_*.json</code>.</p>
+
   <h2>Reproduce</h2>
   <pre><code>export G16_PREFIX="$(pwd)"
 ./scripts/grok16-toolchain.sh field-bench
 ./scripts/grok16-toolchain.sh bench-all
 cat data/bench/latest.json</code></pre>
 
-  <h2>PGO</h2>
+  <h2 id="pgo">PGO</h2>
   <pre><code>./scripts/grok16-toolchain.sh profile
 G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
   <p>Profile data: <code>data/pgo/</code></p>
 
-  <h2>Forge speed env</h2>
+  <h2 id="forge-speed">Forge speed env</h2>
   <table>
     <tr><th>Variable</th><th>Effect</th></tr>
     <tr><td>GROK16_BUILD_JOBS</td><td>MAKEFLAGS=-jN</td></tr>

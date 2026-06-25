@@ -1,5 +1,6 @@
 **[Home](Home)**
 
+- [Master Coder](Master-Coder)
 - [Getting Started](Getting-Started)
 - [Architecture](Architecture)
 - [Profiles](Profiles)
