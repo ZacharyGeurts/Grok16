@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok16 Manual — Performance</title>
+  <link rel="stylesheet" href="manual.css" />
+</head>
+<body>
+  <nav>
+    <strong>Grok16 Manual</strong> v16.0.0 —
+    <a href="index.html">Index</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="profiles.html">Profiles</a>
+    <a href="performance.html">Performance</a>
+    <a href="integration.html">Integration</a>
+    <a href="field-primer.html">Field Primer</a>
+    <a href="reference.html">Reference</a>
+  </nav>
+
+  <h1>Performance</h1>
+  <p>Measured: Linux x86_64, <code>g++16 (Grok16-16.0.0) 16.0.0</code>, gnu++26. See also repo <code>PERFORMANCE.md</code>.</p>
+
+  <h2>Field-Opt vs baseline</h2>
+  <p>Workload: <code>examples/field-nexus-bench</code> — 240 frames, 512 FieldX86 ops, entropy + NEXUS.</p>
+  <table>
+    <tr><th>Build</th><th>Flags</th><th>kernel wall_ms</th><th>binary bytes</th></tr>
+    <tr><td>baseline</td><td>-std=gnu++26 -O2</td><td>2.65</td><td>17144</td></tr>
+    <tr><td>field_opt</td><td>profile flags</td><td>2.11–2.19</td><td>22616</td></tr>
+  </table>
+  <p>Delta: ~19% faster kernel vs -O2 on same source.</p>
+
+  <h2>Profile suite (bench-all)</h2>
+  <table>
+    <tr><th>Profile</th><th>compile_ms</th><th>run_ms</th><th>bytes</th><th>kernel</th></tr>
+    <tr><td>field_opt</td><td>828–874</td><td>4–5</td><td>22616</td><td>wall_ms ~2.1</td></tr>
+    <tr><td>ai</td><td>735</td><td>6–7</td><td>18232</td><td>wall_ms ~4.0</td></tr>
+    <tr><td>field_compute</td><td>543</td><td>2–3</td><td>16240</td><td>dispatch OK</td></tr>
+    <tr><td>vulkan_rtx</td><td>864–876</td><td>4–5</td><td>22728</td><td>wall_ms ~2.1</td></tr>
+  </table>
+
+  <h2>Reproduce</h2>
+  <pre><code>export G16_PREFIX="$(pwd)"
+./scripts/grok16-toolchain.sh field-bench
+./scripts/grok16-toolchain.sh bench-all
+cat data/bench/latest.json</code></pre>
+
+  <h2>PGO</h2>
+  <pre><code>./scripts/grok16-toolchain.sh profile
+G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
+  <p>Profile data: <code>data/pgo/</code></p>
+
+  <h2>Forge speed env</h2>
+  <table>
+    <tr><th>Variable</th><th>Effect</th></tr>
+    <tr><td>GROK16_BUILD_JOBS</td><td>MAKEFLAGS=-jN</td></tr>
+    <tr><td>G16_FAST_REBUILD</td><td>skip distclean, incremental</td></tr>
+    <tr><td>G16_ENABLE_LTO</td><td>--enable-lto, -flto on make</td></tr>
+    <tr><td>G16_ENABLE_PGO</td><td>-fprofile-use on consumers</td></tr>
+    <tr><td>GROK16_USE_CCACHE</td><td>ccache prefix on CC/CXX</td></tr>
+    <tr><td>G16_RELEASE_PROFILE</td><td>LTO + PGO + field_opt</td></tr>
+  </table>
+
+  <footer><a href="index.html">Index</a></footer>
+</body>
+</html>

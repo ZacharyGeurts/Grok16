@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok16 Manual — Profiles</title>
+  <link rel="stylesheet" href="manual.css" />
+</head>
+<body>
+  <nav>
+    <strong>Grok16 Manual</strong> v16.0.0 —
+    <a href="index.html">Index</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="profiles.html">Profiles</a>
+    <a href="performance.html">Performance</a>
+    <a href="integration.html">Integration</a>
+    <a href="field-primer.html">Field Primer</a>
+    <a href="reference.html">Reference</a>
+  </nav>
+
+  <h1>Build Profiles</h1>
+  <p>Defined in <code>data/grok16-profiles.json</code>. Default C++ standard: <code>gnu++26</code>.</p>
+
+  <h2>Profiles</h2>
+  <table>
+    <tr><th>Name</th><th>CMake</th><th>Bench source</th><th>Use</th></tr>
+    <tr><td>field_opt</td><td>grok16-profile-field-opt.cmake</td><td>examples/field-nexus-bench/</td><td>FieldX86, entropy, NEXUS (primary)</td></tr>
+    <tr><td>ai</td><td>grok16-profile-ai.cmake</td><td>examples/ai-matrix-bench/</td><td>Matrix / scoring loops</td></tr>
+    <tr><td>field_compute</td><td>grok16-profile-field.cmake</td><td>examples/field-canvas-kernel/</td><td>CANVAS-style dispatch</td></tr>
+    <tr><td>vulkan_rtx</td><td>grok16-profile-vulkan.cmake</td><td>field-nexus-bench</td><td>AVX2/FMA CPU kernels</td></tr>
+  </table>
+
+  <h2>Macros</h2>
+  <table>
+    <tr><th>Macro</th><th>Profiles</th></tr>
+    <tr><td>GROK16_PROFILE_FIELD_OPT, G16_FIELD_SPEED</td><td>field_opt</td></tr>
+    <tr><td>GROK16_PROFILE_AI, FIELD_ENTROPY_DISPATCH</td><td>ai</td></tr>
+    <tr><td>GROK16_PROFILE_FIELD, FIELD_X86_DIE, FIELD_ENTROPY_DISPATCH</td><td>field_compute</td></tr>
+    <tr><td>GROK16_PROFILE_VULKAN, FIELD_X86_DIE</td><td>vulkan_rtx</td></tr>
+    <tr><td>FIELD_WAVE_PHASE</td><td>field_opt</td></tr>
+  </table>
+
+  <h2>CMake usage</h2>
+  <pre><code>cmake -S myproject -B build \
+  -DCMAKE_TOOLCHAIN_FILE=/path/to/Grok16/cmake/grok16-toolchain.cmake \
+  -DCMAKE_PROJECT_INCLUDE=/path/to/Grok16/cmake/grok16-profile-field-opt.cmake</code></pre>
+
+  <h2>Bench profile selection</h2>
+  <pre><code>G16_BENCH_PROFILE=field_opt ./scripts/grok16-toolchain.sh bench
+G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
+
+  <h2>Flag emission</h2>
+  <pre><code>python3 scripts/grok16-profile-flags.py field_opt cxx
+python3 scripts/grok16-profile-flags.py field_opt link
+python3 scripts/grok16-profile-flags.py field_opt source</code></pre>
+
+  <h2>Safety mandate</h2>
+  <p>All field targets should include <code>cmake/g16-field-mandate.cmake</code> (fortify, stack protector, RELRO, PIE). Used by World_Redata L2.</p>
+
+  <footer><a href="index.html">Index</a></footer>
+</body>
+</html>

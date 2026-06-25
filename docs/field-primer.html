@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok16 Manual — Field Primer</title>
+  <link rel="stylesheet" href="manual.css" />
+</head>
+<body>
+  <nav>
+    <strong>Grok16 Manual</strong> v16.0.0 —
+    <a href="index.html">Index</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="profiles.html">Profiles</a>
+    <a href="performance.html">Performance</a>
+    <a href="integration.html">Integration</a>
+    <a href="field-primer.html">Field Primer</a>
+    <a href="reference.html">Reference</a>
+  </nav>
+
+  <h1>Field Primer — Consumer Requirements</h1>
+  <p>Minimum steps to use Grok16 as the C/C++ toolchain for Field stack projects.</p>
+
+  <h2>Checklist</h2>
+  <ol>
+    <li>Bootstrap Grok16; <code>verify</code> and <code>field-bench</code> pass.</li>
+    <li>Export <code>G16_PREFIX</code> (install prefix with <code>bin/g++16</code>).</li>
+    <li>Point CMake at <code>cmake/grok16-toolchain.cmake</code>.</li>
+    <li>Include <code>g16-field-mandate.cmake</code> on all field targets.</li>
+    <li>Run World_Redata <code>parity</code> before push.</li>
+  </ol>
+
+  <h2>C++ standard</h2>
+  <p>Default: <code>gnu++26</code> (<code>G16_CXX_STD</code>). World_Redata: <code>field_g16.hh</code> requires <code>__cplusplus >= 202400</code>.</p>
+
+  <h2>Profile selection</h2>
+  <table>
+    <tr><th>Project type</th><th>Profile</th></tr>
+    <tr><td>FieldX86 / entropy / NEXUS CPU</td><td>field_opt</td></tr>
+    <tr><td>Matrix scoring</td><td>ai</td></tr>
+    <tr><td>CANVAS dispatch kernels</td><td>field_compute</td></tr>
+    <tr><td>AMOURANTHRTX CPU prep</td><td>vulkan_rtx</td></tr>
+  </table>
+
+  <h2>Hot paths</h2>
+  <ul>
+    <li>Use <code>-std=gnu++26 -fcontracts</code> where contracts are required.</li>
+    <li>Bounded I/O: <code>core::read_file_bounded</code> (World_Redata pattern).</li>
+    <li>No fake g16 wrappers — gates check ELF + dumpversion 16.0.0.</li>
+  </ul>
+
+  <h2>CMake example</h2>
+  <pre><code>cmake -S . -B build \
+  -DCMAKE_TOOLCHAIN_FILE=$GROK16_ROOT/cmake/grok16-toolchain.cmake \
+  -DCMAKE_PROJECT_INCLUDE=$GROK16_ROOT/cmake/grok16-profile-field-opt.cmake</code></pre>
+
+  <footer><a href="index.html">Index</a></footer>
+</body>
+</html>

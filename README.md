@@ -23,7 +23,9 @@
 | `examples/` | minimal-cmake, field-nexus-bench, ai-matrix-bench, field-canvas-kernel |
 | `PERFORMANCE.md` | Field-Opt before/after metrics + reproduction steps |
 
-Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G). See [ARCHITECTURE.md](ARCHITECTURE.md).
+Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
+
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## Architecture (short)
 

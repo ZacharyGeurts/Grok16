@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok16 Manual — Integration</title>
+  <link rel="stylesheet" href="manual.css" />
+</head>
+<body>
+  <nav>
+    <strong>Grok16 Manual</strong> v16.0.0 —
+    <a href="index.html">Index</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="profiles.html">Profiles</a>
+    <a href="performance.html">Performance</a>
+    <a href="integration.html">Integration</a>
+    <a href="field-primer.html">Field Primer</a>
+    <a href="reference.html">Reference</a>
+  </nav>
+
+  <h1>Integration</h1>
+
+  <h2>World_Redata L2</h2>
+  <pre><code>cd World_Redata
+./build-cpp.sh
+# uses ../Grok16/scripts/grok16-toolchain.sh by default</code></pre>
+  <p>CMake: <code>cpp/CMakeLists.txt</code> — gnu++26, <code>g16-field-mandate.cmake</code> from Grok16.</p>
+
+  <h2>Gates</h2>
+  <pre><code>PYTHONPATH=. python3 -m redata.cli parity
+PYTHONPATH=. python3 -m redata.cli security
+PYTHONPATH=. python3 -m redata.cli mandate</code></pre>
+  <table>
+    <tr><th>Gate</th><th>Checks</th></tr>
+    <tr><td>parity</td><td>Python ↔ C++ WRDT/WRZC bytes</td></tr>
+    <tr><td>security</td><td>Binary hardening, real ELF g++16, Grok16 manifest</td></tr>
+    <tr><td>mandate</td><td>Per-file safety audit, grok16_forge map</td></tr>
+  </table>
+
+  <h2>Queen</h2>
+  <pre><code>./scripts/consolidate.sh
+# GROK16_QUEEN_ROOT — Queen vendor/gcc → symlink to Grok16 vendor</code></pre>
+
+  <h2>Stack layers (World_Redata methodology)</h2>
+  <table>
+    <tr><th>Layer</th><th>Component</th></tr>
+    <tr><td>L0–L1</td><td>WRZC/WRDT/ZAC7 bytes (redata)</td></tr>
+    <tr><td>L2</td><td>C++ engine — built with Grok16</td></tr>
+    <tr><td>L3</td><td>Python redata runtime</td></tr>
+    <tr><td>L4</td><td>CLI, World_Repack GUI</td></tr>
+    <tr><td>L5</td><td>Grok16 toolchain</td></tr>
+  </table>
+
+  <h2>Downstream env</h2>
+  <pre><code>export G16_PREFIX=/path/to/Grok16
+export WRDT_G16_PREFIX="$G16_PREFIX"
+export GROK16_ROOT=/path/to/Grok16</code></pre>
+
+  <h2>Manifest</h2>
+  <p><code>data/grok16-toolchain.json</code> — generated at install. Python: <code>World_Redata/redata/grok16.py</code>.</p>
+
+  <footer><a href="index.html">Index</a></footer>
+</body>
+</html>
