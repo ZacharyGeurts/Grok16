@@ -45,8 +45,10 @@ def ironclad_sanity_status(ctx: ForgeContext) -> dict[str, Any]:
     forge = root / "forge"
     ic_mod = _load_module(forge / "g16-ironclad.py", "g16_ironclad_tools")
     fs_mod = _load_module(forge / "g16-field-sanity.py", "g16_field_sanity_tools")
+    se_mod = _load_module(forge / "g16-spatial-existence.py", "g16_spatial_existence_tools")
     iron = _run_slice(ic_mod, "meld_slice")
     sanity = _run_slice(fs_mod, "meld_slice")
+    spatial = _run_slice(se_mod, "meld_slice")
     doctrine = root / "data" / "g16-field-sanity-doctrine.json"
     meld = root / "data" / "g16-ironclad-meld.json"
     nexus_ic = install / "lib" / "ironclad-plate.py"
@@ -66,6 +68,10 @@ def ironclad_sanity_status(ctx: ForgeContext) -> dict[str, Any]:
         "linker_orchestrator": (forge / "g16-linker.py").is_file(),
         "linker_driver": (root / "bin" / "g16-ld").is_file(),
         "linker_bfd_backend": (root / "libexec" / "grok16" / "g16-ld-bfd").is_file(),
+        "spatial_existence_doctrine": (install / "data" / "ironclad-spatial-existence-doctrine.json").is_file(),
+        "spatial_existence_bridge": (forge / "g16-spatial-existence.py").is_file(),
+        "spatial_existence_ok": bool(spatial.get("absorbed")),
+        "spatial_existence_pass": bool(spatial.get("pass_ok")),
     }
     score = sum(1 for v in checks.values() if v)
     return {
@@ -77,11 +83,17 @@ def ironclad_sanity_status(ctx: ForgeContext) -> dict[str, Any]:
         "citation": sanity.get("citation") or iron.get("citation") or "ironclad:field_sanity:1",
         "ironclad": iron,
         "field_sanity": sanity,
+        "spatial_existence": spatial,
         "checks": checks,
         "score": score,
         "max": len(checks),
         "ok": checks["ironclad_bridge"] and checks["sanity_operator"] and checks["ironclad_meld_manifest"],
-        "satisfied": score >= max(8, len(checks) - 2) and checks["ironclad_grounded"] and checks["field_sanity_ok"],
+        "satisfied": (
+            score >= max(10, len(checks) - 3)
+            and checks["ironclad_grounded"]
+            and checks["field_sanity_ok"]
+            and checks.get("spatial_existence_bridge", True)
+        ),
     }
 
 

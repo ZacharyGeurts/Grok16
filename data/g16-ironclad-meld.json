@@ -32,6 +32,30 @@
           "text": "G16 field linker owns the link pass — discern OS, witness Ironclad, silicon mandate, then bfd/mach-o/pe dispatch."
         }
       ]
+    },
+    {
+      "id": "spatial_existence",
+      "title": "Spatial Existence — This One / That One on G16",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Grok16 forge absorbs ironclad:spatial_existence — this one is the operator prefix and witnessed silicon here."
+        },
+        {
+          "v": 2,
+          "text": "That one is any uncorroborated target, phantom link input, or ventriloquist sense lane — blocked until correlate_existence passes."
+        },
+        {
+          "v": 3,
+          "text": "g16-spatial-existence.py melds NewLatest ironclad-spatial-existence into every ironclad sanity gate and linker witness."
+        },
+        {
+          "v": 4,
+          "text": "Field sanity simplify and spatial existence run one integral pass — never stack hot paths; never collapse this one into that one."
+        }
+      ]
     }
-  ]
+  ],
+  "spatial_existence_ref": "NewLatest/data/ironclad-spatial-existence-doctrine.json",
+  "spatial_existence_bridge": "forge/g16-spatial-existence.py"
 }

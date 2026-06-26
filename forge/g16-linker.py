@@ -217,16 +217,22 @@ def discern_target(argv: list[str] | None = None) -> dict[str, Any]:
 def _ironclad_witness() -> dict[str, Any]:
     ic = _mod(Path(__file__).resolve().parent / "g16-ironclad.py", "g16_linker_ironclad")
     fs = _mod(Path(__file__).resolve().parent / "g16-field-sanity.py", "g16_linker_sanity")
+    se = _mod(Path(__file__).resolve().parent / "g16-spatial-existence.py", "g16_linker_spatial")
     iron = ic.meld_slice() if ic and hasattr(ic, "meld_slice") else {"ok": False}
     sanity = fs.meld_slice() if fs and hasattr(fs, "meld_slice") else {"ok": False}
+    spatial = se.meld_slice() if se and hasattr(se, "meld_slice") else {"absorbed": False}
+    spatial_ok = bool(spatial.get("absorbed")) and bool(spatial.get("pass_ok", True))
     return {
-        "ok": bool(iron.get("absorbed")) and bool(sanity.get("ok")),
+        "ok": bool(iron.get("absorbed")) and bool(sanity.get("ok")) and spatial_ok,
         "ironclad_sealed": bool(iron.get("ironclad_sealed")),
         "meld_citation": iron.get("meld_citation") or "ironclad:meld:2",
-        "citation": sanity.get("citation") or iron.get("citation") or "ironclad:field_sanity:3",
+        "citation": spatial.get("citation") or sanity.get("citation") or iron.get("citation") or "ironclad:spatial_existence:5",
         "canonical_hash": iron.get("canonical_hash"),
         "ironclad": iron,
         "field_sanity": sanity,
+        "spatial_existence": spatial,
+        "this_one": spatial.get("this_one"),
+        "that_one": spatial.get("that_one"),
     }
 
 

@@ -392,12 +392,16 @@ cmd_rtx_gate_verify() {
 cmd_ironclad_sanity_verify() {
   local ic="$GROK16_ROOT/forge/g16-ironclad.py"
   local fs="$GROK16_ROOT/forge/g16-field-sanity.py"
+  local se="$GROK16_ROOT/forge/g16-spatial-existence.py"
   [[ -f "$ic" && -f "$fs" ]] || { echo "verify-ironclad: forge scripts missing" >&2; return 1; }
   export GROK16_SG_ROOT="${GROK16_SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}"
   export NEXUS_INSTALL_ROOT="${NEXUS_INSTALL_ROOT:-$GROK16_SG_ROOT/NewLatest}"
-  echo "verify-ironclad: grounding + field sanity meld"
+  echo "verify-ironclad: grounding + field sanity + spatial existence meld"
   g16_gpy_run "$ic" slice >/dev/null
   g16_gpy_run "$fs" slice >/dev/null
+  if [[ -f "$se" ]]; then
+    g16_gpy_run "$se" slice >/dev/null
+  fi
   if [[ -f "$FORGE" ]]; then
     g16_gpy_run "$FORGE" ironclad-sanity >/dev/null
   fi

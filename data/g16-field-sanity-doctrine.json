@@ -23,6 +23,7 @@
     {"id": "ironclad_bridge", "path": "forge/g16-ironclad.py", "role": "Ironclad capstone read", "internal": true},
     {"id": "sanity_operator", "path": "forge/g16-field-sanity.py", "role": "integral simplify pass", "internal": true},
     {"id": "linker_orchestrator", "path": "forge/g16-linker.py", "role": "field linker pass to silicon", "internal": true},
-    {"id": "linker_mandate", "path": "cmake/g16-linker-mandate.cmake", "role": "CMake link mandate", "internal": true}
+    {"id": "linker_mandate", "path": "cmake/g16-linker-mandate.cmake", "role": "CMake link mandate", "internal": true},
+    {"id": "spatial_existence", "path": "forge/g16-spatial-existence.py", "role": "this one / that one Ironclad meld", "internal": true}
   ]
 }
