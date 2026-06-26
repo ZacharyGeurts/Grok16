@@ -50,6 +50,13 @@ def validate_doc(doc: dict[str, Any], **kwargs: Any) -> dict[str, Any]:
     return codec.validate(doc, **kwargs)
 
 
+def meld_slice() -> dict[str, Any]:
+    codec = _codec()
+    if not codec or not hasattr(codec, "melded_extension_slice"):
+        return {"ok": False, "error": "g1id_codec_missing", "id": "g1id"}
+    return codec.melded_extension_slice()
+
+
 def main() -> int:
     cmd = (sys.argv[1] if len(sys.argv) > 1 else "help").strip().lower()
     if cmd == "validate" and len(sys.argv) > 2:
@@ -59,7 +66,18 @@ def main() -> int:
     if cmd == "read" and len(sys.argv) > 2:
         print(json.dumps(read(sys.argv[2]), ensure_ascii=False, default=str))
         return 0
-    print(json.dumps({"bridge": "g16-g1id", "format": "g1id", "extension": ".g1id"}, ensure_ascii=False))
+    if cmd == "slice":
+        print(json.dumps(meld_slice(), ensure_ascii=False))
+        return 0
+    if cmd == "meld":
+        codec = _codec()
+        if not codec or not hasattr(codec, "meld_inputs_snapshot"):
+            print(json.dumps({"ok": False, "error": "g1id_codec_missing"}, ensure_ascii=False))
+            return 1
+        out = codec.meld_inputs_snapshot()
+        print(json.dumps(out, ensure_ascii=False))
+        return 0 if out.get("ok") else 1
+    print(json.dumps({"bridge": "g16-g1id", "format": "g1id", "extension": ".g1id", "meld_input": "sovereign_time"}, ensure_ascii=False))
     return 0
 
 

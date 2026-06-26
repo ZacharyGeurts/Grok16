@@ -85,6 +85,23 @@ def _spatial_slice() -> dict[str, Any]:
     return {"id": "spatial_existence", "absorbed": False}
 
 
+def _g1id_slice() -> dict[str, Any]:
+    local = _mod(Path(__file__).resolve().parent / "g16-g1id.py", "g16_g1id_local")
+    if local and hasattr(local, "meld_slice"):
+        try:
+            return local.meld_slice()
+        except Exception:
+            pass
+    install = _nexus_install()
+    g1 = _mod(install / "lib" / "g1id-format.py", "g1id_format")
+    if g1 and hasattr(g1, "melded_extension_slice"):
+        try:
+            return g1.melded_extension_slice()
+        except Exception:
+            pass
+    return {"id": "g1id", "absorbed": False}
+
+
 def ironclad_grounding() -> dict[str, Any]:
     install = _nexus_install()
     state = Path(os.environ.get("NEXUS_STATE_DIR", install / "state"))
@@ -124,6 +141,7 @@ def ironclad_grounding() -> dict[str, Any]:
         },
         "field_sanity": field_sanity or grounding.get("melded_extensions", {}).get("field_sanity"),
         "spatial_existence": _spatial_slice(),
+        "g1id": _g1id_slice(),
         "citation": cite_g16_field_sanity(1) or "ironclad:field_sanity:1",
     }
 
@@ -139,6 +157,7 @@ def meld_slice() -> dict[str, Any]:
         "canonical_hash": g.get("canonical_hash"),
         "field_sanity": g.get("field_sanity"),
         "spatial_existence": g.get("spatial_existence"),
+        "g1id": g.get("g1id"),
         "updated": g.get("updated"),
     }
 
