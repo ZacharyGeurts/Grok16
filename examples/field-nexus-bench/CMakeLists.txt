@@ -11,3 +11,6 @@ elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../cmake/grok16-profile-ai.cmake")
 endif()
 
 add_executable(grok16_field_nexus_bench field_nexus_bench.cpp)
+if(COMMAND g16_ironclad_sanity_meld)
+  g16_ironclad_sanity_meld(grok16_field_nexus_bench)
+endif()

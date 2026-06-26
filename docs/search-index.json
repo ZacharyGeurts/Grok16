@@ -41,5 +41,11 @@
   {"t":"templates","p":"concepts.html#cpp-templates","g":"Concepts","d":"Generic programming instantiation"},
   {"t":"RAII","p":"concepts.html#raii","g":"Concepts","d":"Resource acquisition is initialization C++"},
   {"t":"move semantics","p":"concepts.html#move","g":"Concepts","d":"rvalue references std::move"},
-  {"t":"stack heap","p":"concepts.html#memory","g":"Concepts","d":"Stack vs heap allocation lifetime"}
+  {"t":"stack heap","p":"concepts.html#memory","g":"Concepts","d":"Stack vs heap allocation lifetime"},
+  {"t":"Field I/O","p":"io.html","g":"I/O","d":"KILROY proc ioctl Final_Eye vision SDF zero-cost"},
+  {"t":"kilroy proc","p":"io.html#kilroy-proc","g":"I/O","d":"/proc/kilroy_field status security stack sdf"},
+  {"t":"kilroy ioctl","p":"io.html#kilroy-ioctl","g":"I/O","d":"/dev/kilroy_field layout v9 GET_STATE GET_SLOTS"},
+  {"t":"SDF","p":"io.html#doctrine","g":"I/O","d":"Hostess7 brain imaging zero hot-path hooks"},
+  {"t":"Final_Eye compile","p":"io.html#final-eye","g":"I/O","d":"vision_probe field_dispatch zocr_field_compile"},
+  {"t":"field recompile","p":"io.html#recompile","g":"I/O","d":"gen-field-stack field-recompile.sh bzImage"}
 ]

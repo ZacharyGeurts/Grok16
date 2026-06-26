@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pythong
 """Generate Master Coder hub + C + C++ manual pages."""
 from __future__ import annotations
 
@@ -69,6 +69,7 @@ NAV = f"""  <nav>
       <a href="profiles.html">Profiles</a>
       <a href="performance.html">Performance</a>
       <a href="integration.html">Integration</a>
+      <a href="io.html">Field I/O</a>
       <a href="field-primer.html">Field Primer</a>
       <a href="reference.html">Reference</a>
     </div>
@@ -99,7 +100,7 @@ C_ROWS = [
     ("architecture.html#unified-driver", "g16-cc", "C backend", "Relocated GCC C driver after install. Real ELF from upstream program-transform. Unified g16 execv() here when C mode is detected."),
     ("field-primer.html#standard-c", "g16 -std=gnu17", "Default C standard", "G16_C_STD defaults to gnu17 (C17 + GNU extensions). Applied when compiling .c files or when -std=gnu17|c17|… is passed. Override per translation unit."),
     ("getting-started.html#verify", "verify (C leg)", "C smoke compile", "grok16-toolchain.sh verify compiles verify.c with g16 -std=${G16_C_STD}. Proves unified driver reaches g16-cc and frontend accepts gnu17."),
-    ("profiles.html#flags-c", "PROFILE c", "C compile flags", "python3 grok16-profile-flags.py field_opt c — emits -std=gnu17 -O3 -march=native plus profile -D macros. Use for C kernels and L0 glue."),
+    ("profiles.html#flags-c", "PROFILE c", "C compile flags", "pythong grok16-profile-flags.py field_opt c — emits -std=gnu17 -O3 -march=native plus profile -D macros. Use for C kernels and L0 glue."),
     ("profiles.html#flags-c", "PROFILE c_link", "C link flags", "Same link_flags as CXX profiles (LTO/OpenMP). Unified g16 still auto-selects g16-cc for link when inputs are C-only."),
     ("profiles.html#flags-c", "PROFILE c_pgo_gen", "C PGO generate", "Adds -fprofile-generate=${GROK16_ROOT}/data/pgo to C flags. Run profile command, then rebuild consumers with G16_ENABLE_PGO=1."),
     ("profiles.html#flags-c", "PROFILE c_pgo_use", "C PGO use", "Adds -fprofile-use for C builds after training. Pairs with cxx_pgo_use for mixed projects."),

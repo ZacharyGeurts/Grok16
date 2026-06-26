@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pythong
 """Patch all manual HTML: v7 assets, search, layout, Concepts nav."""
 from __future__ import annotations
 import pathlib

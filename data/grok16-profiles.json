@@ -53,6 +53,41 @@
         "FIELD_WAVE_PHASE=1"
       ]
     },
+    "ai_agent": {
+      "description": "AI agent compile — fast iterative builds, JSON diagnostics, truth-floor macros",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "bench_source": "examples/ai-matrix-bench/matrix_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O2",
+        "-pipe",
+        "-march=native",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-fno-diagnostics-show-caret",
+        "-fno-diagnostics-color",
+        "-fmax-errors=5",
+        "-ftree-vectorize",
+        "-funroll-loops",
+        "-finline-functions"
+      ],
+      "c_flags": [
+        "-std=gnu17",
+        "-O2",
+        "-pipe",
+        "-march=native",
+        "-fno-diagnostics-show-caret",
+        "-fmax-errors=5"
+      ],
+      "link_flags": ["-Wl,--gc-sections"],
+      "definitions": [
+        "GROK16_PROFILE_AI=1",
+        "GROK16_AI_AGENT=1",
+        "HOSTESS_TRUTH_FLOOR=58",
+        "FIELD_ENTROPY_DISPATCH=1"
+      ]
+    },
     "ai": {
       "description": "AI / NEXUS behavioral scoring — matrix-friendly, simd/mdspan paths",
       "cxx_std": "gnu++26",
@@ -87,6 +122,140 @@
       "link_flags": ["-fopenmp"],
       "definitions": ["GROK16_PROFILE_FIELD=1", "FIELD_X86_DIE=1", "FIELD_ENTROPY_DISPATCH=1"]
     },
+    "hostess_secure": {
+      "description": "Hostess 7 memory-safe mandate — stack/clash/CFI, fortify, no strict-aliasing UB",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O2",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-fcf-protection=full",
+        "-fno-strict-aliasing",
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE",
+        "-Wformat",
+        "-Wformat-security",
+        "-Werror=format-security"
+      ],
+      "c_flags": [
+        "-std=gnu17",
+        "-O2",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-fcf-protection=full",
+        "-fno-strict-aliasing",
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE"
+      ],
+      "link_flags": ["-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,noexecstack", "-pie"],
+      "definitions": ["GROK16_HOSTESS_SECURE=1", "G16_FIELD_MANDATE=1", "HOSTESS_TRUTH_FLOOR=58"]
+    },
+    "forever": {
+      "description": "Forever profile — max field speed + LTO + all Hostess gates for production",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-mtune=native",
+        "-flto=thin",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-fcf-protection=full",
+        "-ftree-vectorize",
+        "-fvect-cost-model=unlimited",
+        "-funroll-loops",
+        "-finline-functions",
+        "-fomit-frame-pointer",
+        "-fopenmp-simd",
+        "-D_FORTIFY_SOURCE=3"
+      ],
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong"],
+      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "definitions": [
+        "GROK16_FOREVER=1",
+        "GROK16_PROFILE_FIELD_OPT=1",
+        "G16_FIELD_SPEED=1",
+        "FIELD_ENTROPY_DISPATCH=1",
+        "HOSTESS_TRUTH_FLOOR=58"
+      ]
+    },
+    "memory_safe": {
+      "description": "Memory-safe language builds — Rust/Go/Zig secure defaults via field drivers",
+      "cxx_std": "gnu++26",
+      "bench_source": "examples/ai-matrix-bench/matrix_bench.cpp",
+      "cxx_flags": ["-std=gnu++26", "-O2", "-fstack-protector-strong"],
+      "link_flags": ["-Wl,-z,relro", "-Wl,-z,now"],
+      "definitions": ["GROK16_MEMORY_SAFE=1", "HOSTESS_TRUTH_FLOOR=58"]
+    },
+    "expert": {
+      "description": "Expert validation tier — Hostess gates + field_opt + ironclad/linker witness (0.9c → 1.0)",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-fcf-protection=full",
+        "-ftree-vectorize",
+        "-fvect-cost-model=unlimited",
+        "-funroll-loops",
+        "-D_FORTIFY_SOURCE=3"
+      ],
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-fstack-protector-strong", "-D_FORTIFY_SOURCE=3"],
+      "link_flags": ["-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "definitions": [
+        "GROK16_EXPERT_TIER=1",
+        "GROK16_PROFILE_FIELD_OPT=1",
+        "GROK16_HOSTESS_SECURE=1",
+        "G16_FIELD_MANDATE=1",
+        "HOSTESS_TRUTH_FLOOR=58",
+        "FIELD_ENTROPY_DISPATCH=1"
+      ]
+    },
+    "heavy": {
+      "description": "Heavy validation tier — forever + thin LTO + full field speed (gate before 1.0)",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O3",
+        "-march=native",
+        "-mtune=native",
+        "-flto=thin",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-fcf-protection=full",
+        "-ftree-vectorize",
+        "-fvect-cost-model=unlimited",
+        "-funroll-loops",
+        "-finline-functions",
+        "-fomit-frame-pointer",
+        "-fopenmp-simd",
+        "-ffast-math",
+        "-D_FORTIFY_SOURCE=3"
+      ],
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong"],
+      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "definitions": [
+        "GROK16_HEAVY_TIER=1",
+        "GROK16_FOREVER=1",
+        "GROK16_PROFILE_FIELD_OPT=1",
+        "G16_FIELD_SPEED=1",
+        "FIELD_ENTROPY_DISPATCH=1",
+        "FIELD_X86_DIE=1",
+        "HOSTESS_TRUTH_FLOOR=58"
+      ]
+    },
     "vulkan_rtx": {
       "description": "AMOURANTHRTX-style RTX prep — SIMD vectorization, shader-adjacent CPU paths",
       "cxx_std": "gnu++26",
@@ -114,8 +283,11 @@
   "speedups": {
     "parallel_jobs": "${GROK16_BUILD_JOBS}",
     "fast_rebuild_default": "G16_FAST_REBUILD=1 unless G16_FULL_REBUILD=1",
-    "ccache_auto": "GROK16_USE_CCACHE=1 when ccache installed",
+    "ccache_doctrine": "safety-only — GROK16_CCACHE_SAFETY=1 for reproducible/Hostess builds; never for speed",
     "field_speed_env": "G16_FIELD_SPEED=1 → field_opt profile + forge scheduling opts",
-    "release_env": "G16_RELEASE_PROFILE=1 → LTO + PGO + field_opt"
+    "release_env": "G16_RELEASE_PROFILE=1 → LTO + PGO + field_opt",
+    "gpy_pair": "GPY-16 GrokVM field-native — g16 discerns python, no host fallback",
+    "ai_agent_profile": "fast agent compile tier — -O2 -pipe, no LTO",
+    "runtime_target": "500x is field kernel throughput (entropy/vector), not compile memoization"
   }
 }

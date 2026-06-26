@@ -1,12 +1,40 @@
 {
+  "distro_version": "0.9c",
+  "release_track": {
+    "current": "0.9c",
+    "next": "1.0",
+    "status": "pre-release",
+    "validation_tiers": ["expert", "heavy"],
+    "roadmap": "0.9c → expert + heavy battery → 1.0"
+  },
   "g16_version": "16.1.1",
   "pkgversion": "Grok16-16.1.1",
-  "tag": "v16.1.1",
+  "tag": "v0.9c",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
-  "notes": "g16 auto-detects C vs C++; g++16 is a compat symlink to the same driver",
+  "discern": ["c", "cxx", "python", "asm", "rust", "go", "zig", "fortran", "d", "ada", "objc"],
+  "forever": true,
+  "hostess7_pair": {
+    "truth_adapt_floor": 58,
+    "secure_profile": "hostess_secure",
+    "forever_profile": "forever",
+    "mandate": "cmake/g16-field-mandate.cmake"
+  },
+  "gpy16_pair": {
+    "product": "GPY-16",
+    "driver": "gpy-16",
+    "version": "16.1.0",
+    "pkgversion": "GPY-16.1.0",
+    "rule": "g16 discerns .py/.gpy, -m, -c, -x python → GPY-16 without redundant host python"
+  },
+  "notes": "g16 auto-detects C, C++, and Python; g++16 is a compat symlink to the same driver",
   "changelog": [
+    "0.9c: Ironclad + field sanity meld wired through forge and CMake mandate",
+    "0.9c: G16 field linker — 16 targets, macOS/Android/ARM/x86, silicon mandate",
+    "0.9c: RTX gate — queen_rtx/vulkan_rtx blocked without RTX silicon",
+    "0.9c: Multi-language discern — C/C++/Python/Rust/Go/Zig/Fortran/D/Ada/ObjC",
+    "0.9c: expert + heavy validation tiers before 1.0",
     "gcc_rebuild: skip make distclean — avoids autogen when BASE-VER changes",
     "Self-host configure uses host gcc when unified libexec backends are relocated",
     "install_unified_driver copies backends (no move) so cc1 paths stay valid",

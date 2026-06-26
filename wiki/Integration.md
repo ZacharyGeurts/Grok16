@@ -5,8 +5,8 @@
 ```bash
 cd World_Redata
 ./build-cpp.sh
-PYTHONPATH=. python3 -m redata.cli parity
-PYTHONPATH=. python3 -m redata.cli security
+PYTHONPATH=. pythong -m redata.cli parity
+PYTHONPATH=. pythong -m redata.cli security
 ```
 
 Uses `../Grok16/scripts/grok16-toolchain.sh` by default.

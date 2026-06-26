@@ -1,0 +1,69 @@
+{
+  "schema": "grok16-ironclad-sanity/v1",
+  "product": "Grok16",
+  "grok16_root": "/home/default/Desktop/SG/Grok16",
+  "nexus_install": "/home/default/Desktop/SG/NewLatest",
+  "meld_citation": "ironclad:meld:2",
+  "citation": "ironclad:field_sanity:2 \u2014 classify, strip, dedupe, flatten, cool_sort \u2014 never obtuse; never stack hot rebuild paths under thermo heat.",
+  "ironclad": {
+    "id": "g16_ironclad",
+    "absorbed": true,
+    "meld_citation": "ironclad:meld:2",
+    "citation": "ironclad:field_sanity:1 \u2014 Grok16 forge layers meld into Ironclad \u2014 one integral pass across driver, compiler, mandate, profiles.",
+    "ironclad_sealed": true,
+    "canonical_hash": "df82e0ec4ad9168d5499416d20911b8f6574f5d2e547ca66f3dcfeacc2d7c402",
+    "field_sanity": {
+      "id": "field_sanity",
+      "absorbed": true,
+      "meld_citation": "ironclad:meld:2",
+      "citation": "ironclad:field_sanity:4 \u2014 Fielded areas quarantine external loopback; G16 single-pass holds entropy hotspots to zero.",
+      "verse": 4,
+      "ok": false,
+      "operator_ok": false,
+      "integral": "one_pass_simplify",
+      "heat_avoided": 0,
+      "layers_out": 0,
+      "updated": "2026-06-26T21:44:09Z"
+    },
+    "updated": "2026-06-26T21:48:13Z"
+  },
+  "field_sanity": {
+    "id": "g16_field_sanity",
+    "absorbed": true,
+    "meld_citation": "ironclad:meld:2",
+    "citation": "ironclad:field_sanity:2 \u2014 classify, strip, dedupe, flatten, cool_sort \u2014 never obtuse; never stack hot rebuild paths under thermo heat.",
+    "ok": true,
+    "operator_ok": true,
+    "layers_out": 9,
+    "heat_avoided": 8,
+    "updated": "2026-06-26T21:48:01Z",
+    "ironclad": {
+      "schema": "g16-field-sanity-receipt/v1",
+      "absorbed": true,
+      "ironclad_sealed": true,
+      "canonical_hash": "df82e0ec4ad9168d5499416d20911b8f6574f5d2e547ca66f3dcfeacc2d7c402",
+      "meld_citation": "ironclad:meld:2",
+      "citation": "ironclad:field_sanity:2 \u2014 classify, strip, dedupe, flatten, cool_sort \u2014 never obtuse; never stack hot rebuild paths under thermo heat.",
+      "verse": 2,
+      "integral": true,
+      "never_build_under_heat": true,
+      "pass_ok": true
+    }
+  },
+  "checks": {
+    "ironclad_meld_manifest": true,
+    "field_sanity_doctrine": true,
+    "ironclad_bridge": true,
+    "sanity_operator": true,
+    "mandate_cmake": true,
+    "nexus_ironclad_plate": true,
+    "nexus_field_sanity": true,
+    "ironclad_grounded": true,
+    "field_sanity_ok": true,
+    "operator_ok": true
+  },
+  "score": 10,
+  "max": 10,
+  "ok": true,
+  "satisfied": true
+}

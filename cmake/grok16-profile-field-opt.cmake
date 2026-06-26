@@ -11,7 +11,9 @@ add_compile_definitions(
   FIELD_WAVE_PHASE=1
 )
 add_compile_options(
-  -std=gnu++26 -O3 -march=native -mtune=native
+  $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++26>
+  $<$<COMPILE_LANGUAGE:C>:-std=gnu17>
+  -O3 -march=native -mtune=native
   -ftree-vectorize -fvect-cost-model=unlimited
   -funroll-loops -finline-functions -fomit-frame-pointer
   -ffast-math -fno-trapping-math -fopenmp-simd

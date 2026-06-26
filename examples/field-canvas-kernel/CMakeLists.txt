@@ -9,3 +9,6 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/../../cmake/grok16-profile-field.cmake")
 endif()
 
 add_executable(field_canvas_kernel field_dispatch.cpp)
+if(COMMAND g16_ironclad_sanity_meld)
+  g16_ironclad_sanity_meld(field_canvas_kernel)
+endif()

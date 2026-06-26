@@ -58,6 +58,7 @@
       <a href="profiles.html">Profiles</a>
       <a href="performance.html">Performance</a>
       <a href="integration.html">Integration</a>
+      <a href="io.html">Field I/O</a>
       <a href="field-primer.html">Field Primer</a>
       <a href="reference.html">Reference</a>
     </div>
@@ -72,7 +73,7 @@
     <tr><td class="idx-num">2</td><td><a href="architecture.html#unified-driver">g16-cc</a></td><td class="tip">C backend</td><td class="idx-detail">Relocated GCC C driver after install. Real ELF from upstream program-transform. Unified g16 execv() here when C mode is detected.</td></tr>
     <tr><td class="idx-num">3</td><td><a href="field-primer.html#standard-c">g16 -std=gnu17</a></td><td class="tip">Default C standard</td><td class="idx-detail">G16_C_STD defaults to gnu17 (C17 + GNU extensions). Applied when compiling .c files or when -std=gnu17|c17|… is passed. Override per translation unit.</td></tr>
     <tr><td class="idx-num">4</td><td><a href="getting-started.html#verify">verify (C leg)</a></td><td class="tip">C smoke compile</td><td class="idx-detail">grok16-toolchain.sh verify compiles verify.c with g16 -std=${G16_C_STD}. Proves unified driver reaches g16-cc and frontend accepts gnu17.</td></tr>
-    <tr><td class="idx-num">5</td><td><a href="profiles.html#flags-c">PROFILE c</a></td><td class="tip">C compile flags</td><td class="idx-detail">python3 grok16-profile-flags.py field_opt c — emits -std=gnu17 -O3 -march=native plus profile -D macros. Use for C kernels and L0 glue.</td></tr>
+    <tr><td class="idx-num">5</td><td><a href="profiles.html#flags-c">PROFILE c</a></td><td class="tip">C compile flags</td><td class="idx-detail">pythong grok16-profile-flags.py field_opt c — emits -std=gnu17 -O3 -march=native plus profile -D macros. Use for C kernels and L0 glue.</td></tr>
     <tr><td class="idx-num">6</td><td><a href="profiles.html#flags-c">PROFILE c_link</a></td><td class="tip">C link flags</td><td class="idx-detail">Same link_flags as CXX profiles (LTO/OpenMP). Unified g16 still auto-selects g16-cc for link when inputs are C-only.</td></tr>
     <tr><td class="idx-num">7</td><td><a href="profiles.html#flags-c">PROFILE c_pgo_gen</a></td><td class="tip">C PGO generate</td><td class="idx-detail">Adds -fprofile-generate=${GROK16_ROOT}/data/pgo to C flags. Run profile command, then rebuild consumers with G16_ENABLE_PGO=1.</td></tr>
     <tr><td class="idx-num">8</td><td><a href="profiles.html#flags-c">PROFILE c_pgo_use</a></td><td class="tip">C PGO use</td><td class="idx-detail">Adds -fprofile-use for C builds after training. Pairs with cxx_pgo_use for mixed projects.</td></tr>

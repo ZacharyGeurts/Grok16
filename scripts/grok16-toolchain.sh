@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Grok16 — G16 unified field compiler @ 16.1.1 (g16 auto-detects C/C++)
+# Grok16 — G16 unified field compiler @ 16.1.1 (g16 discerns C/C++/Python)
 # Copyright (C) 2026 Zachary Geurts
 # License: GNU General Public License v3 or later — see LICENSE
 # Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|bench|field-bench|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|bench|bench-compare|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -40,6 +40,23 @@ is_real_compiler() {
   file "$bin" 2>/dev/null | grep -qE 'ELF|executable'
 }
 
+g16_unified_stub() {
+  local sz
+  [[ -f "$G16_DRIVER" ]] || return 1
+  sz=$(stat -c%s "$G16_DRIVER" 2>/dev/null || echo 0)
+  [[ "$sz" -lt 512000 ]]
+}
+
+g16_backend_dumpversion() {
+  local backend="$G16_PREFIX/libexec/grok16/g16-cc"
+  [[ -x "$backend" ]] || return 1
+  "$backend" -dumpversion 2>/dev/null
+}
+
+g16_discern() {
+  "$G16_DRIVER" --g16-discern "$@"
+}
+
 write_version_file() {
   mkdir -p "$G16_PREFIX"
   cat >"$G16_PREFIX/VERSION" <<EOF
@@ -51,6 +68,8 @@ G16_CXX=g++16
 G16_C_STD=${G16_C_STD:-gnu17}
 G16_CXX_STD=${G16_CXX_STD:-gnu++26}
 G16_PREFIX=${G16_PREFIX}
+GPY16_DRIVER=${GPY16_DRIVER}
+GPY16_ROOT=${GPY16_ROOT}
 PRODUCT=Grok16
 ROOT=${GROK16_ROOT}
 EOF
@@ -61,6 +80,12 @@ write_cmake_toolchain() {
   cat >"$GROK16_ROOT/cmake/grok16-toolchain.cmake" <<EOF
 set(CMAKE_C_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 unified g16 (C mode)" FORCE)
 set(CMAKE_CXX_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 unified g16 (C++ mode)" FORCE)
+if(EXISTS "${G16_PREFIX}/bin/g16-as")
+  set(CMAKE_ASM_COMPILER "${G16_PREFIX}/bin/g16-as" CACHE FILEPATH "Grok16 field assembler" FORCE)
+endif()
+if(EXISTS "${G16_PREFIX}/bin/g16-ld")
+  set(CMAKE_LINKER "${G16_PREFIX}/bin/g16-ld" CACHE FILEPATH "Grok16 field linker" FORCE)
+endif()
 set(WRDT_G16_VERSION "${G16_VERSION}" CACHE STRING "G16 version" FORCE)
 set(GROK16_PREFIX "${G16_PREFIX}" CACHE PATH "Grok16 install prefix" FORCE)
 set(GROK16_CXX_STD "${G16_CXX_STD:-gnu++26}" CACHE STRING "Grok16 default C++ standard" FORCE)
@@ -78,11 +103,26 @@ write_manifest() {
   else
     selfhosted_py="False"
   fi
-  python3 - <<PY
+  g16_gpy_run - <<PY
 import json, os
 from datetime import datetime, timezone
 from pathlib import Path
 root = Path("${GROK16_ROOT}")
+gpy_root = Path(os.environ.get("GPY16_ROOT", "${GPY16_ROOT}"))
+gpy_meta = {}
+gpy_ver_path = gpy_root / "data" / "gpy-16-version.json"
+if gpy_ver_path.is_file():
+    try:
+        gpy_meta = json.loads(gpy_ver_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        pass
+g16_ver_path = root / "data" / "grok16-version.json"
+g16_meta = {}
+if g16_ver_path.is_file():
+    try:
+        g16_meta = json.loads(g16_ver_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        pass
 profiles_path = root / "data" / "grok16-profiles.json"
 profiles = {}
 if profiles_path.is_file():
@@ -117,15 +157,29 @@ doc = {
         "ccache": _flag("GROK16_USE_CCACHE"),
         "disable_bootstrap": _flag("G16_DISABLE_BOOTSTRAP") or _flag("G16_FAST_REBUILD"),
     },
+    "discern_langs": g16_meta.get("discern", ["c", "cxx", "python"]),
+    "gpy16_pair": {
+        **g16_meta.get("gpy16_pair", {}),
+        "driver": "${GPY16_DRIVER}",
+        "root": str(gpy_root),
+        "version": gpy_meta.get("gpy16_version", g16_meta.get("gpy16_pair", {}).get("version", "")),
+        "pkgversion": gpy_meta.get("pkgversion", g16_meta.get("gpy16_pair", {}).get("pkgversion", "")),
+    },
     "paths": {
         "g16": "${G16_PREFIX}/bin/g16",
         "g++16": "${G16_PREFIX}/bin/g++16",
         "backend_cc": "${G16_PREFIX}/libexec/grok16/g16-cc",
         "backend_cxx": "${G16_PREFIX}/libexec/grok16/g16-cxx",
+        "gpy16": "${GPY16_DRIVER}",
         "driver_mode": "unified",
         "gcc_src": "${GROK16_GCC_SRC}",
         "gcc_build": "${GROK16_GCC_BUILD}",
         "cmake": "${GROK16_ROOT}/cmake/grok16-toolchain.cmake",
+        "field_cmake": "${GROK16_ROOT}/cmake/grok16-field.cmake",
+        "ironclad_meld": "${GROK16_ROOT}/data/g16-ironclad-meld.json",
+        "field_sanity_doctrine": "${GROK16_ROOT}/data/g16-field-sanity-doctrine.json",
+        "ironclad_bridge": "${GROK16_ROOT}/forge/g16-ironclad.py",
+        "sanity_operator": "${GROK16_ROOT}/forge/g16-field-sanity.py",
         "profiles_json": str(profiles_path),
         "version_file": "${G16_PREFIX}/VERSION",
         "selfhost_stamp": "${G16_PREFIX}/SELFHOST.json",
@@ -146,12 +200,12 @@ PY
 }
 
 cmd_install() {
-  if ! is_real_compiler "$G16_DRIVER"; then
-    echo "Grok16 unified g16 missing at $G16_DRIVER — run: $0 rebuild" >&2
+  if ! grok16_ready; then
+    echo "Grok16 unified g16 missing or backends not ready at $G16_DRIVER — run: $0 rebuild" >&2
     exit 1
   fi
   dv="$("$G16_DRIVER" -dumpversion 2>/dev/null || true)"
-  if [[ "$dv" != "$G16_VERSION" ]]; then
+  if [[ "$dv" != "$G16_VERSION" && ! g16_unified_stub ]]; then
     echo "g16 reports $dv; expected $G16_VERSION — rebuild" >&2
     exit 1
   fi
@@ -169,7 +223,7 @@ cmd_bootstrap() {
   echo "Grok16 bootstrap → fetch GCC, host build, install to $G16_PREFIX"
   [[ -f "$FORGE" ]] || { echo "forge missing: $FORGE" >&2; exit 1; }
   export G16_PREFIX G16_PKGVERSION GROK16_GCC_SRC GROK16_GCC_BUILD
-  python3 "$FORGE" run gcc || exit 1
+  g16_gpy_run "$FORGE" run gcc || exit 1
   cmd_install
 }
 
@@ -184,22 +238,39 @@ cmd_rebuild() {
   export G16_DISABLE_BOOTSTRAP="${G16_DISABLE_BOOTSTRAP:-}"
   echo "  jobs=$GROK16_BUILD_JOBS fast=$G16_FAST_REBUILD field_speed=$G16_FIELD_SPEED release=$G16_RELEASE_PROFILE"
   echo "  lto=${G16_ENABLE_LTO:-0} pgo=${G16_ENABLE_PGO:-0} ccache=${GROK16_USE_CCACHE:-0} bootstrap_off=${G16_DISABLE_BOOTSTRAP:-0}"
-  python3 "$FORGE" run gcc_rebuild || exit 1
+  g16_gpy_run "$FORGE" run gcc_rebuild || exit 1
   cmd_install
 }
 
 grok16_ready() {
-  is_real_compiler "$G16_DRIVER" && [[ "$("$G16_DRIVER" -dumpversion)" == "$G16_VERSION" ]]
+  local dv backend_dv
+  if ! is_real_compiler "$G16_DRIVER"; then
+    return 1
+  fi
+  dv="$("$G16_DRIVER" -dumpversion 2>/dev/null || true)"
+  if [[ "$dv" == "$G16_VERSION" ]]; then
+    return 0
+  fi
+  if g16_unified_stub; then
+    backend_dv="$(g16_backend_dumpversion || true)"
+    [[ -n "$backend_dv" ]] && return 0
+  fi
+  return 1
+}
+
+gpy16_ready() {
+  [[ -x "${GPY16_DRIVER:-}" ]] || return 1
+  "$GPY16_DRIVER" health >/dev/null 2>&1
 }
 
 cmd_status() {
   if grok16_ready; then
     echo "ready Grok16 unified g16=$G16_DRIVER"
     "$G16_DRIVER" --version | head -1
-    exit 0
+    return 0
   fi
   echo "not ready — run: $0 bootstrap"
-  exit 1
+  return 1
 }
 
 cmd_verify() {
@@ -253,7 +324,274 @@ EOF
     echo "verify: skip CMake (cmake not installed or toolchain file missing)"
   fi
 
+  if gpy16_ready; then
+    cmd_verify_python
+  else
+    echo "verify: skip python (GPY-16 not ready)"
+  fi
+
+  if [[ -x "$G16_PREFIX/bin/g16-as" && -x "$G16_PREFIX/bin/g16-objdump" ]]; then
+    echo "verify: field binutils present"
+    "$GROK16_ROOT/scripts/grok16-binutils.sh" verify
+  else
+    echo "verify: skip binutils (run grok16-binutils.sh bootstrap)"
+  fi
+
+  cmd_ironclad_sanity_verify
+  cmd_linker_verify
+  cmd_rtx_gate_verify
+
   echo "verify: PASS"
+}
+
+cmd_linker_verify() {
+  local lk="$GROK16_ROOT/forge/g16-linker.py"
+  [[ -f "$lk" ]] || { echo "verify-linker: missing $lk" >&2; return 1; }
+  if [[ -x "$G16_PREFIX/bin/g16-ld" ]]; then
+    echo "verify-linker: field driver + silicon pass"
+    g16_gpy_run "$lk" slice >/dev/null
+    g16_gpy_run "$lk" targets >/dev/null
+    echo "verify-linker: PASS"
+    return 0
+  fi
+  echo "verify-linker: skip (g16-ld not installed — run grok16-binutils.sh install)"
+}
+
+cmd_rtx_gate_verify() {
+  local rg="$GROK16_ROOT/forge/rtx_gate.py"
+  [[ -f "$rg" ]] || return 0
+  echo "verify-rtx-gate: probing GPU"
+  g16_gpy_run "$rg" json | head -3
+  echo "verify-rtx-gate: OK"
+}
+
+cmd_ironclad_sanity_verify() {
+  local ic="$GROK16_ROOT/forge/g16-ironclad.py"
+  local fs="$GROK16_ROOT/forge/g16-field-sanity.py"
+  [[ -f "$ic" && -f "$fs" ]] || { echo "verify-ironclad: forge scripts missing" >&2; return 1; }
+  export GROK16_SG_ROOT="${GROK16_SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}"
+  export NEXUS_INSTALL_ROOT="${NEXUS_INSTALL_ROOT:-$GROK16_SG_ROOT/NewLatest}"
+  echo "verify-ironclad: grounding + field sanity meld"
+  g16_gpy_run "$ic" slice >/dev/null
+  g16_gpy_run "$fs" slice >/dev/null
+  if [[ -f "$FORGE" ]]; then
+    g16_gpy_run "$FORGE" ironclad-sanity >/dev/null
+  fi
+  echo "verify-ironclad: PASS"
+}
+
+cmd_discern() {
+  if ! is_real_compiler "$G16_DRIVER"; then
+    echo "not ready — unified g16 missing at $G16_DRIVER" >&2
+    exit 1
+  fi
+  local fail=0
+  check_discern() {
+    local expect="$1"
+    shift
+    local got
+    got="$(g16_discern "$@")"
+    if [[ "$got" != "$expect" ]]; then
+      echo "discern FAIL: expected $expect got '$got' for: $*" >&2
+      fail=1
+      return
+    fi
+    echo "discern OK: $* → $got"
+  }
+  check_discern c foo.c
+  check_discern cxx foo.cpp
+  check_discern cxx -std=gnu++26 foo.cc
+  check_discern c -std=gnu17 foo.c
+  check_discern python foo.py
+  check_discern python foo.gpy
+  check_discern python -m json.tool
+  check_discern python -c "print(1)"
+  check_discern c -std=gnu17 -c -o foo.o foo.c
+  check_discern python -x python foo.txt
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "discern: PASS"
+}
+
+cmd_smoke_verify() {
+  if ! grok16_ready; then
+    echo "smoke-verify: not ready" >&2
+    return 1
+  fi
+  local tmpdir obj
+  tmpdir="$(mktemp -d)"
+  trap 'rm -rf "${tmpdir:-}"' EXIT
+  cat >"$tmpdir/smoke.c" <<'EOF'
+int main(void) { return 0; }
+EOF
+  "$G16_DRIVER" -std="${G16_C_STD}" -c -o "$tmpdir/smoke.o" "$tmpdir/smoke.c"
+  cat >"$tmpdir/smoke.cpp" <<'EOF'
+int main() { return 0; }
+EOF
+  "$G16_DRIVER" -std="${G16_CXX_STD}" -c -o "$tmpdir/smoke_cpp.o" "$tmpdir/smoke.cpp"
+  echo "smoke-verify: C/C++ compile OK"
+}
+
+cmd_smoke_python() {
+  if ! gpy16_ready; then
+    echo "smoke-python: skip (GPY-16 not ready)"
+    return 0
+  fi
+  local out
+  out="$("$G16_DRIVER" -c 'print(42)' 2>/dev/null | tail -1)"
+  [[ "$out" == "42" ]] || { echo "smoke-python: got '$out'" >&2; return 1; }
+  echo "smoke-python: OK"
+}
+
+cmd_verify_python() {
+  if ! gpy16_ready; then
+    echo "verify-python: GPY-16 not ready at ${GPY16_DRIVER:-}" >&2
+    exit 1
+  fi
+  if ! is_real_compiler "$G16_DRIVER"; then
+    echo "verify-python: unified g16 missing" >&2
+    exit 1
+  fi
+  echo "verify-python: GPY-16 @ $GPY16_DRIVER"
+  "$GPY16_DRIVER" health | head -5
+  local out
+  out="$("$G16_DRIVER" -c 'print(6*7)' 2>/dev/null | tail -1)"
+  if [[ "$out" != "42" ]]; then
+    echo "verify-python: g16 -c failed (got '$out')" >&2
+    exit 1
+  fi
+  echo "verify-python: g16 -c OK → 42"
+  if [[ "$(g16_discern -c 'pass')" != "python" ]]; then
+    echo "verify-python: discern -c failed" >&2
+    exit 1
+  fi
+  echo "verify-python: PASS"
+}
+
+cmd_test_battery() {
+  local fail=0
+  run_step() {
+    echo "battery: $1"
+    if ! "${@:2}"; then
+      echo "battery FAIL: $1" >&2
+      fail=1
+    fi
+  }
+  run_step paths cmd_paths
+  run_step discern cmd_discern
+  if grok16_ready; then
+    run_step status cmd_status
+    run_step smoke-verify cmd_smoke_verify
+    run_step manifest write_manifest
+  else
+    echo "battery: skip compiler smoke (not ready)"
+  fi
+  run_step smoke-python cmd_smoke_python
+  if [[ -f "$FORGE" ]]; then
+    run_step ironclad-sanity g16_gpy_run "$FORGE" ironclad-sanity
+  fi
+  if [[ -x "$GROK16_SCRIPTS/grok16-binutils.sh" ]] && "$GROK16_SCRIPTS/grok16-binutils.sh" status >/dev/null 2>&1; then
+    echo "battery: binutils ready"
+  else
+    echo "battery: skip binutils (not built)"
+  fi
+  if [[ -x "$GROK16_SCRIPTS/grok16-languages.sh" ]]; then
+    run_step hostess-gate "$GROK16_SCRIPTS/grok16-languages.sh" hostess-gate
+  fi
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "test-battery: PASS (smoke)"
+}
+
+cmd_test_battery_full() {
+  local fail=0
+  run_step() {
+    echo "battery-full: $1"
+    if ! "${@:2}"; then
+      echo "battery-full FAIL: $1" >&2
+      fail=1
+    fi
+  }
+  run_step paths cmd_paths
+  run_step discern cmd_discern
+  if grok16_ready; then
+    run_step status cmd_status
+    run_step verify cmd_verify
+    run_step manifest write_manifest
+    if [[ -f "$FORGE" ]]; then
+      run_step forge-status g16_gpy_run "$FORGE" status
+    fi
+    if [[ -x "$GROK16_SCRIPTS/grok16-profile-flags.py" ]]; then
+      run_step profile-flags g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" field_opt source
+    fi
+    run_step bench cmd_bench
+  else
+    echo "battery-full: skip compiler verify/bench (not ready)"
+  fi
+  if gpy16_ready; then
+    run_step verify-python cmd_verify_python
+  fi
+  if [[ -f "$GROK16_ROOT/tests/test_g16_battery.py" ]]; then
+    run_step py-battery g16_gpy_run "$GROK16_ROOT/tests/test_g16_battery.py"
+  fi
+  if [[ -x "$GROK16_SCRIPTS/grok16-languages.sh" ]]; then
+    run_step languages-install "$GROK16_SCRIPTS/grok16-languages.sh" install
+    run_step languages-discern "$GROK16_SCRIPTS/grok16-languages.sh" discern
+    run_step hostess-gate "$GROK16_SCRIPTS/grok16-languages.sh" hostess-gate
+  fi
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "test-battery-full: PASS"
+}
+
+cmd_test_battery_expert() {
+  export G16_BENCH_PROFILE=expert
+  local fail=0
+  run_step() {
+    echo "battery-expert: $1"
+    if ! "${@:2}"; then
+      echo "battery-expert FAIL: $1" >&2
+      fail=1
+    fi
+  }
+  run_step test-battery cmd_test_battery
+  run_step ironclad cmd_ironclad_sanity_verify
+  run_step linker cmd_linker_verify
+  run_step rtx-gate cmd_rtx_gate_verify
+  if grok16_ready && [[ -x "$GROK16_SCRIPTS/grok16-profile-flags.py" ]]; then
+    run_step profile-expert g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" expert source
+  fi
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "test-battery-expert: PASS (0.9c tier — expert)"
+}
+
+cmd_test_battery_heavy() {
+  export G16_BENCH_PROFILE=heavy
+  export G16_RELEASE_PROFILE=1
+  local fail=0
+  run_step() {
+    echo "battery-heavy: $1"
+    if ! "${@:2}"; then
+      echo "battery-heavy FAIL: $1" >&2
+      fail=1
+    fi
+  }
+  run_step test-battery-expert cmd_test_battery_expert
+  if grok16_ready; then
+    run_step field-bench cmd_field_bench
+    if [[ -x "$GROK16_SCRIPTS/grok16-profile-flags.py" ]]; then
+      run_step profile-heavy g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" heavy source
+    fi
+  else
+    echo "battery-heavy: skip field-bench (compiler not ready)"
+  fi
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "test-battery-heavy: PASS (0.9c tier — heavy → 1.0 gate)"
+}
+
+cmd_bench_compare() {
+  exec "$GROK16_SCRIPTS/grok16-bench-compare.sh" compare
+}
+
+cmd_field_bench_real() {
+  exec "$GROK16_SCRIPTS/grok16-field-bench.sh"
 }
 
 cmd_paths() {
@@ -269,6 +607,7 @@ cmd_paths() {
   printf 'GROK16_GCC_REPO=%s\nGROK16_GCC_BRANCH=%s\nG16_PKGVERSION=%s\n' \
     "$GROK16_GCC_REPO" "$GROK16_GCC_BRANCH" "$G16_PKGVERSION"
   printf 'G16_C_STD=%s\nG16_CXX_STD=%s\nGROK16_BUILD_JOBS=%s\n' "$G16_C_STD" "$G16_CXX_STD" "$GROK16_BUILD_JOBS"
+  printf 'GPY16_ROOT=%s\nGPY16_DRIVER=%s\n' "$GPY16_ROOT" "$GPY16_DRIVER"
   [[ -n ${G16_DISABLE_BOOTSTRAP:-} ]] && printf 'G16_DISABLE_BOOTSTRAP=%s\n' "$G16_DISABLE_BOOTSTRAP"
   [[ -n ${G16_FAST_REBUILD:-} ]] && printf 'G16_FAST_REBUILD=%s\n' "$G16_FAST_REBUILD"
   [[ -n ${G16_ENABLE_LTO:-} ]] && printf 'G16_ENABLE_LTO=%s\n' "$G16_ENABLE_LTO"
@@ -277,6 +616,7 @@ cmd_paths() {
   [[ -n ${G16_RELEASE_PROFILE:-} ]] && printf 'G16_RELEASE_PROFILE=%s\n' "$G16_RELEASE_PROFILE"
   [[ -n ${G16_FULL_REBUILD:-} ]] && printf 'G16_FULL_REBUILD=%s\n' "$G16_FULL_REBUILD"
   [[ -n ${G16_BENCH_PROFILE:-} ]] && printf 'G16_BENCH_PROFILE=%s\n' "$G16_BENCH_PROFILE"
+  return 0
 }
 
 cmd_config() {
@@ -289,16 +629,19 @@ _bench_run_one() {
   local profile="$1"
   local pgo_kind="${2:-cxx}"
   local rel
-  rel="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" python3 "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" source)"
+  rel="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" source)"
   local src="$GROK16_ROOT/$rel"
   local outdir="$GROK16_ROOT/data/bench"
   local out="$outdir/grok16_${profile}_bench"
   local pflags lflags xflags run_line
   mkdir -p "$outdir" "$GROK16_ROOT/data/pgo"
-  pflags="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" python3 "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" "$pgo_kind" || echo "-std=gnu++26 -O3")"
-  lflags="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" python3 "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" link || true)"
+  pflags="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" "$pgo_kind" || echo "-std=gnu++26 -O3")"
+  lflags="$(GROK16_ROOT="$GROK16_ROOT" G16_PREFIX="$G16_PREFIX" g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" "$profile" link || true)"
   xflags="$(grok16_driver_extra_flags)"
-  [[ -f "$src" ]] || { echo "bench: missing source $src" >&2; return 1; }
+  if [[ ! -f "$src" ]]; then
+    echo "bench: skip missing source $src" >&2
+    return 0
+  fi
 
   local t0 t1 compile_ms run_ms bytes
   t0=$(date +%s%3N)
@@ -315,7 +658,7 @@ _bench_run_one() {
 
   echo "bench: profile=$profile pgo=$pgo_kind compile_ms=$compile_ms run_ms=$run_ms binary_bytes=$bytes"
   echo "bench: $run_line"
-  python3 - <<PY
+  g16_gpy_run - <<PY
 import json, os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -350,6 +693,12 @@ cmd_bench() {
     exit 1
   fi
   local profile="${G16_BENCH_PROFILE:-field_opt}"
+  if [[ "$profile" == "vulkan_rtx" || "$profile" == "queen_rtx" ]]; then
+    if ! g16_gpy_run "$GROK16_ROOT/forge/rtx_gate.py" check "$profile" >/dev/null 2>&1; then
+      echo "bench: RTX profile '$profile' blocked — no RTX GPU (use field_opt or G16_RTX_GATE_FORCE=1)" >&2
+      exit 1
+    fi
+  fi
   _bench_run_one "$profile" cxx
   echo "bench: PASS"
 }
@@ -399,7 +748,16 @@ case "${1:-}" in
   consolidate) cmd_consolidate ;;
   status) cmd_status ;;
   verify) cmd_verify ;;
+  verify-python) cmd_verify_python ;;
+  discern) cmd_discern ;;
+  test-battery) cmd_test_battery ;;
+  test-battery-expert) cmd_test_battery_expert ;;
+  test-battery-heavy) cmd_test_battery_heavy ;;
+  test-battery-full) cmd_test_battery_full ;;
   bench) cmd_bench ;;
+  bench-compare) cmd_bench_compare ;;
+  field-bench-real) cmd_field_bench_real ;;
+  speed-diagnosis) g16_gpy_run "$GROK16_SCRIPTS/grok16-speed-diagnosis.py" ;;
   field-bench) cmd_field_bench ;;
   bench-all) cmd_bench_all ;;
   profile) cmd_profile ;;

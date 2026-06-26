@@ -29,3 +29,16 @@ free software infrastructure.
 Building GCC typically also uses **GMP**, **MPFR**, and **MPC** (their respective
 GNU or LGPL licenses apply via the GCC prerequisite bundle). Queen forge handles
 fetching prerequisites from the upstream GCC `contrib/download_prerequisites` flow.
+
+## Distribution compliance
+
+- **Modify and use:** GPLv3 explicitly allows running, modifying, and redistributing
+  GCC-derived compilers. You do not need to remove GNU code to stay compliant.
+- **Keep the compiler:** Grok16 bootstraps upstream GCC/Binutils with documented
+  field deltas (`patches/`, forge configure). Rewriting a full compiler from scratch
+  is not required for license compliance.
+- **Binary distributions:** ship [SOURCE-OFFER.txt](SOURCE-OFFER.txt) with install
+  tarballs or prefix copies so recipients can obtain Corresponding Source (GPL §6).
+- **Your glue stays yours:** `driver/`, `forge/`, `cmake/`, and `scripts/` are
+  original Grok16 work (GPLv3). Using `g16`/`g++16` to compile MIT or commercial
+  projects does not infect those projects — the compiler is a separate tool.

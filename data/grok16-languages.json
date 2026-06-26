@@ -1,0 +1,27 @@
+{
+  "schema": "grok16-languages/v1",
+  "product": "Grok16",
+  "rule": "Unified g16 discerns every field language — memory-safe tiers get secure defaults",
+  "memory_safe": ["rust", "go", "zig", "ada", "swift", "kotlin", "python"],
+  "manual_memory": ["c", "cxx", "asm", "fortran", "d"],
+  "languages": {
+    "c": {"extensions": [".c", ".h"], "driver": "g16-cc", "backend": "libexec/grok16/g16-cc", "std": "gnu17", "memory": "manual"},
+    "cxx": {"extensions": [".cpp", ".cxx", ".cc", ".C", ".hpp", ".hh", ".ixx"], "driver": "g16-cxx", "backend": "libexec/grok16/g16-cxx", "std": "gnu++26", "memory": "manual+RAII"},
+    "python": {"extensions": [".py", ".gpy"], "driver": "gpy-16", "pair": "GPY-16", "memory": "gc", "secure": "truth_floor_58"},
+    "asm": {"extensions": [".s", ".S", ".asm"], "driver": "g16-as", "memory": "manual"},
+    "fortran": {"extensions": [".f", ".f90", ".f95", ".f03", ".for"], "driver": "g16-gfortran", "memory": "manual"},
+    "rust": {"extensions": [".rs"], "driver": "g16-rust", "memory": "ownership", "secure_flags": "-D warnings -C overflow-checks=on"},
+    "go": {"extensions": [".go"], "driver": "g16-go", "memory": "gc"},
+    "zig": {"extensions": [".zig"], "driver": "g16-zig", "memory": "manual+comptime"},
+    "d": {"extensions": [".d"], "driver": "g16-gdc", "memory": "gc_optional"},
+    "objc": {"extensions": [".m", ".mm"], "driver": "g16-objc", "memory": "arc"},
+    "ada": {"extensions": [".adb", ".ads"], "driver": "g16-gnat", "memory": "manual", "secure": "spark_subset"}
+  },
+  "hostess7": {
+    "truth_adapt_floor": 58,
+    "mandate_cmake": "cmake/g16-field-mandate.cmake",
+    "secure_profile": "hostess_secure",
+    "forever_profile": "forever",
+    "probe_cmd": "Hostess7.sh queen-grok16-probe"
+  }
+}

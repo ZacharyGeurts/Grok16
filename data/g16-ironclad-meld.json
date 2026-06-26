@@ -1,0 +1,37 @@
+{
+  "schema": "g16-ironclad-meld/v1",
+  "title": "Ironclad meld — Grok16 field compiler absorbed into capstone truth",
+  "ironclad_ref": "NewLatest/data/ironclad-doctrine.json",
+  "extensions_ref": "NewLatest/data/ironclad-meld-extensions.json",
+  "meld_citation": "ironclad:meld:2",
+  "g16_mandate": "G16_FIELD_SAFETY_MANDATE_v1",
+  "policy": "G16 builds under Ironclad — subsidiary field sanity melds without amending sealed doctrine.",
+  "books": [
+    {
+      "id": "field_sanity",
+      "title": "G16 Field Sanity — integral forge simplify",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Grok16 forge layers meld into Ironclad — one integral pass across driver, compiler, mandate, profiles."
+        },
+        {
+          "v": 2,
+          "text": "classify, strip, dedupe, flatten, cool_sort — never obtuse; never stack hot rebuild paths under thermo heat."
+        },
+        {
+          "v": 3,
+          "text": "g16 unified discerns C, C++, Python — field sanity witnesses each layer before link."
+        },
+        {
+          "v": 4,
+          "text": "G16_FIELD_SAFETY_MANDATE_v1 holds; Ironclad citation required on every field target meld."
+        },
+        {
+          "v": 5,
+          "text": "G16 field linker owns the link pass — discern OS, witness Ironclad, silicon mandate, then bfd/mach-o/pe dispatch."
+        }
+      ]
+    }
+  ]
+}

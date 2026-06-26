@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pythong
 """Emit CXX/LINK flags for a Grok16 profile (used by bench and CMake wrappers)."""
 from __future__ import annotations
 
@@ -11,10 +11,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "forge"))
 from grok16_lto import normalize_lto_flags  # noqa: E402
 
 
+def _cli_args() -> list[str]:
+    args = sys.argv[1:]
+    while args and args[0].endswith((".py", ".gpy")):
+        args = args[1:]
+    return args
+
+
 def main() -> int:
     root = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
-    profile = sys.argv[1] if len(sys.argv) > 1 else _default_profile()
-    kind = sys.argv[2] if len(sys.argv) > 2 else "cxx"
+    args = _cli_args()
+    profile = args[0] if args else _default_profile()
+    kind = args[1] if len(args) > 1 else "cxx"
     path = root / "data" / "grok16-profiles.json"
     if not path.is_file():
         print("", end="")

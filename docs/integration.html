@@ -58,6 +58,7 @@
       <a href="profiles.html">Profiles</a>
       <a href="performance.html">Performance</a>
       <a href="integration.html">Integration</a>
+      <a href="io.html">Field I/O</a>
       <a href="field-primer.html">Field Primer</a>
       <a href="reference.html">Reference</a>
     </div>
@@ -72,9 +73,9 @@
   <p>CMake: <code>cpp/CMakeLists.txt</code> — gnu++26, <code>g16-field-mandate.cmake</code> from Grok16.</p>
 
   <h2 id="gates">Gates</h2>
-  <pre><code>PYTHONPATH=. python3 -m redata.cli parity
-PYTHONPATH=. python3 -m redata.cli security
-PYTHONPATH=. python3 -m redata.cli mandate</code></pre>
+  <pre><code>PYTHONPATH=. pythong -m redata.cli parity
+PYTHONPATH=. pythong -m redata.cli security
+PYTHONPATH=. pythong -m redata.cli mandate</code></pre>
   <table>
     <tr><th>Gate</th><th>Checks</th></tr>
     <tr><td>parity</td><td>Python ↔ C++ WRDT/WRZC bytes</td></tr>
@@ -85,6 +86,22 @@ PYTHONPATH=. python3 -m redata.cli mandate</code></pre>
   <h2 id="queen">Queen</h2>
   <pre><code>./scripts/consolidate.sh
 # GROK16_QUEEN_ROOT — Queen vendor/gcc → symlink to Grok16 vendor</code></pre>
+
+  <h2 id="kilroy">KILROY kernel + Final_Eye stack I/O</h2>
+  <p>Full proc/ioctl map: <a href="io.html">Field I/O</a>. Kernel holds the die; Grok16 + FIELDC recompile after field updates.</p>
+  <pre><code>cd ../KILROY
+./scripts/field-recompile.sh
+# running kernel:
+cat /proc/kilroy_field/stack
+cat /proc/kilroy_field/sdf
+cat /proc/kilroy_field/security</code></pre>
+  <table>
+    <tr><th>Component</th><th>I/O surface</th></tr>
+    <tr><td>KILROY</td><td><code>/proc/kilroy_field/*</code>, <code>/dev/kilroy_field</code> ioctl v9</td></tr>
+    <tr><td>Final_Eye</td><td><code>zocr_field_compile.py</code>, <code>/api/field/compile</code>, stoard seal</td></tr>
+    <tr><td>World_Redata</td><td>WRDT1 envelopes, parity/security/mandate gates</td></tr>
+    <tr><td>Queen</td><td><code>GET /api/kilroy</code> @ :9481 — field stack rank #1</td></tr>
+  </table>
 
   <h2>Stack layers (World_Redata methodology)</h2>
   <table>

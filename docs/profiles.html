@@ -58,6 +58,7 @@
       <a href="profiles.html">Profiles</a>
       <a href="performance.html">Performance</a>
       <a href="integration.html">Integration</a>
+      <a href="io.html">Field I/O</a>
       <a href="field-primer.html">Field Primer</a>
       <a href="reference.html">Reference</a>
     </div>
@@ -95,14 +96,14 @@
 G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
 
   <h2 id="flags-c">C flag emission</h2>
-  <pre><code>python3 scripts/grok16-profile-flags.py field_opt c
-python3 scripts/grok16-profile-flags.py field_opt c_link
-python3 scripts/grok16-profile-flags.py field_opt c_pgo_gen</code></pre>
+  <pre><code>pythong scripts/grok16-profile-flags.py field_opt c
+pythong scripts/grok16-profile-flags.py field_opt c_link
+pythong scripts/grok16-profile-flags.py field_opt c_pgo_gen</code></pre>
 
   <h2>Flag emission (C++)</h2>
-  <pre><code id="flags-cxx">python3 scripts/grok16-profile-flags.py field_opt cxx
-python3 scripts/grok16-profile-flags.py field_opt link
-python3 scripts/grok16-profile-flags.py field_opt source</code></pre>
+  <pre><code id="flags-cxx">pythong scripts/grok16-profile-flags.py field_opt cxx
+pythong scripts/grok16-profile-flags.py field_opt link
+pythong scripts/grok16-profile-flags.py field_opt source</code></pre>
   <p id="flags-link"><code>PROFILE link</code> — LTO/link flags (normalized).</p>
   <p id="flags-source"><code>PROFILE source</code> — bench <code>.cpp</code> path from <code>profiles.json</code>.</p>
   <p id="flags-defs"><code>PROFILE defs</code> — <code>-D</code> macros only.</p>

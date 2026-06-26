@@ -1,0 +1,192 @@
+{
+  "product": "Grok16-languages",
+  "updated": "2026-06-26T04:37:54.035992+00:00",
+  "languages_total": 11,
+  "languages_ready": 11,
+  "memory_safe": [
+    "rust",
+    "go",
+    "zig",
+    "ada",
+    "swift",
+    "kotlin",
+    "python"
+  ],
+  "languages": {
+    "c": {
+      "extensions": [
+        ".c",
+        ".h"
+      ],
+      "driver": "g16-cc",
+      "backend": "libexec/grok16/g16-cc",
+      "std": "gnu17",
+      "memory": "manual",
+      "path": "/home/default/Desktop/SG/Grok16/libexec/grok16/g16-cc",
+      "ready": true,
+      "discern": "c"
+    },
+    "cxx": {
+      "extensions": [
+        ".cpp",
+        ".cxx",
+        ".cc",
+        ".C",
+        ".hpp",
+        ".hh",
+        ".ixx"
+      ],
+      "driver": "g16-cxx",
+      "backend": "libexec/grok16/g16-cxx",
+      "std": "gnu++26",
+      "memory": "manual+RAII",
+      "path": "/home/default/Desktop/SG/Grok16/libexec/grok16/g16-cxx",
+      "ready": true,
+      "discern": "cxx"
+    },
+    "python": {
+      "extensions": [
+        ".py",
+        ".gpy"
+      ],
+      "driver": "gpy-16",
+      "pair": "GPY-16",
+      "memory": "gc",
+      "secure": "truth_floor_58",
+      "path": "/home/default/Desktop/SG/GrokPy/bin/gpy-16",
+      "ready": true,
+      "discern": "python"
+    },
+    "asm": {
+      "extensions": [
+        ".s",
+        ".S",
+        ".asm"
+      ],
+      "driver": "g16-as",
+      "memory": "manual",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-as",
+      "ready": true,
+      "discern": "asm"
+    },
+    "fortran": {
+      "extensions": [
+        ".f",
+        ".f90",
+        ".f95",
+        ".f03",
+        ".for"
+      ],
+      "driver": "g16-gfortran",
+      "memory": "manual",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-gfortran",
+      "ready": true,
+      "discern": "fortran"
+    },
+    "rust": {
+      "extensions": [
+        ".rs"
+      ],
+      "driver": "g16-rust",
+      "memory": "ownership",
+      "secure_flags": "-D warnings -C overflow-checks=on",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-rust",
+      "ready": true,
+      "discern": "rust"
+    },
+    "go": {
+      "extensions": [
+        ".go"
+      ],
+      "driver": "g16-go",
+      "memory": "gc",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-go",
+      "ready": true,
+      "discern": "go"
+    },
+    "zig": {
+      "extensions": [
+        ".zig"
+      ],
+      "driver": "g16-zig",
+      "memory": "manual+comptime",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-zig",
+      "ready": true,
+      "discern": "zig"
+    },
+    "d": {
+      "extensions": [
+        ".d"
+      ],
+      "driver": "g16-gdc",
+      "memory": "gc_optional",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-gdc",
+      "ready": true,
+      "discern": "d"
+    },
+    "objc": {
+      "extensions": [
+        ".m",
+        ".mm"
+      ],
+      "driver": "g16-objc",
+      "memory": "arc",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-objc",
+      "ready": true,
+      "discern": "objc"
+    },
+    "ada": {
+      "extensions": [
+        ".adb",
+        ".ads"
+      ],
+      "driver": "g16-gnat",
+      "memory": "manual",
+      "secure": "spark_subset",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-gnat",
+      "ready": true,
+      "discern": "ada"
+    }
+  },
+  "discern_probe": {
+    "c": "c",
+    "cxx": "cxx",
+    "python": "python",
+    "asm": "asm",
+    "rust": "rust",
+    "go": "go",
+    "fortran": "fortran"
+  },
+  "hostess7": {
+    "truth_adapt_floor": 58,
+    "mandate_cmake": "cmake/g16-field-mandate.cmake",
+    "secure_profile": "hostess_secure",
+    "forever_profile": "forever",
+    "probe_cmd": "Hostess7.sh queen-grok16-probe"
+  },
+  "hostess_satisfied": true,
+  "hostess_gate": {
+    "schema": "grok16-hostess-gate/v1",
+    "truth_adapt_floor": 58,
+    "score": 15,
+    "max": 15,
+    "checks": {
+      "g16": true,
+      "g16_as": true,
+      "g16_ld": true,
+      "g16_objdump": true,
+      "gpy16": true,
+      "gpy16_field_native": true,
+      "field_native_doctrine": true,
+      "mandate_cmake": true,
+      "languages_json": true,
+      "profiles_json": true,
+      "hostess_stack": true,
+      "truth_floor": true,
+      "hostess_secure_profile": true,
+      "forever_profile": true,
+      "core_languages": true
+    },
+    "satisfied": true
+  }
+}

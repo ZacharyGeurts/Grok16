@@ -5,6 +5,8 @@
 /libexec/
 /include/
 /share/
+/x86_64-pc-linux-gnu/
+/etc/gprofng.rc
 
 # Upstream GCC clone (~1.6G) — fetched by grok16-forge gcc_fetch
 /vendor/*

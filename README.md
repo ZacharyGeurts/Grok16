@@ -1,7 +1,8 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-16.1.1-green)
+![Status](https://img.shields.io/badge/release-0.9c-orange)
 ![Version](https://img.shields.io/badge/G16-16.1.1-blue)
+![Track](https://img.shields.io/badge/roadmap-expert%20%C2%B7%20heavy%20%E2%86%92%201.0-lightgrey)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
@@ -136,6 +137,32 @@ cmake --build examples/field-canvas-kernel/build
 
 Profiles set Field macros (`FIELD_ENTROPY_DISPATCH`, `FIELD_X86_DIE`) and aggressive vectorization flags. See `data/grok16-profiles.json` for the full flag list.
 
+## Field CMake (g16 owns configure + build)
+
+Queen RTX no longer uses Queen-generated cmake glue. **Grok16 Field CMake** is canonical:
+
+| File | Role |
+|------|------|
+| `cmake/grok16-field.cmake` | Single `CMAKE_PROJECT_INCLUDE` entry (profile + mandate + chips) |
+| `cmake/grok16-field-queen-rtx.cmake` | Queen-browser preset (inside deps, no fetch) |
+| `cmake/grok16-toolchain.cmake` | g16 compiler pin (written by `grok16-toolchain.sh`) |
+| `scripts/field-cmake.sh` | Fast configure/build CLI (Ninja default) |
+| `CMakePresets.json` | `field-opt`, `queen-rtx` presets |
+| `forge/cmake_tools.py` | `field_cmake`, `field_cmake_configure`, `field_cmake_build` |
+
+```bash
+# Queen sovereign RTX (Ninja + g16)
+QUEEN_ROOT=/path/to/NewLatest/Queen ./scripts/field-cmake.sh queen-rtx
+
+# Or via Grok16 forge
+pythong forge/grok16-forge.py run field_cmake
+
+# Queen forge delegates automatically
+pythong NewLatest/Queen/lib/queen-forge.py run rtx
+```
+
+Manifest: `data/grok16-field-cmake.json`
+
 ### Building Field Technology with Grok16 (Field_Primer)
 
 1. Bootstrap Grok16 once; `verify` + `field-bench` must pass.
@@ -144,7 +171,7 @@ Profiles set Field macros (`FIELD_ENTROPY_DISPATCH`, `FIELD_X86_DIE`) and aggres
 4. AMOURANTHRTX / NEXUS consumers: include `grok16-profile-field-opt.cmake` or `grok16-profile-ai.cmake` for CANVAS.compute-adjacent CPU and behavioral scoring.
 5. Low-power / high-throughput: `G16_FIELD_SPEED=1` enables vectorization + unrolling tuned for Field Die emulation (AmmoOS/FieldX86).
 
-**redata / ZAC round-trip:** After `build-cpp.sh`, run `python3 -m redata.cli parity` — confirms Python ↔ C++ WRDT/WRZC bytes through the G16-built engine. `security` and `mandate` gates validate hardening + Grok16 manifest. Hostess7/ZAC stay orthogonal; Grok16 compiles the L2 native layer.
+**redata / ZAC round-trip:** After `build-cpp.sh`, run `pythong -m redata.cli parity` — confirms Python ↔ C++ WRDT/WRZC bytes through the G16-built engine. `security` and `mandate` gates validate hardening + Grok16 manifest. Hostess7/ZAC stay orthogonal; Grok16 compiles the L2 native layer.
 
 ## Configuration
 
@@ -203,7 +230,7 @@ cmake --build examples/minimal-cmake-project/build
 ./scripts/grok16-toolchain.sh profile     # PGO training collection
 ./scripts/grok16-toolchain.sh status
 ./scripts/grok16-toolchain.sh paths
-python3 forge/grok16-forge.py status      # JSON toolchain state
+pythong forge/grok16-forge.py status      # JSON toolchain state
 ```
 
 ## Integration (Field_Primer / SG stack)

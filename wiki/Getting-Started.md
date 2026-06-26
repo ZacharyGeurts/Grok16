@@ -3,7 +3,7 @@
 ## Requirements
 
 - Linux x86_64
-- Host gcc/g++, git, cmake, python3
+- Host gcc/g++, git, cmake, pythong
 - GCC build dependencies
 - ~6 GB disk
 

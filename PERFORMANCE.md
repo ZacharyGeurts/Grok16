@@ -56,8 +56,8 @@ Grok16 compiles **World_Redata L2** (`build-cpp.sh`). Gates:
 ```bash
 cd ../World_Redata
 ./build-cpp.sh
-PYTHONPATH=. python3 -m redata.cli parity    # PYTHON ↔ C++ roundtrip
-PYTHONPATH=. python3 -m redata.cli security  # binary hardening + Grok16 manifest
+PYTHONPATH=. pythong -m redata.cli parity    # PYTHON ↔ C++ roundtrip
+PYTHONPATH=. pythong -m redata.cli security  # binary hardening + Grok16 manifest
 ```
 
 Parity confirms WRDT/WRZC bytes roundtrip through the G16-built `world-redata` binary — the redata pipeline contract for L0–L1 → L2.
