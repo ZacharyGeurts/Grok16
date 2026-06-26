@@ -34,7 +34,11 @@ def test_field_tools_or_skip() -> None:
     as_tool = _tool("g16-as")
     objdump = _tool("g16-objdump")
     if not (as_tool.is_file() and objdump.is_file()):
-        print("binutils battery: skip runtime (not built)")
+        print(json.dumps({
+            "status": "incomplete",
+            "reason": "g16-as or g16-objdump not built",
+            "missing": [t for t, p in (("g16-as", as_tool), ("g16-objdump", objdump)) if not p.is_file()],
+        }))
         return
     import tempfile
 
@@ -52,6 +56,7 @@ def test_field_tools_or_skip() -> None:
         )
         assert proc2.returncode == 0, proc2.stderr
         assert "nop" in proc2.stdout.lower()
+    print(json.dumps({"status": "pass", "tools": ["g16-as", "g16-objdump"]}))
 
 
 def test_compat_symlinks() -> None:

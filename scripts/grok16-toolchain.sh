@@ -559,7 +559,7 @@ cmd_test_battery_expert() {
     run_step profile-expert g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" expert source
   fi
   [[ "$fail" -eq 0 ]] || exit 1
-  echo "test-battery-expert: PASS (0.9c tier — expert)"
+  echo "test-battery-expert: PASS (0.9d tier — expert)"
 }
 
 cmd_test_battery_heavy() {
@@ -583,7 +583,7 @@ cmd_test_battery_heavy() {
     echo "battery-heavy: skip field-bench (compiler not ready)"
   fi
   [[ "$fail" -eq 0 ]] || exit 1
-  echo "test-battery-heavy: PASS (0.9c tier — heavy → 1.0 gate)"
+  echo "test-battery-heavy: PASS (0.9d tier — heavy → 1.0 gate)"
 }
 
 cmd_bench_compare() {

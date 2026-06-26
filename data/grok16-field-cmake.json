@@ -12,6 +12,9 @@
     "field_sanity_doctrine": "data/g16-field-sanity-doctrine.json",
     "ironclad_bridge": "forge/g16-ironclad.py",
     "sanity_operator": "forge/g16-field-sanity.py",
+    "linker_doctrine": "data/g16-linker-doctrine.json",
+    "linker_orchestrator": "forge/g16-linker.py",
+    "linker_mandate": "cmake/g16-linker-mandate.cmake",
     "presets": "CMakePresets.json",
     "script": "scripts/field-cmake.sh"
   },

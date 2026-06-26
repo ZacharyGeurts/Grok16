@@ -23,9 +23,9 @@
       "integral": "one_pass_simplify",
       "heat_avoided": 0,
       "layers_out": 0,
-      "updated": "2026-06-26T21:44:09Z"
+      "updated": "2026-06-26T22:12:32Z"
     },
-    "updated": "2026-06-26T21:48:13Z"
+    "updated": "2026-06-26T22:14:14Z"
   },
   "field_sanity": {
     "id": "g16_field_sanity",
@@ -60,10 +60,14 @@
     "nexus_field_sanity": true,
     "ironclad_grounded": true,
     "field_sanity_ok": true,
-    "operator_ok": true
+    "operator_ok": true,
+    "linker_doctrine": true,
+    "linker_orchestrator": true,
+    "linker_driver": true,
+    "linker_bfd_backend": true
   },
-  "score": 10,
-  "max": 10,
+  "score": 14,
+  "max": 14,
   "ok": true,
   "satisfied": true
 }

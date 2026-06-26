@@ -1,15 +1,17 @@
 {
-  "distro_version": "0.9c",
+  "distro_version": "0.9d",
   "release_track": {
-    "current": "0.9c",
+    "current": "0.9d",
+    "previous": "0.9c",
     "next": "1.0",
     "status": "pre-release",
+    "released": false,
     "validation_tiers": ["expert", "heavy"],
-    "roadmap": "0.9c → expert + heavy battery → 1.0"
+    "roadmap": "0.9d → linker/battery gate hardening → expert + heavy → 1.0"
   },
   "g16_version": "16.1.1",
   "pkgversion": "Grok16-16.1.1",
-  "tag": "v0.9c",
+  "tag": "",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -30,6 +32,11 @@
   },
   "notes": "g16 auto-detects C, C++, and Python; g++16 is a compat symlink to the same driver",
   "changelog": [
+    "0.9d: Track bump — development on main, not tagged/released yet",
+    "0.9d: Linker witness — 16 targets active; ironclad sanity linker doctrine checks",
+    "0.9d: field-cmake manifest — linker doctrine, orchestrator, mandate paths",
+    "0.9d: Binutils battery — incomplete JSON witness when g16-as/objdump not built",
+    "0.9d: CI workflow draft (scripts, profiles, optional bench)",
     "0.9c: Ironclad + field sanity meld wired through forge and CMake mandate",
     "0.9c: G16 field linker — 16 targets, macOS/Android/ARM/x86, silicon mandate",
     "0.9c: RTX gate — queen_rtx/vulkan_rtx blocked without RTX silicon",

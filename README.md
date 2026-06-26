@@ -1,6 +1,6 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-0.9c-orange)
+![Status](https://img.shields.io/badge/release-0.9d--dev-orange)
 ![Version](https://img.shields.io/badge/G16-16.1.1-blue)
 ![Track](https://img.shields.io/badge/roadmap-expert%20%C2%B7%20heavy%20%E2%86%92%201.0-lightgrey)
 ![License](https://img.shields.io/badge/license-GPLv3-green)

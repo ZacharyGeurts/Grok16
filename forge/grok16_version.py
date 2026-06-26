@@ -7,10 +7,10 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parents[1]
 _VERSION_FILE = _ROOT / "data" / "grok16-version.json"
 _FALLBACK = {
-    "distro_version": "0.9c",
+    "distro_version": "0.9d",
     "g16_version": "16.1.1",
     "pkgversion": "Grok16-16.1.1",
-    "tag": "v0.9c",
+    "tag": "",
     "cxx_std_default": "gnu++26",
     "c_std_default": "gnu17",
     "driver": "unified",
