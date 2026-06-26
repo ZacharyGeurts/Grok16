@@ -1,12 +1,18 @@
 # Reference
 
+Web: [reference.html](https://zacharygeurts.github.io/Grok16/reference.html)
+
 ## grok16-toolchain.sh
 
 | Command | Description |
 |---------|-------------|
 | bootstrap | First build |
 | rebuild | Self-host |
-| verify | gnu++26 probe |
+| verify | C/C++ + linker + ironclad |
+| test-battery | Smoke tier |
+| test-battery-expert | Expert tier |
+| test-battery-heavy | Heavy tier |
+| test-battery-release | **1.0 release gate** |
 | field-bench | Field-Opt bench |
 | bench-all | All profiles |
 | profile | PGO generate |

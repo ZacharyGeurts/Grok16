@@ -1,4 +1,6 @@
-# Master Coder Index
+# Master Coder
+
+Web: [master-coder.html](https://zacharygeurts.github.io/Grok16/master-coder.html) · Distro **1.0.0** · g16 @ **16.1.1** Index
 
 Ordered index of every Grok16 command and function. Short tooltip per row; click for the detailed manual section.
 

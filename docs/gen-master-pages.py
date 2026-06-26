@@ -5,7 +5,9 @@ from __future__ import annotations
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent
+DISTRO = "1.0.0"
 VER = "16.1.1"
+CACHE = "v8"
 
 HEAD = f"""<!DOCTYPE html>
 <html lang="en">
@@ -26,17 +28,17 @@ HEAD = f"""<!DOCTYPE html>
     }}
   }})(document);
   </script>
-  <script src="manual-theme.js?v=7"></script>
-  <script src="manual-search.js?v=7"></script>
-  <script src="manual-layout.js?v=7"></script>
-  <link rel="stylesheet" href="manual.css?v=7" />
+  <script src="manual-theme.js?{CACHE}"></script>
+  <script src="manual-search.js?{CACHE}"></script>
+  <script src="manual-layout.js?{CACHE}"></script>
+  <link rel="stylesheet" href="manual.css?{CACHE}" />
 </head>
 <body>
 """
 
 NAV = f"""  <nav>
     <div class="nav-top">
-      <div class="nav-brand"><strong>Grok16 Manual</strong> <span class="nav-version">v{VER}</span></div>
+      <div class="nav-brand"><strong>Grok16</strong> <span class="nav-version">distro {DISTRO}</span> <span class="nav-g16">g16 @ {VER}</span></div>
       <div class="nav-controls" aria-label="Display preferences">
         <div class="control-chip">
           <label class="control-label" for="g16-font-scale">Size</label>
@@ -59,17 +61,18 @@ NAV = f"""  <nav>
       </div>
     </div>
     <div class="nav-links">
-      <a href="index.html">Index</a>
-      <a href="concepts.html">Concepts</a>
-      <a href="master-coder.html">Master Coder</a>
-      <a href="master-coder-c.html">Master Coder C</a>
-      <a href="master-coder-cxx.html">Master Coder C++</a>
+      <a href="index.html">Home</a>
+      <a href="release.html">Release 1.0</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
+      <a href="batteries.html">Batteries</a>
+      <a href="toolkits.html">Toolkits</a>
+      <a href="linker.html">Linker</a>
       <a href="profiles.html">Profiles</a>
       <a href="performance.html">Performance</a>
       <a href="integration.html">Integration</a>
-      <a href="io.html">Field I/O</a>
+      <a href="concepts.html">Concepts</a>
+      <a href="master-coder.html">Master Coder</a>
       <a href="field-primer.html">Field Primer</a>
       <a href="reference.html">Reference</a>
     </div>

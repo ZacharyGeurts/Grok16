@@ -1,5 +1,9 @@
 # Integration
 
+Web: [integration.html](https://zacharygeurts.github.io/Grok16/integration.html)
+
+Requires Grok16 **v1.0.0** prefix with `test-battery-release` green.
+
 ## World_Redata
 
 ```bash

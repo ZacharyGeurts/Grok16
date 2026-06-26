@@ -1,33 +1,39 @@
 # Architecture
 
-## Field rewrite
+Web: [architecture.html](https://zacharygeurts.github.io/Grok16/architecture.html)
 
-| Item | Stock GCC 15 | Grok16 |
-|------|--------------|--------|
-| Branch | releases/gcc-15 | same |
-| BASE-VER | 15.3.1 | 16.0.0 |
-| Drivers | gcc, g++ | g16, g++16 |
-| Pkgversion | default | Grok16-16.0.0 |
-
-## Build flow
+## Stack (1.0)
 
 ```
-gcc_fetch → vendor/gcc
-patch BASE-VER
-host configure + install → G16_PREFIX
-gcc_rebuild (self-host) → SELFHOST.json
-install metadata → grok16-toolchain.cmake, grok16-toolchain.json
+vendor/gcc (gcc-15, BASE-VER 16.1.1)
+    → build/gcc (host + self-host)
+    → bin/g16 (unified driver)
+    → libexec/grok16/{g16-cc,g16-cxx,g16-ld-bfd}
 ```
 
-## Directories
+## Forge tools
 
-| Path | In git |
-|------|--------|
-| forge/, scripts/, cmake/, examples/, data/ | yes |
-| vendor/gcc/, build/gcc/, bin/, lib/ | no (local) |
+| Tool | Role |
+|------|------|
+| `gcc_fetch` | Clone upstream GCC |
+| `gcc_configure` | Host configure |
+| `gcc_build` | Host build + install |
+| `gcc_rebuild` | Self-host with g16 |
+| `linker_install` | g16-ld wrapper + BFD backend |
 
-## Scripts
+## Unified driver
 
-- `scripts/grok16-toolchain.sh` — main entry
-- `forge/grok16-forge.py` — forge orchestrator
-- `forge/compiler_tools.py` — gcc build steps
+- `g16` — discern C/C++/Python/ASM + delegate
+- `g++16` — symlink to `g16`
+- Backends in `libexec/grok16/` (not moved — cc1 paths stay valid)
+
+## Key paths
+
+| Var | Default |
+|-----|---------|
+| `GROK16_ROOT` | repo root |
+| `G16_PREFIX` | install prefix (= root in dev) |
+| `GROK16_GCC_SRC` | `vendor/gcc` |
+| `GROK16_GCC_BUILD` | `build/gcc` |
+
+Self-host stamp: `SELFHOST.json`

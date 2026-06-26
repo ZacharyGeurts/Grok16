@@ -1,29 +1,33 @@
 # Profiles
 
-Source: `data/grok16-profiles.json`. Default std: `gnu++26`.
+Web: [profiles.html](https://zacharygeurts.github.io/Grok16/profiles.html)
 
-| Profile | CMake | Bench | Use |
-|---------|-------|-------|-----|
-| field_opt | grok16-profile-field-opt.cmake | field-nexus-bench | FieldX86, entropy, NEXUS |
-| ai | grok16-profile-ai.cmake | ai-matrix-bench | Matrix scoring |
-| field_compute | grok16-profile-field.cmake | field-canvas-kernel | CANVAS dispatch |
-| vulkan_rtx | grok16-profile-vulkan.cmake | field-nexus-bench | AVX2/FMA |
+Manifest: `data/grok16-profiles.json`
+
+## Build profiles
+
+| Profile | Use |
+|---------|-----|
+| `field_opt` | Primary Field throughput |
+| `ai` | NEXUS matrix scoring |
+| `field_compute` | CANVAS wave dispatch |
+| `vulkan_rtx` | RTX SIMD (requires RTX GPU) |
+| `expert` | Battery expert tier |
+| `heavy` | Battery heavy / 1.0 gate |
+| `hostess_secure` | Hostess7 pair |
+| `forever` | Forever battery contract |
 
 ## CMake
 
 ```bash
-cmake -S . -B build \
-  -DCMAKE_TOOLCHAIN_FILE=$GROK16_ROOT/cmake/grok16-toolchain.cmake \
-  -DCMAKE_PROJECT_INCLUDE=$GROK16_ROOT/cmake/grok16-profile-field-opt.cmake
+cmake -S examples/field-nexus-bench -B build \
+  -DCMAKE_TOOLCHAIN_FILE=cmake/grok16-toolchain.cmake \
+  -DCMAKE_PROJECT_INCLUDE=cmake/grok16-profile-field-opt.cmake
 ```
 
-## Bench
+## Flag introspection
 
 ```bash
-G16_BENCH_PROFILE=ai ./scripts/grok16-toolchain.sh bench
-G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench
+pythong scripts/grok16-profile-flags.py field_opt cxx
+pythong scripts/grok16-profile-flags.py heavy source
 ```
-
-## Mandate
-
-Include `cmake/g16-field-mandate.cmake` on field targets (fortify, RELRO, PIE).

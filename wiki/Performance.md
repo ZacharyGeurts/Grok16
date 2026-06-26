@@ -1,36 +1,39 @@
 # Performance
 
-Host: Linux x86_64, `g++16 (Grok16-16.0.0)`.
+Web: [performance.html](https://zacharygeurts.github.io/Grok16/performance.html)
 
-## field-nexus-bench
-
-| Build | kernel wall_ms | bytes |
-|-------|----------------|-------|
-| -O2 baseline | 2.65 | 17144 |
-| field_opt | 2.11–2.19 | 22616 |
-
-~19% faster vs -O2 baseline.
-
-## bench-all
-
-| Profile | compile_ms | kernel |
-|---------|------------|--------|
-| field_opt | ~830–870 | ~2.1 ms |
-| ai | ~735 | ~4.0 ms |
-| field_compute | ~543 | dispatch OK |
-| vulkan_rtx | ~870 | ~2.1 ms |
-
-## Commands
+## Primary metric
 
 ```bash
 ./scripts/grok16-toolchain.sh field-bench
-./scripts/grok16-toolchain.sh bench-all
-cat data/bench/latest.json
 ```
 
-## PGO
+Field-Opt kernel: `examples/field-nexus-bench/` — entropy + NEXUS scoring.
+
+## Release rebuild
 
 ```bash
-./scripts/grok16-toolchain.sh profile
+export G16_RELEASE_PROFILE=1
+export G16_ENABLE_LTO=1
+export G16_ENABLE_PGO=1
+./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh profile    # PGO → data/pgo/
 G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench
 ```
+
+## Bench matrix
+
+```bash
+./scripts/grok16-toolchain.sh bench-all   # → data/bench/latest.json
+```
+
+| Profile | Workload |
+|---------|----------|
+| `field_opt` | field-nexus-bench |
+| `ai` | ai-matrix-bench |
+| `field_compute` | field-canvas-kernel |
+| `vulkan_rtx` | RTX SIMD (gated on silicon) |
+
+## Heavy tier
+
+`test-battery-heavy` runs bench under `G16_BENCH_PROFILE=heavy` + `G16_RELEASE_PROFILE=1`.

@@ -1,44 +1,40 @@
 # Getting Started
 
+Web: [getting-started.html](https://zacharygeurts.github.io/Grok16/getting-started.html)
+
 ## Requirements
 
 - Linux x86_64
-- Host gcc/g++, git, cmake, pythong
+- Host gcc/g++, git, cmake, Python 3 / GPY-16
 - GCC build dependencies
 - ~6 GB disk
 
-## Bootstrap
+## Bootstrap (v1.0.0)
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
-git checkout v16.0.0
+git checkout v1.0.0
 export G16_PREFIX="$(pwd)"
 
 ./scripts/grok16-toolchain.sh bootstrap
 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh verify
-./scripts/grok16-toolchain.sh field-bench
+./scripts/grok16-toolchain.sh test-battery-release
 ```
 
 ## Rebuild
 
 | Mode | Command |
 |------|---------|
-| Default (fast) | `./scripts/grok16-toolchain.sh rebuild` |
+| Fast (default) | `./scripts/grok16-toolchain.sh rebuild` |
 | Full bootstrap | `G16_FULL_REBUILD=1 ./scripts/grok16-toolchain.sh rebuild` |
-| Release | `G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild` |
+| **Release** | `G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild` |
 
-## Queen consolidate
-
-```bash
-export GROK16_QUEEN_ROOT=/path/to/Queen   # optional
-./scripts/consolidate.sh
-./scripts/grok16-toolchain.sh rebuild
-```
-
-## Docker
+## Production gate
 
 ```bash
-docker build -t grok16 .
+G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh test-battery-release
 ```
+
+See [Batteries](Batteries).
