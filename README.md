@@ -15,7 +15,9 @@
 
 | Artifact | Role |
 |----------|------|
-| `g16` (unified) | Single driver — auto C/C++; backends in `libexec/grok16/` |
+| `g16` (unified) | Single driver — auto C/C++/Python/ASM + Rust/Go/Zig/Fortran/D/Ada/ObjC |
+| `gpy-16` (built-in) | GPY-16 Python toolkit in `python/` — GrokVM + g16 auto-discern |
+| `grok16-toolkits.json` | Manifest of rebuilt in-tree toolkits (no sibling-repo bootstrap) |
 | `grok16-toolchain.cmake` | CMake toolchain file |
 | `grok16-profile-*.cmake` | AI / Field / Vulkan-RTX build profiles |
 | `grok16-toolchain.sh` | bootstrap · rebuild · verify · bench · field-bench · profile · status |

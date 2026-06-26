@@ -7,6 +7,8 @@ Roadmap: **0.9d → linker/battery gate hardening → expert + heavy → 1.0**
 
 ## What's landing in 0.9d (WIP)
 
+- **Built-in GPY-16** — `python/` tree + `bin/gpy-16`; g16 auto-discerns Python; no sibling GrokPy required
+- **Rebuilt toolkits manifest** — `data/grok16-toolkits.json` (g16, gpy16, binutils, ASM, all major language drivers)
 - Linker toolchain witness — 16 targets active; ironclad sanity linker checks
 - `grok16-field-cmake.json` — linker doctrine, orchestrator, mandate paths
 - Binutils battery — structured incomplete witness when tools not built

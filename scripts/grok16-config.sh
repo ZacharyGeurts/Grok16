@@ -19,8 +19,18 @@ _grok16_config_resolve() {
   GROK16_BINUTILS_BUILD="${GROK16_BINUTILS_BUILD:-$GROK16_ROOT/build/binutils}"
   GROK16_GCC_REPO="${GROK16_GCC_REPO:-https://gcc.gnu.org/git/gcc.git}"
   GROK16_GCC_BRANCH="${GROK16_GCC_BRANCH:-releases/gcc-15}"
-  GPY16_ROOT="${GPY16_ROOT:-$GROK16_SG_ROOT/GrokPy}"
-  GPY16_DRIVER="${GPY16_DRIVER:-$GPY16_ROOT/bin/gpy-16}"
+  GPY16_ROOT="${GPY16_ROOT:-$GROK16_ROOT/python}"
+  GPY16_DRIVER="${GPY16_DRIVER:-$G16_PREFIX/bin/gpy-16}"
+  if [[ ! -x "$GPY16_DRIVER" && -x "$GROK16_ROOT/bin/gpy-16" ]]; then
+    GPY16_DRIVER="$GROK16_ROOT/bin/gpy-16"
+  fi
+  if [[ ! -x "$GPY16_DRIVER" && -x "$GROK16_ROOT/scripts/gpy-16" ]]; then
+    GPY16_DRIVER="$GROK16_ROOT/scripts/gpy-16"
+  fi
+  if [[ ! -x "$GPY16_DRIVER" && -x "$GROK16_SG_ROOT/GrokPy/bin/gpy-16" ]]; then
+    GPY16_DRIVER="$GROK16_SG_ROOT/GrokPy/bin/gpy-16"
+    GPY16_ROOT="${GPY16_ROOT:-$GROK16_SG_ROOT/GrokPy}"
+  fi
   if [[ ! -x "$GPY16_DRIVER" ]]; then
     GPY16_DRIVER="${GROK16_SG_ROOT}/PythonG/bin/pythong"
   fi
@@ -74,7 +84,7 @@ PY
   export G16_RELEASE_PROFILE G16_FIELD_SPEED G16_FAST_REBUILD G16_FULL_REBUILD
   export GROK16_ROOT G16_DISABLE_BOOTSTRAP G16_ENABLE_LTO G16_ENABLE_PGO G16_BENCH_PROFILE GROK16_CCACHE_SAFETY
   export GPY16_ROOT GPY16_DRIVER
-  export PATH="$G16_PREFIX/bin:$G16_PREFIX/libexec/grok16:$GPY16_ROOT/bin:$GROK16_SG_ROOT/PythonG/bin:$PATH"
+  export PATH="$G16_PREFIX/bin:$G16_PREFIX/libexec/grok16:$GROK16_ROOT/bin:$GROK16_SG_ROOT/PythonG/bin:$PATH"
 }
 
 g16_gpy_run() {

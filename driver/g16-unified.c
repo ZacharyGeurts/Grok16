@@ -366,8 +366,13 @@ static int gpy16_path(char *out, size_t outlen)
         snprintf(out, outlen, "%s", env);
         return access(out, X_OK) == 0;
     }
+    if (prefix_bin_path(out, outlen, "gpy-16"))
+        return 1;
     if (!bin_dir(bindir, sizeof bindir))
         return 0;
+    snprintf(out, outlen, "%s/gpy-16", bindir);
+    if (access(out, X_OK) == 0)
+        return 1;
     snprintf(out, outlen, "%s/../../GrokPy/bin/gpy-16", bindir);
     if (access(out, X_OK) == 0)
         return 1;

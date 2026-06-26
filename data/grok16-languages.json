@@ -7,7 +7,7 @@
   "languages": {
     "c": {"extensions": [".c", ".h"], "driver": "g16-cc", "backend": "libexec/grok16/g16-cc", "std": "gnu17", "memory": "manual"},
     "cxx": {"extensions": [".cpp", ".cxx", ".cc", ".C", ".hpp", ".hh", ".ixx"], "driver": "g16-cxx", "backend": "libexec/grok16/g16-cxx", "std": "gnu++26", "memory": "manual+RAII"},
-    "python": {"extensions": [".py", ".gpy"], "driver": "gpy-16", "pair": "GPY-16", "memory": "gc", "secure": "truth_floor_58"},
+    "python": {"extensions": [".py", ".gpy"], "driver": "gpy-16", "tree": "python/", "pair": "GPY-16", "builtin": true, "memory": "gc", "secure": "truth_floor_58"},
     "asm": {"extensions": [".s", ".S", ".asm"], "driver": "g16-as", "memory": "manual"},
     "fortran": {"extensions": [".f", ".f90", ".f95", ".f03", ".for"], "driver": "g16-gfortran", "memory": "manual"},
     "rust": {"extensions": [".rs"], "driver": "g16-rust", "memory": "ownership", "secure_flags": "-D warnings -C overflow-checks=on"},

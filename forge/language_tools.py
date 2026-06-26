@@ -131,6 +131,36 @@ exec "$G16_PREFIX/bin/g16" -x objective-c++ "$@"
 """
 
 
+def _gpy16_driver_path(ctx: ForgeContext) -> Path:
+    env = os.environ.get("GPY16_DRIVER", "").strip()
+    if env:
+        return Path(env)
+    prefix = _prefix(ctx)
+    for candidate in (
+        prefix / "bin" / "gpy-16",
+        ctx.queen / "bin" / "gpy-16",
+    ):
+        if candidate.is_file():
+            return candidate
+    return ctx.queen / "bin" / "gpy-16"
+
+
+def _install_gpy16_driver(ctx: ForgeContext, engine: ForgeEngine | None = None) -> bool:
+    prefix = _prefix(ctx)
+    src = ctx.queen / "scripts" / "gpy-16"
+    if not src.is_file():
+        src = ctx.queen / "bin" / "gpy-16"
+    dst = prefix / "bin" / "gpy-16"
+    if not src.is_file():
+        return False
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    dst.chmod(dst.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    if engine:
+        engine.log(f"languages: installed built-in gpy-16 → {dst}")
+    return True
+
+
 WRAPPERS: dict[str, Any] = {
     "g16-rust": _wrapper_rust,
     "g16-go": _wrapper_go,
@@ -145,6 +175,8 @@ WRAPPERS: dict[str, Any] = {
 def install_language_wrappers(ctx: ForgeContext, engine: ForgeEngine | None = None) -> int:
     prefix = _prefix(ctx)
     count = 0
+    if _install_gpy16_driver(ctx, engine):
+        count += 1
     for name, factory in WRAPPERS.items():
         path = prefix / "bin" / name
         _write_exec(path, factory(prefix))
@@ -183,7 +215,7 @@ def language_status(ctx: ForgeContext) -> dict[str, Any]:
         driver = spec.get("driver", "")
         path = prefix / "bin" / driver if driver and "/" not in driver else Path(driver)
         if driver == "gpy-16":
-            path = Path(os.environ.get("GPY16_DRIVER", prefix.parent / "GrokPy" / "bin" / "gpy-16"))
+            path = _gpy16_driver_path(ctx)
         elif spec.get("backend"):
             path = prefix / spec["backend"]
         ok = path.is_file() and os.access(path, os.X_OK)
@@ -242,7 +274,7 @@ def hostess_gate(ctx: ForgeContext) -> dict[str, Any]:
     """Hostess 7 satisfaction — toolchain + truth floor + secure profile."""
     prefix = _prefix(ctx)
     sg = prefix.parent
-    gpy = Path(os.environ.get("GPY16_DRIVER", sg / "GrokPy" / "bin" / "gpy-16"))
+    gpy = _gpy16_driver_path(ctx)
     gpy_native = _gpy_field_native(gpy)
     checks: dict[str, bool] = {
         "g16": _tool_ready(prefix, "g16"),
@@ -275,7 +307,7 @@ def hostess_gate(ctx: ForgeContext) -> dict[str, Any]:
     checks["forever_profile"] = "forever" in profiles
     core = sum(
         1 for name in ("g16", "g16-as", "g16-ld", "gpy-16")
-        if _tool_ready(prefix, name) or (name == "gpy-16" and Path(os.environ.get("GPY16_DRIVER", sg / "GrokPy" / "bin" / "gpy-16")).is_file())
+        if _tool_ready(prefix, name) or (name == "gpy-16" and _gpy16_driver_path(ctx).is_file())
     )
     checks["core_languages"] = core >= 3
     score = sum(1 for v in checks.values() if v)

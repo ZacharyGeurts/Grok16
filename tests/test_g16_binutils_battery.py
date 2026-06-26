@@ -70,7 +70,7 @@ def test_forge_binutils_status() -> None:
     forge = ROOT / "forge" / "grok16-forge.py"
     if not forge.is_file():
         return
-    driver = os.environ.get("GPY16_DRIVER", str(ROOT.parent / "GrokPy" / "bin" / "gpy-16"))
+    driver = os.environ.get("GPY16_DRIVER", str(ROOT / "bin" / "gpy-16"))
     proc = subprocess.run(
         [driver, str(forge), "binutils-status"],
         capture_output=True, text=True, timeout=60,

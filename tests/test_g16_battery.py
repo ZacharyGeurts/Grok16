@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SG_ROOT = ROOT.parent
 G16 = ROOT / "bin" / "g16"
-GPY = Path(os.environ.get("GPY16_DRIVER", SG_ROOT / "GrokPy" / "bin" / "gpy-16"))
+GPY = Path(os.environ.get("GPY16_DRIVER", ROOT / "bin" / "gpy-16"))
 FORGE = ROOT / "forge" / "grok16-forge.py"
 FORGE_LIB = ROOT / "forge"
 
