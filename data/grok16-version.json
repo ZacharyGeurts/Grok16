@@ -1,13 +1,13 @@
 {
-  "distro_version": "0.9d",
+  "distro_version": "0.9e",
   "release_track": {
-    "current": "0.9d",
-    "previous": "0.9c",
+    "current": "0.9e",
+    "previous": "0.9d",
     "next": "1.0",
     "status": "pre-release",
     "released": false,
     "validation_tiers": ["expert", "heavy"],
-    "roadmap": "0.9d → linker/battery gate hardening → expert + heavy → 1.0"
+    "roadmap": "0.9e → linker/battery gate hardening → expert + heavy → 1.0"
   },
   "g16_version": "16.1.1",
   "pkgversion": "Grok16-16.1.1",
@@ -33,15 +33,16 @@
     "rule": "Built-in toolkit — g16 auto-discerns .py/.gpy; GrokVM in-tree; legacy GrokPy fallback last"
   },
   "toolkits": "data/grok16-toolkits.json",
-  "notes": "g16 auto-detects C, C++, and Python; g++16 is a compat symlink to the same driver",
+  "notes": "Grok16 carries rebuilt toolkits in-tree — g16 auto-detects C, C++, Python, ASM, and all major language drivers",
   "changelog": [
-    "0.9d: Built-in GPY-16 toolkit — python/ tree, bin/gpy-16, GrokVM auto-discern via g16",
+    "0.9e: Track bump — built-in toolkits on main (GPY-16, ASM, all compilers); not tagged/released",
+    "0.9e: scripts/gpy-16 tracked launcher; languages install copies to prefix bin",
+    "0.9e: g16 unified driver — in-tree gpy-16 resolution before legacy sibling fallback",
+    "0.9d: Built-in GPY-16 toolkit — python/ tree, GrokVM auto-discern via g16",
     "0.9d: grok16-toolkits.json — rebuilt compilers, binutils, ASM, all major language drivers in-tree",
-    "0.9d: Track bump — development on main, not tagged/released yet",
     "0.9d: Linker witness — 16 targets active; ironclad sanity linker doctrine checks",
     "0.9d: field-cmake manifest — linker doctrine, orchestrator, mandate paths",
     "0.9d: Binutils battery — incomplete JSON witness when g16-as/objdump not built",
-    "0.9d: CI workflow draft (scripts, profiles, optional bench)",
     "0.9c: Ironclad + field sanity meld wired through forge and CMake mandate",
     "0.9c: G16 field linker — 16 targets, macOS/Android/ARM/x86, silicon mandate",
     "0.9c: RTX gate — queen_rtx/vulkan_rtx blocked without RTX silicon",

@@ -194,7 +194,7 @@
       "definitions": ["GROK16_MEMORY_SAFE=1", "HOSTESS_TRUTH_FLOOR=58"]
     },
     "expert": {
-      "description": "Expert validation tier — Hostess gates + field_opt + ironclad/linker witness (0.9d → 1.0)",
+      "description": "Expert validation tier — Hostess gates + field_opt + ironclad/linker witness (0.9e → 1.0)",
       "cxx_std": "gnu++26",
       "c_std": "gnu17",
       "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
