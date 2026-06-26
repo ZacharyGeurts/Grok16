@@ -173,10 +173,11 @@
         "-finline-functions",
         "-fomit-frame-pointer",
         "-fopenmp-simd",
-        "-D_FORTIFY_SOURCE=3"
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE"
       ],
-      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong"],
-      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong", "-fPIE"],
+      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,noexecstack", "-pie"],
       "definitions": [
         "GROK16_FOREVER=1",
         "GROK16_PROFILE_FIELD_OPT=1",
@@ -208,10 +209,11 @@
         "-ftree-vectorize",
         "-fvect-cost-model=unlimited",
         "-funroll-loops",
-        "-D_FORTIFY_SOURCE=3"
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE"
       ],
-      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-fstack-protector-strong", "-D_FORTIFY_SOURCE=3"],
-      "link_flags": ["-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-fstack-protector-strong", "-D_FORTIFY_SOURCE=3", "-fPIE"],
+      "link_flags": ["-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,noexecstack", "-pie"],
       "definitions": [
         "GROK16_EXPERT_TIER=1",
         "GROK16_PROFILE_FIELD_OPT=1",
@@ -242,10 +244,11 @@
         "-fomit-frame-pointer",
         "-fopenmp-simd",
         "-ffast-math",
-        "-D_FORTIFY_SOURCE=3"
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE"
       ],
-      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong"],
-      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "c_flags": ["-std=gnu17", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong", "-fPIE"],
+      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,noexecstack", "-pie"],
       "definitions": [
         "GROK16_HEAVY_TIER=1",
         "GROK16_FOREVER=1",
@@ -275,8 +278,8 @@
     }
   },
   "pgo": {
-    "generate_flags": ["-fprofile-generate=${GROK16_ROOT}/data/pgo"],
-    "use_flags": ["-fprofile-use=${GROK16_ROOT}/data/pgo", "-fprofile-correction"],
+    "generate_flags": ["-fprofile-dir=${GROK16_ROOT}/data/pgo", "-fprofile-generate"],
+    "use_flags": ["-fprofile-dir=${GROK16_ROOT}/data/pgo", "-fprofile-use", "-fprofile-correction"],
     "data_dir": "${GROK16_ROOT}/data/pgo",
     "workloads": ["field-nexus-bench", "ai-matrix-bench"]
   },

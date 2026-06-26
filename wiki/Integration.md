@@ -35,3 +35,17 @@ export WRDT_G16_PREFIX="$G16_PREFIX"
 ## Manifest
 
 `data/grok16-toolchain.json` at install. Python helper: `World_Redata/redata/grok16.py`.
+
+## Sense package / OBS (orthogonal)
+
+Grok16 and OBS-FieldVoiceFilter share field vocabulary but operate on different planes:
+
+| Plane | Component | Security model |
+|-------|-----------|----------------|
+| **Compile-time (Grok16)** | `g16-field-mandate`, linker mandate, `redata.cli security` | Binary hardening — RELRO, PIE, fortify, World_Redata L2 gates |
+| **Runtime (OBS)** | `field-security-posterity.c`, `field-repeat-field.c` | Streaming threat confirmation — posterity ring decides repeating hostile signatures |
+
+- **No Grok16 code dependency** on OBS posterity or threat ledger.
+- **NewLatest** bridges OBS via `lib/obs-threat-posterity-bridge.py` and `field-sense-package-meld.py` (see `NewLatest/data/field-sense-package-doctrine.json`).
+- **Optional:** build `obs-field-voice-filter.so` with Grok16 toolchain + `g16-field-mandate.cmake` for hardened native plugin binaries — does not change posterity logic.
+- Grok16 CI batteries (`test-battery-expert`, `test-battery-heavy`) validate the **toolchain**, not OBS runtime threats.

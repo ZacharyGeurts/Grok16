@@ -1,9 +1,9 @@
-# Grok16 0.9e (development — not released)
+# Grok16 0.9e (superseded by 1.0.0)
 
-**Status:** Pre-release development on `main`. **No tag. No GitHub Release.**  
-Compiler lineage **16.1.1** · last tagged distro **v0.9c**.
+**Status:** Superseded. Use tag **v1.0.0** and [RELEASE-1.0.md](RELEASE-1.0.md).  
+Compiler lineage **16.1.1** · last pre-1.0 dev track before **v1.0.0**.
 
-Roadmap: **0.9e → linker/battery gate hardening → expert + heavy → 1.0**
+Roadmap (completed): **0.9e → linker/battery gate hardening → expert + heavy → 1.0**
 
 ## What's on 0.9e (main)
 

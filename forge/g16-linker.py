@@ -42,10 +42,25 @@ def _load(path: Path, default: Any = None) -> Any:
 
 
 def _save(path: Path, doc: dict[str, Any]) -> None:
+    import tempfile
+
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(path)
+    payload = json.dumps(doc, ensure_ascii=False, indent=2) + "\n"
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f"{path.stem}.",
+        suffix=".tmp",
+        dir=path.parent,
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(payload)
+        os.replace(tmp_name, path)
+    except OSError:
+        try:
+            os.unlink(tmp_name)
+        except OSError:
+            pass
+        raise
 
 
 def _append_ledger(row: dict[str, Any]) -> None:
@@ -223,14 +238,14 @@ def _flatten_mandate_flags(target: dict[str, Any], *, for_ld: bool = True) -> li
     if fmt == "pe":
         return []
     if os_name == "android" or fmt == "elf":
-        zflags = ["-z", "relro", "-z", "now", "-z", "noexecstack"]
+        # BFD ld wants -zrelro not split -z relro (split form treats relro as input file)
+        zflags = ["-zrelro", "-znow", "-znoexecstack"]
         pie: list[str] = []
         if os.environ.get("G16_LINKER_NO_PIE", "").strip().lower() not in ("1", "true", "yes"):
             pie = ["-pie"]
         if for_ld:
             return zflags + pie
-        merged = ["-zrelro", "-znow", "-znoexecstack"] + (["-pie"] if pie else [])
-        return [f"-Wl,{f}" for f in merged]
+        return [f"-Wl,{f}" for f in zflags + pie]
     return []
 
 
@@ -273,7 +288,29 @@ def linker_pass(argv: list[str] | None = None, *, witness_only: bool = False) ->
     return doc
 
 
+def _link_kind(argv: list[str]) -> str:
+    """Classify link invocation so mandate flags do not break -shared/-r links."""
+    if "-shared" in argv:
+        return "shared"
+    if "-r" in argv or "-relocatable" in argv:
+        return "relocatable"
+    if "-static" in argv or "-static-pie" in argv:
+        return "static"
+    return "executable"
+
+
+def _mandate_for_argv(mandate: list[str], argv: list[str]) -> list[str]:
+    kind = _link_kind(argv)
+    if kind == "shared":
+        # -pie turns ET_DYN shared objects into PIE executables (breaks libgcc_s et al.)
+        return [f for f in mandate if f != "-pie"]
+    if kind in ("relocatable", "static"):
+        return []
+    return list(mandate)
+
+
 def _inject_flags(argv: list[str], extra: list[str]) -> list[str]:
+    extra = _mandate_for_argv(extra, argv)
     if not extra:
         return argv
     present = set(argv)

@@ -1,8 +1,8 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-0.9e--dev-orange)
+![Status](https://img.shields.io/badge/release-1.0.0-brightgreen)
 ![Version](https://img.shields.io/badge/G16-16.1.1-blue)
-![Track](https://img.shields.io/badge/roadmap-expert%20%C2%B7%20heavy%20%E2%86%92%201.0-lightgrey)
+![Track](https://img.shields.io/badge/roadmap-1.0%20%E2%86%92%201.1-lightgrey)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)

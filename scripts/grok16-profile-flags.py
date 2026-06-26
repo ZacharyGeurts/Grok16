@@ -41,9 +41,9 @@ def main() -> int:
             src = doc.get("profiles", {}).get("field_opt", {}).get("bench_source", "")
         print(src)
     elif kind in ("c", "c_pgo_gen", "c_pgo_use"):
-        parts = list(prof.get("c_flags", [])) or [
+        parts = normalize_lto_flags(list(prof.get("c_flags", [])) or [
             f"-std={c_std}", "-O3", "-march=native", "-mtune=native",
-        ]
+        ])
         parts.extend(defs)
         pgo = doc.get("pgo", {})
         root_s = str(root)
@@ -51,19 +51,23 @@ def main() -> int:
             gen = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("generate_flags", [])]
             parts.extend(gen)
         elif kind == "c_pgo_use" or (_env_true("G16_ENABLE_PGO") and kind == "c"):
-            use = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("use_flags", [])]
-            parts.extend(use)
+            pgo_dir = root / "data" / "pgo"
+            if pgo_dir.is_dir() and any(pgo_dir.glob("*.gcda")):
+                use = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("use_flags", [])]
+                parts.extend(use)
         print(" ".join(parts))
     else:
-        parts = prof.get("cxx_flags", []) + defs
+        parts = normalize_lto_flags(list(prof.get("cxx_flags", []))) + defs
         pgo = doc.get("pgo", {})
         root_s = str(root)
         if kind == "cxx_pgo_gen":
             gen = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("generate_flags", [])]
             parts.extend(gen)
         elif kind == "cxx_pgo_use" or (_env_true("G16_ENABLE_PGO") and kind == "cxx"):
-            use = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("use_flags", [])]
-            parts.extend(use)
+            pgo_dir = root / "data" / "pgo"
+            if pgo_dir.is_dir() and any(pgo_dir.glob("*.gcda")):
+                use = [f.replace("${GROK16_ROOT}", root_s) for f in pgo.get("use_flags", [])]
+                parts.extend(use)
         print(" ".join(parts))
     return 0
 

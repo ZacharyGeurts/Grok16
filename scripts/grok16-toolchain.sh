@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|bench|bench-compare|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|bench|bench-compare|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -337,24 +337,48 @@ EOF
     echo "verify: skip binutils (run grok16-binutils.sh bootstrap)"
   fi
 
-  cmd_ironclad_sanity_verify
-  cmd_linker_verify
-  cmd_rtx_gate_verify
+  cmd_ironclad_sanity_verify || return 1
+  cmd_linker_verify || return 1
+  cmd_rtx_gate_verify || return 1
 
   echo "verify: PASS"
 }
 
 cmd_linker_verify() {
   local lk="$GROK16_ROOT/forge/g16-linker.py"
+  local require="${G16_BATTERY_REQUIRE_LINKER:-1}"
   [[ -f "$lk" ]] || { echo "verify-linker: missing $lk" >&2; return 1; }
-  if [[ -x "$G16_PREFIX/bin/g16-ld" ]]; then
-    echo "verify-linker: field driver + silicon pass"
-    g16_gpy_run "$lk" slice >/dev/null
-    g16_gpy_run "$lk" targets >/dev/null
-    echo "verify-linker: PASS"
+  if [[ ! -x "$G16_PREFIX/bin/g16-ld" ]]; then
+    if [[ "$require" == "1" ]]; then
+      echo "verify-linker: FAIL (g16-ld required — run grok16-binutils.sh install)" >&2
+      return 1
+    fi
+    echo "verify-linker: skip (g16-ld not installed)"
     return 0
   fi
-  echo "verify-linker: skip (g16-ld not installed — run grok16-binutils.sh install)"
+  echo "verify-linker: field driver + silicon pass"
+  g16_gpy_run "$lk" slice >/dev/null
+  g16_gpy_run "$lk" targets >/dev/null
+  local tmpdir obj out
+  tmpdir="$(mktemp -d)"
+  obj="$tmpdir/linktest.o"
+  out="$tmpdir/linktest"
+  cat >"$tmpdir/linktest.c" <<'EOF'
+int main(void) { return 0; }
+EOF
+  "$G16_DRIVER" -std="${G16_C_STD}" -c -o "$obj" "$tmpdir/linktest.c"
+  if ! "$G16_PREFIX/bin/g16-ld" -o "$out" "$obj"; then
+    rm -rf "$tmpdir"
+    echo "verify-linker: FAIL (g16-ld link smoke)" >&2
+    return 1
+  fi
+  if [[ ! -x "$out" ]]; then
+    rm -rf "$tmpdir"
+    echo "verify-linker: FAIL (no linked binary)" >&2
+    return 1
+  fi
+  rm -rf "$tmpdir"
+  echo "verify-linker: PASS"
 }
 
 cmd_rtx_gate_verify() {
@@ -559,7 +583,7 @@ cmd_test_battery_expert() {
     run_step profile-expert g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" expert source
   fi
   [[ "$fail" -eq 0 ]] || exit 1
-  echo "test-battery-expert: PASS (0.9e tier — expert)"
+  echo "test-battery-expert: PASS (1.0 tier — expert)"
 }
 
 cmd_test_battery_heavy() {
@@ -574,8 +598,10 @@ cmd_test_battery_heavy() {
     fi
   }
   run_step test-battery-expert cmd_test_battery_expert
+  export G16_BENCH_PROFILE=heavy
+  export G16_RELEASE_PROFILE=1
   if grok16_ready; then
-    run_step field-bench cmd_field_bench
+    run_step bench-heavy _bench_run_one heavy cxx
     if [[ -x "$GROK16_SCRIPTS/grok16-profile-flags.py" ]]; then
       run_step profile-heavy g16_gpy_run "$GROK16_SCRIPTS/grok16-profile-flags.py" heavy source
     fi
@@ -583,7 +609,33 @@ cmd_test_battery_heavy() {
     echo "battery-heavy: skip field-bench (compiler not ready)"
   fi
   [[ "$fail" -eq 0 ]] || exit 1
-  echo "test-battery-heavy: PASS (0.9e tier — heavy → 1.0 gate)"
+  echo "test-battery-heavy: PASS (heavy tier — 1.0 gate)"
+}
+
+cmd_test_battery_release() {
+  local fail=0
+  run_step() {
+    echo "battery-release: $1"
+    if ! "${@:2}"; then
+      echo "battery-release FAIL: $1" >&2
+      fail=1
+    fi
+  }
+  run_step heavy cmd_test_battery_heavy
+  if [[ -f "$GROK16_ROOT/tests/test_g16_battery.py" ]]; then
+    run_step py-battery g16_gpy_run "$GROK16_ROOT/tests/test_g16_battery.py"
+  fi
+  if [[ -f "$GROK16_ROOT/tests/test_g16_forever_battery.py" ]]; then
+    run_step forever-battery g16_gpy_run "$GROK16_ROOT/tests/test_g16_forever_battery.py"
+  fi
+  if [[ -x "$GROK16_ROOT/tests/g16-binutils-battery.sh" ]]; then
+    run_step binutils-battery "$GROK16_ROOT/tests/g16-binutils-battery.sh"
+  fi
+  if grok16_ready; then
+    run_step verify cmd_verify
+  fi
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "test-battery-release: PASS (1.0 release gate)"
 }
 
 cmd_bench_compare() {
@@ -646,15 +698,23 @@ _bench_run_one() {
   local t0 t1 compile_ms run_ms bytes
   t0=$(date +%s%3N)
   # shellcheck disable=SC2086
-  "$G16_DRIVER" $xflags $pflags $lflags -o "$out" "$src"
+  if ! "$G16_DRIVER" $xflags $pflags $lflags -o "$out" "$src"; then
+    echo "bench: FAIL compile/link profile=$profile" >&2
+    return 1
+  fi
   t1=$(date +%s%3N)
   compile_ms=$((t1 - t0))
 
+  if [[ ! -x "$out" ]]; then
+    echo "bench: FAIL missing binary $out" >&2
+    return 1
+  fi
+
   t0=$(date +%s%3N)
-  run_line="$("$out")"
+  run_line="$("$out")" || { echo "bench: FAIL run $out" >&2; return 1; }
   t1=$(date +%s%3N)
   run_ms=$((t1 - t0))
-  bytes=$(stat -c%s "$out" 2>/dev/null || stat -f%z "$out")
+  bytes=$(stat -c%s "$out" 2>/dev/null || stat -f '%z' "$out" 2>/dev/null || echo 0)
 
   echo "bench: profile=$profile pgo=$pgo_kind compile_ms=$compile_ms run_ms=$run_ms binary_bytes=$bytes"
   echo "bench: $run_line"
@@ -710,7 +770,10 @@ cmd_field_bench() {
   fi
   export G16_FIELD_SPEED=1
   local profile="${G16_BENCH_PROFILE:-field_opt}"
-  _bench_run_one "$profile" cxx
+  if ! _bench_run_one "$profile" cxx; then
+    echo "field-bench: FAIL" >&2
+    return 1
+  fi
   echo "field-bench: PASS"
 }
 
@@ -754,6 +817,7 @@ case "${1:-}" in
   test-battery-expert) cmd_test_battery_expert ;;
   test-battery-heavy) cmd_test_battery_heavy ;;
   test-battery-full) cmd_test_battery_full ;;
+  test-battery-release) cmd_test_battery_release ;;
   bench) cmd_bench ;;
   bench-compare) cmd_bench_compare ;;
   field-bench-real) cmd_field_bench_real ;;
