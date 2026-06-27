@@ -17,7 +17,7 @@
     "redata_chunk": 8192,
     "wave_massive": true,
     "single_location_reads": true,
-    "rule": "2.0 belt — single fabric: chunked dispatch, OpenMP lanes, LTO+PGO-ready, Hostess gates, depth-field impossible at consumers"
+    "rule": "2.0 belt — single fabric: chunked dispatch, OpenMP lanes, LTO+PGO-ready, Hostess gates, depth fields sealed and destroyed at consumers"
   },
   "validation": {
     "battery_belt": "test-battery-belt",

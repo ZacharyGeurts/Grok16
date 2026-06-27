@@ -8,7 +8,7 @@
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **2.0** ships **single fabric** belt dispatch (`belt_2_0`), Ironclad safety meld, and depth-field impossibility at integrated consumers.
+**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **2.0** ships **single fabric** belt dispatch (`belt_2_0`), Ironclad safety meld, and depth fields sealed and destroyed at integrated consumers.
 
 > **Grok16 2.0.0** — single fabric knowing: one belt amplitude, one field depth, linear sovereign time. Default profile `belt_2_0`. See [PERFORMANCE.md](PERFORMANCE.md) and [RELEASE-2.0.md](RELEASE-2.0.md).
 
@@ -37,7 +37,7 @@ Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 |----------|------|
 | `data/grok16-single-fabric-doctrine.json` | One belt die · one field amplitude · knowing fixed-size |
 | `data/grok16-belt-doctrine.json` | `belt_2_0` chunked redata, wave-massive, single-location reads |
-| `data/g16-ironclad-meld.json` | Time linear · depth-field impossible · field sanity meld |
+| `data/g16-ironclad-meld.json` | Time linear · depth fields sealed and destroyed · field sanity meld |
 | `scripts/grok16-integrate.sh` | Wire Queen / WRDT / ZOCR + safety env to SG tree |
 
 ## Architecture (short)

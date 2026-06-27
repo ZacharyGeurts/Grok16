@@ -30,10 +30,10 @@
     "d": "Auto-wire Queen WRDT ZOCR belt_2_0"
   },
   {
-    "t": "depth field impossible",
+    "t": "depth fields sealed and destroyed",
     "p": "safety.html#depth",
     "g": "Safety",
-    "d": "field_depth forbidden stripped at gates"
+    "d": "field_depth sealed and destroyed at gates"
   },
   {
     "t": "ironclad:time:1",

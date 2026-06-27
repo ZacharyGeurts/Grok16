@@ -186,7 +186,7 @@ G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
   <h2 id="shipped">What shipped</h2>
   <ul>
     <li><strong>Single fabric</strong> — <code>belt_2_0</code> chunked redata (8192), wave-massive, single-location reads</li>
-    <li><strong>Safety meld</strong> — depth-field creation forbidden; time is linear (<code>ironclad:time:1</code>)</li>
+    <li><strong>Safety meld</strong> — depth fields sealed and destroyed; time is linear (<code>ironclad:time:1</code>)</li>
     <li><code>grok16-integrate.sh</code> — auto-wire Queen, World_Redata, ZOCR, PythonG</li>
     <li><code>test-battery-belt</code> — 2.0 validation atop release tier</li>
     <li><code>bench-triad</code> — host gcc vs <code>belt_1_0</code> vs <code>belt_2_0</code></li>
@@ -423,10 +423,10 @@ pythong forge/g16-linker.py json</code></pre>
   <h1>Safety (2.0)</h1>
   <p>Grok16 2.0 safety is melded into Ironclad at integrate time — compile-time mandate plus consumer depth impossibility.</p>
 
-  <h2 id="depth">Depth field impossible</h2>
+  <h2 id="depth">Depth fields sealed and destroyed</h2>
   <table>
     <tr><th>Gate</th><th>Behavior</th></tr>
-    <tr><td><code>field-depth-singularizer</code></td><td>Strip <code>field_depth</code>, zero nested layers, ledger violations</td></tr>
+    <tr><td><code>field-depth-singularizer</code></td><td>Seal and destroy <code>field_depth</code>, zero nested layers, ledger violations</td></tr>
     <tr><td>Queen field-net</td><td><code>depth_field_impossible: true</code> on classify</td></tr>
     <tr><td>Queen browser</td><td>Navigate strips depth before tab persist</td></tr>
     <tr><td>NEXUS HTTP</td><td>302 redirect when <code>?field_depth=</code> present</td></tr>
@@ -573,7 +573,7 @@ SEARCH_INDEX = [
     {"t": "bench-triad", "p": "performance.html#triad", "g": "Bench", "d": "host gcc vs belt_1_0 vs belt_2_0"},
     {"t": "test-battery-belt", "p": "batteries.html#belt", "g": "Battery", "d": "2.0 belt validation atop release"},
     {"t": "grok16-integrate", "p": "integration.html#integrate", "g": "Integrate", "d": "Auto-wire Queen WRDT ZOCR belt_2_0"},
-    {"t": "depth field impossible", "p": "safety.html#depth", "g": "Safety", "d": "field_depth forbidden stripped at gates"},
+    {"t": "depth fields sealed and destroyed", "p": "safety.html#depth", "g": "Safety", "d": "field_depth sealed and destroyed at gates"},
     {"t": "ironclad:time:1", "p": "safety.html#time", "g": "Safety", "d": "Sovereign linear time linear_ns only"},
     {"t": "test-battery-release", "p": "batteries.html#release", "g": "Battery", "d": "Production gate heavy py forever binutils verify"},
     {"t": "test-battery-expert", "p": "batteries.html#expert", "g": "Battery", "d": "Ironclad linker RTX expert profile"},

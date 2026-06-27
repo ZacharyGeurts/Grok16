@@ -16,7 +16,7 @@ Doctrine: `data/grok16-single-fabric-doctrine.json`
 
 | Gate | Rule |
 |------|------|
-| Depth field | **Forbidden** — `field_depth` stripped at HTTP, browser, field-net, sanity; cannot persist |
+| Depth field | **Sealed and destroyed** — `field_depth` eradicated at HTTP, browser, field-net, sanity; cannot persist |
 | Ironclad field sanity | Integral one-pass — meld receipt requires `depth_field_impossible` |
 | Sovereign time | Linear only — wall clock witness-only |
 | G16 mandate | `G16_FIELD_SAFETY_MANDATE_v1` on every field target |

@@ -4,11 +4,11 @@ Web: [integration.html](https://zacharygeurts.github.io/Grok16/integration.html#
 
 Grok16 2.0 safety is melded into Ironclad at integrate time — compile-time mandate plus consumer depth impossibility.
 
-## Depth field impossible
+## Depth fields sealed and destroyed
 
 | Gate | Behavior |
 |------|----------|
-| `field-depth-singularizer` | Strip `field_depth`, zero nested layers, ledger violations |
+| `field-depth-singularizer` | Seal and destroy `field_depth`, zero nested layers, ledger violations |
 | Queen field-net | `depth_field_impossible: true` on classify |
 | Queen browser | Navigate strips depth before tab persist |
 | NEXUS HTTP | 302 redirect when `?field_depth=` present |

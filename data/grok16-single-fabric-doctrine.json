@@ -19,6 +19,7 @@
   },
   "safety": {
     "depth_field_impossible": true,
+    "depth_fields_sealed_and_destroyed": true,
     "creation_forbidden": true,
     "max_field_depth": 0,
     "time_is_linear": true,
