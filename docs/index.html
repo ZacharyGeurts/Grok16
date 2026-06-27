@@ -72,25 +72,25 @@
 
   <div class="bench-hero">
     <div class="bench-stamps">
-      <span class="bench-stamp">report v3.0.0</span>
+      <span class="bench-stamp">report v3.1.0</span>
       <span class="bench-stamp">distro 3.0.0</span>
-      <span class="bench-stamp">speed_demo @ 1.0.0</span>
+      <span class="bench-stamp">speed_demo @ 1.1.0</span>
       <span class="bench-stamp">3s window</span>
     </div>
     <h1>Speed bench — compile vs execution</h1>
     <p class="lead">Versioned compile+exec benchmark on identical <code>speed_demo</code> kernel. Python = interpreter (~0.8M ops/s). C/C++ = chamber <strong>compile ahead</strong>, not line-by-line interpretation.</p>
     <div class="winner-grid">
-      <div class="winner-card"><strong>Fastest execution</strong><span class="val">85.29M ops/s</span><span class="sub">C++ — g16 belt_2_0</span></div>
-      <div class="winner-card"><strong>Fastest compile</strong><span class="val">318 ms</span><span class="sub">C — g16 belt_2_0</span></div>
-      <div class="winner-card"><strong>Best Python</strong><span class="val">777,876 ops/s</span><span class="sub">no compile — interpreter</span></div>
-      <div class="winner-card"><strong>Best first-run</strong><span class="val">60.29M eff.</span><span class="sub">C — g16 belt_2_0</span></div>
+      <div class="winner-card"><strong>Fastest execution</strong><span class="val">84.43M ops/s</span><span class="sub">CMake — host g++ -O2</span></div>
+      <div class="winner-card"><strong>Fastest compile</strong><span class="val">336 ms</span><span class="sub">C — g16 belt_1_0</span></div>
+      <div class="winner-card"><strong>Best Python</strong><span class="val">768,457 ops/s</span><span class="sub">no compile — interpreter</span></div>
+      <div class="winner-card"><strong>Best first-run</strong><span class="val">58.50M eff.</span><span class="sub">C — g16 belt_1_0</span></div>
     </div>
-    <p><a href="speed-bench.html">Full speed bench manual →</a> · Host: <code>default-X870-Pro-RS</code> · 2026-06-27T03:02:28Z</p>
+    <p><a href="speed-bench.html">Full speed bench manual →</a> · Host: <code>default-X870-Pro-RS</code> · 2026-06-27T03:12:38Z</p>
   </div>
 
   <figure class="fig-wide">
     <img src="assets/speed-bench-chart.svg" alt="Compile vs execution ops per second chart" width="920" height="280" loading="lazy" />
-    <figcaption>Compile time (one-time) vs execution throughput — report v3.0.0</figcaption>
+    <figcaption>Compile time (one-time) vs execution throughput — report v3.1.0</figcaption>
   </figure>
 
   <div class="hero hero-image">
@@ -107,7 +107,7 @@
   <div class="workflow">
     <a href="getting-started.html#bootstrap"><strong>1 clone</strong>v3.0.0 tag</a>
     <a href="getting-started.html#rebuild"><strong>2 rebuild</strong>belt_2_0 + release</a>
-    <a href="speed-bench.html#reproduce"><strong>3 bench</strong>exec-full-bench v3.0.0</a>
+    <a href="speed-bench.html#reproduce"><strong>3 bench</strong>exec-full-bench v3.1.0</a>
     <a href="uncompiled.html"><strong>4 uncompiled</strong>Python + chamber</a>
     <a href="integration.html#integrate"><strong>5 integrate</strong>Queen / WRDT + safety</a>
   </div>
@@ -126,7 +126,7 @@
   <h2>Manuals</h2>
   <table>
     <tr><th>Doc</th><th>For engineers who need…</th></tr>
-    <tr><td><a href="speed-bench.html">Speed Bench</a></td><td>Versioned compile ms + execution ops/s — report v3.0.0</td></tr>
+    <tr><td><a href="speed-bench.html">Speed Bench</a></td><td>Versioned compile ms + execution ops/s — report v3.1.0</td></tr>
     <tr><td><a href="uncompiled.html">Uncompiled</a></td><td>Python interpreter, chamber compile-ahead, Queen .launch</td></tr>
     <tr><td><a href="cmake-linking.html">CMake &amp; Linking</a></td><td>Toolchain file, speed_demo CMake, g16-ld mandate</td></tr>
     <tr><td><a href="release.html">Release 3.0</a></td><td>3.0 changelog, upgrade from v2.0.0</td></tr>

@@ -1,7 +1,7 @@
 # Grok16
 
 ![Status](https://img.shields.io/badge/release-3.0.0-brightgreen)
-![Bench](https://img.shields.io/badge/speed__bench-v3.0.0-gold)
+![Bench](https://img.shields.io/badge/speed__bench-v3.1.0-gold)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
 ![Track](https://img.shields.io/badge/roadmap-3.0%20%E2%86%92%203.1-lightgrey)
@@ -9,33 +9,58 @@
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-## Speed bench — compile vs execution (report v3.0.0)
+## Speed bench — all executions tested (report v3.1.0)
 
-**Distro 3.0.0** · **suite `speed_demo` @ 1.0.0** · **3s execution window** · [full report](docs/SPEED-BENCH-REPORT.md) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
+**Distro 3.0.0** · **suite `speed_demo` @ 1.1.0** · **schema v4** · **11 runners** · **3s window**  
+[SPEED-BENCH-REPORT.md](docs/SPEED-BENCH-REPORT.md) · [COMPREHENSIVE-BENCH-REPORT.md](docs/COMPREHENSIVE-BENCH-REPORT.md) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
-| Runner | Compile (ms) | Exec ops/s | Notes |
-|--------|-------------:|-----------:|-------|
-| C++ — g16 belt_2_0 | 2,494 | **85,294,666** | Fastest execution |
-| C++ — host g++ -O2 | 1,710 | 83,153,508 | |
-| CMake — host g++ -O2 | 3,682 | 82,620,719 | |
-| C — g16 belt_2_0 | **318** | 79,451,082 | Fastest compile |
-| C — host gcc -O2 | 347 | 73,440,210 | |
-| Python — host CPython 3 | — | **777,876** | No compile — interpreter |
-| Python — gpy-16 GrokVM | — | 765,842 | No compile — GrokVM |
+### speed_demo — every runner (cold exec)
 
-- **Fastest execution:** C++ g16 belt_2_0 — **85.3M ops/s**
-- **Fastest compile:** C g16 belt_2_0 — **318 ms**
-- **Best Python:** host CPython — **778K ops/s** (uncompiled lane)
-- **Best amortized first-run:** C g16 belt_2_0 — **60.3M** effective ops/s
+| Runner | Profile | Compile (ms) | ops/s | Pass |
+|--------|---------|-------------:|------:|------|
+| CMake — host g++ -O2 | — | 2,814 | **85.8M** | cold |
+| C++ — host g++ -O2 | — | 1,710 | 83.9M | cold |
+| C++ — g16 sense **expert** | expert | 1,608 | 82.1M | plate meld |
+| C++ — g16 belt_1_0 | belt_1_0 | 1,888 | 78.4M | cold |
+| C — g16 belt_1_0 | belt_1_0 | 395 | 77.0M | cold |
+| C — g16 belt_2_0 | belt_2_0 | **296** | 75.0M | cold |
+| C++ — g16 belt_2_0 | belt_2_0 | 2,021 | 74.8M | cold |
+| C — host gcc -O2 | — | 459 | 73.7M | cold |
+| Python — gpy-16 GrokVM | — | — | **777K** | interpreter |
+| Python — host CPython 3 | — | — | 748K | interpreter |
 
-Python runs at **interpreter speed** (~0.8M ops/s). C/C++ use **chamber compile-ahead** — not line-by-line interpretation. See [Uncompiled doctrine](data/field-exec-uncompiled-doctrine.json) and [RELEASE-3.0.md](RELEASE-3.0.md).
+### Plate meld helps (measured)
+
+After `field-plate-meld.py fuse` + `g16-compiler-sense-plate.py cycle` (gen **2**, **24** plates fused):
+
+| Situation | Without meld | With meld (sense) | Delta |
+|-----------|-------------|-------------------|-------|
+| C++ profile chosen | belt_2_0 | **expert** (eye_ear_green) | meld unlocks ladder |
+| C++ compile | 2,021 ms | **1,608 ms** | **−413 ms** (20% faster) |
+| C++ execution | 74.8M ops/s | **82.1M ops/s** | **+9.8%** throughput |
+| Post-meld re-exec (same ELF) | 74.8M | 85.9M | CPU warm-cache; meld witness only |
+
+**Verdict:** Plate meld does not slow the hot path. It **helps** by routing compile through compiler-sense **expert** profile — faster wave-convert and higher ops/s on this host.
+
+### bench-all profiles (field-nexus-bench)
+
+| Profile | compile_ms | kernel wall_ms |
+|---------|------------|----------------|
+| belt_1_0 | 1,369 | 2.49 |
+| belt_2_0 | 1,376 | 4.15 |
+| field_opt | 1,296 | 2.77 |
+| heavy | 1,667 | 2.79 |
+| expert | 2,275 | 3.30 |
 
 ```bash
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
-./scripts/grok16-toolchain.sh exec-compare
+# Full professional pipeline (bench-all + stage + exec + plate meld)
+SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-comprehensive-bench
+
+# Speed_demo only (all 11 runners + plate meld analysis)
+G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
 ```
 
-JSON: `docs/field-exec-full-bench.json` · Versions: `data/grok16-speed-bench-version.json`
+JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-bench-doctrine.json`
 
 ---
 

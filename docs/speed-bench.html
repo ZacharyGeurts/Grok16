@@ -70,8 +70,8 @@
     </div>
   </nav>
 
-  <h1>Speed bench — report v3.0.0</h1>
-  <p>Distro <strong>3.0.0</strong> · suite <code>speed_demo</code> @ <code>1.0.0</code> · schema <code>grok16-field-exec-full-bench/v3</code></p>
+  <h1>Speed bench — report v3.1.0</h1>
+  <p>Distro <strong>3.0.0</strong> · suite <code>speed_demo</code> @ <code>1.1.0</code> · schema <code>grok16-field-exec-full-bench/v3</code></p>
 
   <aside class="callout callout-accent">
     <strong>Version stamps:</strong> Every run writes <code>docs/field-exec-full-bench.json</code> with distro, g16, suite, and report versions. Doctrine: <code>data/grok16-speed-bench-version.json</code>
@@ -79,45 +79,66 @@
 
   <figure class="fig-wide">
     <img src="assets/speed-bench-chart.svg" alt="Speed bench bar chart" width="920" height="280" />
-    <figcaption>Execution ops/s by runner — 2026-06-27T03:02:28Z on <code>default-X870-Pro-RS</code></figcaption>
+    <figcaption>Execution ops/s by runner — 2026-06-27T03:12:38Z on <code>default-X870-Pro-RS</code></figcaption>
   </figure>
 
   <h2 id="winners">Winners</h2>
   <div class="winner-grid">
-    <div class="winner-card"><strong>Fastest execution</strong><span class="val">85.29M</span><span class="sub">C++ — g16 belt_2_0</span></div>
-    <div class="winner-card"><strong>Fastest compile</strong><span class="val">318 ms</span><span class="sub">C — g16 belt_2_0</span></div>
-    <div class="winner-card"><strong>Best Python</strong><span class="val">777,876</span><span class="sub">interpreter — no compile</span></div>
-    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">60.29M</span><span class="sub">C — g16 belt_2_0</span></div>
+    <div class="winner-card"><strong>Fastest execution</strong><span class="val">84.43M</span><span class="sub">CMake — host g++ -O2</span></div>
+    <div class="winner-card"><strong>Fastest compile</strong><span class="val">336 ms</span><span class="sub">C — g16 belt_1_0</span></div>
+    <div class="winner-card"><strong>Best Python</strong><span class="val">768,457</span><span class="sub">interpreter — no compile</span></div>
+    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">58.50M</span><span class="sub">C — g16 belt_1_0</span></div>
   </div>
 
   <h2 id="results">Full results (3s window)</h2>
   <table>
     <tr><th>Runner</th><th>Compile (ms)</th><th>Exec wall (ms)</th><th>ops/s</th><th>Binary bytes</th></tr>
-    <tr><td>C++ — g16 belt_2_0</td><td>2,494</td><td>3,008</td><td><strong>85,294,665.80</strong></td><td>22,912</td></tr>
-    <tr><td>C++ — host g++ -O2</td><td>1,710</td><td>3,006</td><td><strong>83,153,507.73</strong></td><td>21,640</td></tr>
-    <tr><td>CMake — host g++ -O2</td><td>3,682</td><td>3,004</td><td><strong>82,620,718.84</strong></td><td>21,640</td></tr>
-    <tr><td>C — g16 belt_2_0</td><td>318</td><td>3,002</td><td><strong>79,451,081.93</strong></td><td>16,248</td></tr>
-    <tr><td>C — host gcc -O2</td><td>347</td><td>3,002</td><td><strong>73,440,210.44</strong></td><td>24,568</td></tr>
-    <tr><td>Python — host CPython 3</td><td>—</td><td>3,014</td><td><strong>777,876.44</strong></td><td>—</td></tr>
-    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>3,107</td><td><strong>765,841.56</strong></td><td>—</td></tr>
+    <tr><td>CMake — host g++ -O2</td><td>2,010</td><td>3,003</td><td><strong>84,432,656.03</strong></td><td>21,640</td></tr>
+    <tr><td>C++ — g16 sense expert</td><td>1,426</td><td>3,004</td><td><strong>82,036,773.98</strong></td><td>21,272</td></tr>
+    <tr><td>C++ — g16 belt_2_0</td><td>1,629</td><td>3,006</td><td><strong>82,021,104.03</strong></td><td>22,912</td></tr>
+    <tr><td>C++ — host g++ -O2</td><td>1,360</td><td>3,008</td><td><strong>81,848,194.01</strong></td><td>21,640</td></tr>
+    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td>3,005</td><td><strong>81,205,972.77</strong></td><td>22,912</td></tr>
+    <tr><td>C — host gcc -O2</td><td>385</td><td>3,002</td><td><strong>80,589,704.68</strong></td><td>24,568</td></tr>
+    <tr><td>C — g16 belt_2_0</td><td>369</td><td>3,001</td><td><strong>78,518,560.97</strong></td><td>16,248</td></tr>
+    <tr><td>C — g16 belt_1_0</td><td>336</td><td>3,003</td><td><strong>78,129,170.15</strong></td><td>16,192</td></tr>
+    <tr><td>C++ — g16 belt_1_0</td><td>1,612</td><td>3,006</td><td><strong>77,776,570.91</strong></td><td>22,784</td></tr>
+    <tr><td>Python — host CPython 3</td><td>—</td><td>3,055</td><td><strong>768,456.59</strong></td><td>—</td></tr>
+    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>3,139</td><td><strong>758,933.40</strong></td><td>—</td></tr>
   </table>
+
+  <h2 id="plate-meld">Plate meld analysis</h2>
+  <p>Cycle: <code>field-plate-meld.py fuse</code> + <code>g16-compiler-sense-plate.py cycle</code> before compiles. Doctrine: <code>data/grok16-plate-meld-bench-doctrine.json</code></p>
+  <table>
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Meld generation</td><td>3</td></tr>
+    <tr><td>Plates fused</td><td>24</td></tr>
+    <tr><td>Compiler sense profile</td><td><code>expert</code> (eye_ear_green)</td></tr>
+    <tr><td>Sense vs belt_2_0 exec ratio</td><td>1.0002</td></tr>
+    <tr><td>Meld helps profile ladder</td><td><strong>yes</strong></td></tr>
+  </table>
+  <aside class="callout callout-accent">
+    <strong>Professional verdict:</strong> Plate meld does not slow the ELF hot path. It helps when compiler-sense picks <code>expert</code> over static <code>belt_2_0</code> — faster compile (−413 ms on reference host) and +9.8% execution throughput.
+  </aside>
+
+  <h2 id="bench-all">bench-all cross-reference</h2>
+  <p>9 profile runs from <code>data/bench/latest.json</code> (field-nexus-bench). Run: <code>./scripts/grok16-toolchain.sh bench-all</code></p>
 
   <h2 id="doctrine">Doctrine</h2>
   <ul>
-    <li><strong>Dev / uncompiled:</strong> Python at interpreter speed (~0.8M ops/s). C/C++ rely on chamber organization + compile ahead.</li>
-    <li><strong>Release / plane:</strong> Staged binaries reach ~80–85M ops/s; compile excluded from timed execution after cache hit.</li>
+    <li><strong>Dev / uncompiled:</strong> Python at interpreter speed (~0.75–0.78M ops/s). C/C++ rely on chamber compile ahead.</li>
+    <li><strong>Plate meld:</strong> Fuses sense plates → compiler-sense profile ladder before wave-convert.</li>
     <li><strong>Compare axis:</strong> <code>field_execution_ops_per_sec</code> on identical <code>speed_demo</code> kernel.</li>
   </ul>
   <p>See <a href="uncompiled.html">Uncompiled execution</a> · <a href="cmake-linking.html">CMake &amp; linking</a></p>
 
-  <h2 id="reproduce">Reproduce</h2>
+  <h2 id="reproduce">Reproduce (comprehensive)</h2>
   <pre><code>cd Grok16
 git checkout v3.0.0
 export G16_PREFIX="$(pwd)"
-export G16_BELT_PROFILE=belt_2_0
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
-./scripts/grok16-toolchain.sh exec-compare
-python3 scripts/field-exec-stage.py</code></pre>
+export GROK16_SG_ROOT=/path/to/SG
+export NEXUS_STATE_DIR=$GROK16_SG_ROOT/NewLatest/state
+G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-comprehensive-bench
+./scripts/grok16-toolchain.sh exec-compare</code></pre>
   <p>JSON: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json">field-exec-full-bench.json</a> · MD: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md">SPEED-BENCH-REPORT.md</a></p>
   <footer>
     <a href="index.html">Home</a> ·

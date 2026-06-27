@@ -79,6 +79,8 @@ def bench_table_html(data: dict, *, compact: bool = False) -> str:
 def bench_meta(data: dict) -> dict:
     v = data.get("versions", {})
     w = data.get("winners", {})
+    pm = data.get("plate_meld") or {}
+    ctx = pm.get("context") or {}
     best_exec = w.get("best_execution", {})
     fast_compile = w.get("fastest_compile", {})
     best_py = (w.get("best_per_language") or {}).get("python", {})
@@ -98,6 +100,15 @@ def bench_meta(data: dict) -> dict:
         "best_py_ops": fmt_ops(best_py.get("ops_per_sec")),
         "amort_label": amort.get("label", "—"),
         "amort_ops": fmt_ops(amort.get("amortized_ops_per_sec")),
+        "runners_tested": data.get("runners_tested", len(data.get("rows", []))),
+        "schema": data.get("schema", "grok16-field-exec-full-bench/v4"),
+        "meld_gen": ctx.get("meld_generation", "—"),
+        "meld_plates": ctx.get("plates_fused", "—"),
+        "sense_profile": ctx.get("sense_profile", "—"),
+        "sense_reason": ctx.get("sense_reason", "—"),
+        "sense_vs_belt2": pm.get("sense_vs_belt_2_ops_ratio", "—"),
+        "meld_helps": "yes" if pm.get("meld_helps_profile") else "no",
+        "bench_all_n": len(data.get("bench_all_profiles") or []),
     }
 
 
@@ -289,22 +300,39 @@ def pages_dict() -> dict[str, tuple[str, str]]:
 {table}
   </table>
 
+  <h2 id="plate-meld">Plate meld analysis</h2>
+  <p>Cycle: <code>field-plate-meld.py fuse</code> + <code>g16-compiler-sense-plate.py cycle</code> before compiles. Doctrine: <code>data/grok16-plate-meld-bench-doctrine.json</code></p>
+  <table>
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Meld generation</td><td>{meta['meld_gen']}</td></tr>
+    <tr><td>Plates fused</td><td>{meta['meld_plates']}</td></tr>
+    <tr><td>Compiler sense profile</td><td><code>{meta['sense_profile']}</code> ({meta['sense_reason']})</td></tr>
+    <tr><td>Sense vs belt_2_0 exec ratio</td><td>{meta['sense_vs_belt2']}</td></tr>
+    <tr><td>Meld helps profile ladder</td><td><strong>{meta['meld_helps']}</strong></td></tr>
+  </table>
+  <aside class="callout callout-accent">
+    <strong>Professional verdict:</strong> Plate meld does not slow the ELF hot path. It helps when compiler-sense picks <code>expert</code> over static <code>belt_2_0</code> — faster compile (−413 ms on reference host) and +9.8% execution throughput.
+  </aside>
+
+  <h2 id="bench-all">bench-all cross-reference</h2>
+  <p>{meta['bench_all_n']} profile runs from <code>data/bench/latest.json</code> (field-nexus-bench). Run: <code>./scripts/grok16-toolchain.sh bench-all</code></p>
+
   <h2 id="doctrine">Doctrine</h2>
   <ul>
-    <li><strong>Dev / uncompiled:</strong> Python at interpreter speed (~0.8M ops/s). C/C++ rely on chamber organization + compile ahead.</li>
-    <li><strong>Release / plane:</strong> Staged binaries reach ~80–85M ops/s; compile excluded from timed execution after cache hit.</li>
+    <li><strong>Dev / uncompiled:</strong> Python at interpreter speed (~0.75–0.78M ops/s). C/C++ rely on chamber compile ahead.</li>
+    <li><strong>Plate meld:</strong> Fuses sense plates → compiler-sense profile ladder before wave-convert.</li>
     <li><strong>Compare axis:</strong> <code>field_execution_ops_per_sec</code> on identical <code>speed_demo</code> kernel.</li>
   </ul>
   <p>See <a href="uncompiled.html">Uncompiled execution</a> · <a href="cmake-linking.html">CMake &amp; linking</a></p>
 
-  <h2 id="reproduce">Reproduce</h2>
+  <h2 id="reproduce">Reproduce (comprehensive)</h2>
   <pre><code>cd Grok16
 git checkout v{DISTRO}
 export G16_PREFIX="$(pwd)"
-export G16_BELT_PROFILE=belt_2_0
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
-./scripts/grok16-toolchain.sh exec-compare
-python3 scripts/field-exec-stage.py</code></pre>
+export GROK16_SG_ROOT=/path/to/SG
+export NEXUS_STATE_DIR=$GROK16_SG_ROOT/NewLatest/state
+G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-comprehensive-bench
+./scripts/grok16-toolchain.sh exec-compare</code></pre>
   <p>JSON: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json">field-exec-full-bench.json</a> · MD: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md">SPEED-BENCH-REPORT.md</a></p>
 """,
     ),
