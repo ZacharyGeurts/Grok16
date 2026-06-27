@@ -1,7 +1,7 @@
 {
   "schema": "grok16-mcp/v1",
-  "distro_version": "4.0.0",
-  "tag": "v4.0.0",
+  "distro_version": "5.0.0",
+  "tag": "v5.0.0",
   "server": "mcp/grok16_mcp_server.py",
   "transport": "stdio",
   "sdk": "mcp>=1.28",

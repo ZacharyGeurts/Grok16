@@ -1,8 +1,8 @@
 {
   "schema": "g16-power-sort-bench/v1",
-  "updated": "2026-06-27T14:32:19Z",
+  "updated": "2026-06-27T15:26:55Z",
   "ok": true,
-  "elapsed_ms": 0.27,
+  "elapsed_ms": 0.18,
   "contexts": {
     "file_list_small": {
       "best": "locale_ci",

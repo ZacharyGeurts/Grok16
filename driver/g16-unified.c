@@ -149,6 +149,12 @@ static const struct {
     {NULL, NULL}
 };
 
+static int env_force(const char *name)
+{
+    const char *v = getenv(name);
+    return v && *v && strcmp(v, "0") != 0;
+}
+
 static const char *lang_from_path(const char *path)
 {
     size_t i;
@@ -197,12 +203,6 @@ static int argv_has_c_or_cpp_source(int argc, char **argv)
 {
     return argv_has_source(argc, argv, has_c_extension) ||
            argv_has_source(argc, argv, has_cpp_extension);
-}
-
-static int env_force(const char *name)
-{
-    const char *v = getenv(name);
-    return v && *v && strcmp(v, "0") != 0;
 }
 
 static int argv_invokes_python(int argc, char **argv)

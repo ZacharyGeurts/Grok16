@@ -68,104 +68,108 @@ class GrokVM:
     def _run_frame(self, frame: Frame) -> Any:
         stack: list[Any] = []
         code = frame.code
+        instrs = code.instrs
+        consts = code.consts
+        names = code.names
+        load_name = frame.load_name
+        store_name = frame.store_name
+        store_global = frame.store_global
+        globals_ref = frame.globals
         ip = 0
+        cmp_ops = (
+            lambda x, y: x == y,
+            lambda x, y: x != y,
+            lambda x, y: x < y,
+            lambda x, y: x <= y,
+            lambda x, y: x > y,
+            lambda x, y: x >= y,
+        )
+        call_fn = self._call_function
         try:
-            while ip < len(code.instrs):
-                op_raw, arg = code.instrs[ip]
-                op = Op(op_raw)
+            while ip < len(instrs):
+                op_raw, arg = instrs[ip]
                 ip += 1
-
-                if op == Op.LOAD_CONST:
-                    stack.append(code.consts[arg])
-                elif op == Op.LOAD_NAME:
-                    stack.append(frame.load_name(arg))
-                elif op == Op.LOAD_GLOBAL:
-                    name = code.names[arg]
-                    if name not in frame.globals:
+                if op_raw == Op.LOAD_CONST:
+                    stack.append(consts[arg])
+                elif op_raw == Op.LOAD_NAME:
+                    stack.append(load_name(arg))
+                elif op_raw == Op.LOAD_GLOBAL:
+                    name = names[arg]
+                    if name not in globals_ref:
                         raise VMError(f"global not defined: {name}")
-                    stack.append(frame.globals[name])
-                elif op == Op.STORE_NAME:
-                    frame.store_name(arg, stack.pop())
-                elif op == Op.STORE_GLOBAL:
-                    frame.store_global(arg, stack.pop())
-                elif op == Op.POP_TOP:
+                    stack.append(globals_ref[name])
+                elif op_raw == Op.STORE_NAME:
+                    store_name(arg, stack.pop())
+                elif op_raw == Op.STORE_GLOBAL:
+                    store_global(arg, stack.pop())
+                elif op_raw == Op.POP_TOP:
                     stack.pop()
-                elif op == Op.DUP_TOP:
+                elif op_raw == Op.DUP_TOP:
                     stack.append(stack[-1])
-                elif op == Op.BINARY_ADD:
+                elif op_raw == Op.BINARY_ADD:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a + b)
-                elif op == Op.BINARY_SUB:
+                elif op_raw == Op.BINARY_SUB:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a - b)
-                elif op == Op.BINARY_MUL:
+                elif op_raw == Op.BINARY_MUL:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a * b)
-                elif op == Op.BINARY_TRUE_DIV:
+                elif op_raw == Op.BINARY_TRUE_DIV:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a / b)
-                elif op == Op.BINARY_FLOOR_DIV:
+                elif op_raw == Op.BINARY_FLOOR_DIV:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a // b)
-                elif op == Op.BINARY_MOD:
+                elif op_raw == Op.BINARY_MOD:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a % b)
-                elif op == Op.BINARY_POW:
+                elif op_raw == Op.BINARY_POW:
                     b, a = stack.pop(), stack.pop()
                     stack.append(a ** b)
-                elif op == Op.UNARY_NEG:
+                elif op_raw == Op.UNARY_NEG:
                     stack.append(-stack.pop())
-                elif op == Op.UNARY_NOT:
+                elif op_raw == Op.UNARY_NOT:
                     stack.append(not stack.pop())
-                elif op == Op.COMPARE_OP:
+                elif op_raw == Op.COMPARE_OP:
                     b, a = stack.pop(), stack.pop()
-                    cmp_ops = {
-                        COMPARE_EQ: lambda x, y: x == y,
-                        COMPARE_NE: lambda x, y: x != y,
-                        COMPARE_LT: lambda x, y: x < y,
-                        COMPARE_LE: lambda x, y: x <= y,
-                        COMPARE_GT: lambda x, y: x > y,
-                        COMPARE_GE: lambda x, y: x >= y,
-                    }
                     stack.append(cmp_ops[arg](a, b))
-                elif op == Op.JUMP_FORWARD:
+                elif op_raw == Op.JUMP_FORWARD:
                     ip = arg
-                elif op == Op.JUMP_IF_FALSE:
+                elif op_raw == Op.JUMP_IF_FALSE:
                     if not stack.pop():
                         ip = arg
-                elif op == Op.JUMP_IF_TRUE:
+                elif op_raw == Op.JUMP_IF_TRUE:
                     if stack.pop():
                         ip = arg
-                elif op == Op.GET_ITER:
+                elif op_raw == Op.GET_ITER:
                     stack.append(iter(stack.pop()))
-                elif op == Op.FOR_ITER:
+                elif op_raw == Op.FOR_ITER:
                     it = stack[-1]
                     try:
                         stack.append(next(it))
                     except StopIteration:
                         stack.pop()
                         ip = arg
-                elif op == Op.BUILD_LIST:
-                    items = [stack.pop() for _ in range(arg)][::-1]
-                    stack.append(items)
-                elif op == Op.BUILD_TUPLE:
-                    items = [stack.pop() for _ in range(arg)][::-1]
-                    stack.append(tuple(items))
-                elif op == Op.CALL:
+                elif op_raw == Op.BUILD_LIST:
+                    stack.append([stack.pop() for _ in range(arg)][::-1])
+                elif op_raw == Op.BUILD_TUPLE:
+                    stack.append(tuple([stack.pop() for _ in range(arg)][::-1]))
+                elif op_raw == Op.CALL:
                     argc = arg
                     args = [stack.pop() for _ in range(argc)][::-1]
                     fn = stack.pop()
                     if isinstance(fn, GrokFunction):
-                        ret = self._call_function(fn, args)
+                        ret = call_fn(fn, args)
                         if ret is not None:
                             stack.append(ret)
                     elif callable(fn):
                         stack.append(fn(*args))
                     else:
                         raise VMError("call on non-callable")
-                elif op == Op.RETURN:
+                elif op_raw == Op.RETURN:
                     raise _ReturnSignal(stack.pop() if stack else None)
-                elif op == Op.MAKE_FUNCTION:
+                elif op_raw == Op.MAKE_FUNCTION:
                     ndef = arg
                     defaults = [stack.pop() for _ in range(ndef)][::-1] if ndef else []
                     fn_code = stack.pop()
@@ -178,7 +182,7 @@ class GrokVM:
                         )
                     )
                 else:
-                    raise VMError(f"unhandled op: {op}")
+                    raise VMError(f"unhandled op: {Op(op_raw)}")
         except _ReturnSignal as sig:
             return sig.value
         return None

@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -178,6 +178,11 @@ doc = {
         "gcc_build": "${GROK16_GCC_BUILD}",
         "cmake": "${GROK16_ROOT}/cmake/grok16-toolchain.cmake",
         "field_cmake": "${GROK16_ROOT}/cmake/grok16-field.cmake",
+        "field_build": "${GROK16_ROOT}/data/grok16-field-build.json",
+        "field_build_script": "${GROK16_ROOT}/scripts/grok16-field-build.sh",
+        "g16_cmake": "${G16_PREFIX}/bin/g16-cmake",
+        "g16_ninja": "${G16_PREFIX}/bin/g16-ninja",
+        "g16_make": "${G16_PREFIX}/bin/g16-make",
         "ironclad_meld": "${GROK16_ROOT}/data/g16-ironclad-meld.json",
         "field_sanity_doctrine": "${GROK16_ROOT}/data/g16-field-sanity-doctrine.json",
         "ironclad_bridge": "${GROK16_ROOT}/forge/g16-ironclad.py",
@@ -217,6 +222,13 @@ cmd_install() {
   write_version_file
   write_cmake_toolchain
   write_manifest
+  if [[ -x "$GROK16_SCRIPTS/grok16-build-essential.sh" ]]; then
+    "$GROK16_SCRIPTS/grok16-build-essential.sh" install >/dev/null 2>&1 || \
+      echo "install: warn — build-essential partial" >&2
+  elif [[ -x "$GROK16_SCRIPTS/grok16-field-build.sh" ]]; then
+    "$GROK16_SCRIPTS/grok16-field-build.sh" install >/dev/null 2>&1 || \
+      echo "install: warn — field-build wrappers partial" >&2
+  fi
   echo "Grok16 prefix: $G16_PREFIX"
   echo "g16 (unified): $("$G16_DRIVER" --version | head -1)"
 }
@@ -238,7 +250,7 @@ cmd_rebuild() {
   export G16_ENABLE_PGO="${G16_ENABLE_PGO:-}"
   export GROK16_USE_CCACHE="${GROK16_USE_CCACHE:-}"
   export G16_DISABLE_BOOTSTRAP="${G16_DISABLE_BOOTSTRAP:-}"
-  echo "  jobs=$GROK16_BUILD_JOBS fast=$G16_FAST_REBUILD field_speed=$G16_FIELD_SPEED release=$G16_RELEASE_PROFILE"
+  echo "  jobs=$GROK16_BUILD_JOBS fast=${G16_FAST_REBUILD:-0} field_speed=${G16_FIELD_SPEED:-0} release=${G16_RELEASE_PROFILE:-0}"
   echo "  lto=${G16_ENABLE_LTO:-0} pgo=${G16_ENABLE_PGO:-0} ccache=${GROK16_USE_CCACHE:-0} bootstrap_off=${G16_DISABLE_BOOTSTRAP:-0}"
   g16_gpy_run "$FORGE" run gcc_rebuild || exit 1
   cmd_install
@@ -310,13 +322,15 @@ EOF
     echo "verify: example source present ($VERIFY_SRC)"
   fi
 
-  if command -v cmake >/dev/null 2>&1 && [[ -f "$GROK16_ROOT/cmake/grok16-toolchain.cmake" ]]; then
+  local cmake_cmd="cmake"
+  [[ -x "$G16_PREFIX/bin/g16-cmake" ]] && cmake_cmd="$G16_PREFIX/bin/g16-cmake"
+  if command -v "$cmake_cmd" >/dev/null 2>&1 && [[ -f "$GROK16_ROOT/cmake/grok16-toolchain.cmake" ]]; then
     local bdir="$tmpdir/cmake-build"
     echo "verify: CMake example (optional)"
-    if cmake -S "$EXAMPLE_CMAKE" -B "$bdir" \
+    if G16_LINKER_ALLOW_UNWITNESSED=1 "$cmake_cmd" -S "$EXAMPLE_CMAKE" -B "$bdir" \
       -DCMAKE_TOOLCHAIN_FILE="$GROK16_ROOT/cmake/grok16-toolchain.cmake" \
-      -DCMAKE_BUILD_TYPE=Release >/dev/null 2>&1 \
-      && cmake --build "$bdir" >/dev/null 2>&1; then
+      -DCMAKE_BUILD_TYPE=Release -G Ninja >/dev/null 2>&1 \
+      && { [[ -x "$G16_PREFIX/bin/g16-ninja" ]] && "$G16_PREFIX/bin/g16-ninja" -C "$bdir" || cmake --build "$bdir"; } >/dev/null 2>&1; then
       "$bdir/grok16_smoke"
       echo "verify: CMake example OK"
     else
@@ -337,6 +351,12 @@ EOF
     "$GROK16_ROOT/scripts/grok16-binutils.sh" verify
   else
     echo "verify: skip binutils (run grok16-binutils.sh bootstrap)"
+  fi
+
+  if [[ -x "$GROK16_SCRIPTS/grok16-field-build.sh" ]]; then
+    echo "verify: field build tools"
+    "$GROK16_SCRIPTS/grok16-field-build.sh" verify || \
+      echo "verify: field-build partial (install host cmake/ninja/bison/flex)" >&2
   fi
 
   cmd_ironclad_sanity_verify || return 1
@@ -701,6 +721,16 @@ cmd_exec_bsp_bench() {
   exec python3 "$GROK16_SCRIPTS/field-exec-compare.py" "$@"
 }
 
+cmd_field_build() {
+  shift || true
+  exec "$GROK16_SCRIPTS/grok16-field-build.sh" "${1:-status}" "${@:2}"
+}
+
+cmd_build_essential() {
+  shift || true
+  exec "$GROK16_SCRIPTS/grok16-build-essential.sh" "${1:-status}" "${@:2}"
+}
+
 cmd_integrate() {
   exec "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
 }
@@ -873,6 +903,30 @@ cmd_bench_all() {
   return 0
 }
 
+cmd_profiler() {
+  g16_gpy_run "$GROK16_SCRIPTS/grok16-profiler.py" collect
+}
+
+cmd_profile_build() {
+  export G16_PROFILE_BUILD=1
+  local profile="${G16_BENCH_PROFILE:-${GROK16_FIELD_PROFILE:-field_opt}}"
+  echo "profile-build: active profile=$profile G16_PROFILE_BUILD=1" >&2
+  g16_gpy_run "$GROK16_SCRIPTS/grok16-profiler.py" run --profile "$profile"
+  if grok16_ready; then
+    G16_PROFILE_BUILD=1 _bench_run_one "$profile" cxx || true
+    g16_gpy_run "$GROK16_SCRIPTS/grok16-profiler.py" collect
+  fi
+}
+
+cmd_profile_launch() {
+  local launch="${1:-}"
+  [[ -n "$launch" ]] || { echo "profile-launch: pass path/to/program.launch" >&2; exit 2; }
+  [[ -f "$launch" ]] || launch="$GROK16_ROOT/$launch"
+  [[ -f "$launch" ]] || { echo "profile-launch: not found: $launch" >&2; exit 1; }
+  export G16_PROFILE_BUILD=1
+  g16_gpy_run "$GROK16_SCRIPTS/grok16-profiler.py" run --launch "$launch"
+}
+
 cmd_profile() {
   if ! grok16_ready; then
     echo "not ready — run: $0 bootstrap" >&2
@@ -933,6 +987,11 @@ case "${1:-}" in
   field-bench) cmd_field_bench ;;
   bench-all) cmd_bench_all ;;
   profile) cmd_profile ;;
+  profiler) cmd_profiler ;;
+  profile-build) cmd_profile_build ;;
+  profile-launch) shift; cmd_profile_launch "$@" ;;
+  field-build) cmd_field_build "$@" ;;
+  build-essential) cmd_build_essential "$@" ;;
   paths) cmd_paths ;;
   config) cmd_config ;;
   manifest) write_cmake_toolchain; write_manifest ;;

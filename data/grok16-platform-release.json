@@ -1,7 +1,9 @@
 {
   "schema": "grok16-platform-release/v1",
-  "distro_version": "4.7.1",
-  "distro_tag": "v4.7.1",
+  "distro_version": "5.0.0",
+  "distro_tag": "v5.0.0",
+  "staging_from": "4.8.0",
+  "shipped_as": "4.8-update",
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-16.2.0",
   "upstream_gcc": "releases/gcc-15",
@@ -24,7 +26,9 @@
       "bootstrap": {
         "CC": "gcc",
         "CXX": "g++",
-        "deps": "build-essential flex bison libgmp-dev libmpfr-dev libmpc-dev"
+        "deps": "grok16-build-essential",
+        "bootstrap_apt_fallback": "build-essential flex bison libgmp-dev libmpfr-dev libmpc-dev",
+        "grok16_install": "./scripts/grok16-build-essential.sh install"
       },
       "cross_prefix": null,
       "notes": "Primary dev + bench host"

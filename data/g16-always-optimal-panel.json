@@ -1,6 +1,6 @@
 {
   "schema": "g16-always-optimal-panel/v1",
-  "updated": "2026-06-27T14:32:18Z",
+  "updated": "2026-06-27T15:26:55Z",
   "ok": true,
   "always_optimal": true,
   "degraded_gate": true,
@@ -10,7 +10,7 @@
     "die_slots": 512,
     "runner": "python",
     "pattern_id": "dev_organized_python",
-    "ideal_profile": "belt_2_0",
+    "ideal_profile": "belt_1_0",
     "gate_ok": false,
     "bench_best_g16": {
       "profile": "belt_1_0",
@@ -21,7 +21,7 @@
       "die_slots": 256
     },
     "compiler_sense_profile": "hostess_secure",
-    "native_ceiling_ops_per_sec": 95344504.64,
+    "native_ceiling_ops_per_sec": 84873248.15,
     "terminal_leaf": {},
     "motto": "Combinatorics scores every facet; bench receipts pick the belt; one amplitude at depth 0.",
     "power_sort": {
@@ -412,19 +412,24 @@
     {
       "step": "fast_cycle",
       "ok": true,
-      "elapsed_ms": 469.83
+      "elapsed_ms": 491.43
     },
     {
       "step": "bridge",
       "ok": false,
-      "elapsed_ms": 853.74
+      "elapsed_ms": 658.95
+    },
+    {
+      "step": "compatibility_refresh",
+      "ok": true,
+      "elapsed_ms": 4110.59
     },
     {
       "step": "power_sort",
       "ok": true,
-      "elapsed_ms": 14.61
+      "elapsed_ms": 12.13
     }
   ],
-  "elapsed_ms": 1344.81,
+  "elapsed_ms": 5279.74,
   "integrate_env": "/home/default/Desktop/SG/Grok16/data/grok16-integrate.env"
 }

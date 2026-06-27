@@ -66,21 +66,26 @@ def nexus_score(weights: list[float], signals: list[float]) -> float:
 
 
 def fieldx86_run(prog: list[tuple[int, int, int, int]], die: list[float]) -> None:
+    """Hot loop — local bindings + branch table (Grok16 python lane)."""
+    k_die = K_DIE
+    k_wave = K_WAVE
+    finite = _finite
+    fold = entropy_fold
+    phase = wave_phase
     for op, dst, src, imm in prog:
-        d = dst % K_DIE
-        s = src % K_DIE
-        i = imm % K_DIE
+        d = dst % k_die
+        s = src % k_die
+        i = imm % k_die
         if op == 0:
-            die[d] = _finite(die[d] + die[s])
+            die[d] = finite(die[d] + die[s])
         elif op == 1:
-            die[d] = _finite(die[d] * (die[i] * 0.01 + 1.0))
+            die[d] = finite(die[d] * (die[i] * 0.01 + 1.0))
         elif op == 2:
             die[d] += float(imm ^ src) * 1e-4
         elif op == 3:
-            die[d] = entropy_fold(die[s], die[i])
+            die[d] = fold(die[s], die[i])
         elif op == 4:
-            die[d] = wave_phase(die[s], die[i], imm % K_WAVE)
-        # op 5 = nop
+            die[d] = phase(die[s], die[i], imm % k_wave)
 
 
 def run_epoch(prog, die, weights, signals, sink: list[float]) -> None:

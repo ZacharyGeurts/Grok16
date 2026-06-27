@@ -12,6 +12,9 @@ if str(_LIB) not in sys.path:
 
 from binutils_tools import BINUTILS_TOOLS, binutils_status  # noqa: E402
 from cmake_tools import CMAKE_TOOLS, field_cmake_status, write_field_cmake_manifest  # noqa: E402
+from field_build_tools import FIELD_BUILD_TOOLS, field_build_status, write_manifest as write_field_build_manifest  # noqa: E402
+from build_essential_tools import BUILD_ESSENTIAL_TOOLS, build_essential_status, write_manifest as write_build_essential_manifest  # noqa: E402
+from compiler_symlink_tools import COMPILER_SYMLINK_TOOLS, compiler_symlinks_status  # noqa: E402
 from compiler_tools import GCC_TOOLS, g16_status  # noqa: E402
 from ironclad_tools import ironclad_sanity_gate, ironclad_sanity_status, write_ironclad_sanity_manifest  # noqa: E402
 from linker_tools import LINKER_TOOLS, linker_status, write_linker_manifest  # noqa: E402
@@ -19,7 +22,15 @@ from rtx_gate import gate_status  # noqa: E402
 from language_tools import hostess_gate, install_language_wrappers, language_status, write_language_manifest  # noqa: E402
 from engine import ForgeContext, ForgeEngine  # noqa: E402
 
-ALL_TOOLS = {**GCC_TOOLS, **BINUTILS_TOOLS, **CMAKE_TOOLS, **LINKER_TOOLS}
+ALL_TOOLS = {
+    **GCC_TOOLS,
+    **BINUTILS_TOOLS,
+    **CMAKE_TOOLS,
+    **LINKER_TOOLS,
+    **FIELD_BUILD_TOOLS,
+    **BUILD_ESSENTIAL_TOOLS,
+    **COMPILER_SYMLINK_TOOLS,
+}
 
 
 def forge_status() -> dict:
@@ -27,6 +38,8 @@ def forge_status() -> dict:
     gate = hostess_gate(ctx)
     iron = ironclad_sanity_status(ctx)
     write_field_cmake_manifest(ctx)
+    write_field_build_manifest(ctx)
+    write_build_essential_manifest(ctx)
     write_ironclad_sanity_manifest(ctx)
     write_linker_manifest(ctx)
     return {
@@ -34,6 +47,8 @@ def forge_status() -> dict:
         "ok": True,
         **g16_status(ctx),
         "binutils": binutils_status(ctx),
+        "field_build": field_build_status(ctx),
+        "build_essential": build_essential_status(ctx),
         "field_cmake": field_cmake_status(ctx),
         "languages": language_status(ctx),
         "ironclad_sanity": iron,
@@ -71,6 +86,15 @@ def main() -> int:
         return 0
     if len(args) >= 1 and args[0] == "binutils-status":
         print(json.dumps(binutils_status(ForgeContext.from_env()), indent=2))
+        return 0
+    if len(args) >= 1 and args[0] == "field-build-status":
+        print(json.dumps(field_build_status(ForgeContext.from_env()), indent=2))
+        return 0
+    if len(args) >= 1 and args[0] == "build-essential-status":
+        print(json.dumps(build_essential_status(ForgeContext.from_env()), indent=2))
+        return 0
+    if len(args) >= 1 and args[0] == "compiler-symlinks-status":
+        print(json.dumps(compiler_symlinks_status(ForgeContext.from_env()), indent=2))
         return 0
     if len(args) >= 1 and args[0] == "languages-status":
         print(json.dumps(language_status(ForgeContext.from_env()), indent=2))

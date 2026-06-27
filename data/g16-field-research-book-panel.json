@@ -1,6 +1,6 @@
 {
   "schema": "g16-field-research-book-panel/v1",
-  "updated": "2026-06-27T14:32:18Z",
+  "updated": "2026-06-27T15:49:00Z",
   "ok": true,
   "title": "Field Research — Grok16 technology spine",
   "edition": "1.0",
@@ -226,7 +226,7 @@
   "verify": {
     "ok": true,
     "schema": "g16-field-research-verify/v1",
-    "updated": "2026-06-27T14:32:18Z",
+    "updated": "2026-06-27T15:49:00Z",
     "manifest_ok": true,
     "chapters": 13,
     "missing_modules": [],

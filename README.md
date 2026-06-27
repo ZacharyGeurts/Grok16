@@ -1,19 +1,19 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-4.7.1-brightgreen)
-![Bench](https://img.shields.io/badge/speed__bench-v4.7.1-gold)
+![Status](https://img.shields.io/badge/release-5.0.0--staging-yellow)
+![Bench](https://img.shields.io/badge/speed__bench-v5.0.0-gold)
 ![Launch](https://img.shields.io/badge/.launch-ready-blue)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
-![Track](https://img.shields.io/badge/roadmap-4.7%20%E2%86%92%204.8-lightgrey)
+![Track](https://img.shields.io/badge/shipped-4.8%20%E2%86%92%205.0-lightgrey)
 ![RISC](https://img.shields.io/badge/RISC--V-linux--gnu--riscv64-orange)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-## Speed bench — all executions tested (report v4.7.1)
+## Speed bench — all executions tested (report v5.0.0)
 
-**Distro 4.7.1** · **suite `speed_demo` @ 1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**  
+**Distro 5.0.0 staging** (4.8 update shipped) · **suite `speed_demo` @ 1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**  
 Host: `default-X870-Pro-RS` · [field-exec-full-bench.json](docs/field-exec-full-bench.json) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
 ### Winners (cold exec, BSP rocket)

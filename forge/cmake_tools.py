@@ -21,8 +21,17 @@ def field_cmake_script(ctx: ForgeContext) -> Path:
     return grok16_cmake_root(ctx) / FIELD_CMAKE_SCRIPT
 
 
+def _field_tool(name: str) -> str | None:
+    prefix = os.environ.get("G16_PREFIX", "").strip()
+    if prefix:
+        path = Path(prefix) / "bin" / name
+        if path.is_file() and os.access(path, os.X_OK):
+            return str(path)
+    return shutil.which(name)
+
+
 def _ninja_available() -> bool:
-    return shutil.which("ninja") is not None
+    return _field_tool("g16-ninja") is not None or shutil.which("ninja") is not None
 
 
 def _toolchain(ctx: ForgeContext) -> Path:

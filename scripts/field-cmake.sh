@@ -25,8 +25,30 @@ EOF
   exit 2
 }
 
+field_tool() {
+  local name="$1"
+  if [[ -x "${G16_PREFIX}/bin/${name}" ]]; then
+    echo "${G16_PREFIX}/bin/${name}"
+    return 0
+  fi
+  command -v "$name" >/dev/null 2>&1 && command -v "$name" && return 0
+  return 1
+}
+
 ninja_available() {
-  command -v ninja >/dev/null 2>&1
+  field_tool g16-ninja >/dev/null 2>&1 || command -v ninja >/dev/null 2>&1
+}
+
+cmake_bin() {
+  field_tool g16-cmake || field_tool cmake || { echo cmake; return 1; }
+}
+
+ninja_bin() {
+  field_tool g16-ninja || field_tool ninja || { echo ninja; return 1; }
+}
+
+make_bin() {
+  field_tool g16-make || field_tool make || { echo make; return 1; }
 }
 
 generator_args() {
@@ -100,8 +122,10 @@ cmd_configure() {
   if [[ "$prof" == "queen_rtx" && -f "${GROK16_ROOT}/cmake/grok16-field-queen-rtx.cmake" ]]; then
     cache_init=(-C "${GROK16_ROOT}/cmake/grok16-field-queen-rtx.cmake")
   fi
+  local cmake_cmd
+  cmake_cmd="$(cmake_bin)"
   # shellcheck disable=SC2046
-  cmake -S "$src" -B "$build" \
+  "$cmake_cmd" -S "$src" -B "$build" \
     $(generator_args) \
     "${cache_init[@]}" \
     -DCMAKE_TOOLCHAIN_FILE="${GROK16_ROOT}/cmake/grok16-toolchain.cmake" \
@@ -126,13 +150,26 @@ cmd_build() {
   export NEXUS_INSTALL_ROOT="${NEXUS_INSTALL_ROOT:-${GROK16_SG_ROOT}/NewLatest}"
   export NEXUS_STATE_DIR="${NEXUS_STATE_DIR:-${NEXUS_INSTALL_ROOT}/.nexus-state}"
   if [[ -f "$build/build.ninja" ]] && ninja_available; then
-    echo "field-g16: ninja -C $build -j$jobs $target (CC/CXX=g16)" >&2
-    ninja -C "$build" -j "$jobs" "$target"
+    local ninja_cmd
+    ninja_cmd="$(ninja_bin)"
+    echo "field-g16: $ninja_cmd -C $build -j$jobs $target (CC/CXX=g16)" >&2
+    "$ninja_cmd" -C "$build" -j "$jobs" "$target"
+    if [[ "${G16_PROFILE_BUILD:-0}" == "1" ]] && [[ -f "${GROK16_ROOT}/scripts/grok16-profiler.py" ]]; then
+      GROK16_CMAKE_BUILD="$build" GROK16_CMAKE_SOURCE="$(default_source)" GROK16_CMAKE_TARGET="$target" \
+        g16_gpy_run "${GROK16_ROOT}/scripts/grok16-profiler.py" wrap-build --build-dir "$build" --target "$target" >/dev/null 2>&1 || true
+      echo "field-g16: profiler → ${GROK16_ROOT}/data/profile/latest-build.json" >&2
+    fi
     return
   fi
   if [[ -f "$build/Makefile" ]]; then
-    echo "field-g16: make -C $build -j$jobs $target (CC/CXX=g16)" >&2
-    make -C "$build" -j"$jobs" "$target"
+    local make_cmd
+    make_cmd="$(make_bin)"
+    echo "field-g16: $make_cmd -C $build -j$jobs $target (CC/CXX=g16)" >&2
+    "$make_cmd" -C "$build" -j"$jobs" "$target"
+    if [[ "${G16_PROFILE_BUILD:-0}" == "1" ]] && [[ -f "${GROK16_ROOT}/scripts/grok16-profiler.py" ]]; then
+      GROK16_CMAKE_BUILD="$build" GROK16_CMAKE_SOURCE="$(default_source)" GROK16_CMAKE_TARGET="$target" \
+        g16_gpy_run "${GROK16_ROOT}/scripts/grok16-profiler.py" wrap-build --build-dir "$build" --target "$target" >/dev/null 2>&1 || true
+    fi
     return
   fi
   echo "field-g16: no build.ninja or Makefile in $build — run configure first" >&2

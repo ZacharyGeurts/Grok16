@@ -151,6 +151,39 @@ PY
   echo "integrate: NewLatest nexus-g16-recompile wired"
 }
 
+sync_compiler_symlinks() {
+  if [[ -x "$GROK16_ROOT/scripts/grok16-compiler-symlinks.sh" ]]; then
+    run "$GROK16_ROOT/scripts/grok16-compiler-symlinks.sh" install || \
+      echo "integrate: warn — compiler symlinks install partial" >&2
+  fi
+  if [[ -f "$GROK16_ROOT/data/grok16-compiler-symlinks.json" && -d "$QUEEN/data" ]]; then
+    cp -f "$GROK16_ROOT/data/grok16-compiler-symlinks.json" "$QUEEN/data/grok16-compiler-symlinks.json"
+    echo "integrate: Queen/data/grok16-compiler-symlinks.json ← canonical"
+  fi
+}
+
+sync_build_essential() {
+  if [[ -x "$GROK16_ROOT/scripts/grok16-build-essential.sh" ]]; then
+    run "$GROK16_ROOT/scripts/grok16-build-essential.sh" install || \
+      echo "integrate: warn — build-essential install partial" >&2
+  fi
+  if [[ -f "$GROK16_ROOT/data/grok16-build-essential-toolchain.json" && -d "$QUEEN/data" ]]; then
+    cp -f "$GROK16_ROOT/data/grok16-build-essential-toolchain.json" "$QUEEN/data/grok16-build-essential-toolchain.json"
+    echo "integrate: Queen/data/grok16-build-essential-toolchain.json ← canonical"
+  fi
+}
+
+sync_field_build() {
+  if [[ -x "$GROK16_ROOT/scripts/grok16-field-build.sh" ]]; then
+    run "$GROK16_ROOT/scripts/grok16-field-build.sh" install || \
+      echo "integrate: warn — field-build install partial" >&2
+  fi
+  if [[ -f "$GROK16_ROOT/data/grok16-field-build-toolchain.json" && -d "$QUEEN/data" ]]; then
+    cp -f "$GROK16_ROOT/data/grok16-field-build-toolchain.json" "$QUEEN/data/grok16-field-build-toolchain.json"
+    echo "integrate: Queen/data/grok16-field-build-toolchain.json ← canonical"
+  fi
+}
+
 sync_compile_combinatronics_env() {
   local env_path="$GROK16_ROOT/data/grok16-integrate.env"
   [[ -f "$env_path" ]] || return 0
@@ -181,6 +214,9 @@ cmd_integrate() {
   sync_world_redata
   sync_always_optimal
   sync_nexus_g16_integrate
+  sync_build_essential
+  sync_field_build
+  sync_compiler_symlinks
   sync_compile_combinatronics_env
   sync_field_research_book
   if [[ -x "$GROK16_ROOT/scripts/grok16-bench-triad.sh" ]] && \

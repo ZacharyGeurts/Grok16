@@ -1,6 +1,6 @@
 {
   "schema": "g16-power-sort-panel/v1",
-  "updated": "2026-06-27T14:32:19Z",
+  "updated": "2026-06-27T15:26:55Z",
   "ok": true,
   "always_best_sort": true,
   "plate_not_wire": true,
@@ -403,8 +403,8 @@
     {
       "step": "bench",
       "ok": true,
-      "elapsed_ms": 0.27
+      "elapsed_ms": 0.18
     }
   ],
-  "elapsed_ms": 701.74
+  "elapsed_ms": 4.82
 }

@@ -35,6 +35,28 @@
     ],
     "rebuild": "./scripts/grok16-binutils.sh install"
   },
+  "build_essential": {
+    "driver": "bin/g16",
+    "replaces": "ubuntu:build-essential",
+    "manifest": "data/grok16-build-essential.json",
+    "env": "scripts/g16-build-env.sh",
+    "install": "./scripts/grok16-build-essential.sh install",
+    "verify": "./scripts/grok16-build-essential.sh verify",
+    "layers": ["ubuntu_parity", "binutils", "autotools", "meta_build", "utilities", "packaging"],
+    "rule": "Better than build-essential — entire compile/link/build stack in SG/Grok16"
+  },
+  "field_build": {
+    "driver": "bin/g16-cmake",
+    "tools": [
+      "g16-cmake", "g16-ninja", "g16-make", "g16-bison", "g16-flex",
+      "g16-autoconf", "g16-automake", "g16-libtoolize", "g16-pkg-config",
+      "g16-m4", "g16-meson", "g16-gperf"
+    ],
+    "manifest": "data/grok16-field-build.json",
+    "rebuild": "./scripts/grok16-field-build.sh install",
+    "field_cmake": "./scripts/field-cmake.sh",
+    "rule": "Single build fabric — configure via g16-cmake, compile via g16-ninja/g16-make, parse via g16-bison/g16-flex"
+  },
   "languages": {
     "asm": {"driver": "g16-as", "extensions": [".s", ".S", ".asm"]},
     "rust": {"driver": "g16-rust", "extensions": [".rs"], "memory": "ownership"},
