@@ -1,7 +1,7 @@
 # Grok16 comprehensive benchmark report
 
-**Assembled:** 2026-06-27T03:14:37Z  
-**Report:** 3.1.0  
+**Assembled:** 2026-06-27T06:56:48Z  
+**Report:** 4.0.0  
 **Runners:** 11 speed_demo executions  
 **bench-all profiles:** 9  
 
@@ -14,8 +14,8 @@
 
 ## Plate meld verdict
 
-- Post-meld re-exec ratio: **0.9982**
-- Sense profile `field_opt` vs belt_2_0 ops ratio: **0.995**
+- Post-meld re-exec ratio: **1.1118**
+- Sense profile `field_opt` vs belt_2_0 ops ratio: **1.0638**
 - Meld helps profile ladder: **yes**
 
 Full speed bench: [SPEED-BENCH-REPORT.md](SPEED-BENCH-REPORT.md) · JSON: [field-exec-full-bench.json](field-exec-full-bench.json)

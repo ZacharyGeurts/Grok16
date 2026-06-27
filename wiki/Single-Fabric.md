@@ -1,5 +1,7 @@
 # Single fabric (2.0)
 
+Field Research Ch. 5: [Single Fabric & Belt 2.0](https://zacharygeurts.github.io/Field_Research/chapters/05-single-fabric-belt.html)
+
 Web: [concepts.html](https://zacharygeurts.github.io/Grok16/concepts.html)
 
 **Single fabric** is the Grok16 2.0 technology: fixed-size **knowing** on one belt die — not nested fields, not monolithic blast.

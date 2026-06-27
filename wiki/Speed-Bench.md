@@ -2,14 +2,14 @@
 
 Web: [speed-bench.html](https://zacharygeurts.github.io/Grok16/speed-bench.html) · JSON: [field-exec-full-bench.json](https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json)
 
-**Grok16 distro 3.0.0** · **speed_demo suite v1.1.0** · **schema v4** · **11 runners** · **3s window**
+**Grok16 distro 4.0.0** · **speed_demo suite v1.1.0** · **schema v4** · **11 runners** · **3s window**
 
 ## Version stamps
 
 | Field | Value |
 |-------|-------|
 | Report | `3.1.0` |
-| Distro | `3.0.0` (`v3.0.0`) |
+| Distro | `4.0.0` (`v4.0.0`) |
 | g16 pkg | `Grok16-16.2.0` |
 | Bench suite | `speed_demo` @ `1.1.0` |
 | Schema | `grok16-field-exec-full-bench/v4` |

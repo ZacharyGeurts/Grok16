@@ -1,17 +1,17 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-3.0.0-brightgreen)
-![Bench](https://img.shields.io/badge/speed__bench-v3.1.0-gold)
+![Status](https://img.shields.io/badge/release-4.0.0-brightgreen)
+![Bench](https://img.shields.io/badge/speed__bench-v4.0.0-gold)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
-![Track](https://img.shields.io/badge/roadmap-3.0%20%E2%86%92%203.1-lightgrey)
+![Track](https://img.shields.io/badge/roadmap-4.0%20%E2%86%92%204.1-lightgrey)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-## Speed bench — all executions tested (report v3.1.0)
+## Speed bench — all executions tested (report v4.0.0)
 
-**Distro 3.0.0** · **suite `speed_demo` @ 1.1.0** · **schema v4** · **11 runners** · **3s window**  
+**Distro 4.0.0** · **suite `speed_demo` @ 1.1.0** · **schema v4** · **11 runners** · **3s window**  
 [SPEED-BENCH-REPORT.md](docs/SPEED-BENCH-REPORT.md) · [COMPREHENSIVE-BENCH-REPORT.md](docs/COMPREHENSIVE-BENCH-REPORT.md) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
 ### speed_demo — every runner (cold exec)
@@ -71,7 +71,7 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 **Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **3.0** adds **versioned compile+execution speed bench**; **2.0** single fabric belt (`belt_2_0`), Ironclad safety meld, depth fields sealed and destroyed at integrated consumers.
 
-> **Grok16 3.0.0** — speed bench v3, uncompiled doctrine, Queen-themed manual (CMake, linking, chamber). Default profile `belt_2_0`. See [RELEASE-3.0.md](RELEASE-3.0.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
+> **Grok16 4.0.0** — power sort plate, cool combinatorics plating, speed bench v4. Default profile `belt_2_0`. See [RELEASE-4.0.md](RELEASE-4.0.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
 
 ## What you get
 
@@ -308,6 +308,27 @@ cmake --build examples/minimal-cmake-project/build
 ./scripts/grok16-toolchain.sh paths
 pythong forge/grok16-forge.py status      # JSON toolchain state
 ```
+
+## MCP (Model Context Protocol) — 4.0
+
+Wire Grok16 into Cursor or any MCP client:
+
+```bash
+pip install -r requirements-mcp.txt
+export GROK16_ROOT="$(pwd)"
+```
+
+Add to `.cursor/mcp.json` — see [mcp/README.md](mcp/README.md) and [mcp/cursor-mcp.json.example](mcp/cursor-mcp.json.example).
+
+| Tool | Role |
+|------|------|
+| `grok16_version` | Distro `4.0.0` + g16 `16.2.0` stamps |
+| `grok16_toolchain` | `status` · `verify` · `exec-bsp-bench` · battery gates |
+| `grok16_rtx_gate` | `queen_rtx` permit |
+| `grok16_speed_bench` | Published bench JSON |
+| `grok16_power_sort` | Power sort plate (4.0) |
+
+Doctrine: `data/grok16-mcp.json`
 
 ## Integration (Field_Primer / SG stack)
 

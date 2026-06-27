@@ -6,9 +6,24 @@
   "launch_format": {
     "extension": ".launch",
     "schema": "queen-launch/v1",
-    "mode": "folder_mirror",
+    "mode": "organized_field",
     "default_on": "code_folders",
-    "action": "run_uncompiled_as_bin"
+    "action": "inspect_and_run_without_compile",
+    "module": "Queen/lib/queen-launch-chamber.py",
+    "statement": ".launch is an organized field — inspect files, trim excess, run interpreter or BSP reuse; never compile on launch."
+  },
+  "organized_field": {
+    "schema": "queen-organized-field/v1",
+    "field_depth": 0,
+    "inspect_files": true,
+    "compile": false,
+    "trim_excess": true,
+    "runner_policy": {
+      "python": "interpreter",
+      "native": "bsp_reuse",
+      "cmake": "staged_binary",
+      "shell": "interpreter"
+    }
   },
   "singular_field_plane": {
     "schema": "queen-singular-field/v1",
@@ -16,11 +31,32 @@
     "auto_convert": true,
     "trim_excess": true,
     "prefer_native_sibling": true,
+    "compile": "release_only",
     "module": "Queen/lib/queen-launch-singular-field.py",
-    "statement": "Chambers project as fields on the singular plane — trim excess, auto wave-convert, run native belt."
+    "statement": "Compile mode / QUEEN_LAUNCH_SINGULAR_FIELD=1 — wave-convert to plane when BSP miss."
   },
   "release_default": "wave_convert_single_plane",
   "compare_axis": "field_execution_ops_per_sec",
+  "combinatorics": {
+    "schema": "g16-field-combinatorics/v1",
+    "doctrine": "data/g16-field-combinatorics-doctrine.json",
+    "module": "lib/field_combinatorics.py",
+    "statement": "Hold all field combinatorics — speed cap and headroom for commonly used patterns beyond current defaults"
+  },
+  "truth_blocks": {
+    "schema": "g16-truth-blocks/v1",
+    "doctrine": "data/g16-truth-blocks-doctrine.json",
+    "module": "lib/field_truth_blocks.py",
+    "free_meld": "bigger truth blocks and more of them → fuse without compile gate",
+    "tiers": ["kernel", "module", "mega", "chamber", "stack"]
+  },
+  "iron_plate": {
+    "schema": "g16-iron-plate/v1",
+    "doctrine": "data/g16-iron-plate-doctrine.json",
+    "module": "lib/field_iron_plate.py",
+    "triad": ["assembly", "entropy", "field"],
+    "statement": "Identical C/C++ kernels convert to Python on the iron plate — dev runs the field face; exec reuses native BSP. Always breaks down to assembly, entropy, field."
+  },
   "release_compile": {
     "trigger": "Compile mode — Queen Files right-click on compileable sources",
     "toolchain": "g16 belt_2_0",

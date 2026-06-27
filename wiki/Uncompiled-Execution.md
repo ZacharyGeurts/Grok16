@@ -14,15 +14,15 @@ Web: [uncompiled.html](https://zacharygeurts.github.io/Grok16/uncompiled.html)
 | **C / C++** | No line-by-line interpreter — chamber **compile ahead** | ~80–88M ops/s after plane cache |
 | **CMake** | Configure + build once; bin reused | ~85.7M ops/s |
 
-## Queen .launch chamber
+## Queen .launch — organized field (default)
 
-1. **Folder mirror** — compartment code in `.launch` chamber  
-2. **Trim excess** — strip README, lockfiles, build cruft on singular plane  
-3. **Pick runner** — Python entry stays interpreted; native sibling wave-converts  
-4. **Cache** — fingerprinted `launch-singular-plane/<hash>/plane-<stem>`  
-5. **Run like a bin** — execution timed; convert_ms excluded after cache hit  
+1. **Inspect files** — walk chamber, map depth-0 fields, trim excess  
+2. **No compile on launch** — interpreter for Python; BSP reuse for native  
+3. **Staged plane** — copy from `data/bench/exec-plane/` when sources match (~0 ms)  
+4. **Fallback** — Python entry when native plane not staged  
+5. **Compile mode** — explicit only (`QUEEN_LAUNCH_COMPILE=1` or Queen Files Compile)  
 
-Module: `Queen/lib/queen-launch-singular-field.py`
+Module: `Queen/lib/queen-launch-chamber.py`
 
 ## Not compiling C/C++
 
@@ -35,11 +35,14 @@ There is no C/C++ REPL. **Chamber organization** presents a bin-like run:
 ## Commands
 
 ```bash
-# Uncompiled Python via chamber
-QUEEN_LAUNCH_SINGULAR_FIELD=0 python3 Queen/lib/queen-launch-chamber.py run examples/speed-demo/speed-demo.launch
+# Organized field — inspect + run, no compile (default)
+python3 Queen/lib/queen-launch-chamber.py run examples/speed-demo/speed-demo.launch
 
-# Singular plane (compile ahead + cache)
-python3 Queen/lib/queen-launch-singular-field.py run examples/speed-demo/
+# Field map only
+python3 Queen/lib/queen-launch-chamber.py project examples/speed-demo/speed-demo.launch
+
+# Compile mode — singular plane wave-convert
+QUEEN_LAUNCH_COMPILE=1 python3 Queen/lib/queen-launch-chamber.py run examples/speed-demo/speed-demo.launch
 ```
 
 See [Speed Bench](Speed-Bench) for versioned compile + exec numbers.

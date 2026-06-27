@@ -30,15 +30,19 @@
   ],
   "exec_full_bench": {
     "schema": "grok16-field-exec-full-bench/v4",
-    "bench_at": "2026-06-27T03:14:37Z",
+    "bench_at": "2026-06-27T06:56:48Z",
     "target_sec": 1,
     "kernel": "speed_demo \u2014 FieldX86 loop (256\u00d716 die, 240 frames/epoch, 512 prog_ops/frame)",
     "kernel_spec": {
+      "profile": "belt_1_0",
       "die_slots": 256,
       "wave_bands": 16,
       "frames_per_epoch": 240,
       "prog_ops_per_frame": 512,
       "ops_per_epoch": 122880,
+      "redata_chunk": 512,
+      "belt_chunk": 1,
+      "data_bus_slots": null,
       "phi": 0.6180339887,
       "loops": [
         "fieldx86_run",
@@ -51,36 +55,43 @@
     "host": "default-X870-Pro-RS",
     "host_uname": "Linux default-X870-Pro-RS 6.14.0-37-generic #37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2 x86_64",
     "versions": {
-      "schema": "grok16-speed-bench-version/v3",
-      "distro_version": "3.0.0",
-      "distro_tag": "v3.0.0",
+      "schema": "grok16-speed-bench-version/v4",
+      "distro_version": "4.0.0",
+      "distro_tag": "v4.0.0",
       "g16_pkgversion": "Grok16-16.2.0",
       "g16_dumpversion": "16.1.1",
       "bench_suite": "speed_demo",
       "bench_suite_version": "1.1.0",
-      "report_version": "3.1.0",
-      "runners_version": "3.1.0"
+      "report_version": "4.0.0",
+      "runners_version": "4.0.0"
     },
     "plate_meld": {
       "context": {
-        "meld_ms": 57.4,
-        "sense_ms": 44.62,
-        "meld_generation": 1,
-        "meld_chain_hash": "56a806fb7c2a927c",
+        "meld_ms": 74.96,
+        "sense_ms": 71.05,
+        "meld_generation": 2,
+        "meld_chain_hash": "7e5f7936d5e7f592",
         "sense_profile": "field_opt",
         "sense_reason": "default",
         "sense_score": 0.0,
         "eye_ok": false,
         "ear_ok": false,
         "mouth_ok": false,
-        "plates_fused": 1
+        "plates_fused": 6
       },
       "doctrine": "data/grok16-plate-meld-bench-doctrine.json",
-      "post_meld_exec_ratio": 0.9982,
-      "sense_vs_belt_2_ops_ratio": 0.995,
-      "sense_vs_belt_2_compile_delta_ms": 428.38,
+      "post_meld_exec_ratio": 1.1118,
+      "sense_vs_belt_2_ops_ratio": 1.0638,
+      "sense_vs_belt_2_compile_delta_ms": 0,
       "meld_helps_profile": true,
       "meld_helps_exec_hot_path": true
+    },
+    "bsp": {
+      "enabled": true,
+      "rocket": true,
+      "cache_hits": 8,
+      "plane": "/home/default/Desktop/SG/Grok16/data/bench/exec-plane",
+      "force_compile": false
     },
     "bench_all_profiles": [
       {
@@ -140,29 +151,29 @@
       {
         "profile": "field_opt",
         "pgo_kind": "cxx",
-        "compile_ms": 1977,
+        "compile_ms": 1648,
         "run_ms": 8,
         "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.81243 nexus_checksum=-nan",
-        "ts": "2026-06-27T03:13:52.215422+00:00"
+        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.50406 nexus_checksum=-nan",
+        "ts": "2026-06-27T06:56:26.602493+00:00"
       },
       {
         "profile": "belt_1_0",
         "pgo_kind": "cxx",
-        "compile_ms": 1720,
-        "run_ms": 6,
+        "compile_ms": 1700,
+        "run_ms": 8,
         "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.91371 nexus_checksum=-nan",
-        "ts": "2026-06-27T03:13:54.226072+00:00"
+        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.95402 nexus_checksum=-nan",
+        "ts": "2026-06-27T06:56:28.584935+00:00"
       },
       {
         "profile": "belt_2_0",
         "pgo_kind": "cxx",
-        "compile_ms": 1501,
-        "run_ms": 9,
+        "compile_ms": 2032,
+        "run_ms": 8,
         "binary_bytes": 22840,
-        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.25047 nexus_checksum=-nan",
-        "ts": "2026-06-27T03:13:55.975193+00:00"
+        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=3.62003 nexus_checksum=-nan",
+        "ts": "2026-06-27T06:56:30.926936+00:00"
       }
     ],
     "rows": [
@@ -173,16 +184,18 @@
         "group": "host",
         "kind": "binary",
         "path": "c_host_o2",
-        "compile_ms": 391.33,
-        "compile_note": "single gcc invoke",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.15 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
         "rc": 0,
-        "runner_wall_ms": 1003.74,
-        "field_execution_ms": 1001.11,
-        "ops_per_sec": 79906562.79,
-        "total_ops": 79994880,
+        "runner_wall_ms": 1002.72,
+        "field_execution_ms": 1000.04,
+        "ops_per_sec": 83923687.08,
+        "total_ops": 83927040,
         "binary_bytes": 24568,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 57431783.10681147
+        "amortized_ops_per_sec": 83923687.08
       },
       {
         "id": "c_g16_belt_2",
@@ -191,17 +204,19 @@
         "group": "g16",
         "kind": "binary",
         "path": "c_g16_belt_2",
-        "compile_ms": 292.9,
-        "compile_note": "g16 belt_2_0",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.03 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
         "profile": "belt_2_0",
         "rc": 0,
-        "runner_wall_ms": 1003.14,
-        "field_execution_ms": 1000.7,
-        "ops_per_sec": 78956243.83,
-        "total_ops": 79011840,
+        "runner_wall_ms": 1002.06,
+        "field_execution_ms": 1000.38,
+        "ops_per_sec": 86719978.83,
+        "total_ops": 86753280,
         "binary_bytes": 16248,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 61069103.43414031
+        "amortized_ops_per_sec": 86719978.83
       },
       {
         "id": "c_g16_belt_1",
@@ -210,17 +225,19 @@
         "group": "g16",
         "kind": "binary",
         "path": "c_g16_belt_1",
-        "compile_ms": 323.74,
-        "compile_note": "g16 belt_1_0 baseline",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.03 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
         "profile": "belt_1_0",
         "rc": 0,
-        "runner_wall_ms": 1001.57,
-        "field_execution_ms": 1000.15,
-        "ops_per_sec": 81579941.22,
-        "total_ops": 81592320,
+        "runner_wall_ms": 1003.04,
+        "field_execution_ms": 1000.55,
+        "ops_per_sec": 83880882.36,
+        "total_ops": 83927040,
         "binary_bytes": 16192,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 61628372.05191352
+        "amortized_ops_per_sec": 83880882.36
       },
       {
         "id": "cxx_host_o2",
@@ -229,16 +246,18 @@
         "group": "host",
         "kind": "binary",
         "path": "cxx_host_o2",
-        "compile_ms": 1299.14,
-        "compile_note": "single g++ invoke",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.04 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
         "rc": 0,
-        "runner_wall_ms": 1003.64,
-        "field_execution_ms": 1001.49,
-        "ops_per_sec": 84538209.79,
-        "total_ops": 84664320,
+        "runner_wall_ms": 1006.89,
+        "field_execution_ms": 1001.19,
+        "ops_per_sec": 86281588.29,
+        "total_ops": 86384640,
         "binary_bytes": 21640,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 36769491.979609765
+        "amortized_ops_per_sec": 86281588.29
       },
       {
         "id": "cxx_g16_belt_2",
@@ -247,17 +266,19 @@
         "group": "g16",
         "kind": "binary",
         "path": "cxx_g16_belt_2",
-        "compile_ms": 1600.84,
-        "compile_note": "g16 belt_2_0",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.03 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
         "profile": "belt_2_0",
         "rc": 0,
-        "runner_wall_ms": 1004.34,
-        "field_execution_ms": 1001.2,
-        "ops_per_sec": 83949220.14,
-        "total_ops": 84049920,
+        "runner_wall_ms": 1004.38,
+        "field_execution_ms": 1000.16,
+        "ops_per_sec": 79490710.88,
+        "total_ops": 79503360,
         "binary_bytes": 22912,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 32277733.401516434
+        "amortized_ops_per_sec": 79490710.88
       },
       {
         "id": "cxx_g16_belt_1",
@@ -266,17 +287,19 @@
         "group": "g16",
         "kind": "binary",
         "path": "cxx_g16_belt_1",
-        "compile_ms": 1797.56,
-        "compile_note": "g16 belt_1_0 baseline",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.03 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
         "profile": "belt_1_0",
         "rc": 0,
-        "runner_wall_ms": 1004.81,
-        "field_execution_ms": 1000.76,
-        "ops_per_sec": 81898943.66,
-        "total_ops": 81960960,
+        "runner_wall_ms": 1004.21,
+        "field_execution_ms": 1000.59,
+        "ops_per_sec": 84982602.71,
+        "total_ops": 85032960,
         "binary_bytes": 22784,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 29275133.923847925
+        "amortized_ops_per_sec": 84982602.71
       },
       {
         "id": "cxx_g16_sense",
@@ -285,19 +308,21 @@
         "group": "g16",
         "kind": "binary",
         "path": "cxx_g16_sense",
-        "compile_ms": 2029.22,
-        "compile_note": "plate meld \u2192 compiler sense (default)",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.03 ms copy-check) \u00b7 sense (default)",
+        "bsp": true,
+        "rocket": true,
         "profile": "field_opt",
         "plate_meld": true,
-        "meld_generation": 1,
+        "meld_generation": 2,
         "rc": 0,
-        "runner_wall_ms": 1002.92,
-        "field_execution_ms": 1000.34,
-        "ops_per_sec": 83529700.78,
-        "total_ops": 83558400,
-        "binary_bytes": 22784,
+        "runner_wall_ms": 1004.75,
+        "field_execution_ms": 1001.19,
+        "ops_per_sec": 84563400.6,
+        "total_ops": 84664320,
+        "binary_bytes": 21272,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 27574656.439611517
+        "amortized_ops_per_sec": 84563400.6
       },
       {
         "id": "cmake_host_o2",
@@ -306,18 +331,20 @@
         "group": "host",
         "kind": "binary",
         "path": "cmake_host_o2",
-        "compile_ms": 3370.56,
-        "compile_configure_ms": 1430.41,
-        "compile_build_ms": 1940.15,
-        "compile_note": "cmake configure + build",
+        "compile_ms": 0.0,
+        "compile_note": "bsp:exec-plane (0.07 ms copy-check)",
+        "bsp": true,
+        "rocket": true,
+        "compile_configure_ms": 0.0,
+        "compile_build_ms": 0.0,
         "rc": 0,
-        "runner_wall_ms": 1002.44,
-        "field_execution_ms": 1000.3,
-        "ops_per_sec": 87832675.15,
-        "total_ops": 87859200,
+        "runner_wall_ms": 1005.57,
+        "field_execution_ms": 1001.23,
+        "ops_per_sec": 87873620.49,
+        "total_ops": 87982080,
         "binary_bytes": 21640,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 20096435.044937037
+        "amortized_ops_per_sec": 87873620.49
       },
       {
         "id": "python_host",
@@ -335,9 +362,9 @@
         "compile_ms": 0,
         "compile_note": "interpreter \u2014 no compile",
         "rc": 0,
-        "runner_wall_ms": 1086.04,
-        "field_execution_ms": 1065.29,
-        "ops_per_sec": 807445.87,
+        "runner_wall_ms": 1129.19,
+        "field_execution_ms": 1103.13,
+        "ops_per_sec": 779742.83,
         "total_ops": 860160,
         "exec_pass": "cold"
       },
@@ -357,9 +384,9 @@
         "compile_ms": 0,
         "compile_note": "GrokVM interpreter \u2014 no compile",
         "rc": 0,
-        "runner_wall_ms": 1203.12,
-        "field_execution_ms": 1107.98,
-        "ops_per_sec": 776332.91,
+        "runner_wall_ms": 1231.22,
+        "field_execution_ms": 1088.86,
+        "ops_per_sec": 789962.63,
         "total_ops": 860160,
         "exec_pass": "cold"
       },
@@ -374,18 +401,18 @@
         "compile_note": "re-exec same ELF after plate meld cycle \u2014 exec only",
         "profile": "belt_2_0",
         "plate_meld": true,
-        "meld_generation": 1,
+        "meld_generation": 2,
         "env": {
-          "PLATE_MELD_GENERATION": "1"
+          "PLATE_MELD_GENERATION": "2"
         },
         "rc": 0,
-        "runner_wall_ms": 1007.77,
-        "field_execution_ms": 1001.54,
-        "ops_per_sec": 83797929.43,
-        "total_ops": 83927040,
+        "runner_wall_ms": 1004.94,
+        "field_execution_ms": 1001.12,
+        "ops_per_sec": 88374669.33,
+        "total_ops": 88473600,
         "binary_bytes": 22912,
         "exec_pass": "post_meld",
-        "vs_baseline_ratio": 0.9982
+        "vs_baseline_ratio": 1.1118
       }
     ],
     "runners_tested": 11,
@@ -393,40 +420,32 @@
       "best_execution": {
         "id": "cmake_host_o2",
         "label": "CMake \u2014 host g++ -O2",
-        "ops_per_sec": 87832675.15
+        "ops_per_sec": 87873620.49
       },
-      "fastest_compile": {
-        "id": "c_g16_belt_2",
-        "label": "C \u2014 g16 belt_2_0",
-        "compile_ms": 292.9
-      },
-      "slowest_compile": {
-        "id": "cmake_host_o2",
-        "label": "CMake \u2014 host g++ -O2",
-        "compile_ms": 3370.56
-      },
+      "fastest_compile": null,
+      "slowest_compile": null,
       "best_per_language": {
         "c": {
-          "id": "c_g16_belt_1",
-          "ops_per_sec": 81579941.22
+          "id": "c_g16_belt_2",
+          "ops_per_sec": 86719978.83
         },
         "cxx": {
           "id": "cxx_host_o2",
-          "ops_per_sec": 84538209.79
+          "ops_per_sec": 86281588.29
         },
         "cmake": {
           "id": "cmake_host_o2",
-          "ops_per_sec": 87832675.15
+          "ops_per_sec": 87873620.49
         },
         "python": {
-          "id": "python_host",
-          "ops_per_sec": 807445.87
+          "id": "python_gpy",
+          "ops_per_sec": 789962.63
         }
       },
       "best_amortized_first_run": {
-        "id": "c_g16_belt_1",
-        "label": "C \u2014 g16 belt_1_0",
-        "amortized_ops_per_sec": 61628372.05191352
+        "id": "cmake_host_o2",
+        "label": "CMake \u2014 host g++ -O2",
+        "amortized_ops_per_sec": 87873620.49
       }
     }
   },
@@ -447,51 +466,51 @@
     },
     "target_sec": 1,
     "baseline_id": "cxx_host_o2",
-    "baseline_ops_per_sec": 82339288.59,
+    "baseline_ops_per_sec": 85708878.1,
     "best_id": "cxx_g16_belt_2",
     "best_label": "C++ \u2014 g16 belt_2_0",
     "best_lang": "cxx",
-    "best_ops_per_sec": 85072767.72,
+    "best_ops_per_sec": 88465717.14,
     "best_by_lang": {
       "cxx": {
         "id": "cxx_g16_belt_2",
         "label": "C++ \u2014 g16 belt_2_0",
         "lang": "cxx",
-        "ops_per_sec": 85072767.72,
-        "field_execution_ms": 1000.98,
+        "ops_per_sec": 88465717.14,
+        "field_execution_ms": 1001.48,
         "binary_bytes": 22912,
-        "speedup_vs_baseline": 1.033197750148305,
+        "speedup_vs_baseline": 1.032165151395209,
         "color": "#3ecf8e"
       },
       "cmake": {
         "id": "cmake_host_o2",
         "label": "CMake \u2014 host g++ -O2",
         "lang": "cmake",
-        "ops_per_sec": 84678750.4,
-        "field_execution_ms": 1001.28,
+        "ops_per_sec": 87726814.1,
+        "field_execution_ms": 1001.51,
         "binary_bytes": 21640,
-        "speedup_vs_baseline": 1.0284124608077332,
+        "speedup_vs_baseline": 1.0235440720347033,
         "color": "#c4b5fd"
       },
       "c": {
         "id": "c_host_o2",
         "label": "C \u2014 host gcc -O2",
         "lang": "c",
-        "ops_per_sec": 74784256.9,
-        "field_execution_ms": 1000.66,
+        "ops_per_sec": 82095554.74,
+        "field_execution_ms": 1001.35,
         "binary_bytes": 24568,
-        "speedup_vs_baseline": 0.9082451182251586,
+        "speedup_vs_baseline": 0.9578419010947246,
         "color": "#60a5fa"
       },
       "python": {
-        "id": "python_gpy",
-        "label": "Python \u2014 gpy-16 GrokVM",
+        "id": "python_host",
+        "label": "Python \u2014 host CPython 3",
         "lang": "python",
-        "ops_per_sec": 812753.74,
-        "field_execution_ms": 1058.33,
+        "ops_per_sec": 775285.24,
+        "field_execution_ms": 1109.48,
         "binary_bytes": 0,
-        "speedup_vs_baseline": 0.009870788950424668,
-        "color": "#f472b6"
+        "speedup_vs_baseline": 0.009045565140818243,
+        "color": "#fbbf24"
       }
     },
     "rankings": [
@@ -499,28 +518,28 @@
         "id": "cxx_g16_belt_2",
         "label": "C++ \u2014 g16 belt_2_0",
         "lang": "cxx",
-        "ops_per_sec": 85072767.72,
-        "field_execution_ms": 1000.98,
+        "ops_per_sec": 88465717.14,
+        "field_execution_ms": 1001.48,
         "binary_bytes": 22912,
-        "speedup_vs_baseline": 1.033197750148305,
+        "speedup_vs_baseline": 1.032165151395209,
         "color": "#3ecf8e"
       },
       {
         "id": "cmake_host_o2",
         "label": "CMake \u2014 host g++ -O2",
         "lang": "cmake",
-        "ops_per_sec": 84678750.4,
-        "field_execution_ms": 1001.28,
+        "ops_per_sec": 87726814.1,
+        "field_execution_ms": 1001.51,
         "binary_bytes": 21640,
-        "speedup_vs_baseline": 1.0284124608077332,
+        "speedup_vs_baseline": 1.0235440720347033,
         "color": "#c4b5fd"
       },
       {
         "id": "cxx_host_o2",
         "label": "C++ \u2014 host g++ -O2",
         "lang": "cxx",
-        "ops_per_sec": 82339288.59,
-        "field_execution_ms": 1001.37,
+        "ops_per_sec": 85708878.1,
+        "field_execution_ms": 1000.72,
         "binary_bytes": 21640,
         "speedup_vs_baseline": 1.0,
         "color": "#94a3b8"
@@ -529,41 +548,41 @@
         "id": "c_host_o2",
         "label": "C \u2014 host gcc -O2",
         "lang": "c",
-        "ops_per_sec": 74784256.9,
-        "field_execution_ms": 1000.66,
+        "ops_per_sec": 82095554.74,
+        "field_execution_ms": 1001.35,
         "binary_bytes": 24568,
-        "speedup_vs_baseline": 0.9082451182251586,
+        "speedup_vs_baseline": 0.9578419010947246,
         "color": "#60a5fa"
       },
       {
         "id": "c_g16_belt_2",
         "label": "C \u2014 g16 belt_2_0",
         "lang": "c",
-        "ops_per_sec": 69826287.52,
-        "field_execution_ms": 1001.32,
+        "ops_per_sec": 81005261.91,
+        "field_execution_ms": 1001.18,
         "binary_bytes": 16248,
-        "speedup_vs_baseline": 0.8480312219807096,
+        "speedup_vs_baseline": 0.9451210155322287,
         "color": "#38bdf8"
-      },
-      {
-        "id": "python_gpy",
-        "label": "Python \u2014 gpy-16 GrokVM",
-        "lang": "python",
-        "ops_per_sec": 812753.74,
-        "field_execution_ms": 1058.33,
-        "binary_bytes": 0,
-        "speedup_vs_baseline": 0.009870788950424668,
-        "color": "#f472b6"
       },
       {
         "id": "python_host",
         "label": "Python \u2014 host CPython 3",
         "lang": "python",
-        "ops_per_sec": 764483.09,
-        "field_execution_ms": 1125.15,
+        "ops_per_sec": 775285.24,
+        "field_execution_ms": 1109.48,
         "binary_bytes": 0,
-        "speedup_vs_baseline": 0.009284548155457897,
+        "speedup_vs_baseline": 0.009045565140818243,
         "color": "#fbbf24"
+      },
+      {
+        "id": "python_gpy",
+        "label": "Python \u2014 gpy-16 GrokVM",
+        "lang": "python",
+        "ops_per_sec": 754538.76,
+        "field_execution_ms": 1139.98,
+        "binary_bytes": 0,
+        "speedup_vs_baseline": 0.008803507603023916,
+        "color": "#f472b6"
       }
     ],
     "verdict": "complete",
@@ -582,10 +601,10 @@
         "binary_bytes": 24568,
         "elapsed_sec": 0,
         "pct": 0,
-        "field_execution_ms": 1000.66,
-        "epochs": 609,
-        "total_ops": 74833920.0,
-        "ops_per_sec": 74784256.9
+        "field_execution_ms": 1001.35,
+        "epochs": 669,
+        "total_ops": 82206720.0,
+        "ops_per_sec": 82095554.74
       },
       "c_g16_belt_2": {
         "id": "c_g16_belt_2",
@@ -601,10 +620,10 @@
         "binary_bytes": 16248,
         "elapsed_sec": 0,
         "pct": 0,
-        "field_execution_ms": 1001.32,
-        "epochs": 569,
-        "total_ops": 69918720.0,
-        "ops_per_sec": 69826287.52
+        "field_execution_ms": 1001.18,
+        "epochs": 660,
+        "total_ops": 81100800.0,
+        "ops_per_sec": 81005261.91
       },
       "cxx_host_o2": {
         "id": "cxx_host_o2",
@@ -620,10 +639,10 @@
         "binary_bytes": 21640,
         "elapsed_sec": 1,
         "pct": 100,
-        "epochs": 671,
-        "total_ops": 82452480.0,
-        "field_execution_ms": 1001.37,
-        "ops_per_sec": 82339288.59
+        "epochs": 698,
+        "total_ops": 85770240.0,
+        "field_execution_ms": 1000.72,
+        "ops_per_sec": 85708878.1
       },
       "cxx_g16_belt_2": {
         "id": "cxx_g16_belt_2",
@@ -639,10 +658,10 @@
         "binary_bytes": 22912,
         "elapsed_sec": 1,
         "pct": 100,
-        "epochs": 693,
-        "total_ops": 85155840.0,
-        "field_execution_ms": 1000.98,
-        "ops_per_sec": 85072767.72
+        "epochs": 721,
+        "total_ops": 88596480.0,
+        "field_execution_ms": 1001.48,
+        "ops_per_sec": 88465717.14
       },
       "cmake_host_o2": {
         "id": "cmake_host_o2",
@@ -658,10 +677,10 @@
         "binary_bytes": 21640,
         "elapsed_sec": 1,
         "pct": 100,
-        "epochs": 690,
-        "total_ops": 84787200.0,
-        "field_execution_ms": 1001.28,
-        "ops_per_sec": 84678750.4
+        "epochs": 715,
+        "total_ops": 87859200.0,
+        "field_execution_ms": 1001.51,
+        "ops_per_sec": 87726814.1
       },
       "python_host": {
         "id": "python_host",
@@ -676,11 +695,11 @@
         "single_plane": false,
         "binary_bytes": 0,
         "elapsed_sec": 1,
-        "pct": 112,
+        "pct": 110,
         "epochs": 7,
         "total_ops": 860160.0,
-        "field_execution_ms": 1125.15,
-        "ops_per_sec": 764483.09
+        "field_execution_ms": 1109.48,
+        "ops_per_sec": 775285.24
       },
       "python_gpy": {
         "id": "python_gpy",
@@ -695,11 +714,11 @@
         "single_plane": false,
         "binary_bytes": 0,
         "elapsed_sec": 1,
-        "pct": 105,
+        "pct": 113,
         "epochs": 7,
         "total_ops": 860160.0,
-        "field_execution_ms": 1058.33,
-        "ops_per_sec": 812753.74
+        "field_execution_ms": 1139.98,
+        "ops_per_sec": 754538.76
       }
     }
   },
@@ -762,31 +781,31 @@
       {
         "profile": "field_opt",
         "pgo_kind": "cxx",
-        "compile_ms": 1977,
+        "compile_ms": 1648,
         "run_ms": 8,
         "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.81243 nexus_checksum=-nan",
-        "ts": "2026-06-27T03:13:52.215422+00:00"
+        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.50406 nexus_checksum=-nan",
+        "ts": "2026-06-27T06:56:26.602493+00:00"
       },
       {
         "profile": "belt_1_0",
         "pgo_kind": "cxx",
-        "compile_ms": 1720,
-        "run_ms": 6,
+        "compile_ms": 1700,
+        "run_ms": 8,
         "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.91371 nexus_checksum=-nan",
-        "ts": "2026-06-27T03:13:54.226072+00:00"
+        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.95402 nexus_checksum=-nan",
+        "ts": "2026-06-27T06:56:28.584935+00:00"
       },
       {
         "profile": "belt_2_0",
         "pgo_kind": "cxx",
-        "compile_ms": 1501,
-        "run_ms": 9,
+        "compile_ms": 2032,
+        "run_ms": 8,
         "binary_bytes": 22840,
-        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.25047 nexus_checksum=-nan",
-        "ts": "2026-06-27T03:13:55.975193+00:00"
+        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=3.62003 nexus_checksum=-nan",
+        "ts": "2026-06-27T06:56:30.926936+00:00"
       }
     ],
-    "updated": "2026-06-27T03:13:55.975193+00:00"
+    "updated": "2026-06-27T06:56:30.926936+00:00"
   }
 }

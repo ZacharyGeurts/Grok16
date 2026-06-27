@@ -48,15 +48,30 @@ SG_ROOT = Path(os.environ.get("GROK16_SG_ROOT", os.environ.get("SG_ROOT", str(RO
 PLATE_MELD_PY = SG_ROOT / "NewLatest" / "lib" / "field-plate-meld.py"
 COMPILER_SENSE_PY = SG_ROOT / "NewLatest" / "lib" / "g16-compiler-sense-plate.py"
 NEXUS_STATE = Path(os.environ.get("NEXUS_STATE_DIR", str(SG_ROOT / "NewLatest" / "state")))
-KERNEL_SPEC = {
-    "die_slots": 256,
-    "wave_bands": 16,
-    "frames_per_epoch": 240,
-    "prog_ops_per_frame": 512,
-    "ops_per_epoch": 240 * 512,
-    "phi": 0.6180339887,
-    "loops": ["fieldx86_run", "entropy_fold", "wave_phase", "nexus_score"],
-}
+def _kernel_spec() -> dict:
+    comb_py = ROOT / "lib" / "field_combinatorics.py"
+    if comb_py.is_file():
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("field_combinatorics", comb_py)
+            if spec and spec.loader:
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod.kernel_spec(profile="belt_1_0")
+        except Exception:
+            pass
+    return {
+        "die_slots": 256,
+        "wave_bands": 16,
+        "frames_per_epoch": 240,
+        "prog_ops_per_frame": 512,
+        "ops_per_epoch": 240 * 512,
+        "phi": 0.6180339887,
+        "loops": ["fieldx86_run", "entropy_fold", "wave_phase", "nexus_score"],
+    }
+
+
+KERNEL_SPEC = _kernel_spec()
 
 
 def _utc() -> str:
@@ -81,19 +96,67 @@ def _g16_dumpversion() -> str:
 
 
 def _bench_versions() -> dict:
-    bench = _load_json(BENCH_VERSION, {"schema": "grok16-speed-bench-version/v3", "report_version": "3.0.0"})
+    bench = _load_json(BENCH_VERSION, {"schema": "grok16-speed-bench-version/v4", "report_version": "4.0.0"})
     distro = _load_json(G16_VERSION, {})
     return {
         "schema": bench.get("schema", "grok16-speed-bench-version/v3"),
-        "distro_version": bench.get("distro_version") or distro.get("distro_version") or "3.0.0",
-        "distro_tag": bench.get("distro_tag") or distro.get("tag") or "v3.0.0",
+        "distro_version": bench.get("distro_version") or distro.get("distro_version") or "4.0.0",
+        "distro_tag": bench.get("distro_tag") or distro.get("tag") or "v4.0.0",
         "g16_pkgversion": bench.get("g16_pkgversion") or distro.get("pkgversion") or "Grok16-16.2.0",
         "g16_dumpversion": _g16_dumpversion(),
         "bench_suite": bench.get("bench_suite", "speed_demo"),
         "bench_suite_version": bench.get("bench_suite_version", "1.0.0"),
-        "report_version": bench.get("report_version", "3.0.0"),
-        "runners_version": bench.get("runners_version", "3.0.0"),
+        "report_version": bench.get("report_version", "4.0.0"),
+        "runners_version": bench.get("runners_version", "4.0.0"),
     }
+
+
+def _publish_combinatorics_panel() -> None:
+    comb_py = ROOT / "lib" / "field_combinatorics.py"
+    if not comb_py.is_file():
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("field_combinatorics", comb_py)
+        if not spec or not spec.loader:
+            return
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.publish_panel(state_dir=NEXUS_STATE)
+    except Exception:
+        pass
+
+
+def _publish_always_optimal() -> None:
+    ao_py = ROOT / "lib" / "field-always-optimal.py"
+    if not ao_py.is_file():
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("field_always_optimal", ao_py)
+        if not spec or not spec.loader:
+            return
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.apply_optimal(refresh_layers=False, write=True)
+    except Exception:
+        pass
+
+
+def _publish_field_research_panel() -> None:
+    fr_py = ROOT / "lib" / "field-research-book.py"
+    if not fr_py.is_file():
+        return
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("field_research_book", fr_py)
+        if not spec or not spec.loader:
+            return
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.publish_panel(state_dir=NEXUS_STATE if NEXUS_STATE.is_dir() else None)
+    except Exception:
+        pass
 
 
 def _bench_env(extra: dict | None = None) -> dict[str, str]:
@@ -648,6 +711,9 @@ def bench_all() -> dict:
         if r.get("path"):
             r["path"] = Path(r["path"]).name
     DOCS_RESULT_JSON.write_text(json.dumps(pub, indent=2) + "\n", encoding="utf-8")
+    _publish_combinatorics_panel()
+    _publish_always_optimal()
+    _publish_field_research_panel()
     DOCS_REPORT_MD.write_text(REPORT_MD.read_text(encoding="utf-8"), encoding="utf-8")
     return doc
 
@@ -662,7 +728,7 @@ def _write_report_md(doc: dict) -> None:
     lines = [
         "# Grok16 speed-demo — comprehensive compile + execution benchmark",
         "",
-        f"**Report version:** {ver.get('report_version', '3.1.0')} · **Distro:** {ver.get('distro_version', '3.0.0')} ({ver.get('distro_tag', 'v3.0.0')})  ",
+        f"**Report version:** {ver.get('report_version', '4.0.0')} · **Distro:** {ver.get('distro_version', '4.0.0')} ({ver.get('distro_tag', 'v4.0.0')})  ",
         f"**Compiler:** {ver.get('g16_pkgversion', 'Grok16-16.2.0')} · dumpversion `{ver.get('g16_dumpversion', '?')}`  ",
         f"**Bench suite:** {ver.get('bench_suite', 'speed_demo')} @ {ver.get('bench_suite_version', '1.1.0')}  ",
         f"**Schema:** {doc.get('schema', 'grok16-field-exec-full-bench/v4')}  ",

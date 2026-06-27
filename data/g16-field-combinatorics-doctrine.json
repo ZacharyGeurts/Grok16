@@ -1,0 +1,92 @@
+{
+  "schema": "g16-field-combinatorics-doctrine/v1",
+  "title": "Field combinatorics — hold all limits, find speed cap, optimize common usage",
+  "motto": "Every box-of-dots and box-of-boxes facet is indexed — speed cap and headroom beyond current defaults.",
+  "module": "lib/field_combinatorics.py",
+  "panel": "g16-field-combinatorics-panel.json",
+  "field_research_book": {
+    "chapter": 7,
+    "slug": "07-field-combinatorics",
+    "site": "https://zacharygeurts.github.io/Field_Research/chapters/07-field-combinatorics.html"
+  },
+  "compare_axis": "field_execution_ops_per_sec",
+  "facets": {
+    "spatial_lattice": {
+      "cells_per_axis": 8,
+      "dots_per_box": 512,
+      "scale_nets": 4,
+      "total_lattice_dots": 2048,
+      "max_field_depth": 0,
+      "doctrine": "NewLatest/data/field-spatial-doctrine.json"
+    },
+    "fieldx86_die": {
+      "wave_bands": 16,
+      "frames_per_epoch": 240,
+      "prog_ops_per_frame": 512,
+      "phi": 0.6180339887,
+      "profiles": {
+        "belt_1_0": {"die_slots": 256, "redata_chunk": 512, "belt_chunk": 1},
+        "belt_2_0": {"die_slots": 512, "redata_chunk": 8192, "belt_chunk": 64, "data_bus_slots": 64}
+      },
+      "doctrine": "data/grok16-belt-doctrine.json"
+    },
+    "truth_blocks": {
+      "tiers": ["kernel", "module", "mega", "chamber", "stack"],
+      "doctrine": "data/g16-truth-blocks-doctrine.json"
+    },
+    "launch": {
+      "modes": ["organized_field", "singular_field", "compile"],
+      "doctrine": "data/field-exec-uncompiled-doctrine.json"
+    }
+  },
+  "speed_cap": {
+    "counted_op": "epochs × frames × prog_ops (speed_demo metric)",
+    "work_units_per_epoch": "frames × (prog_ops + wave_bands + 2 × die_slots)",
+    "baseline_source": "docs/field-exec-full-bench.json",
+    "optimize_for": "commonly_used patterns with measured headroom vs native ceiling"
+  },
+  "engine_lock": {
+    "algorithm": "sha256",
+    "state_file": "field-combinatorics-engine-lock.json",
+    "panel_field": "combinatorics_lock",
+    "auto_detect": true,
+    "locked": true,
+    "additions_policy": "whole_engine_rebuild_only",
+    "rebuild_cmd": "field_combinatorics.py rebuild",
+    "verify_cmd": "field_combinatorics.py verify"
+  },
+  "operator_guard": {
+    "schema": "g16-combinatorics-operator-guard/v1",
+    "never_update_on_running_operator": true,
+    "idle_threshold_sec": 90,
+    "meld_lock_max_age_sec": 300,
+    "override_env": "G16_COMBO_OPERATOR_OVERRIDE",
+    "motto": "Never mutate combinatorics while Operator is running — defer until idle."
+  },
+  "reject_retaliate": {
+    "schema": "g16-combinatorics-reject-retaliate/v1",
+    "never_break_on_mismatch": true,
+    "use_last_good_panel": true,
+    "reject_ledger": "field-combinatorics-reject-ledger.jsonl",
+    "threat_panel": "field-combinatorics-threat-panel.json",
+    "last_good_panel": "field-combinatorics-last-good-panel.json",
+    "threat_ledger": "threat-ledger.jsonl",
+    "window_sec": 300,
+    "tiers": [
+      {"min_attempts": 1, "level": "monitor", "action": "record"},
+      {"min_attempts": 3, "level": "block_refresh", "action": "deny_publish"},
+      {"min_attempts": 6, "level": "diagnostic", "action": "engage_diagnostic"},
+      {"min_attempts": 11, "level": "host_attacks", "action": "register_tamper"},
+      {"min_attempts": 21, "level": "lethal", "action": "merciless_cycle"}
+    ],
+    "motto": "Mismatch never breaks meld — reject, record, hold last-good panel, retaliate in full."
+  },
+  "common_usage_ids": [
+    "dev_organized_python",
+    "dev_organized_iron_exec",
+    "singular_native_bsp",
+    "cxx_field_opt_belt_1",
+    "cxx_belt_2",
+    "spatial_lattice_tick"
+  ]
+}

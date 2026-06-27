@@ -10,14 +10,24 @@ Requires Grok16 **v2.0.0** with `test-battery-release` + `test-battery-belt` gre
 ./scripts/grok16-integrate.sh
 ```
 
-Wires canonical prefix + `G16_BELT_PROFILE=belt_2_0` to:
+Publishes **Field Research book panel** (`lib/field-research-book.py publish`) and wires canonical prefix + `G16_BELT_PROFILE=belt_2_0` to:
 
 - `NewLatest/Queen`
 - `World_Redata`
 - `ZOCR` / Final_Ear
 - `PythonG`
+- `Field_Research` (book manifest cross-ref)
 
 Env template: `data/grok16-integrate.env`
+
+## Field Research book
+
+```bash
+python3 lib/field-research-book.py verify
+python3 lib/field-research-book.py publish
+```
+
+Doctrine: `data/g16-field-research-book.json` · Live: https://zacharygeurts.github.io/Field_Research/
 
 ## Safety at consumers {#gates}
 

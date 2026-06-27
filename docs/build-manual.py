@@ -1,5 +1,5 @@
 #!/usr/bin/env pythong
-"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 3.0.0."""
+"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 4.0.0."""
 from __future__ import annotations
 
 import json
@@ -9,10 +9,10 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
-DISTRO = "3.0.0"
+DISTRO = "4.0.0"
 G16 = "16.2.0"
 CACHE = "v10"
-BENCH_REPORT = "3.0.0"
+BENCH_REPORT = "4.0.0"
 BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.0.0"
 
@@ -35,6 +35,7 @@ NAV = [
     ("concepts.html", "Concepts"),
     ("master-coder.html", "Master Coder"),
     ("field-primer.html", "Field Primer"),
+    ("field-research.html", "Field Research"),
     ("reference.html", "Reference"),
 ]
 
@@ -81,10 +82,10 @@ def bench_meta(data: dict) -> dict:
     w = data.get("winners", {})
     pm = data.get("plate_meld") or {}
     ctx = pm.get("context") or {}
-    best_exec = w.get("best_execution", {})
-    fast_compile = w.get("fastest_compile", {})
-    best_py = (w.get("best_per_language") or {}).get("python", {})
-    amort = w.get("best_amortized_first_run", {})
+    best_exec = w.get("best_execution") or {}
+    fast_compile = w.get("fastest_compile") or {}
+    best_py = (w.get("best_per_language") or {}).get("python") or {}
+    amort = w.get("best_amortized_first_run") or {}
     return {
         "bench_at": data.get("bench_at", "—"),
         "host": data.get("host", "—"),
@@ -868,6 +869,9 @@ SEARCH_INDEX = [
     {"t": "G16_BELT_PROFILE", "p": "profiles.html#belt", "g": "Env", "d": "Default belt_2_0 single fabric dispatch"},
     {"t": "G16_RELEASE_PROFILE", "p": "getting-started.html#rebuild", "g": "Env", "d": "LTO PGO production rebuild"},
     {"t": "gnu++26", "p": "field-primer.html#standard", "g": "C++", "d": "Default C++ standard"},
+    {"t": "field research", "p": "field-research.html", "g": "Book", "d": "Field Research book technology spine"},
+    {"t": "combinatorics", "p": "field-research.html", "g": "Book", "d": "Ch7 combinatorics endpoint compatibility layers"},
+    {"t": "field-research-book", "p": "field-research.html", "g": "Doctrine", "d": "g16-field-research-book.json verify publish"},
 ]
 
 
@@ -887,7 +891,7 @@ def write_search() -> None:
 def patch_legacy_pages() -> None:
     """Bump cache version and nav on hand-maintained pages."""
     legacy = [
-        "field-primer.html", "reference.html", "concepts.html", "io.html",
+        "field-primer.html", "field-research.html", "reference.html", "concepts.html", "io.html",
         "master-coder.html", "master-coder-c.html", "master-coder-cxx.html",
     ]
     new_links = "\n".join(

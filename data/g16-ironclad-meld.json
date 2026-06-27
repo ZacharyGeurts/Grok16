@@ -61,6 +61,24 @@
       ]
     },
     {
+      "id": "power_sort",
+      "title": "G16 Power Sort — plate meld under field sanity",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Power sort plates into Ironclad — always_best_sort from bench receipts; sections gate Queen, drive index, and compat layers."
+        },
+        {
+          "v": 2,
+          "text": "cool_sort for thermal_layers; never_bench_under_heat — defer radix and heavy workloads when thermo warns."
+        },
+        {
+          "v": 3,
+          "text": "g16-power-sort-plate.json chain-hashes selection and section availability; ironclad:field_sanity:2 witnesses every pass."
+        }
+      ]
+    },
+    {
       "id": "spatial_existence",
       "title": "Spatial Existence — This One / That One on G16",
       "verses": [
@@ -84,5 +102,11 @@
     }
   ],
   "spatial_existence_ref": "NewLatest/data/ironclad-spatial-existence-doctrine.json",
-  "spatial_existence_bridge": "forge/g16-spatial-existence.py"
+  "spatial_existence_bridge": "forge/g16-spatial-existence.py",
+  "field_research_book": {
+    "doctrine": "data/g16-field-research-book.json",
+    "chapter": 1,
+    "slug": "01-preface-ironclad",
+    "site": "https://zacharygeurts.github.io/Field_Research/chapters/01-preface-ironclad.html"
+  }
 }

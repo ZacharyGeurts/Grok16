@@ -14,8 +14,10 @@ DOCS_JSON = ROOT / "docs" / "field-exec-comprehensive-bench.json"
 DOCS_MD = ROOT / "docs" / "COMPREHENSIVE-BENCH-REPORT.md"
 
 
-def _run(cmd: list[str], *, timeout: int = 3600) -> int:
+def _run(cmd: list[str], *, timeout: int = 3600, env_extra: dict[str, str] | None = None) -> int:
     env = {**os.environ, "GROK16_ROOT": str(ROOT), "G16_PREFIX": os.environ.get("G16_PREFIX", str(ROOT))}
+    if env_extra:
+        env.update(env_extra)
     print(f"+ {' '.join(cmd)}", flush=True)
     return subprocess.run(cmd, cwd=str(ROOT), env=env, timeout=timeout).returncode
 
@@ -38,6 +40,7 @@ def main() -> int:
     rc_full = _run(
         [sys.executable, str(SCRIPTS / "field-exec-full-bench.py")],
         timeout=3600,
+        env_extra={"SPEED_DEMO_TARGET_SEC": str(target)},
     )
     steps.append({"step": "exec-full-bench", "rc": rc_full, "target_sec": int(target)})
     if rc_full != 0:

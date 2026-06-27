@@ -1,24 +1,33 @@
-# Grok16 @ 3.0.0
+# Grok16 @ 4.0.0
 
 **Stable release** — self-hosted `g16` @ **16.2.0**, **versioned speed bench**, uncompiled doctrine, Queen-themed manual.
 
 | | |
 |---|---|
 | **Web manual** | https://zacharygeurts.github.io/Grok16/ |
+| **Field Research book** | https://zacharygeurts.github.io/Field_Research/ |
 | **Speed bench** | https://zacharygeurts.github.io/Grok16/speed-bench.html |
 | **Repo** | https://github.com/ZacharyGeurts/Grok16 |
-| **Tag** | `v3.0.0` |
+| **Tag** | `v4.0.0` |
 | **Compiler** | `g16 (Grok16-16.2.0) 16.2.0` |
 
-## Speed bench (report v3.0.0)
+## MCP (4.0)
+
+**Model Context Protocol** — `mcp/grok16_mcp_server.py` exposes version, toolchain, RTX gate, speed bench, power sort. [Setup](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/README.md)
+
+## Speed bench (report v4.0.0)
 
 | Category | Winner | Compile | Execution |
 |----------|--------|--------:|----------:|
-| **Fastest execution** | C++ g16 belt_2_0 | 2,494 ms | **85.3M ops/s** |
-| **Fastest compile** | C g16 belt_2_0 | **318 ms** | 79.5M ops/s |
-| **Best Python** | host CPython 3 | — | **778K ops/s** |
+| **Fastest execution** | CMake host g++ -O2 | BSP hit | **91.8M ops/s** |
+| **Best g16 C++** | g16 belt_2_0 | BSP hit | **89.3M ops/s** |
+| **Best Python** | gpy-16 GrokVM | — | **849K ops/s** |
 
 Report: [SPEED-BENCH-REPORT.md](https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md) · Wiki: [Speed-Bench](Speed-Bench)
+
+## Field Research book (technology spine)
+
+Thirteen chapters from combinatorics endpoint to compatibility layers — [Field Research](Field-Research) wires the book into Grok16 doctrine (`g16-field-research-book.json`). Run `python3 lib/field-research-book.py verify` after pull.
 
 ## Single fabric (2.0 technology)
 
@@ -55,3 +64,4 @@ SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
 | [Getting Started](Getting-Started) | [getting-started.html](https://zacharygeurts.github.io/Grok16/getting-started.html) | Bootstrap, rebuild, verify |
 | [Performance](Performance) | [performance.html](https://zacharygeurts.github.io/Grok16/performance.html) | Belt triad + speed bench |
 | [Integration](Integration) | [integration.html](https://zacharygeurts.github.io/Grok16/integration.html) | Queen, World_Redata, integrate |
+| [Field Research](Field-Research) | [field-research.html](https://zacharygeurts.github.io/Grok16/field-research.html) | Book spine, combinatorics → layers |

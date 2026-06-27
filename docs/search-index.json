@@ -142,5 +142,23 @@
     "p": "field-primer.html#standard",
     "g": "C++",
     "d": "Default C++ standard"
+  },
+  {
+    "t": "field research",
+    "p": "field-research.html",
+    "g": "Book",
+    "d": "Field Research book technology spine"
+  },
+  {
+    "t": "combinatorics",
+    "p": "field-research.html",
+    "g": "Book",
+    "d": "Ch7 combinatorics endpoint compatibility layers"
+  },
+  {
+    "t": "field-research-book",
+    "p": "field-research.html",
+    "g": "Doctrine",
+    "d": "g16-field-research-book.json verify publish"
   }
 ]

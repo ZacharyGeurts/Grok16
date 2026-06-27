@@ -66,6 +66,7 @@
       <a href="concepts.html">Concepts</a>
       <a href="master-coder.html">Master Coder</a>
       <a href="field-primer.html">Field Primer</a>
+      <a href="field-research.html">Field Research</a>
       <a href="reference.html">Reference</a>
     </div>
   </nav>
@@ -73,23 +74,23 @@
   <h1>Performance</h1>
   <p>Measured: Linux x86_64, <code>g16 (Grok16-16.2.0) 16.2.0</code>, gnu++26. Repo: <code>PERFORMANCE.md</code>.</p>
 
-  <h2 id="speed-bench">Speed bench (report v3.1.0)</h2>
+  <h2 id="speed-bench">Speed bench (report v3.2.0)</h2>
   <p>Suite <code>speed_demo</code> @ <code>1.1.0</code> — compile ms + execution ops/s. Full manual: <a href="speed-bench.html">Speed Bench</a>.</p>
   <pre><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
 ./scripts/grok16-toolchain.sh exec-compare</code></pre>
   <table>
     <tr><th>Runner</th><th>Compile (ms)</th><th>ops/s</th></tr>
-    <tr><td>CMake — host g++ -O2</td><td>2,010</td><td><strong>84,432,656.03</strong></td></tr>
-    <tr><td>C++ — g16 sense expert</td><td>1,426</td><td><strong>82,036,773.98</strong></td></tr>
-    <tr><td>C++ — g16 belt_2_0</td><td>1,629</td><td><strong>82,021,104.03</strong></td></tr>
-    <tr><td>C++ — host g++ -O2</td><td>1,360</td><td><strong>81,848,194.01</strong></td></tr>
-    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td><strong>81,205,972.77</strong></td></tr>
-    <tr><td>C — host gcc -O2</td><td>385</td><td><strong>80,589,704.68</strong></td></tr>
-    <tr><td>C — g16 belt_2_0</td><td>369</td><td><strong>78,518,560.97</strong></td></tr>
-    <tr><td>C — g16 belt_1_0</td><td>336</td><td><strong>78,129,170.15</strong></td></tr>
-    <tr><td>C++ — g16 belt_1_0</td><td>1,612</td><td><strong>77,776,570.91</strong></td></tr>
-    <tr><td>Python — host CPython 3</td><td>—</td><td><strong>768,456.59</strong></td></tr>
-    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td><strong>758,933.40</strong></td></tr>
+    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td><strong>93,275,366.45</strong></td></tr>
+    <tr><td>CMake — host g++ -O2</td><td>—</td><td><strong>91,825,635.95</strong></td></tr>
+    <tr><td>C++ — host g++ -O2</td><td>—</td><td><strong>91,684,911.99</strong></td></tr>
+    <tr><td>C — g16 belt_1_0</td><td>—</td><td><strong>91,139,750.53</strong></td></tr>
+    <tr><td>C++ — g16 sense expert</td><td>—</td><td><strong>89,362,063.50</strong></td></tr>
+    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td><strong>89,311,522.23</strong></td></tr>
+    <tr><td>C — g16 belt_2_0</td><td>—</td><td><strong>89,168,111.20</strong></td></tr>
+    <tr><td>C — host gcc -O2</td><td>—</td><td><strong>88,666,444.51</strong></td></tr>
+    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td><strong>87,293,183.15</strong></td></tr>
+    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td><strong>848,725.17</strong></td></tr>
+    <tr><td>Python — host CPython 3</td><td>—</td><td><strong>793,437.78</strong></td></tr>
   </table>
 
   <h2 id="triad">Belt triad (bench-triad)</h2>

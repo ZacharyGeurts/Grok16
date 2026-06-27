@@ -1,7 +1,7 @@
 {
   "product": "G16-field-linker",
   "schema": "g16-linker-toolchain/v1",
-  "updated": "2026-06-27T00:18:42.141923+00:00",
+  "updated": "2026-06-27T06:57:09.596657+00:00",
   "prefix": "/home/default/Desktop/SG/Grok16",
   "driver": "/home/default/Desktop/SG/Grok16/bin/g16-ld",
   "driver_mode": "field_pass+bfd",

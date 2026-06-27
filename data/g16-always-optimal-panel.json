@@ -1,0 +1,196 @@
+{
+  "schema": "g16-always-optimal-panel/v1",
+  "updated": "2026-06-27T06:58:03Z",
+  "ok": true,
+  "always_optimal": true,
+  "degraded_gate": true,
+  "optimal": {
+    "schema": "g16-always-optimal/v1",
+    "belt_profile": "belt_2_0",
+    "die_slots": 512,
+    "runner": "python",
+    "pattern_id": "dev_organized_python",
+    "ideal_profile": "belt_2_0",
+    "gate_ok": false,
+    "bench_best_g16": {
+      "profile": "belt_2_0",
+      "ops_per_sec": 88374669.33,
+      "label": "C++ — g16 belt_2_0 (post-meld re-exec)",
+      "id": "cxx_g16_belt_2_post_meld",
+      "belt_profile": "belt_2_0",
+      "die_slots": 512
+    },
+    "compiler_sense_profile": "field_opt",
+    "native_ceiling_ops_per_sec": 100223224.84,
+    "terminal_leaf": {},
+    "motto": "Combinatorics scores every facet; bench receipts pick the belt; one amplitude at depth 0.",
+    "power_sort": {
+      "schema": "g16-power-sort/v1",
+      "always_best_sort": true,
+      "selections": {
+        "file_list_small": {
+          "context": "file_list",
+          "context_bench_id": "file_list_small",
+          "algorithm": "dirs_first",
+          "n": 200,
+          "bench_us": 22.99,
+          "cool": true,
+          "statement": "power_sort_dirs_first_for_file_list"
+        },
+        "file_list_large": {
+          "context": "file_list",
+          "context_bench_id": "file_list_large",
+          "algorithm": "dirs_first",
+          "n": 5000,
+          "bench_us": 164.7,
+          "cool": true,
+          "statement": "power_sort_dirs_first_for_file_list"
+        },
+        "file_list": {
+          "context": "file_list",
+          "context_bench_id": "file_list_small",
+          "algorithm": "dirs_first",
+          "n": 200,
+          "bench_us": 22.99,
+          "cool": true,
+          "statement": "power_sort_dirs_first_for_file_list"
+        },
+        "drive_index": {
+          "context": "drive_index",
+          "context_bench_id": "drive_index",
+          "algorithm": "timsort_key",
+          "n": null,
+          "bench_us": 764.93,
+          "cool": true,
+          "statement": "power_sort_timsort_key_for_drive_index"
+        },
+        "recombinatorics": {
+          "context": "recombinatorics",
+          "context_bench_id": "recombinatorics",
+          "algorithm": "composite_bsp",
+          "n": null,
+          "bench_us": null,
+          "cool": true,
+          "statement": "power_sort_composite_bsp_for_recombinatorics"
+        },
+        "bench_rank": {
+          "context": "bench_rank",
+          "context_bench_id": "bench_rank",
+          "algorithm": "desc_numeric",
+          "n": null,
+          "bench_us": 4.37,
+          "cool": true,
+          "statement": "power_sort_desc_numeric_for_bench_rank"
+        },
+        "thermal_layers": {
+          "context": "thermal_layers",
+          "context_bench_id": "thermal_layers",
+          "algorithm": "cool_sort",
+          "n": null,
+          "bench_us": 3.33,
+          "cool": true,
+          "statement": "power_sort_cool_sort_for_thermal_layers"
+        }
+      },
+      "file_list_mode": "dirs_first",
+      "drive_index_algorithm": "timsort_key",
+      "recombinatorics_algorithm": "composite_bsp",
+      "bench_rank_algorithm": "desc_numeric",
+      "thermal_algorithm": "cool_sort",
+      "motto": "We understand the shape of the data; bench receipts pick the sort; never pay for the wrong comparator."
+    },
+    "power_sort_sections": {
+      "file_list": {
+        "available": true,
+        "algorithm": "dirs_first",
+        "cool": true,
+        "context": "file_list",
+        "consumer": "queen_files",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "drive_index": {
+        "available": true,
+        "algorithm": "timsort_key",
+        "cool": true,
+        "context": "drive_index",
+        "consumer": "field_drive_indexer",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "recombinatorics": {
+        "available": true,
+        "algorithm": "composite_bsp",
+        "cool": true,
+        "context": "recombinatorics",
+        "consumer": "combinatorics_bridge",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "bench_rank": {
+        "available": true,
+        "algorithm": "desc_numeric",
+        "cool": true,
+        "context": "bench_rank",
+        "consumer": "field_exec_bench",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "thermal_layers": {
+        "available": true,
+        "algorithm": "cool_sort",
+        "cool": true,
+        "context": "thermal_layers",
+        "consumer": "field_sanity",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "queen_files": {
+        "available": true,
+        "algorithm": "dirs_first",
+        "cool": true,
+        "context": "file_list",
+        "consumer": "queen_file_browser",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "compat_layers": {
+        "available": true,
+        "algorithm": "dirs_first",
+        "cool": true,
+        "context": "compat_layers",
+        "consumer": "field_compatibility_layers",
+        "bench_deferred": false,
+        "manifest_api": null
+      },
+      "panel": {
+        "available": true,
+        "algorithm": "dirs_first",
+        "cool": true,
+        "context": "panel",
+        "consumer": null,
+        "bench_deferred": false,
+        "manifest_api": "/api/power-sort"
+      }
+    }
+  },
+  "steps": [
+    {
+      "step": "fast_cycle",
+      "ok": true,
+      "elapsed_ms": 31.9
+    },
+    {
+      "step": "bridge",
+      "ok": false,
+      "elapsed_ms": 9.58
+    },
+    {
+      "step": "power_sort",
+      "ok": true,
+      "elapsed_ms": 28.77
+    }
+  ],
+  "elapsed_ms": 75.49,
+  "integrate_env": "/home/default/Desktop/SG/Grok16/data/grok16-integrate.env"
+}

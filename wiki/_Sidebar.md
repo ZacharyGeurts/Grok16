@@ -1,12 +1,13 @@
 **[Home](Home)**
 
-### Speed & execution (3.0)
+### Speed & execution (4.0)
 - [Speed Bench](Speed-Bench)
 - [Uncompiled Execution](Uncompiled-Execution)
 - [CMake and Linking](CMake-and-Linking)
 
-### Release 3.0
+### Release 4.0
 - [Release](Release)
+- [MCP Server](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/README.md)
 - [Single Fabric](Single-Fabric)
 - [Safety](Safety)
 - [Batteries](Batteries)
@@ -22,6 +23,7 @@
 ### Integrate
 - [Integration](Integration)
 - [Field Primer](Field-Primer)
+- [Field Research](Field-Research)
 
 ### Reference
 - [Reference](Reference)

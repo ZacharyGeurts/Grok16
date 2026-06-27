@@ -1,10 +1,10 @@
 # Grok16 speed-demo — comprehensive compile + execution benchmark
 
-**Report version:** 3.1.0 · **Distro:** 3.0.0 (v3.0.0)  
+**Report version:** 4.0.0 · **Distro:** 4.0.0 (v4.0.0)  
 **Compiler:** Grok16-16.2.0 · dumpversion `16.1.1`  
 **Bench suite:** speed_demo @ 1.1.0  
 **Schema:** grok16-field-exec-full-bench/v4  
-**Bench date:** 2026-06-27T03:16:36Z  
+**Bench date:** 2026-06-27T06:56:48Z  
 **Runners tested:** 11  
 **Target execution window:** 1s per runner  
 **Host:** Linux default-X870-Pro-RS 6.14.0-37-generic #37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2 x86_64
@@ -35,32 +35,32 @@
 
 Separates **wave-convert / compile** (one-time, chamber cache) from **bin execution** (timed field run).
 
-- **Fastest execution:** C++ — host g++ -O2 — **86,900,435.12 ops/s**
-- **Best Python (interpreter):** python_gpy — **782,479.61 ops/s**
+- **Fastest execution:** CMake — host g++ -O2 — **87,873,620.49 ops/s**
+- **Best Python (interpreter):** python_gpy — **789,962.63 ops/s**
 
 ## Plate meld analysis
 
-- **Meld generation:** 6 · **plates fused:** 24
-- **Compiler sense profile:** `expert` (eye_ear_green) · score 0.75
-- **Sense vs belt_2_0 exec ratio:** 0.9871
-- **Post-meld re-exec ratio (same ELF):** 0.9859 — hot path OK
+- **Meld generation:** 2 · **plates fused:** 6
+- **Compiler sense profile:** `field_opt` (default) · score 0.0
+- **Sense vs belt_2_0 exec ratio:** 1.0638
+- **Post-meld re-exec ratio (same ELF):** 1.1118 — hot path OK
 - **Meld helps profile selection:** yes
 
 ## Full results (all executions)
 
 | Runner | Profile | Compile (ms) | Exec wall (ms) | ops/s | Bytes | Pass |
 |--------|---------|-------------:|---------------:|------:|------:|------|
-| C++ — host g++ -O2 | — | 0 | 1,001 | 86,900,435.12 | 21,640 | cold |
-| C++ — g16 belt_2_0 | belt_2_0 | 0 | 1,000 | 83,901,007.61 | 22,912 | cold |
-| C++ — g16 sense expert | expert | 0 | 1,001 | 82,820,909.91 | 21,272 | cold |
-| C++ — g16 belt_2_0 (post-meld re-exec) | belt_2_0 | 0 | 1,001 | 82,720,030.00 | 22,912 | post_meld |
-| CMake — host g++ -O2 | — | 0 | 1,002 | 79,966,020.80 | 21,640 | cold |
-| C — g16 belt_1_0 | belt_1_0 | 0 | 1,000 | 78,763,363.06 | 16,192 | cold |
-| C++ — g16 belt_1_0 | belt_1_0 | 0 | 1,002 | 78,751,196.83 | 22,784 | cold |
-| C — g16 belt_2_0 | belt_2_0 | 0 | 1,001 | 75,866,766.27 | 16,248 | cold |
-| C — host gcc -O2 | — | 0 | 1,001 | 73,133,148.57 | 24,568 | cold |
-| Python — gpy-16 GrokVM | — | — | 1,099 | 782,479.61 | — | cold |
-| Python — host CPython 3 | — | — | 1,064 | 692,909.88 | — | cold |
+| C++ — g16 belt_2_0 (post-meld re-exec) | belt_2_0 | 0 | 1,001 | 88,374,669.33 | 22,912 | post_meld |
+| CMake — host g++ -O2 | — | 0 | 1,001 | 87,873,620.49 | 21,640 | cold |
+| C — g16 belt_2_0 | belt_2_0 | 0 | 1,000 | 86,719,978.83 | 16,248 | cold |
+| C++ — host g++ -O2 | — | 0 | 1,001 | 86,281,588.29 | 21,640 | cold |
+| C++ — g16 belt_1_0 | belt_1_0 | 0 | 1,001 | 84,982,602.71 | 22,784 | cold |
+| C++ — g16 sense field_opt | field_opt | 0 | 1,001 | 84,563,400.60 | 21,272 | cold |
+| C — host gcc -O2 | — | 0 | 1,000 | 83,923,687.08 | 24,568 | cold |
+| C — g16 belt_1_0 | belt_1_0 | 0 | 1,001 | 83,880,882.36 | 16,192 | cold |
+| C++ — g16 belt_2_0 | belt_2_0 | 0 | 1,000 | 79,490,710.88 | 22,912 | cold |
+| Python — gpy-16 GrokVM | — | — | 1,089 | 789,962.63 | — | cold |
+| Python — host CPython 3 | — | — | 1,103 | 779,742.83 | — | cold |
 
 ## bench-all profile suite (field-nexus-bench)
 
@@ -72,17 +72,17 @@ Separates **wave-convert / compile** (one-time, chamber cache) from **bin execut
 | ai_agent | 662 | 7 | 16672 | grok16_bench profile=ai std=gnu++26 __cplusplus=202400 n=64 iters=48 wall_ms=4.13678 checksum=141090 |
 | expert | 2275 | 14 | 21200 | grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 wall_ms=3.30415 nexus_checksum=-nan |
 | heavy | 1667 | 8 | 22840 | grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 wall_ms=2.79452 nexus_checksum=-nan |
-| field_opt | 1977 | 8 | 22712 | grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.81243 nexus_checksum=-nan |
-| belt_1_0 | 1720 | 6 | 22712 | grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.91371 nexus_checksum=-nan |
-| belt_2_0 | 1501 | 9 | 22840 | grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.25047 nexus_checksum=-nan |
+| field_opt | 1648 | 8 | 22712 | grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.50406 nexus_checksum=-nan |
+| belt_1_0 | 1700 | 8 | 22712 | grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.95402 nexus_checksum=-nan |
+| belt_2_0 | 2032 | 8 | 22840 | grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=3.62003 nexus_checksum=-nan |
 
 ## Winners by category
 
-- **C:** C — g16 belt_1_0 — 78,763,363.06 ops/s
-- **CXX:** C++ — host g++ -O2 — 86,900,435.12 ops/s
-- **CMAKE:** CMake — host g++ -O2 — 79,966,020.80 ops/s
-- **PYTHON:** Python — gpy-16 GrokVM — 782,479.61 ops/s
-- **Best first-run amortized** (exec ÷ (1 + compile_sec)): C++ — host g++ -O2 — 86,900,435.12 effective ops/s
+- **C:** C — g16 belt_2_0 — 86,719,978.83 ops/s
+- **CXX:** C++ — host g++ -O2 — 86,281,588.29 ops/s
+- **CMAKE:** CMake — host g++ -O2 — 87,873,620.49 ops/s
+- **PYTHON:** Python — gpy-16 GrokVM — 789,962.63 ops/s
+- **Best first-run amortized** (exec ÷ (1 + compile_sec)): CMake — host g++ -O2 — 87,873,620.49 effective ops/s
 
 ## Doctrine
 

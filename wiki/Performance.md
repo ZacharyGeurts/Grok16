@@ -2,9 +2,9 @@
 
 Web: [performance.html](https://zacharygeurts.github.io/Grok16/performance.html) · [speed-bench.html](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
-## Speed bench (3.0 — report v3.0.0)
+## Speed bench (3.0 — report v3.2.0)
 
-**Suite:** `speed_demo` @ `1.0.0` · **3s execution window** · Schema: `grok16-field-exec-full-bench/v3`
+**Suite:** `speed_demo` @ `1.1.0` · **3s execution window** · Schema: `grok16-field-exec-full-bench/v4`
 
 ```bash
 SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
@@ -13,13 +13,13 @@ SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
 
 | Runner | Compile (ms) | ops/s |
 |--------|-------------:|------:|
-| C++ g16 belt_2_0 | 2,494 | **85.3M** |
-| C++ host g++ -O2 | 1,710 | 83.2M |
-| CMake host g++ -O2 | 3,682 | 82.6M |
-| C g16 belt_2_0 | **318** | 79.5M |
-| C host gcc -O2 | 347 | 73.4M |
-| Python host CPython 3 | — | **778K** |
-| Python gpy-16 GrokVM | — | 766K |
+| C++ g16 belt_2_0 (post-meld) | BSP hit | **93.3M** |
+| CMake host g++ -O2 | BSP hit | **91.8M** |
+| C++ host g++ -O2 | BSP hit | 91.7M |
+| C++ g16 belt_2_0 | BSP hit | **89.3M** |
+| C g16 belt_2_0 | BSP hit | 89.2M |
+| Python gpy-16 GrokVM | — | **849K** |
+| Python host CPython 3 | — | 793K |
 
 Artifacts: `docs/SPEED-BENCH-REPORT.md` · `docs/field-exec-full-bench.json` · Wiki: [Speed-Bench](Speed-Bench)
 
