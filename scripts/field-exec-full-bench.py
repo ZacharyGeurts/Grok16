@@ -14,6 +14,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "lib"))
+from field_exec_bsp import (  # noqa: E402
+    bsp_enabled,
+    bsp_store,
+    bsp_try_reuse,
+    fingerprint,
+    force_compile,
+    ninja_generator_args,
+    rocket_compile_flags,
+    rocket_enabled,
+    rocket_tool,
+)
 from field_math import field_display, field_ratio  # noqa: E402
 
 OUTDIR = ROOT / "data" / "bench" / "exec-plane"
@@ -160,23 +171,96 @@ def _compile_g16_binary(
     tag: str,
     lang: str,
     link_math: bool = False,
-) -> tuple[bool, float]:
+    case_id: str = "",
+) -> tuple[bool, float, str]:
+    case_id = case_id or out.name
+    sources = [src]
+    hit, copy_ms, note = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=profile)
+    if hit:
+        return True, copy_ms, note
     if not G16.is_file():
-        return False, 0.0
+        return False, 0.0, "g16 unfound"
     kind = "c" if lang == "c" else "cxx"
     default = ["-std=gnu17", "-O3", "-march=native"] if lang == "c" else ["-std=gnu++26", "-O3", "-march=native"]
-    flags = [*_g16_extra(), *_merge_g16_flags(
-        _profile_flags(profile, kind) or default,
-        _profile_flags(profile, "link") or [],
-    )]
-    cmd = [str(G16), *flags, f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(src)]
+    flags = [
+        *_g16_extra(),
+        *rocket_compile_flags(kind),
+        *_merge_g16_flags(
+            _profile_flags(profile, kind) or default,
+            _profile_flags(profile, "link") or [],
+        ),
+    ]
+    tool = rocket_tool(str(G16))
+    cmd = [tool, *flags, f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(src)]
     if link_math:
         cmd.append("-lm")
     rc, _, _, ms = _run(cmd)
     if rc == 0 and out.is_file():
         out.chmod(out.stat().st_mode | 0o111)
-        return True, ms
-    return False, ms
+        fp = fingerprint(case_id=case_id, profile=profile, sources=sources)
+        bsp_store(OUTDIR, case_id=case_id, binary=out, fp=fp)
+        note = "rocket g16 compile" if rocket_enabled() else "g16 compile"
+        return True, ms, note
+    return False, ms, "compile failed"
+
+
+def _compile_host_binary(
+    out: Path,
+    *,
+    tool: str,
+    flags: list[str],
+    src: Path,
+    tag: str,
+    case_id: str,
+    lang: str,
+    link_math: bool = False,
+) -> tuple[bool, float, str]:
+    sources = [src]
+    hit, copy_ms, note = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=tag)
+    if hit:
+        return True, copy_ms, note
+    cmd = [rocket_tool(tool), *flags, *rocket_compile_flags(lang), f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(src)]
+    if link_math:
+        cmd.append("-lm")
+    rc, _, _, ms = _run(cmd)
+    if rc == 0 and out.is_file():
+        out.chmod(out.stat().st_mode | 0o111)
+        fp = fingerprint(case_id=case_id, profile=tag, sources=sources)
+        bsp_store(OUTDIR, case_id=case_id, binary=out, fp=fp)
+        note = "rocket host compile" if rocket_enabled() else "host compile"
+        return True, ms, note
+    return False, ms, "compile failed"
+
+
+def _cmake_build(
+    *,
+    case_id: str,
+    build_dir: Path,
+    configure: list[str],
+    sources: list[Path],
+    profile: str,
+) -> tuple[Path | None, float, float, str]:
+    hit, copy_ms, note = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=profile)
+    if hit:
+        return hit, 0.0, copy_ms, note
+    if force_compile() and build_dir.is_dir():
+        shutil.rmtree(build_dir, ignore_errors=True)
+    build_dir.mkdir(parents=True, exist_ok=True)
+    cfg = ["cmake", *ninja_generator_args(), "-S", str(CMAKE_SRC), "-B", str(build_dir), *configure]
+    rc, _, _, cfg_ms = _run(cfg)
+    bld_ms = 0.0
+    if rc == 0:
+        rc, _, _, bld_ms = _run(["cmake", "--build", str(build_dir), "-j", str(os.cpu_count() or 4)])
+    binary = build_dir / "grok16_speed_demo"
+    if rc != 0 or not binary.is_file():
+        return None, cfg_ms, bld_ms, "cmake skip"
+    staged = OUTDIR / case_id
+    shutil.copy2(binary, staged)
+    staged.chmod(staged.stat().st_mode | 0o111)
+    fp = fingerprint(case_id=case_id, profile=profile, sources=sources)
+    bsp_store(OUTDIR, case_id=case_id, binary=staged, fp=fp)
+    note = "rocket cmake" if rocket_enabled() else "cmake"
+    return staged, cfg_ms, bld_ms, note
 
 
 def _load_bench_all_runs() -> list[dict]:
@@ -268,139 +352,164 @@ def _exec_runner(row: dict) -> dict:
 def bench_all() -> dict:
     OUTDIR.mkdir(parents=True, exist_ok=True)
     bench_dir = OUTDIR / "full-bench-build"
-    if bench_dir.is_dir():
-        shutil.rmtree(bench_dir)
     bench_dir.mkdir(parents=True, exist_ok=True)
 
     plate_ctx = _plate_meld_context()
     host_gcc = _host_gcc()
     host_gxx = _host_gxx()
     rows: list[dict] = []
+    bsp_hits = 0
 
     def add(row: dict) -> None:
         rows.append(row)
 
+    def _bin_row(
+        *,
+        case_id: str,
+        label: str,
+        lang: str,
+        group: str,
+        path: Path,
+        compile_ms: float,
+        compile_note: str,
+        profile: str = "",
+        extra: dict | None = None,
+    ) -> None:
+        nonlocal bsp_hits
+        if "bsp:" in compile_note:
+            bsp_hits += 1
+        row = {
+            "id": case_id,
+            "label": label,
+            "lang": lang,
+            "group": group,
+            "kind": "binary",
+            "path": str(path),
+            "compile_ms": compile_ms,
+            "compile_note": compile_note,
+            "bsp": bsp_enabled(),
+            "rocket": rocket_enabled(),
+        }
+        if profile:
+            row["profile"] = profile
+        if extra:
+            row.update(extra)
+        add(row)
+
     # C host
-    out_c = bench_dir / "c_host_o2"
-    rc, _, err, ms = _run(
-        [host_gcc, "-std=gnu17", "-O2", "-march=native", "-fPIE", '-DTOOLCHAIN_TAG="c_host_o2"', "-o", str(out_c), str(SRC_C), "-lm"]
+    out_c = OUTDIR / "c_host_o2"
+    ok, ms, note = _compile_host_binary(
+        out_c,
+        tool=host_gcc,
+        flags=["-std=gnu17", "-O2", "-march=native", "-fPIE"],
+        src=SRC_C,
+        tag="c_host_o2",
+        case_id="c_host_o2",
+        lang="c",
+        link_math=True,
     )
-    if rc == 0 and out_c.is_file():
-        out_c.chmod(out_c.stat().st_mode | 0o111)
-        add({
-            "id": "c_host_o2", "label": "C — host gcc -O2", "lang": "c", "group": "host",
-            "kind": "binary", "path": str(out_c), "compile_ms": ms, "compile_note": "single gcc invoke",
-        })
+    if ok:
+        _bin_row(case_id="c_host_o2", label="C — host gcc -O2", lang="c", group="host", path=out_c, compile_ms=ms, compile_note=note)
 
     # C g16 belt_2_0
-    out_cg2 = bench_dir / "c_g16_belt_2"
-    ok, ms = _compile_g16_binary(out_cg2, src=SRC_C, profile="belt_2_0", tag="c_g16_belt_2", lang="c", link_math=True)
+    out_cg2 = OUTDIR / "c_g16_belt_2"
+    ok, ms, note = _compile_g16_binary(out_cg2, src=SRC_C, profile="belt_2_0", tag="c_g16_belt_2", lang="c", link_math=True, case_id="c_g16_belt_2")
     if ok:
-        add({
-            "id": "c_g16_belt_2", "label": "C — g16 belt_2_0", "lang": "c", "group": "g16",
-            "kind": "binary", "path": str(out_cg2), "compile_ms": ms, "compile_note": "g16 belt_2_0",
-            "profile": "belt_2_0",
-        })
+        _bin_row(case_id="c_g16_belt_2", label="C — g16 belt_2_0", lang="c", group="g16", path=out_cg2, compile_ms=ms, compile_note=note, profile="belt_2_0")
 
     # C g16 belt_1_0
-    out_cg1 = bench_dir / "c_g16_belt_1"
-    ok, ms = _compile_g16_binary(out_cg1, src=SRC_C, profile="belt_1_0", tag="c_g16_belt_1", lang="c", link_math=True)
+    out_cg1 = OUTDIR / "c_g16_belt_1"
+    ok, ms, note = _compile_g16_binary(out_cg1, src=SRC_C, profile="belt_1_0", tag="c_g16_belt_1", lang="c", link_math=True, case_id="c_g16_belt_1")
     if ok:
-        add({
-            "id": "c_g16_belt_1", "label": "C — g16 belt_1_0", "lang": "c", "group": "g16",
-            "kind": "binary", "path": str(out_cg1), "compile_ms": ms, "compile_note": "g16 belt_1_0 baseline",
-            "profile": "belt_1_0",
-        })
+        _bin_row(case_id="c_g16_belt_1", label="C — g16 belt_1_0", lang="c", group="g16", path=out_cg1, compile_ms=ms, compile_note=note, profile="belt_1_0")
 
     # C++ host
-    out_cxx = bench_dir / "cxx_host_o2"
-    rc, _, _, ms = _run(
-        [host_gxx, "-std=gnu++23", "-O2", "-march=native", "-fPIE", '-DTOOLCHAIN_TAG="cxx_host_o2"', "-o", str(out_cxx), str(SRC_CXX)]
+    out_cxx = OUTDIR / "cxx_host_o2"
+    ok, ms, note = _compile_host_binary(
+        out_cxx,
+        tool=host_gxx,
+        flags=["-std=gnu++23", "-O2", "-march=native", "-fPIE"],
+        src=SRC_CXX,
+        tag="cxx_host_o2",
+        case_id="cxx_host_o2",
+        lang="cxx",
     )
-    if rc == 0 and out_cxx.is_file():
-        out_cxx.chmod(out_cxx.stat().st_mode | 0o111)
-        add({
-            "id": "cxx_host_o2", "label": "C++ — host g++ -O2", "lang": "cxx", "group": "host",
-            "kind": "binary", "path": str(out_cxx), "compile_ms": ms, "compile_note": "single g++ invoke",
-        })
+    if ok:
+        _bin_row(case_id="cxx_host_o2", label="C++ — host g++ -O2", lang="cxx", group="host", path=out_cxx, compile_ms=ms, compile_note=note)
 
     # C++ g16 belt_2_0
-    out_cxxg2 = bench_dir / "cxx_g16_belt_2"
-    ok, ms = _compile_g16_binary(out_cxxg2, src=SRC_CXX, profile="belt_2_0", tag="cxx_g16_belt_2", lang="cxx")
+    out_cxxg2 = OUTDIR / "cxx_g16_belt_2"
+    ok, ms, note = _compile_g16_binary(out_cxxg2, src=SRC_CXX, profile="belt_2_0", tag="cxx_g16_belt_2", lang="cxx", case_id="cxx_g16_belt_2")
     if ok:
-        add({
-            "id": "cxx_g16_belt_2", "label": "C++ — g16 belt_2_0", "lang": "cxx", "group": "g16",
-            "kind": "binary", "path": str(out_cxxg2), "compile_ms": ms, "compile_note": "g16 belt_2_0",
-            "profile": "belt_2_0",
-        })
+        _bin_row(case_id="cxx_g16_belt_2", label="C++ — g16 belt_2_0", lang="cxx", group="g16", path=out_cxxg2, compile_ms=ms, compile_note=note, profile="belt_2_0")
 
     # C++ g16 belt_1_0
-    out_cxxg1 = bench_dir / "cxx_g16_belt_1"
-    ok, ms = _compile_g16_binary(out_cxxg1, src=SRC_CXX, profile="belt_1_0", tag="cxx_g16_belt_1", lang="cxx")
+    out_cxxg1 = OUTDIR / "cxx_g16_belt_1"
+    ok, ms, note = _compile_g16_binary(out_cxxg1, src=SRC_CXX, profile="belt_1_0", tag="cxx_g16_belt_1", lang="cxx", case_id="cxx_g16_belt_1")
     if ok:
-        add({
-            "id": "cxx_g16_belt_1", "label": "C++ — g16 belt_1_0", "lang": "cxx", "group": "g16",
-            "kind": "binary", "path": str(out_cxxg1), "compile_ms": ms, "compile_note": "g16 belt_1_0 baseline",
-            "profile": "belt_1_0",
-        })
+        _bin_row(case_id="cxx_g16_belt_1", label="C++ — g16 belt_1_0", lang="cxx", group="g16", path=out_cxxg1, compile_ms=ms, compile_note=note, profile="belt_1_0")
 
     # C++ g16 compiler-sense profile (post plate meld)
     sense_prof = plate_ctx.get("sense_profile") or "field_opt"
-    out_cxx_sense = bench_dir / "cxx_g16_sense"
-    ok, ms = _compile_g16_binary(
-        out_cxx_sense, src=SRC_CXX, profile=sense_prof, tag=f"cxx_g16_{sense_prof}", lang="cxx"
+    out_cxx_sense = OUTDIR / "cxx_g16_sense"
+    ok, ms, note = _compile_g16_binary(
+        out_cxx_sense, src=SRC_CXX, profile=sense_prof, tag=f"cxx_g16_{sense_prof}", lang="cxx", case_id="cxx_g16_sense"
     )
     if ok:
-        add({
-            "id": "cxx_g16_sense", "label": f"C++ — g16 sense {sense_prof}", "lang": "cxx", "group": "g16",
-            "kind": "binary", "path": str(out_cxx_sense), "compile_ms": ms,
-            "compile_note": f"plate meld → compiler sense ({plate_ctx.get('sense_reason')})",
-            "profile": sense_prof, "plate_meld": True,
-            "meld_generation": plate_ctx.get("meld_generation"),
-        })
+        _bin_row(
+            case_id="cxx_g16_sense",
+            label=f"C++ — g16 sense {sense_prof}",
+            lang="cxx",
+            group="g16",
+            path=out_cxx_sense,
+            compile_ms=ms,
+            compile_note=f"{note} · sense ({plate_ctx.get('sense_reason')})",
+            profile=sense_prof,
+            extra={"plate_meld": True, "meld_generation": plate_ctx.get("meld_generation")},
+        )
 
     # CMake host
-    build_host = bench_dir / "cmake-host"
-    build_host.mkdir(parents=True, exist_ok=True)
-    cfg_ms = bld_ms = 0.0
-    rc, _, _, cfg_ms = _run([
-        "cmake", "-S", str(CMAKE_SRC), "-B", str(build_host),
-        f"-DCMAKE_CXX_COMPILER={host_gxx}", "-DGROK16_HOST_PLANE=ON",
-    ])
-    if rc == 0:
-        rc, _, _, bld_ms = _run(["cmake", "--build", str(build_host), "-j", str(os.cpu_count() or 4)])
-    bin_host = build_host / "grok16_speed_demo"
-    if rc == 0 and bin_host.is_file():
-        staged = bench_dir / "cmake_host_o2"
-        shutil.copy2(bin_host, staged)
-        staged.chmod(staged.stat().st_mode | 0o111)
-        add({
-            "id": "cmake_host_o2", "label": "CMake — host g++ -O2", "lang": "cmake", "group": "host",
-            "kind": "binary", "path": str(staged), "compile_ms": round(cfg_ms + bld_ms, 2),
-            "compile_configure_ms": cfg_ms, "compile_build_ms": bld_ms, "compile_note": "cmake configure + build",
-        })
+    cmake_sources = [SRC_CXX, CMAKE_SRC / "CMakeLists.txt"]
+    staged, cfg_ms, bld_ms, note = _cmake_build(
+        case_id="cmake_host_o2",
+        build_dir=bench_dir / "cmake-host",
+        configure=[f"-DCMAKE_CXX_COMPILER={host_gxx}", "-DGROK16_HOST_PLANE=ON"],
+        sources=cmake_sources,
+        profile="cmake_host",
+    )
+    if staged:
+        _bin_row(
+            case_id="cmake_host_o2",
+            label="CMake — host g++ -O2",
+            lang="cmake",
+            group="host",
+            path=staged,
+            compile_ms=round(cfg_ms + bld_ms, 2),
+            compile_note=note,
+            extra={"compile_configure_ms": cfg_ms, "compile_build_ms": bld_ms},
+        )
 
     # CMake g16
     if TOOLCHAIN_CMAKE.is_file() and G16.is_file():
-        build_g16 = bench_dir / "cmake-g16"
-        build_g16.mkdir(parents=True, exist_ok=True)
-        rc, _, _, cfg_ms = _run([
-            "cmake", "-S", str(CMAKE_SRC), "-B", str(build_g16),
-            f"-DCMAKE_TOOLCHAIN_FILE={TOOLCHAIN_CMAKE}", "-DGROK16_PROFILE=belt_2_0",
-        ])
-        bld_ms = 0.0
-        if rc == 0:
-            rc, _, _, bld_ms = _run(["cmake", "--build", str(build_g16), "-j", str(os.cpu_count() or 4)])
-        bin_g16 = build_g16 / "grok16_speed_demo"
-        if rc == 0 and bin_g16.is_file():
-            staged = bench_dir / "cmake_belt_2"
-            shutil.copy2(bin_g16, staged)
-            staged.chmod(staged.stat().st_mode | 0o111)
-            add({
-                "id": "cmake_belt_2", "label": "CMake — g16 belt_2_0", "lang": "cmake", "group": "g16",
-                "kind": "binary", "path": str(staged), "compile_ms": round(cfg_ms + bld_ms, 2),
-                "compile_configure_ms": cfg_ms, "compile_build_ms": bld_ms, "compile_note": "cmake configure + build",
-            })
+        staged, cfg_ms, bld_ms, note = _cmake_build(
+            case_id="cmake_belt_2",
+            build_dir=bench_dir / "cmake-g16",
+            configure=[f"-DCMAKE_TOOLCHAIN_FILE={TOOLCHAIN_CMAKE}", "-DGROK16_PROFILE=belt_2_0"],
+            sources=cmake_sources,
+            profile="cmake_belt_2_0",
+        )
+        if staged:
+            _bin_row(
+                case_id="cmake_belt_2",
+                label="CMake — g16 belt_2_0",
+                lang="cmake",
+                group="g16",
+                path=staged,
+                compile_ms=round(cfg_ms + bld_ms, 2),
+                compile_note=note,
+                profile="belt_2_0",
+                extra={"compile_configure_ms": cfg_ms, "compile_build_ms": bld_ms},
+            )
 
     # Python — no compile
     py3 = shutil.which("python3") or "python3"
@@ -504,6 +613,13 @@ def bench_all() -> dict:
         "host_uname": " ".join(os.uname()),
         "versions": versions,
         "plate_meld": plate_meld_analysis,
+        "bsp": {
+            "enabled": bsp_enabled(),
+            "rocket": rocket_enabled(),
+            "cache_hits": bsp_hits,
+            "plane": str(OUTDIR),
+            "force_compile": force_compile(),
+        },
         "bench_all_profiles": _load_bench_all_runs(),
         "rows": rows,
         "runners_tested": len(rows),
@@ -557,11 +673,13 @@ def _write_report_md(doc: dict) -> None:
         "",
         "## Methodology (professional)",
         "",
-        "1. **Plate meld cycle** — `field-plate-meld.py fuse` (fast) then `g16-compiler-sense-plate.py cycle` before compiles.",
-        "2. **Wave-convert** — each binary runner: single g16/gcc invoke or CMake configure+build (timed as `compile_ms`).",
-        "3. **Field execution** — identical `speed_demo` kernel; axis `field_execution_ops_per_sec`; Python = interpreter (no compile).",
-        "4. **Post-meld re-exec** — same ELF as `cxx_g16_belt_2` after meld; proves meld does not slow hot path.",
-        "5. **bench-all cross-ref** — profile suite from `data/bench/latest.json` when present.",
+        "1. **BSP (Binary Staged Plane)** — reuse `data/bench/exec-plane/` cache; compile only on miss (`G16_EXEC_BSP=1` default).",
+        "2. **Rocket compile** — ccache + `-pipe` + Ninja CMake on miss (`G16_ROCKET_COMPILE=1` default).",
+        "3. **Plate meld cycle** — `field-plate-meld.py fuse` then `g16-compiler-sense-plate.py cycle` before compiles.",
+        "4. **Wave-convert** — timed as `compile_ms`; BSP hits record ~0 ms.",
+        "5. **Field execution** — identical `speed_demo` kernel; axis `field_execution_ops_per_sec`; Python = interpreter (no compile).",
+        "6. **Post-meld re-exec** — same ELF as `cxx_g16_belt_2` after meld; proves meld does not slow hot path.",
+        "7. **bench-all cross-ref** — profile suite from `data/bench/latest.json` when present.",
         "",
         "### Kernel specification",
         "",

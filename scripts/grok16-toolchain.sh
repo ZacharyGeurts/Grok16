@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|bench|bench-compare|bench-triad|speed-demo|exec-compare|exec-full-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|bench|bench-compare|bench-triad|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -693,6 +693,14 @@ cmd_exec_comprehensive_bench() {
   exec python3 "$GROK16_SCRIPTS/field-exec-comprehensive-bench.py" "$@"
 }
 
+cmd_exec_bsp_bench() {
+  # Rocket path: BSP cache + exec only (no full recompile)
+  export G16_EXEC_BSP="${G16_EXEC_BSP:-1}"
+  export G16_ROCKET_COMPILE="${G16_ROCKET_COMPILE:-1}"
+  python3 "$GROK16_SCRIPTS/field-exec-stage.py" || true
+  exec python3 "$GROK16_SCRIPTS/field-exec-compare.py" "$@"
+}
+
 cmd_integrate() {
   exec "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
 }
@@ -887,6 +895,7 @@ case "${1:-}" in
   speed-demo) cmd_speed_demo ;;
   exec-compare) cmd_exec_compare ;;
   exec-full-bench) cmd_exec_full_bench "$@" ;;
+  exec-bsp-bench) cmd_exec_bsp_bench "$@" ;;
   exec-comprehensive-bench) cmd_exec_comprehensive_bench "$@" ;;
   field-bench-real) cmd_field_bench_real ;;
   speed-diagnosis) g16_gpy_run "$GROK16_SCRIPTS/grok16-speed-diagnosis.py" ;;

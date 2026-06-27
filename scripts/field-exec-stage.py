@@ -11,6 +11,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "lib"))
+from field_exec_bsp import (  # noqa: E402
+    bsp_store,
+    bsp_try_reuse,
+    fingerprint,
+    ninja_generator_args,
+    rocket_compile_flags,
+    rocket_tool,
+)
 SRC_CXX = ROOT / "examples" / "speed-demo" / "speed_demo.cpp"
 SRC_C = ROOT / "examples" / "speed-demo" / "speed_demo.c"
 SRC_PY = ROOT / "examples" / "speed-demo" / "speed_demo.py"
@@ -77,24 +86,34 @@ def _host_gcc() -> str:
 
 
 def _compile_c(case_id: str, tool: str, flags: list[str], tag: str) -> Path | None:
+    hit, _, _ = bsp_try_reuse(OUTDIR, case_id=case_id, sources=[SRC_C], profile=tag)
+    if hit:
+        print(f"  bsp {case_id}")
+        return hit
     out = OUTDIR / f"{case_id}"
-    args = [tool, *flags, f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(SRC_C), "-lm"]
+    args = [rocket_tool(tool), *flags, *rocket_compile_flags("c"), f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(SRC_C), "-lm"]
     proc = _run(args)
     if proc.returncode != 0:
         print(f"  skip {case_id}: {(proc.stderr or proc.stdout)[:300]}", file=sys.stderr)
         return None
     out.chmod(out.stat().st_mode | 0o111)
+    bsp_store(OUTDIR, case_id=case_id, binary=out, fp=fingerprint(case_id=case_id, profile=tag, sources=[SRC_C]))
     return out
 
 
 def _compile_cxx(case_id: str, tool: str, flags: list[str], tag: str) -> Path | None:
+    hit, _, _ = bsp_try_reuse(OUTDIR, case_id=case_id, sources=[SRC_CXX], profile=tag)
+    if hit:
+        print(f"  bsp {case_id}")
+        return hit
     out = OUTDIR / f"{case_id}"
-    args = [tool, *flags, f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(SRC_CXX)]
+    args = [rocket_tool(tool), *flags, *rocket_compile_flags("cxx"), f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(SRC_CXX)]
     proc = _run(args)
     if proc.returncode != 0:
         print(f"  skip {case_id}: {(proc.stderr or proc.stdout)[:300]}", file=sys.stderr)
         return None
     out.chmod(out.stat().st_mode | 0o111)
+    bsp_store(OUTDIR, case_id=case_id, binary=out, fp=fingerprint(case_id=case_id, profile=tag, sources=[SRC_CXX]))
     return out
 
 
@@ -109,11 +128,15 @@ def _reuse_or_compile_cxx(case_id: str, existing: Path, tool: str, flags: list[s
 
 
 def _stage_cmake(*, use_g16: bool, case_id: str, tag: str) -> Path | None:
+    sources = [SRC_CXX, CMAKE_SRC / "CMakeLists.txt"]
+    profile = "cmake_g16" if use_g16 else "cmake_host"
+    hit, _, _ = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=profile)
+    if hit:
+        print(f"  bsp {case_id}")
+        return hit
     build = OUTDIR / ("cmake-build-g16" if use_g16 else "cmake-build-host")
-    if build.is_dir():
-        shutil.rmtree(build)
     build.mkdir(parents=True, exist_ok=True)
-    cfg = ["cmake", "-S", str(CMAKE_SRC), "-B", str(build)]
+    cfg = ["cmake", *ninja_generator_args(), "-S", str(CMAKE_SRC), "-B", str(build)]
     if use_g16:
         cfg.extend([f"-DCMAKE_TOOLCHAIN_FILE={TOOLCHAIN_CMAKE}", "-DGROK16_PROFILE=belt_2_0"])
     else:
@@ -138,6 +161,7 @@ def _stage_cmake(*, use_g16: bool, case_id: str, tag: str) -> Path | None:
     staged = OUTDIR / case_id
     shutil.copy2(binary, staged)
     staged.chmod(staged.stat().st_mode | 0o111)
+    bsp_store(OUTDIR, case_id=case_id, binary=staged, fp=fingerprint(case_id=case_id, profile=profile, sources=sources))
     return staged
 
 

@@ -53,12 +53,17 @@ After `field-plate-meld.py fuse` + `g16-compiler-sense-plate.py cycle` (gen **2*
 | expert | 2,275 | 3.30 |
 
 ```bash
-# Full professional pipeline (bench-all + stage + exec + plate meld)
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-comprehensive-bench
+# Fast path — BSP cache, exec only (~12s after first stage; no recompile)
+./scripts/grok16-toolchain.sh exec-bsp-bench
 
-# Speed_demo only (all 11 runners + plate meld analysis)
-G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+# Full pipeline (first run compiles; second run hits BSP ~0ms compile)
+G16_EXEC_BSP=1 G16_ROCKET_COMPILE=1 SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+
+# Force cold compile (ignore BSP cache)
+G16_FORCE_COMPILE=1 ./scripts/grok16-toolchain.sh exec-full-bench
 ```
+
+**BSP** = Binary Staged Plane — reuses `data/bench/exec-plane/`; **rocket** = ccache + `-pipe` + Ninja on cache miss.
 
 JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-bench-doctrine.json`
 
