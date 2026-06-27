@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Grok16 — Release 4.2</title>
+  <title>Grok16 — Release 4.7</title>
   <meta name="description" content="Grok16 4.7.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
-  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-4.2.html" />
+  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-4.7.html" />
   <script>
   (function (d) {
     try {
@@ -17,10 +17,10 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v11"></script>
-  <script src="manual-search.js?v11"></script>
-  <script src="manual-layout.js?v11"></script>
-  <link rel="stylesheet" href="manual.css?v11" />
+  <script src="manual-theme.js?v12"></script>
+  <script src="manual-search.js?v12"></script>
+  <script src="manual-layout.js?v12"></script>
+  <link rel="stylesheet" href="manual.css?v12" />
 </head>
 <body>
   <nav>
@@ -52,7 +52,7 @@
       <a href="speed-bench.html">Speed Bench</a>
       <a href="uncompiled.html">Uncompiled</a>
       <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 4.2</a>
+      <a href="release.html">Release 4.7</a>
       <a href="single-fabric.html">Single Fabric</a>
       <a href="safety.html">Safety</a>
       <a href="getting-started.html">Getting Started</a>
@@ -72,7 +72,19 @@
   </nav>
 
   <h1>Release 4.7.0</h1>
-  <p>Grok16 <strong>4.2</strong> — portable <code>.launch</code> chambers, self-monitor bench v5, 17-platform matrix (incl. RISC-V), MCP server, power sort line safety. Compiler <strong>16.2.0</strong>. Tag <code>v4.7.0</code>. Previous: <code>v4.0.0</code>.</p>
+  <p>Grok16 <strong>4.7</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform matrix (incl. RISC-V). Compiler <strong>16.2.0</strong>. Tag <code>v4.7.0</code>. Previous: <code>v4.2.0</code>.</p>
+
+  <h2 id="charts">Speed &amp; comparison charts</h2>
+  <pre><code>./scripts/grok16-toolchain.sh bench-refresh
+# stepwise: bench-triad · bench-compare · bench-all · exec-comprehensive-bench · bench-charts</code></pre>
+  <table>
+    <tr><th>Chart</th><th>Asset</th></tr>
+    <tr><td>speed_demo compile + exec</td><td><code>docs/assets/speed-bench-chart.svg</code></td></tr>
+    <tr><td>belt triad</td><td><code>docs/assets/triad-chart.svg</code></td></tr>
+    <tr><td>field vs host compare</td><td><code>docs/assets/compare-chart.svg</code></td></tr>
+    <tr><td>bench-all profiles</td><td><code>docs/assets/bench-all-chart.svg</code></td></tr>
+  </table>
+  <p>Manifest: <code>data/bench/charts-manifest.json</code> · Live JSON: <code>data/bench/triad-latest.json</code>, <code>compare-latest.json</code>, <code>docs/field-exec-full-bench.json</code></p>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
@@ -83,28 +95,31 @@ export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh test-battery-release
 ./scripts/grok16-toolchain.sh test-battery-belt
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+./scripts/grok16-toolchain.sh bench-refresh
 ./scripts/grok16-toolchain.sh integrate</code></pre>
 
   <h2 id="shipped">What shipped</h2>
   <ul>
+    <li><strong>bench-refresh</strong> — one-shot triad + compare + bench-all + comprehensive exec + SVG charts + manual rebuild</li>
+    <li><strong>bench-charts</strong> — <code>scripts/grok16-bench-charts.py</code> generates comparison SVGs from live JSON</li>
+    <li><strong>performance.html</strong> — embeds triad, compare, and bench-all charts with live triad table</li>
+    <li><strong>gcc-14 host pin</strong> — speed bench chart header stamps host toolchain</li>
+    <li><strong>Legacy isolation chamber</strong> — sealed BASIC/Pascal/VB tests in SG/NewLatest</li>
     <li><strong>Speed bench v4.7.0</strong> — compile ms + execution ops/s with version stamps</li>
     <li><code>speed_demo</code> suite @ 1.1.0 — C, C++, CMake, Python (host + gpy-16)</li>
-    <li><strong>Uncompiled doctrine</strong> — Python interpreter; C/C++ chamber compile-ahead</li>
-    <li>Queen-themed manual — <a href="speed-bench.html">speed-bench</a>, <a href="uncompiled.html">uncompiled</a>, <a href="cmake-linking.html">cmake-linking</a></li>
-    <li><code>exec-full-bench</code> / <code>exec-compare</code> toolchain hooks</li>
-    <li>Single fabric + safety from 2.0 — <code>belt_2_0</code> default unchanged</li>
+    <li>Portable <code>.launch</code> chambers — <code>./scripts/grok16-launch-verify.sh</code></li>
+    <li>Multi-platform release — <code>./scripts/grok16-release.sh 4.7.0 --push</code></li>
   </ul>
 
-  <h2 id="upgrade">Upgrade from v2.0.0</h2>
+  <h2 id="upgrade">Upgrade from v4.2.0</h2>
   <ol>
     <li>Checkout <code>v4.7.0</code></li>
     <li><code>G16_BELT_PROFILE=belt_2_0 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
     <li><code>test-battery-release</code> then <code>test-battery-belt</code></li>
-    <li><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench</code></li>
+    <li><code>./scripts/grok16-toolchain.sh bench-refresh</code></li>
     <li><code>./scripts/grok16-integrate.sh</code> to publish env to SG consumers</li>
   </ol>
-  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.2.md">RELEASE-4.2.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="single-fabric.html">Single Fabric</a></p>
+  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md">RELEASE-4.7.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="single-fabric.html">Single Fabric</a></p>
   <footer>
     <a href="index.html">Home</a> ·
     <a href="release.html">Release 4.7.0</a> ·

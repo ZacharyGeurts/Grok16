@@ -2,8 +2,8 @@
   {
     "t": "speed bench",
     "p": "speed-bench.html",
-    "g": "4.2",
-    "d": "Versioned compile ms execution ops/s report v4.2.0"
+    "g": "4.7",
+    "d": "Versioned compile ms execution ops/s report v4.7.0"
   },
   {
     "t": "exec-full-bench",
@@ -12,9 +12,15 @@
     "d": "field-exec-full-bench compile and execution"
   },
   {
+    "t": "bench-refresh",
+    "p": "release.html#charts",
+    "g": "4.7",
+    "d": "Regenerate triad compare bench-all charts SVG"
+  },
+  {
     "t": "uncompiled",
     "p": "uncompiled.html",
-    "g": "4.2",
+    "g": "4.7",
     "d": "Python interpreter C C++ chamber compile ahead"
   },
   {
@@ -96,10 +102,10 @@
     "d": "Built-in Python GrokVM gpy-16"
   },
   {
-    "t": "v4.2.0",
+    "t": "v4.7.0",
     "p": "release.html",
     "g": "Release",
-    "d": "Launch chambers MCP power sort line safety"
+    "d": "Bench refresh charts gcc-14 legacy isolation chamber"
   },
   {
     "t": "queen theme",

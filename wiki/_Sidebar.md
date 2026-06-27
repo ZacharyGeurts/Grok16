@@ -1,11 +1,11 @@
 **[Home](Home)**
 
-### Speed & execution (4.0)
+### Speed & execution (4.7)
 - [Speed Bench](Speed-Bench)
 - [Uncompiled Execution](Uncompiled-Execution)
 - [CMake and Linking](CMake-and-Linking)
 
-### Release 4.0
+### Release 4.7
 - [Release](Release)
 - [MCP Server](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/README.md)
 - [Single Fabric](Single-Fabric)

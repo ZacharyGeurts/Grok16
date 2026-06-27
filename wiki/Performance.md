@@ -2,24 +2,28 @@
 
 Web: [performance.html](https://zacharygeurts.github.io/Grok16/performance.html) · [speed-bench.html](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
-## Speed bench (3.0 — report v3.2.0)
+## Speed bench (4.7 — report v4.7.0)
 
-**Suite:** `speed_demo` @ `1.1.0` · **3s execution window** · Schema: `grok16-field-exec-full-bench/v4`
+**Suite:** `speed_demo` @ `1.1.0` · **3s execution window** · Schema: `grok16-field-exec-full-bench/v5`
 
 ```bash
+./scripts/grok16-toolchain.sh bench-refresh
+# or stepwise:
 SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
 ./scripts/grok16-toolchain.sh exec-compare
+./scripts/grok16-toolchain.sh bench-charts
 ```
 
 | Runner | Compile (ms) | ops/s |
 |--------|-------------:|------:|
-| C++ g16 belt_2_0 (post-meld) | BSP hit | **93.3M** |
-| CMake host g++ -O2 | BSP hit | **91.8M** |
-| C++ host g++ -O2 | BSP hit | 91.7M |
-| C++ g16 belt_2_0 | BSP hit | **89.3M** |
-| C g16 belt_2_0 | BSP hit | 89.2M |
-| Python gpy-16 GrokVM | — | **849K** |
-| Python host CPython 3 | — | 793K |
+| C++ host g++ -O2 | 1,588 | **95.3M** |
+| CMake host g++ -O2 | 2,174 | 93.0M |
+| C++ g16 belt_2_0 | 1,883 | **92.6M** |
+| C g16 belt_1_0 | **357** | 90.1M |
+| Python host CPython 3 | — | **800K** |
+| Python gpy-16 GrokVM | — | 751K |
+
+Charts: `docs/assets/speed-bench-chart.svg`, `triad-chart.svg`, `compare-chart.svg`, `bench-all-chart.svg`
 
 Artifacts: `docs/SPEED-BENCH-REPORT.md` · `docs/field-exec-full-bench.json` · Wiki: [Speed-Bench](Speed-Bench)
 
@@ -27,44 +31,45 @@ Artifacts: `docs/SPEED-BENCH-REPORT.md` · `docs/field-exec-full-bench.json` · 
 
 ```bash
 ./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh bench-charts
 ```
 
-Workload: `field-nexus-bench` (240 frames, FieldX86 + entropy + wave + NEXUS).
+Workload: `field-nexus-bench` (240 frames, FieldX86 + entropy + wave + NEXUS). Host witness: **gcc-14**.
 
 | Toolchain | Profile | compile_ms | run wall_ms | binary bytes |
 |-----------|---------|------------|-------------|--------------|
-| host `g++` | `-O3 -march=native` | ~2575 | ~3 | ~27264 |
-| `g16` | **belt_1_0** | ~2377 | ~3 | ~22712 |
-| `g16` | **belt_2_0** | ~3708 | ~5 | ~22840 |
+| host `g++` | `-O3 -march=native` | live | live | live |
+| `g16` | **belt_1_0** | live | live | live |
+| `g16` | **belt_2_0** | live | live | live |
 
-Artifact: `data/bench/triad-latest.json`
+Artifact: `data/bench/triad-latest.json` · Chart: `docs/assets/triad-chart.svg`
 
-## Primary metric
-
-```bash
-export G16_BELT_PROFILE=belt_2_0
-./scripts/grok16-toolchain.sh field-bench
-```
-
-## Release rebuild
-
-```bash
-export G16_RELEASE_PROFILE=1
-export G16_ENABLE_LTO=1
-export G16_BELT_PROFILE=belt_2_0
-./scripts/grok16-toolchain.sh rebuild
-./scripts/grok16-toolchain.sh profile
-G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench
-```
-
-## Bench matrix
+## bench-all profiles
 
 ```bash
 ./scripts/grok16-toolchain.sh bench-all
 ```
 
-## Gates
+| Profile | compile_ms | kernel wall_ms |
+|---------|------------|----------------|
+| belt_1_0 | 1,369 | 2.49 |
+| belt_2_0 | 1,376 | 4.15 |
+| field_opt | 1,296 | 2.77 |
+| heavy | 1,667 | 2.79 |
+| expert | 2,275 | 3.30 |
 
-- `test-battery-heavy` — release profile bench
-- `test-battery-belt` — 2.0 belt validation
-- `exec-full-bench` — 3.0 compile + execution speed gate
+Artifact: `data/bench/latest.json` · Chart: `docs/assets/bench-all-chart.svg`
+
+## Field vs host compare
+
+```bash
+./scripts/grok16-toolchain.sh bench-compare
+```
+
+Artifact: `data/bench/compare-latest.json` · Chart: `docs/assets/compare-chart.svg`
+
+## Related
+
+- [Speed Bench](Speed-Bench) — full runner table + plate meld
+- [Profiles](Profiles) — belt_1_0, belt_2_0, field_opt, expert
+- [Release 4.7](Release) — bench-refresh pipeline

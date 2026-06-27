@@ -17,10 +17,10 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v11"></script>
-  <script src="manual-search.js?v11"></script>
-  <script src="manual-layout.js?v11"></script>
-  <link rel="stylesheet" href="manual.css?v11" />
+  <script src="manual-theme.js?v12"></script>
+  <script src="manual-search.js?v12"></script>
+  <script src="manual-layout.js?v12"></script>
+  <link rel="stylesheet" href="manual.css?v12" />
 </head>
 <body>
   <nav>
@@ -52,7 +52,7 @@
       <a href="speed-bench.html">Speed Bench</a>
       <a href="uncompiled.html">Uncompiled</a>
       <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 4.2</a>
+      <a href="release.html">Release 4.7</a>
       <a href="single-fabric.html">Single Fabric</a>
       <a href="safety.html">Safety</a>
       <a href="getting-started.html">Getting Started</a>
@@ -102,9 +102,9 @@
   <p>Workload: <code>examples/field-nexus-bench</code> — 240 frames, FieldX86 + entropy + wave + NEXUS.</p>
   <table>
     <tr><th>Toolchain</th><th>Profile</th><th>compile_ms</th><th>run wall_ms</th><th>binary bytes</th></tr>
-    <tr><td>host <code>g++</code></td><td><code>-O3 -march=native</code></td><td>4359</td><td>3</td><td>27,264</td></tr>
-    <tr><td> <code>g16</code></td><td><code>belt_1_0</code></td><td>3112</td><td>3</td><td>22,712</td></tr>
-    <tr><td> <code>g16</code></td><td><code>belt_2_0</code></td><td>3084</td><td>9</td><td>22,840</td></tr>
+    <tr><td>host <code>g++</code></td><td><code>-O3 -march=native</code></td><td>2015</td><td>3</td><td>27,264</td></tr>
+    <tr><td> <code>g16</code></td><td><code>belt_1_0</code></td><td>1774</td><td>3</td><td>22,712</td></tr>
+    <tr><td> <code>g16</code></td><td><code>belt_2_0</code></td><td>1527</td><td>4</td><td>22,840</td></tr>
   </table>
   <p><code>belt_1_0</code> matches host runtime; <code>belt_2_0</code> trades compile time for production single-fabric belt.</p>
   <pre><code>./scripts/grok16-toolchain.sh bench-triad

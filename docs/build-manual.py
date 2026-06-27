@@ -1,5 +1,5 @@
 #!/usr/bin/env pythong
-"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 4.0.0."""
+"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 4.7.0."""
 from __future__ import annotations
 
 import json
@@ -9,9 +9,12 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+
+from readme_front import write_index as write_readme_index
 DISTRO = "4.7.0"
 G16 = "16.2.0"
-CACHE = "v11"
+CACHE = "v12"
 BENCH_REPORT = "4.7.0"
 BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.1.0"
@@ -21,7 +24,7 @@ NAV = [
     ("speed-bench.html", "Speed Bench"),
     ("uncompiled.html", "Uncompiled"),
     ("cmake-linking.html", "CMake & Link"),
-    ("release.html", "Release 4.2"),
+    ("release.html", "Release 4.7"),
     ("single-fabric.html", "Single Fabric"),
     ("safety.html", "Safety"),
     ("getting-started.html", "Getting Started"),
@@ -241,80 +244,6 @@ def pages_dict() -> dict[str, tuple[str, str]]:
     table_compact = bench_table_html(bench, compact=True)
     triad_table = triad_table_html(triad)
     return {
-    "index.html": (
-        "Home",
-        f"""
-  <div class="bench-hero">
-    <div class="bench-stamps">
-      <span class="bench-stamp">report v{meta['report']}</span>
-      <span class="bench-stamp">distro {meta['distro']}</span>
-      <span class="bench-stamp">{meta['suite']} @ {meta['suite_ver']}</span>
-      <span class="bench-stamp">{meta['target_sec']}s window</span>
-    </div>
-    <h1>Speed bench — compile vs execution</h1>
-    <p class="lead">Versioned compile+exec benchmark on identical <code>speed_demo</code> kernel. Python = interpreter (~0.8M ops/s). C/C++ = chamber <strong>compile ahead</strong>, not line-by-line interpretation.</p>
-    <div class="winner-grid">
-      <div class="winner-card"><strong>Fastest execution</strong><span class="val">{meta['best_exec_ops']} ops/s</span><span class="sub">{meta['best_exec_label']}</span></div>
-      <div class="winner-card"><strong>Fastest compile</strong><span class="val">{meta['fast_compile_ms']} ms</span><span class="sub">{meta['fast_compile_label']}</span></div>
-      <div class="winner-card"><strong>Best Python</strong><span class="val">{meta['best_py_ops']} ops/s</span><span class="sub">no compile — interpreter</span></div>
-      <div class="winner-card"><strong>Best first-run</strong><span class="val">{meta['amort_ops']} eff.</span><span class="sub">{meta['amort_label']}</span></div>
-    </div>
-    <p><a href="speed-bench.html">Full speed bench manual →</a> · Host: <code>{meta['host']}</code> · {meta['bench_at']}</p>
-  </div>
-
-  <figure class="fig-wide">
-    <img src="assets/speed-bench-chart.svg" alt="Compile vs execution ops per second chart" width="920" height="280" loading="lazy" />
-    <figcaption>Compile time (one-time) vs execution throughput — report v{meta['report']}</figcaption>
-  </figure>
-
-  <div class="hero hero-image">
-    <img src="assets/g16-hero-banner.png" alt="" class="hero-bg" width="1200" height="675" />
-    <div class="hero-overlay">
-      <p class="hero-badge">Stable release {DISTRO} — Queen theme manual</p>
-      <h1>Grok16 Field Compiler</h1>
-      <p class="lead">Self-hosted <code>g16</code> @ <strong>{G16}</strong> — <strong>single fabric</strong> belt (<code>belt_2_0</code>), versioned speed bench, uncompiled doctrine, CMake &amp; linking guide.</p>
-      <p class="hero-cta">Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search commands, batteries, profiles, env vars.</p>
-    </div>
-  </div>
-
-  <h2>Engineer workflow</h2>
-  <div class="workflow">
-    <a href="getting-started.html#bootstrap"><strong>1 clone</strong>v{DISTRO} tag</a>
-    <a href="getting-started.html#rebuild"><strong>2 rebuild</strong>belt_2_0 + release</a>
-    <a href="speed-bench.html#reproduce"><strong>3 bench</strong>exec-full-bench v{meta['report']}</a>
-    <a href="uncompiled.html"><strong>4 uncompiled</strong>Python + chamber</a>
-    <a href="integration.html#integrate"><strong>5 integrate</strong>Queen / WRDT + safety</a>
-  </div>
-
-  <div class="figure-row">
-    <figure class="fig-card">
-      <img src="assets/uncompiled-chamber-flow.svg" alt="Uncompiled chamber flow" width="640" height="360" loading="lazy" />
-      <figcaption>Python interpreter lane · C/C++ compile-ahead cache</figcaption>
-    </figure>
-    <figure class="fig-card">
-      <img src="assets/cmake-link-pipeline.svg" alt="CMake and link pipeline" width="640" height="360" loading="lazy" />
-      <figcaption>Toolchain → g16 → g16-ld mandate</figcaption>
-    </figure>
-  </div>
-
-  <h2>Manuals</h2>
-  <table>
-    <tr><th>Doc</th><th>For engineers who need…</th></tr>
-    <tr><td><a href="speed-bench.html">Speed Bench</a></td><td>Versioned compile ms + execution ops/s — report v{meta['report']}</td></tr>
-    <tr><td><a href="uncompiled.html">Uncompiled</a></td><td>Python interpreter, chamber compile-ahead, Queen .launch</td></tr>
-    <tr><td><a href="cmake-linking.html">CMake &amp; Linking</a></td><td>Toolchain file, speed_demo CMake, g16-ld mandate</td></tr>
-    <tr><td><a href="release.html">Release 4.2</a></td><td>4.2 changelog — .launch chambers, MCP, power sort line safety</td></tr>
-    <tr><td><a href="single-fabric.html">Single Fabric</a></td><td>2.0 technology — one belt die, one field amplitude</td></tr>
-    <tr><td><a href="safety.html">Safety</a></td><td>Depth-field impossible, linear time, Ironclad gates</td></tr>
-    <tr><td><a href="getting-started.html">Getting Started</a></td><td>Bootstrap, rebuild modes, first verify</td></tr>
-    <tr><td><a href="architecture.html">Architecture</a></td><td>Forge pipeline, unified driver, directories</td></tr>
-    <tr><td><a href="batteries.html">Batteries</a></td><td>Validation tiers, CI gate, failure triage</td></tr>
-    <tr><td><a href="linker.html">Linker</a></td><td>g16-ld, 16 targets, mandate flags</td></tr>
-    <tr><td><a href="performance.html">Performance</a></td><td>Belt triad + speed bench suite</td></tr>
-    <tr><td><a href="reference.html">Reference</a></td><td>Commands, env vars, manifest paths</td></tr>
-  </table>
-""",
-    ),
     "speed-bench.html": (
         "Speed Bench",
         f"""
@@ -476,10 +405,22 @@ cmake --build build/g16 -j$(nproc)</code></pre>
 """,
     ),
     "release.html": (
-        "Release 4.2",
+        "Release 4.7",
         f"""
   <h1>Release {DISTRO}</h1>
-  <p>Grok16 <strong>4.2</strong> — portable <code>.launch</code> chambers, self-monitor bench v5, 17-platform matrix (incl. RISC-V), MCP server, power sort line safety. Compiler <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous: <code>v4.0.0</code>.</p>
+  <p>Grok16 <strong>4.7</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform matrix (incl. RISC-V). Compiler <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous: <code>v4.2.0</code>.</p>
+
+  <h2 id="charts">Speed &amp; comparison charts</h2>
+  <pre><code>./scripts/grok16-toolchain.sh bench-refresh
+# stepwise: bench-triad · bench-compare · bench-all · exec-comprehensive-bench · bench-charts</code></pre>
+  <table>
+    <tr><th>Chart</th><th>Asset</th></tr>
+    <tr><td>speed_demo compile + exec</td><td><code>docs/assets/speed-bench-chart.svg</code></td></tr>
+    <tr><td>belt triad</td><td><code>docs/assets/triad-chart.svg</code></td></tr>
+    <tr><td>field vs host compare</td><td><code>docs/assets/compare-chart.svg</code></td></tr>
+    <tr><td>bench-all profiles</td><td><code>docs/assets/bench-all-chart.svg</code></td></tr>
+  </table>
+  <p>Manifest: <code>data/bench/charts-manifest.json</code> · Live JSON: <code>data/bench/triad-latest.json</code>, <code>compare-latest.json</code>, <code>docs/field-exec-full-bench.json</code></p>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
@@ -490,28 +431,31 @@ export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh test-battery-release
 ./scripts/grok16-toolchain.sh test-battery-belt
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+./scripts/grok16-toolchain.sh bench-refresh
 ./scripts/grok16-toolchain.sh integrate</code></pre>
 
   <h2 id="shipped">What shipped</h2>
   <ul>
+    <li><strong>bench-refresh</strong> — one-shot triad + compare + bench-all + comprehensive exec + SVG charts + manual rebuild</li>
+    <li><strong>bench-charts</strong> — <code>scripts/grok16-bench-charts.py</code> generates comparison SVGs from live JSON</li>
+    <li><strong>performance.html</strong> — embeds triad, compare, and bench-all charts with live triad table</li>
+    <li><strong>gcc-14 host pin</strong> — speed bench chart header stamps host toolchain</li>
+    <li><strong>Legacy isolation chamber</strong> — sealed BASIC/Pascal/VB tests in SG/NewLatest</li>
     <li><strong>Speed bench v{meta['report']}</strong> — compile ms + execution ops/s with version stamps</li>
     <li><code>speed_demo</code> suite @ {meta['suite_ver']} — C, C++, CMake, Python (host + gpy-16)</li>
-    <li><strong>Uncompiled doctrine</strong> — Python interpreter; C/C++ chamber compile-ahead</li>
-    <li>Queen-themed manual — <a href="speed-bench.html">speed-bench</a>, <a href="uncompiled.html">uncompiled</a>, <a href="cmake-linking.html">cmake-linking</a></li>
-    <li><code>exec-full-bench</code> / <code>exec-compare</code> toolchain hooks</li>
-    <li>Single fabric + safety from 2.0 — <code>belt_2_0</code> default unchanged</li>
+    <li>Portable <code>.launch</code> chambers — <code>./scripts/grok16-launch-verify.sh</code></li>
+    <li>Multi-platform release — <code>./scripts/grok16-release.sh {DISTRO} --push</code></li>
   </ul>
 
-  <h2 id="upgrade">Upgrade from v2.0.0</h2>
+  <h2 id="upgrade">Upgrade from v4.2.0</h2>
   <ol>
     <li>Checkout <code>v{DISTRO}</code></li>
     <li><code>G16_BELT_PROFILE=belt_2_0 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
     <li><code>test-battery-release</code> then <code>test-battery-belt</code></li>
-    <li><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench</code></li>
+    <li><code>./scripts/grok16-toolchain.sh bench-refresh</code></li>
     <li><code>./scripts/grok16-integrate.sh</code> to publish env to SG consumers</li>
   </ol>
-  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.2.md">RELEASE-4.2.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="single-fabric.html">Single Fabric</a></p>
+  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md">RELEASE-4.7.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="single-fabric.html">Single Fabric</a></p>
 """,
     ),
     "getting-started.html": (
@@ -901,9 +845,10 @@ G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench
     }
 
 SEARCH_INDEX = [
-    {"t": "speed bench", "p": "speed-bench.html", "g": "4.2", "d": "Versioned compile ms execution ops/s report v4.2.0"},
+    {"t": "speed bench", "p": "speed-bench.html", "g": "4.7", "d": "Versioned compile ms execution ops/s report v4.7.0"},
     {"t": "exec-full-bench", "p": "speed-bench.html#reproduce", "g": "Bench", "d": "field-exec-full-bench compile and execution"},
-    {"t": "uncompiled", "p": "uncompiled.html", "g": "4.2", "d": "Python interpreter C C++ chamber compile ahead"},
+    {"t": "bench-refresh", "p": "release.html#charts", "g": "4.7", "d": "Regenerate triad compare bench-all charts SVG"},
+    {"t": "uncompiled", "p": "uncompiled.html", "g": "4.7", "d": "Python interpreter C C++ chamber compile ahead"},
     {"t": "cmake linking", "p": "cmake-linking.html", "g": "Build", "d": "grok16-toolchain.cmake g16-ld speed_demo"},
     {"t": "speed_demo", "p": "speed-bench.html", "g": "Suite", "d": "speed_demo v1.1.0 FieldX86 kernel bench"},
     {"t": "single fabric", "p": "single-fabric.html", "g": "2.0", "d": "One belt die one field amplitude knowing fixed-size"},
@@ -917,7 +862,7 @@ SEARCH_INDEX = [
     {"t": "test-battery-expert", "p": "batteries.html#expert", "g": "Battery", "d": "Ironclad linker RTX expert profile"},
     {"t": "g16-ld", "p": "linker.html", "g": "Linker", "d": "Field linker 16 targets mandate flags"},
     {"t": "GPY-16", "p": "toolkits.html#gpy16", "g": "Toolkit", "d": "Built-in Python GrokVM gpy-16"},
-    {"t": "v4.2.0", "p": "release.html", "g": "Release", "d": "Launch chambers MCP power sort line safety"},
+    {"t": "v4.7.0", "p": "release.html", "g": "Release", "d": "Bench refresh charts gcc-14 legacy isolation chamber"},
     {"t": "queen theme", "p": "index.html", "g": "UI", "d": "Queen navy gold emerald manual theme"},
     {"t": "bootstrap", "p": "getting-started.html#bootstrap", "g": "Workflow", "d": "First GCC fetch host build install"},
     {"t": "g16 unified", "p": "architecture.html#unified-driver", "g": "Driver", "d": "Single g16 C C++ Python discern"},
@@ -1002,6 +947,14 @@ def patch_concepts_single_fabric() -> None:
 
 
 def main() -> int:
+    bench = load_bench()
+    meta = bench_meta(bench)
+    write_readme_index(
+        page,
+        distro=meta["distro"],
+        g16=G16,
+        report=meta["report"],
+    )
     write_pages()
     write_search()
     patch_legacy_pages()

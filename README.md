@@ -82,11 +82,12 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 **Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **3.0** adds **versioned compile+execution speed bench**; **2.0** single fabric belt (`belt_2_0`), Ironclad safety meld, depth fields sealed and destroyed at integrated consumers.
 
-> **Grok16 4.2.0** — portable `.launch` chambers, self-monitor bench v5, 17-platform release (incl. RISC-V). Default profile `belt_2_0`. See [RELEASE-4.2.md](RELEASE-4.2.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
+> **Grok16 4.7.0** — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable `.launch` chambers, 17-platform release (incl. RISC-V). Default profile `belt_2_0`. See [RELEASE-4.7.md](RELEASE-4.7.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
 
 ```bash
 ./scripts/grok16-launch-verify.sh          # all example .launch chambers
-./scripts/grok16-release.sh 4.2.0 --push   # source tarball + platform matrix
+./scripts/grok16-toolchain.sh bench-refresh  # triad + compare + bench-all + charts
+./scripts/grok16-release.sh 4.7.0 --push   # source tarball + platform matrix
 ```
 
 ## What you get
@@ -106,7 +107,7 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 
-**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 4.2](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 4.7](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ### Single fabric & safety (2.0)
 
@@ -338,7 +339,7 @@ Add to `.cursor/mcp.json` — see [mcp/README.md](mcp/README.md) and [mcp/cursor
 
 | Tool | Role |
 |------|------|
-| `grok16_version` | Distro `4.0.0` + g16 `16.2.0` stamps |
+| `grok16_version` | Distro `4.7.0` + g16 `16.2.0` stamps |
 | `grok16_toolchain` | `status` · `verify` · `exec-bsp-bench` · battery gates |
 | `grok16_rtx_gate` | `queen_rtx` permit |
 | `grok16_speed_bench` | Published bench JSON |

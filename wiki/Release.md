@@ -1,58 +1,88 @@
-# Release 4.0.0
+# Release 4.7.0
 
-**Tag:** `v4.0.0` · **Compiler:** 16.2.0 · **Previous tag:** v3.0.0
+**Tag:** `v4.7.0` · **Compiler:** `g16 @ 16.2.0` · **Previous tag:** v4.2.0 · **Platforms:** 17 (incl. RISC-V)
 
-Web: [release.html](https://zacharygeurts.github.io/Grok16/release.html) · Repo: [RELEASE-4.0.md](https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.0.md)
+Web: [release.html](https://zacharygeurts.github.io/Grok16/release.html) · Repo: [RELEASE-4.7.md](https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md)
 
-## Speed bench (report v4.0.0)
+## Speed & comparison charts (refreshed)
 
-Versioned **compile + execution** benchmark — `speed_demo` suite @ `1.1.0`, 3s window, schema v4.
+```bash
+./scripts/grok16-toolchain.sh bench-refresh
+# stepwise: bench-triad · bench-compare · bench-all · exec-comprehensive-bench · bench-charts
+```
+
+| Chart | Asset |
+|-------|-------|
+| speed_demo compile + exec | `docs/assets/speed-bench-chart.svg` |
+| belt triad | `docs/assets/triad-chart.svg` |
+| field vs host compare | `docs/assets/compare-chart.svg` |
+| bench-all profiles | `docs/assets/bench-all-chart.svg` |
+
+Manifest: `data/bench/charts-manifest.json`
+
+## Speed bench (report v4.7.0)
+
+Versioned **compile + execution** benchmark — `speed_demo` suite @ `1.1.0`, 3s window, schema v5.
 
 | Category | Winner |
 |----------|--------|
-| Fastest execution | CMake host g++ -O2 — **85.8M ops/s** |
-| Best g16 C++ (plate meld) | g16 sense expert — **82.1M ops/s** |
-| Best Python | gpy-16 GrokVM — **777K ops/s** |
+| Fastest execution | C++ host g++ -O2 — **95.3M ops/s** |
+| Best g16 C++ | g16 belt_2_0 — **92.6M ops/s** |
+| Fastest compile | C g16 belt_1_0 — **357 ms** |
+| Best Python | host CPython 3 — **800K ops/s** |
 
-Wiki: [Speed-Bench](Speed-Bench) · [Field-Research](Field-Research)
+Wiki: [Speed-Bench](Speed-Bench) · [Performance](Performance) · [Field-Research](Field-Research)
 
-## MCP server (new in 4.0)
+## Toolchain pairing
+
+- **Host gcc-14** — bench-triad and bench-compare witness
+- **pythong 16.1.0-gpy16** — GPY-16 driver pairing on speed bench reports
+- **g16 @ 16.2.0** — `belt_2_0` default single-fabric profile
+
+## .launch chambers
+
+```bash
+export GROK16_ROOT=/path/to/Grok16 SG_ROOT=/path/to/SG
+./scripts/grok16-launch-verify.sh
+```
+
+## MCP server (since 4.0)
 
 Agents connect via [mcp/grok16_mcp_server.py](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/grok16_mcp_server.py):
 
-- `grok16_version` — distro 4.0.0 stamps
+- `grok16_version` — distro 4.7.0 stamps
 - `grok16_toolchain` — status, verify, bench gates
 - `grok16_rtx_gate` — queen_rtx permit
 - `grok16_speed_bench` — published JSON
-- `grok16_power_sort` — cool combinatorics plate
+- `grok16_power_sort` — power sort plate
 
 Setup: [mcp/README.md](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/README.md)
 
 ## Checkout & gates
 
 ```bash
-git checkout v4.0.0
+git checkout v4.7.0
 export G16_PREFIX="$(pwd)"
 export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh test-battery-release
 ./scripts/grok16-toolchain.sh test-battery-belt
-SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+./scripts/grok16-toolchain.sh bench-refresh
 ./scripts/grok16-toolchain.sh integrate
-pip install -r requirements-mcp.txt
 ```
 
 ## Highlights
 
-- **Power sort plate** — Ironclad meld, cool_sort thermal layers, section availability
-- **Speed bench v4.0.0** — distro tag + schema v4 on every bench run
-- **MCP** — Cursor / Claude Desktop toolchain bridge
+- **bench-refresh** — one-shot pipeline for all comparison charts and JSON reports
+- **performance.html** — embeds triad, compare, and bench-all charts
+- **Legacy isolation chamber** — sealed legacy language tests in SG/NewLatest
+- **README front page** — GitHub Pages home mirrors repository README
+- Portable `.launch` chambers and 17-platform release matrix
 - Single fabric + safety from 2.0 — `belt_2_0` default unchanged
 
-## Upgrade from 3.0.0
+## Upgrade from 4.2.0
 
-1. `git checkout v4.0.0`
+1. `git checkout v4.7.0`
 2. `test-battery-release` + `test-battery-belt`
-3. `SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench` — compare to `docs/field-exec-full-bench.json`
-4. Wire MCP: copy `mcp/cursor-mcp.json.example` into your Cursor config
-5. `./scripts/grok16-integrate.sh` before consumer deploy
+3. `./scripts/grok16-toolchain.sh bench-refresh` — compare charts to `docs/assets/`
+4. `./scripts/grok16-integrate.sh` before consumer deploy
