@@ -1,11 +1,11 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-5.0.0--staging-yellow)
+![Status](https://img.shields.io/badge/release-5.0.0-stable-green)
 ![Bench](https://img.shields.io/badge/speed__bench-v5.0.0-gold)
 ![Launch](https://img.shields.io/badge/.launch-ready-blue)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
-![Track](https://img.shields.io/badge/shipped-4.8%20%E2%86%92%205.0-lightgrey)
+![Track](https://img.shields.io/badge/shipped-5.0.0-stable-lightgrey)
 ![RISC](https://img.shields.io/badge/RISC--V-linux--gnu--riscv64-orange)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
@@ -13,7 +13,7 @@
 
 ## Speed bench — all executions tested (report v5.0.0)
 
-**Distro 5.0.0 staging** (4.8 update shipped) · **suite `speed_demo` @ 1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**  
+**Distro 5.0.0 stable** · **suite `speed_demo` @ 1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**  
 Host: `default-X870-Pro-RS` · [field-exec-full-bench.json](docs/field-exec-full-bench.json) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
 ### Winners (cold exec, BSP rocket)
@@ -82,12 +82,12 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 **Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **3.0** adds **versioned compile+execution speed bench**; **2.0** single fabric belt (`belt_2_0`), Ironclad safety meld, depth fields sealed and destroyed at integrated consumers.
 
-> **Grok16 4.7.1** — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable `.launch` chambers, 17-platform release (incl. RISC-V). Default profile `belt_2_0`. See [RELEASE-4.7.md](RELEASE-4.7.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
+> **Grok16 5.0.0** — belt_2_0 single-fabric default, Speed Bench v5 locked, RISC-V + `.launch` chambers, Queen/World_Redata canonical integration. See [RELEASE-5.0.md](RELEASE-5.0.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
 
 ```bash
 ./scripts/grok16-launch-verify.sh          # all example .launch chambers
 ./scripts/grok16-toolchain.sh bench-refresh  # triad + compare + bench-all + charts
-./scripts/grok16-release.sh 4.7.1 --push   # source tarball + platform matrix
+./scripts/grok16-release.sh 5.0.0 --push   # source tarball + platform matrix
 ```
 
 ## What you get
@@ -107,7 +107,7 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 
-**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 4.7](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 5.0](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ### Single fabric & safety (2.0)
 
@@ -152,7 +152,7 @@ Full detail: [ARCHITECTURE.md](ARCHITECTURE.md).
 git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
 export G16_PREFIX="$(pwd)"          # install prefix = repo root
-export G16_PKGVERSION=Grok16-16.2.0
+export G16_PKGVERSION=Grok16-5.0.0
 export G16_BELT_PROFILE=belt_2_0
 
 ./scripts/grok16-toolchain.sh bootstrap   # fetch + host build + install
