@@ -73,7 +73,7 @@
 
   <figure class="fig-wide readme-charts">
     <img src="assets/speed-bench-chart.svg" alt="Speed bench compile vs execution" width="920" height="280" loading="eager" />
-    <figcaption>Speed bench report v4.7.1 · distro 4.7.1 · <a href="speed-bench.html">full manual →</a></figcaption>
+    <figcaption>Speed bench report v5.0.0 · distro 5.0.0 · <a href="speed-bench.html">full manual →</a></figcaption>
   </figure>
   <div class="figure-row readme-charts-row">
     <figure class="fig-card">
@@ -87,18 +87,18 @@
   </div>
   <article class="readme-prose">
 <h1>Grok16</h1>
-<p><img src="https://img.shields.io/badge/release-4.7.1-brightgreen" alt="Status" loading="lazy" /></p>
-<p><img src="https://img.shields.io/badge/speed__bench-v4.7.1-gold" alt="Bench" loading="lazy" /></p>
+<p><img src="https://img.shields.io/badge/release-5.0.0-stable-green" alt="Status" loading="lazy" /></p>
+<p><img src="https://img.shields.io/badge/speed__bench-v5.0.0-gold" alt="Bench" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/.launch-ready-blue" alt="Launch" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/G16-16.2.0-blue" alt="Version" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/belt-2.0-purple" alt="Belt" loading="lazy" /></p>
-<p><img src="https://img.shields.io/badge/roadmap-4.7%20%E2%86%92%204.8-lightgrey" alt="Track" loading="lazy" /></p>
+<p><img src="https://img.shields.io/badge/shipped-5.0.0-stable-lightgrey" alt="Track" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/RISC--V-linux--gnu--riscv64-orange" alt="RISC" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/license-GPLv3-green" alt="License" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/upstream-gcc--15-lightgrey" alt="Base" loading="lazy" /></p>
 <p><img src="https://img.shields.io/badge/default-gnu++26-purple" alt="C++" loading="lazy" /></p>
-<h2>Speed bench — all executions tested (report v4.7.1)</h2>
-<p><strong>Distro 4.7.1</strong> · <strong>suite <code>speed_demo</code> @ 1.1.0</strong> · <strong>schema v5</strong> · <strong>11 runners</strong> · <strong>3s window</strong> · <strong>2026-06-27</strong>  </p>
+<h2>Speed bench — all executions tested (report v5.0.0)</h2>
+<p><strong>Distro 5.0.0 stable</strong> · <strong>suite <code>speed_demo</code> @ 1.1.0</strong> · <strong>schema v5</strong> · <strong>11 runners</strong> · <strong>3s window</strong> · <strong>2026-06-27</strong>  </p>
 <p>Host: <code>default-X870-Pro-RS</code> · <a href="field-exec-full-bench.json">field-exec-full-bench.json</a> · <a href="https://zacharygeurts.github.io/Grok16/speed-bench.html">web manual</a></p>
 <h3>Winners (cold exec, BSP rocket)</h3>
 <table>
@@ -153,10 +153,19 @@ G16_FORCE_COMPILE=1 ./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
 <p>JSON: <code>docs/field-exec-full-bench.json</code> · Doctrine: <code>data/grok16-plate-meld-bench-doctrine.json</code></p>
 <hr />
 <p><strong>Grok16</strong> is a <strong>self-hosted G16 field compiler</strong> — unified ELF <code>g16</code> @ <strong>16.2.0</strong> auto-detects C (<code>gnu17</code>) and C++ (<code>gnu++26</code>); <code>g++16</code> is a compat symlink. <strong>3.0</strong> adds <strong>versioned compile+execution speed bench</strong>; <strong>2.0</strong> single fabric belt (<code>belt_2_0</code>), Ironclad safety meld, depth fields sealed and destroyed at integrated consumers.</p>
-<blockquote><p><strong>Grok16 4.7.1</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform release (incl. RISC-V). Default profile <code>belt_2_0</code>. See <a href="release.html">RELEASE-4.7.md</a> and <a href="https://github.com/ZacharyGeurts/Grok16/wiki/Speed-Bench">wiki/Speed-Bench.md</a>.</p></blockquote>
+<blockquote><p><strong>Grok16 5.0.0</strong> — belt_2_0 single-fabric default, Speed Bench v5 locked, RISC-V + <code>.launch</code> chambers, Queen/World_Redata canonical integration. See <a href="release.html">RELEASE-5.0.md</a> and <a href="https://github.com/ZacharyGeurts/Grok16/wiki/Speed-Bench">wiki/Speed-Bench.md</a>.</p></blockquote>
+<h3>Version legend</h3>
+<table>
+<tr><th>Field</th><th>Value</th><th>Meaning</th></tr>
+<tr><td><code>g16_version</code></td><td><strong>16.2.0</strong></td><td>Compiler engine / <code>-dumpversion</code></td></tr>
+<tr><td><code>distro_version</code></td><td><strong>5.0.0</strong></td><td>Product release track (README, pkgversion)</td></tr>
+<tr><td><code>upload_version</code></td><td><strong>4.9.0</strong></td><td>GitHub release asset tag (<code>v4.9.0</code>) — distro stays 5.0.0</td></tr>
+<tr><td><code>tag</code></td><td><strong>v5.0.0</strong></td><td>Source tree git tag for 5.0 stable</td></tr>
+</table>
+<p><strong>Thermal note:</strong> <code>field_opt</code> / <code>belt_2_0</code> use <code>-ffast-math</code> for throughput. For sustained NEXUS/CANVAS kernels that must preserve entropy/FP invariants, use <strong><code>field_physics</code></strong> — see <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/PERFORMANCE.md">PERFORMANCE.md</a>.</p>
 <pre><code>./scripts/grok16-launch-verify.sh          # all example .launch chambers
 ./scripts/grok16-toolchain.sh bench-refresh  # triad + compare + bench-all + charts
-./scripts/grok16-release.sh 4.7.1 --push   # source tarball + platform matrix</code></pre>
+./scripts/grok16-release.sh 5.0.0 --push   # source tarball + platform matrix</code></pre>
 <h2>What you get</h2>
 <table>
 <tr><th>Artifact</th><th>Role</th></tr>
@@ -172,7 +181,7 @@ G16_FORCE_COMPILE=1 ./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
 <tr><td><code>PERFORMANCE.md</code></td><td>Field-Opt before/after metrics + reproduction steps</td></tr>
 </table>
 <p>Local trees (<code>vendor/</code>, <code>build/</code>, <code>bin/</code>) are produced on your machine (~6G).</p>
-<p><strong>Manual:</strong> <a href="https://zacharygeurts.github.io/Grok16/">zacharygeurts.github.io/Grok16</a> · <a href="https://zacharygeurts.github.io/Grok16/speed-bench.html">Speed Bench</a> · <a href="https://zacharygeurts.github.io/Grok16/uncompiled.html">Uncompiled</a> · <a href="https://zacharygeurts.github.io/Grok16/cmake-linking.html">CMake &amp; Linking</a> · <a href="https://zacharygeurts.github.io/Grok16/release.html">Release 4.7</a> · <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a> · <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a></p>
+<p><strong>Manual:</strong> <a href="https://zacharygeurts.github.io/Grok16/">zacharygeurts.github.io/Grok16</a> · <a href="https://zacharygeurts.github.io/Grok16/speed-bench.html">Speed Bench</a> · <a href="https://zacharygeurts.github.io/Grok16/uncompiled.html">Uncompiled</a> · <a href="https://zacharygeurts.github.io/Grok16/cmake-linking.html">CMake &amp; Linking</a> · <a href="https://zacharygeurts.github.io/Grok16/release.html">Release 5.0</a> · <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a> · <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a></p>
 <h3>Single fabric &amp; safety (2.0)</h3>
 <table>
 <tr><th>Doctrine</th><th>Role</th></tr>
@@ -209,7 +218,7 @@ G16_FORCE_COMPILE=1 ./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
 <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
 export G16_PREFIX=&quot;$(pwd)&quot;          # install prefix = repo root
-export G16_PKGVERSION=Grok16-16.2.0
+export G16_PKGVERSION=Grok16-5.0.0
 export G16_BELT_PROFILE=belt_2_0
 
 ./scripts/grok16-toolchain.sh bootstrap   # fetch + host build + install
@@ -257,6 +266,7 @@ export GROK16_USE_CCACHE=1
 <table>
 <tr><th>Profile</th><th>CMake include</th><th>Use case</th></tr>
 <tr><td><code>field_opt</code></td><td><code>cmake/grok16-profile-field-opt.cmake</code></td><td><strong>Primary</strong> — entropy/oracle, wave phase, FieldX86 throughput</td></tr>
+<tr><td><code>field_physics</code></td><td><code>cmake/grok16-profile-field-physics.cmake</code></td><td><strong>Physics-safe</strong> — belt_2_0 without <code>-ffast-math</code> + thermal guard</td></tr>
 <tr><td><code>ai</code></td><td><code>cmake/grok16-profile-ai.cmake</code></td><td>NEXUS scoring, matrix/simd/mdspan paths</td></tr>
 <tr><td><code>field_compute</code></td><td><code>cmake/grok16-profile-field.cmake</code></td><td>FieldX86 / CANVAS dispatch kernels</td></tr>
 <tr><td><code>vulkan_rtx</code></td><td><code>cmake/grok16-profile-vulkan.cmake</code></td><td>AMOURANTHRTX-style SIMD CPU prep</td></tr>
@@ -313,7 +323,7 @@ pythong NewLatest/Queen/lib/queen-forge.py run rtx</code></pre>
 <tr><td><code>G16_FIELD_SPEED</code></td><td><code>1</code> → Field-Opt profile (default bench)</td></tr>
 <tr><td><code>G16_RELEASE_PROFILE</code></td><td><code>1</code> → production LTO + PGO + field_opt</td></tr>
 <tr><td><code>G16_FULL_REBUILD</code></td><td><code>1</code> → disable fast-rebuild default</td></tr>
-<tr><td><code>G16_BENCH_PROFILE</code></td><td><code>field_opt</code> \</td><td><code>ai</code> \</td><td><code>field_compute</code> \</td><td><code>vulkan_rtx</code></td></tr>
+<tr><td><code>G16_BENCH_PROFILE</code></td><td><code>field_opt</code> \</td><td><code>field_physics</code> \</td><td><code>belt_2_0</code> \</td><td><code>ai</code> \</td><td><code>field_compute</code> \</td><td><code>vulkan_rtx</code></td></tr>
 </table>
 <p>Template: <code>data/grok16-config.json</code>.</p>
 <h2>SG desktop (Queen → Grok16)</h2>

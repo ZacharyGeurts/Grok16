@@ -74,23 +74,23 @@
   <h1>Performance</h1>
   <p>Measured: Linux x86_64, <code>g16 (Grok16-16.2.0) 16.2.0</code>, gnu++26. Repo: <code>PERFORMANCE.md</code>.</p>
 
-  <h2 id="speed-bench">Speed bench (report v4.7.1)</h2>
+  <h2 id="speed-bench">Speed bench (report v5.0.0)</h2>
   <p>Suite <code>speed_demo</code> @ <code>1.1.0</code> — compile ms + execution ops/s. Full manual: <a href="speed-bench.html">Speed Bench</a>.</p>
   <pre><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
 ./scripts/grok16-toolchain.sh exec-compare</code></pre>
   <table>
     <tr><th>Runner</th><th>Compile (ms)</th><th>ops/s</th></tr>
-    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td><strong>84,873,248.15</strong></td></tr>
-    <tr><td>CMake — host g++ -O2</td><td>—</td><td><strong>82,218,972.32</strong></td></tr>
-    <tr><td>C++ — g16 sense hostess_secure</td><td>—</td><td><strong>78,352,710.24</strong></td></tr>
-    <tr><td>C++ — host g++ -O2</td><td>—</td><td><strong>78,141,944.13</strong></td></tr>
-    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td><strong>73,905,275.09</strong></td></tr>
-    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td><strong>68,895,542.15</strong></td></tr>
-    <tr><td>C — g16 belt_1_0</td><td>—</td><td><strong>67,976,456.75</strong></td></tr>
-    <tr><td>C — host gcc -O2</td><td>—</td><td><strong>67,677,454.11</strong></td></tr>
-    <tr><td>C — g16 belt_2_0</td><td>—</td><td><strong>64,340,647.49</strong></td></tr>
-    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td><strong>710,020.71</strong></td></tr>
-    <tr><td>Python — host CPython 3</td><td>—</td><td><strong>683,227.28</strong></td></tr>
+    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td><strong>102,843,184.74</strong></td></tr>
+    <tr><td>C++ — host g++ -O2</td><td>—</td><td><strong>101,093,393.65</strong></td></tr>
+    <tr><td>C — g16 belt_1_0</td><td>—</td><td><strong>99,454,820.63</strong></td></tr>
+    <tr><td>CMake — host g++ -O2</td><td>—</td><td><strong>98,892,364.74</strong></td></tr>
+    <tr><td>C — host gcc -O2</td><td>—</td><td><strong>97,416,875.40</strong></td></tr>
+    <tr><td>C — g16 belt_2_0</td><td>—</td><td><strong>95,729,447.71</strong></td></tr>
+    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td><strong>95,052,367.49</strong></td></tr>
+    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td><strong>93,388,093.30</strong></td></tr>
+    <tr><td>C++ — g16 sense belt_2_0</td><td>—</td><td><strong>91,070,985.42</strong></td></tr>
+    <tr><td>Python — host CPython 3</td><td>—</td><td><strong>843,828.62</strong></td></tr>
+    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td><strong>755,552.29</strong></td></tr>
   </table>
 
   <figure class="fig-wide">
@@ -103,8 +103,8 @@
   <table>
     <tr><th>Toolchain</th><th>Profile</th><th>compile_ms</th><th>run wall_ms</th><th>binary bytes</th></tr>
     <tr><td>host <code>g++</code></td><td><code>-O3 -march=native</code></td><td>2078</td><td>4</td><td>27,264</td></tr>
-    <tr><td> <code>g16</code></td><td><code>belt_1_0</code></td><td>1774</td><td>3</td><td>22,712</td></tr>
-    <tr><td> <code>g16</code></td><td><code>belt_2_0</code></td><td>1527</td><td>4</td><td>22,840</td></tr>
+    <tr><td> <code>g16</code></td><td><code>belt_1_0</code></td><td>6625</td><td>2</td><td>22,696</td></tr>
+    <tr><td> <code>g16</code></td><td><code>belt_2_0</code></td><td>6626</td><td>4</td><td>22,824</td></tr>
   </table>
   <p><code>belt_1_0</code> matches host runtime; <code>belt_2_0</code> trades compile time for production single-fabric belt.</p>
   <pre><code>./scripts/grok16-toolchain.sh bench-triad

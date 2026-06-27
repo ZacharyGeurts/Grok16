@@ -3,7 +3,7 @@
 #      -DCMAKE_PROJECT_INCLUDE=$GROK16_ROOT/cmake/grok16-field.cmake
 #
 # Optional env/cache:
-#   GROK16_FIELD_PROFILE = field_opt | ai | field_compute | vulkan_rtx | queen_rtx
+#   GROK16_FIELD_PROFILE = field_opt | field_physics | ai | field_compute | vulkan_rtx | queen_rtx
 
 if(NOT DEFINED GROK16_ROOT)
   if(DEFINED ENV{GROK16_ROOT} AND NOT "$ENV{GROK16_ROOT}" STREQUAL "")
@@ -42,6 +42,8 @@ elseif(GROK16_FIELD_PROFILE STREQUAL "ai")
   set(_GROK16_PROFILE_CMAKE "${GROK16_ROOT}/cmake/grok16-profile-ai.cmake")
 elseif(GROK16_FIELD_PROFILE STREQUAL "queen_rtx")
   set(_GROK16_PROFILE_CMAKE "${GROK16_ROOT}/cmake/grok16-profile-field-opt.cmake")
+elseif(GROK16_FIELD_PROFILE STREQUAL "field_physics")
+  set(_GROK16_PROFILE_CMAKE "${GROK16_ROOT}/cmake/grok16-profile-field-physics.cmake")
 elseif(GROK16_FIELD_PROFILE STREQUAL "belt_2_0")
   set(_GROK16_PROFILE_CMAKE "${GROK16_ROOT}/cmake/grok16-profile-belt-2.cmake")
 elseif(GROK16_FIELD_PROFILE STREQUAL "belt_1_0")

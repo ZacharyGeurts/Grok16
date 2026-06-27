@@ -1,6 +1,28 @@
-# Grok16 Performance — G16 @ 16.2.0 / distro 2.0.0 belt
+# Grok16 Performance — G16 @ 16.2.0 / distro 5.0.0 belt
 
 Measured on **Linux x86_64** with self-hosted `g16 (Grok16-16.2.0)`, **gnu++26** (`__cplusplus=202400`).
+
+## Thermal / FP safety — `field_opt` vs `field_physics`
+
+**`field_opt` and `belt_2_0` use `-ffast-math` and unlimited vectorization.** That is correct for raw throughput benchmarks, but it can:
+
+- Relax IEEE-754 ordering and break **entropy checksum invariants** (e.g. `nexus_checksum` may report `-nan`).
+- Create **sustained compute hotspots** in NEXUS/CANVAS kernels on FieldX86 dies.
+
+**Use `field_physics` for production Field workloads that must preserve FP/entropy invariants:**
+
+```bash
+export GROK16_FIELD_PROFILE=field_physics   # CMake consumers
+G16_BENCH_PROFILE=field_physics ./scripts/grok16-toolchain.sh bench
+```
+
+`field_physics` = belt_2_0 dispatch + Hostess gates + **`grok16-thermal-guard.cmake`** — **no `-ffast-math`**, `-fvect-cost-model=dynamic` instead of `unlimited`.
+
+| Profile | `-ffast-math` | Thermal guard | Use |
+|---------|---------------|---------------|-----|
+| `field_opt` | yes | optional | bench / max throughput |
+| `belt_2_0` | yes | via field.cmake | default distro belt |
+| **`field_physics`** | **no** | **yes** | NEXUS/CANVAS sustained kernels |
 
 ## Belt triad (`bench-triad`) — host gcc vs belt 1.0 vs belt 2.0
 
@@ -85,6 +107,6 @@ Parity confirms WRDT/WRZC bytes roundtrip through the G16-built `world-redata` b
 
 ## Notes
 
-- `nexus_checksum` under `-ffast-math` may report `-nan`; wall_ms is the primary throughput metric.
+- `nexus_checksum` under `-ffast-math` may report `-nan`; use **`field_physics`** when checksum truth matters; wall_ms is the primary throughput metric for bench triads.
 - Thin LTO (`-flto=thin`) falls back to `-flto` when the installed g++16 does not support thin.
 - Full install prefix (`lib/gcc/.../include`) removes the need for `-B` driver workaround.

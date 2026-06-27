@@ -26,7 +26,7 @@ Environment (see data/grok16-config.json):
   G16_PKGVERSION G16_CXX_STD G16_C_STD G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
   G16_FAST_REBUILD G16_FULL_REBUILD G16_RELEASE_PROFILE G16_FIELD_SPEED
   G16_ENABLE_LTO G16_ENABLE_PGO G16_PGO_GENERATE GROK16_USE_CCACHE
-  G16_BENCH_PROFILE (field_opt|belt_1_0|belt_2_0|ai|field_compute|vulkan_rtx)
+  G16_BENCH_PROFILE (field_opt|field_physics|belt_1_0|belt_2_0|ai|field_compute|vulkan_rtx)
   G16_BELT_PROFILE (belt_1_0|belt_2_0) — default belt_2_0 on distro 2.0
 EOF
   exit 2

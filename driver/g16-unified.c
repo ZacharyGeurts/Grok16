@@ -173,6 +173,8 @@ static int path_is_safe(const char *path)
     return 1;
 }
 
+static int argv_has_source(int argc, char **argv, int (*pred)(const char *));
+
 static int argv_has_mixed_c_cpp(int argc, char **argv)
 {
     int has_c = argv_has_source(argc, argv, has_c_extension);

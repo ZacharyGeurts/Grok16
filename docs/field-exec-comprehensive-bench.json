@@ -1,15 +1,15 @@
 {
   "schema": "grok16-comprehensive-bench/v2",
   "assembled_by": "scripts/field-exec-comprehensive-bench.py",
-  "bench_wall_ms": 26055.04,
+  "bench_wall_ms": 98342.12,
   "self_monitor": {
     "schema": "g16-self-monitor/v1",
     "monitor_version": "1.0.0",
     "runs": 4,
     "dropped": 0,
     "timeouts": 0,
-    "heartbeat_ticks": 1,
-    "total_wall_ms": 26053.08,
+    "heartbeat_ticks": 5,
+    "total_wall_ms": 98339.49,
     "ok": true
   },
   "steps": [
@@ -17,11 +17,11 @@
       "step": "bench-all",
       "rc": 0,
       "monitor": {
-        "wall_ms": 104.03,
+        "wall_ms": 41820.58,
         "dropped": false,
         "timeout_hit": false,
         "drop_reason": "",
-        "heartbeat_ticks": 0,
+        "heartbeat_ticks": 2,
         "rc": 0
       },
       "profiles": [
@@ -37,7 +37,7 @@
       "step": "exec-stage",
       "rc": 0,
       "monitor": {
-        "wall_ms": 403.19,
+        "wall_ms": 401.36,
         "dropped": false,
         "timeout_hit": false,
         "drop_reason": "",
@@ -48,13 +48,13 @@
     {
       "step": "exec-full-bench",
       "rc": 0,
-      "target_sec": 1,
+      "target_sec": 3,
       "monitor": {
-        "wall_ms": 18081.41,
+        "wall_ms": 34573.16,
         "dropped": false,
         "timeout_hit": false,
         "drop_reason": "",
-        "heartbeat_ticks": 1,
+        "heartbeat_ticks": 2,
         "rc": 0
       }
     },
@@ -62,19 +62,19 @@
       "step": "exec-compare",
       "rc": 0,
       "monitor": {
-        "wall_ms": 7464.45,
+        "wall_ms": 21544.39,
         "dropped": false,
         "timeout_hit": false,
         "drop_reason": "",
-        "heartbeat_ticks": 0,
+        "heartbeat_ticks": 1,
         "rc": 0
       }
     }
   ],
   "exec_full_bench": {
     "schema": "grok16-field-exec-full-bench/v5",
-    "bench_at": "2026-06-27T14:31:48Z",
-    "target_sec": 1,
+    "bench_at": "2026-06-27T19:20:27Z",
+    "target_sec": 3,
     "kernel": "speed_demo \u2014 FieldX86 loop (256\u00d716 die, 240 frames/epoch, 512 prog_ops/frame)",
     "kernel_spec": {
       "profile": "belt_1_0",
@@ -99,14 +99,14 @@
     "host_uname": "Linux default-X870-Pro-RS 6.14.0-37-generic #37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2 x86_64",
     "versions": {
       "schema": "grok16-speed-bench-version/v5",
-      "distro_version": "4.7.1",
-      "distro_tag": "v4.7.1",
+      "distro_version": "5.0.0",
+      "distro_tag": "v5.0.0",
       "g16_pkgversion": "Grok16-16.2.0",
-      "g16_dumpversion": "16.1.1",
+      "g16_dumpversion": "16.2.0",
       "bench_suite": "speed_demo",
       "bench_suite_version": "1.1.0",
-      "report_version": "4.7.1",
-      "runners_version": "4.7.1"
+      "report_version": "5.0.0",
+      "runners_version": "5.0.0"
     },
     "self_monitor": {
       "schema": "g16-self-monitor/v1",
@@ -115,65 +115,65 @@
       "dropped": 0,
       "timeouts": 0,
       "heartbeat_ticks": 0,
-      "total_wall_ms": 14487.57,
+      "total_wall_ms": 34033.12,
       "ok": true
     },
     "metrics": {
-      "bench_wall_ms": 14517.31,
+      "bench_wall_ms": 34052.26,
       "cpu_count": 24,
       "compile_total_ms": 0,
-      "exec_total_ms": 11125.7,
+      "exec_total_ms": 33154.6,
       "mean_compile_ms": 0,
       "median_compile_ms": 0,
-      "mean_ops_per_sec": 60706863.49,
-      "max_ops_per_sec": 84873248.15,
+      "mean_ops_per_sec": 79685537.64,
+      "max_ops_per_sec": 102843184.74,
       "rows_total": 11,
       "rows_exec_ok": 11,
       "rows_dropped": 0,
       "rows_timeout": 0,
-      "runner_overhead_mean_ms": 53.13
+      "runner_overhead_mean_ms": 43.2
     },
     "plate_meld": {
       "context": {
-        "meld_ms": 354.56,
-        "sense_ms": 101.49,
+        "meld_ms": 100.93,
+        "sense_ms": 100.77,
         "meld_monitor": {
-          "wall_ms": 354.56,
+          "wall_ms": 100.93,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 351.06,
-          "stdout_bytes": 890833,
-          "stderr_bytes": 0,
-          "rc": 0
+          "last_activity_ms": 84.31,
+          "stdout_bytes": 0,
+          "stderr_bytes": 1710,
+          "rc": 1
         },
         "sense_monitor": {
-          "wall_ms": 101.49,
+          "wall_ms": 100.77,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 61.8,
-          "stdout_bytes": 1589,
-          "stderr_bytes": 0,
-          "rc": 0
+          "last_activity_ms": 81.22,
+          "stdout_bytes": 0,
+          "stderr_bytes": 1699,
+          "rc": 1
         },
-        "meld_generation": 6,
-        "meld_chain_hash": "069b11d725c4eae2",
-        "sense_profile": "hostess_secure",
-        "sense_reason": "sense_watch",
-        "sense_score": 0.35,
-        "eye_ok": false,
-        "ear_ok": true,
-        "mouth_ok": false,
-        "plates_fused": 24
+        "meld_generation": 0,
+        "meld_chain_hash": "",
+        "sense_profile": "belt_2_0",
+        "sense_reason": "unknown",
+        "sense_score": null,
+        "eye_ok": null,
+        "ear_ok": null,
+        "mouth_ok": null,
+        "plates_fused": 0
       },
       "doctrine": "data/grok16-plate-meld-bench-doctrine.json",
-      "post_meld_exec_ratio": 0.9322,
-      "sense_vs_belt_2_ops_ratio": 1.0602,
+      "post_meld_exec_ratio": 0.9081,
+      "sense_vs_belt_2_ops_ratio": 0.8855,
       "sense_vs_belt_2_compile_delta_ms": 0,
-      "meld_helps_profile": true,
+      "meld_helps_profile": false,
       "meld_helps_exec_hot_path": false
     },
     "bsp": {
@@ -230,40 +230,49 @@
         "ts": "2026-06-26T23:00:20.558674+00:00"
       },
       {
-        "profile": "field_opt",
+        "profile": "field_physics",
         "pgo_kind": "cxx",
-        "compile_ms": 1337,
-        "run_ms": 8,
-        "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.86032 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:14:58.663841+00:00"
-      },
-      {
-        "profile": "belt_1_0",
-        "pgo_kind": "cxx",
-        "compile_ms": 1386,
-        "run_ms": 7,
-        "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.60706 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:15:01.257822+00:00"
-      },
-      {
-        "profile": "belt_2_0",
-        "pgo_kind": "cxx",
-        "compile_ms": 1831,
-        "run_ms": 11,
-        "binary_bytes": 22840,
-        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.17425 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:15:04.379441+00:00"
+        "compile_ms": 7636,
+        "run_ms": 13,
+        "binary_bytes": 21192,
+        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.058 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:14:00.699319+00:00"
       },
       {
         "profile": "heavy",
         "pgo_kind": "cxx",
-        "compile_ms": 1315,
+        "compile_ms": 7390,
+        "run_ms": 14,
+        "binary_bytes": 22824,
+        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.67537 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:14:02.799614+00:00"
+      },
+      {
+        "profile": "field_opt",
+        "pgo_kind": "cxx",
+        "compile_ms": 6337,
+        "run_ms": 7,
+        "binary_bytes": 22696,
+        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=3.08318 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:19:18.351584+00:00"
+      },
+      {
+        "profile": "belt_1_0",
+        "pgo_kind": "cxx",
+        "compile_ms": 6305,
         "run_ms": 6,
-        "binary_bytes": 22840,
-        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.4278 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:27:43.291184+00:00"
+        "binary_bytes": 22696,
+        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.89213 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:19:25.360991+00:00"
+      },
+      {
+        "profile": "belt_2_0",
+        "pgo_kind": "cxx",
+        "compile_ms": 9962,
+        "run_ms": 11,
+        "binary_bytes": 22824,
+        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=3.66176 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:19:36.198548+00:00"
       }
     ],
     "rows": [
@@ -275,34 +284,34 @@
         "kind": "binary",
         "path": "c_host_o2",
         "compile_ms": 0.0,
-        "compile_note": "bsp:exec-plane (0.13 ms copy-check)",
+        "compile_note": "bsp:exec-plane (0.08 ms copy-check)",
         "bsp": true,
         "rocket": true,
         "compile_monitor": {
           "bsp_hit": true
         },
         "rc": 0,
-        "runner_wall_ms": 1008.63,
-        "field_execution_ms": 1000.43,
-        "runner_overhead_ms": 8.2,
-        "ops_per_sec": 67677454.11,
-        "total_ops": 67706880,
-        "ops_per_sec_per_cpu": 2819893.92,
+        "runner_wall_ms": 3005.51,
+        "field_execution_ms": 3000.83,
+        "runner_overhead_ms": 4.68,
+        "ops_per_sec": 97416875.4,
+        "total_ops": 292331520,
+        "ops_per_sec_per_cpu": 4059036.48,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1008.63,
+          "wall_ms": 3005.51,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1002.41,
-          "stdout_bytes": 162,
-          "stderr_bytes": 0,
+          "last_activity_ms": 3002.22,
+          "stdout_bytes": 164,
+          "stderr_bytes": 210,
           "rc": 0
         },
         "binary_bytes": 24568,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 67677454.11
+        "amortized_ops_per_sec": 97416875.4
       },
       {
         "id": "c_g16_belt_2",
@@ -320,27 +329,27 @@
           "bsp_hit": true
         },
         "rc": 0,
-        "runner_wall_ms": 1010.82,
-        "field_execution_ms": 1000.75,
-        "runner_overhead_ms": 10.07,
-        "ops_per_sec": 64340647.49,
-        "total_ops": 64389120,
-        "ops_per_sec_per_cpu": 2680860.31,
+        "runner_wall_ms": 3005.62,
+        "field_execution_ms": 3001.1,
+        "runner_overhead_ms": 4.52,
+        "ops_per_sec": 95729447.71,
+        "total_ops": 287293440,
+        "ops_per_sec_per_cpu": 3988726.99,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1010.82,
+          "wall_ms": 3005.62,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1003.31,
-          "stdout_bytes": 165,
-          "stderr_bytes": 0,
+          "last_activity_ms": 3002.43,
+          "stdout_bytes": 167,
+          "stderr_bytes": 216,
           "rc": 0
         },
         "binary_bytes": 16248,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 64340647.49
+        "amortized_ops_per_sec": 95729447.71
       },
       {
         "id": "c_g16_belt_1",
@@ -350,7 +359,7 @@
         "kind": "binary",
         "path": "c_g16_belt_1",
         "compile_ms": 0.0,
-        "compile_note": "bsp:exec-plane (0.03 ms copy-check)",
+        "compile_note": "bsp:exec-plane (0.04 ms copy-check)",
         "bsp": true,
         "rocket": true,
         "profile": "belt_1_0",
@@ -358,27 +367,27 @@
           "bsp_hit": true
         },
         "rc": 0,
-        "runner_wall_ms": 1055.71,
-        "field_execution_ms": 1001.46,
-        "runner_overhead_ms": 54.25,
-        "ops_per_sec": 67976456.75,
-        "total_ops": 68075520,
-        "ops_per_sec_per_cpu": 2832352.36,
+        "runner_wall_ms": 3005.73,
+        "field_execution_ms": 3001.12,
+        "runner_overhead_ms": 4.61,
+        "ops_per_sec": 99454820.63,
+        "total_ops": 298475520,
+        "ops_per_sec_per_cpu": 4143950.86,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1055.71,
+          "wall_ms": 3005.73,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1018.58,
-          "stdout_bytes": 165,
-          "stderr_bytes": 0,
+          "last_activity_ms": 3002.19,
+          "stdout_bytes": 167,
+          "stderr_bytes": 217,
           "rc": 0
         },
         "binary_bytes": 16192,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 67976456.75
+        "amortized_ops_per_sec": 99454820.63
       },
       {
         "id": "cxx_host_o2",
@@ -395,27 +404,27 @@
           "bsp_hit": true
         },
         "rc": 0,
-        "runner_wall_ms": 1026.14,
-        "field_execution_ms": 1001.7,
-        "runner_overhead_ms": 24.44,
-        "ops_per_sec": 78141944.13,
-        "total_ops": 78274560,
-        "ops_per_sec_per_cpu": 3255914.34,
+        "runner_wall_ms": 3083.16,
+        "field_execution_ms": 3001.09,
+        "runner_overhead_ms": 82.07,
+        "ops_per_sec": 101093393.65,
+        "total_ops": 303390720,
+        "ops_per_sec_per_cpu": 4212224.74,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1026.14,
+          "wall_ms": 3083.16,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1024.69,
-          "stdout_bytes": 164,
-          "stderr_bytes": 107,
+          "last_activity_ms": 3080.4,
+          "stdout_bytes": 167,
+          "stderr_bytes": 215,
           "rc": 0
         },
         "binary_bytes": 21640,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 78141944.13
+        "amortized_ops_per_sec": 101093393.65
       },
       {
         "id": "cxx_g16_belt_2",
@@ -433,27 +442,27 @@
           "bsp_hit": true
         },
         "rc": 0,
-        "runner_wall_ms": 1035.42,
-        "field_execution_ms": 1000.93,
-        "runner_overhead_ms": 34.49,
-        "ops_per_sec": 73905275.09,
-        "total_ops": 73973760,
-        "ops_per_sec_per_cpu": 3079386.46,
+        "runner_wall_ms": 3070.67,
+        "field_execution_ms": 3000.22,
+        "runner_overhead_ms": 70.45,
+        "ops_per_sec": 102843184.74,
+        "total_ops": 308551680,
+        "ops_per_sec_per_cpu": 4285132.7,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1035.42,
+          "wall_ms": 3070.67,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1031.35,
-          "stdout_bytes": 167,
-          "stderr_bytes": 110,
+          "last_activity_ms": 3067.82,
+          "stdout_bytes": 170,
+          "stderr_bytes": 221,
           "rc": 0
         },
         "binary_bytes": 22912,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 73905275.09
+        "amortized_ops_per_sec": 102843184.74
       },
       {
         "id": "cxx_g16_belt_1",
@@ -471,67 +480,67 @@
           "bsp_hit": true
         },
         "rc": 0,
-        "runner_wall_ms": 1100.61,
-        "field_execution_ms": 1000.43,
-        "runner_overhead_ms": 100.18,
-        "ops_per_sec": 84873248.15,
-        "total_ops": 84910080,
-        "ops_per_sec_per_cpu": 3536385.34,
+        "runner_wall_ms": 3039.76,
+        "field_execution_ms": 3000.5,
+        "runner_overhead_ms": 39.26,
+        "ops_per_sec": 95052367.49,
+        "total_ops": 285204480,
+        "ops_per_sec_per_cpu": 3960515.31,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1100.61,
+          "wall_ms": 3039.76,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1098.65,
-          "stdout_bytes": 167,
-          "stderr_bytes": 110,
+          "last_activity_ms": 3035.86,
+          "stdout_bytes": 169,
+          "stderr_bytes": 220,
           "rc": 0
         },
         "binary_bytes": 22784,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 84873248.15
+        "amortized_ops_per_sec": 95052367.49
       },
       {
         "id": "cxx_g16_sense",
-        "label": "C++ \u2014 g16 sense hostess_secure",
+        "label": "C++ \u2014 g16 sense belt_2_0",
         "lang": "cxx",
         "group": "g16",
         "kind": "binary",
         "path": "cxx_g16_sense",
         "compile_ms": 0.0,
-        "compile_note": "bsp:exec-plane (0.03 ms copy-check) \u00b7 sense (sense_watch)",
+        "compile_note": "bsp:exec-plane (0.03 ms copy-check) \u00b7 sense (unknown)",
         "bsp": true,
         "rocket": true,
-        "profile": "hostess_secure",
+        "profile": "belt_2_0",
         "compile_monitor": {
           "bsp_hit": true
         },
         "plate_meld": true,
-        "meld_generation": 6,
+        "meld_generation": 0,
         "rc": 0,
-        "runner_wall_ms": 1026.73,
-        "field_execution_ms": 1000.57,
-        "runner_overhead_ms": 26.16,
-        "ops_per_sec": 78352710.24,
-        "total_ops": 78397440,
-        "ops_per_sec_per_cpu": 3264696.26,
+        "runner_wall_ms": 3077.52,
+        "field_execution_ms": 3000.79,
+        "runner_overhead_ms": 76.73,
+        "ops_per_sec": 91070985.42,
+        "total_ops": 273285120,
+        "ops_per_sec_per_cpu": 3794624.39,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1026.73,
+          "wall_ms": 3077.52,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1022.07,
-          "stdout_bytes": 170,
-          "stderr_bytes": 113,
+          "last_activity_ms": 3073.54,
+          "stdout_bytes": 172,
+          "stderr_bytes": 226,
           "rc": 0
         },
         "binary_bytes": 22784,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 78352710.24
+        "amortized_ops_per_sec": 91070985.42
       },
       {
         "id": "cmake_host_o2",
@@ -550,27 +559,27 @@
         "compile_configure_ms": 0.0,
         "compile_build_ms": 0.0,
         "rc": 0,
-        "runner_wall_ms": 1006.88,
-        "field_execution_ms": 1001.35,
-        "runner_overhead_ms": 5.53,
-        "ops_per_sec": 82218972.32,
-        "total_ops": 82329600,
-        "ops_per_sec_per_cpu": 3425790.51,
+        "runner_wall_ms": 3013.81,
+        "field_execution_ms": 3000.79,
+        "runner_overhead_ms": 13.02,
+        "ops_per_sec": 98892364.74,
+        "total_ops": 296755200,
+        "ops_per_sec_per_cpu": 4120515.2,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1006.88,
+          "wall_ms": 3013.81,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1006.06,
-          "stdout_bytes": 166,
-          "stderr_bytes": 109,
+          "last_activity_ms": 3010.88,
+          "stdout_bytes": 168,
+          "stderr_bytes": 218,
           "rc": 0
         },
         "binary_bytes": 21640,
         "exec_pass": "cold",
-        "amortized_ops_per_sec": 82218972.32
+        "amortized_ops_per_sec": 98892364.74
       },
       {
         "id": "python_host",
@@ -588,22 +597,22 @@
         "compile_ms": 0,
         "compile_note": "interpreter \u2014 no compile",
         "rc": 0,
-        "runner_wall_ms": 1167.0,
-        "field_execution_ms": 1079.11,
-        "runner_overhead_ms": 87.89,
-        "ops_per_sec": 683227.28,
-        "total_ops": 737280,
-        "ops_per_sec_per_cpu": 28467.8,
+        "runner_wall_ms": 3110.38,
+        "field_execution_ms": 3058.06,
+        "runner_overhead_ms": 52.32,
+        "ops_per_sec": 843828.62,
+        "total_ops": 2580480,
+        "ops_per_sec_per_cpu": 35159.53,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1167.0,
+          "wall_ms": 3110.38,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1130.21,
-          "stdout_bytes": 157,
-          "stderr_bytes": 103,
+          "last_activity_ms": 3089.22,
+          "stdout_bytes": 159,
+          "stderr_bytes": 206,
           "rc": 0
         },
         "exec_pass": "cold"
@@ -624,22 +633,22 @@
         "compile_ms": 0,
         "compile_note": "GrokVM interpreter \u2014 no compile",
         "rc": 0,
-        "runner_wall_ms": 1211.33,
-        "field_execution_ms": 1038.39,
-        "runner_overhead_ms": 172.94,
-        "ops_per_sec": 710020.71,
-        "total_ops": 737280,
-        "ops_per_sec_per_cpu": 29584.2,
+        "runner_wall_ms": 3210.03,
+        "field_execution_ms": 3090.08,
+        "runner_overhead_ms": 119.95,
+        "ops_per_sec": 755552.29,
+        "total_ops": 2334720,
+        "ops_per_sec_per_cpu": 31481.35,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1211.33,
+          "wall_ms": 3210.03,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1210.98,
-          "stdout_bytes": 156,
-          "stderr_bytes": 102,
+          "last_activity_ms": 3166.93,
+          "stdout_bytes": 158,
+          "stderr_bytes": 204,
           "rc": 0
         },
         "exec_pass": "cold"
@@ -655,65 +664,65 @@
         "compile_note": "re-exec same ELF after plate meld cycle \u2014 exec only",
         "profile": "belt_2_0",
         "plate_meld": true,
-        "meld_generation": 6,
+        "meld_generation": 0,
         "env": {
-          "PLATE_MELD_GENERATION": "6"
+          "PLATE_MELD_GENERATION": "0"
         },
         "rc": 0,
-        "runner_wall_ms": 1060.83,
-        "field_execution_ms": 1000.58,
-        "runner_overhead_ms": 60.25,
-        "ops_per_sec": 68895542.15,
-        "total_ops": 68935680,
-        "ops_per_sec_per_cpu": 2870647.59,
+        "runner_wall_ms": 3007.66,
+        "field_execution_ms": 3000.02,
+        "runner_overhead_ms": 7.64,
+        "ops_per_sec": 93388093.3,
+        "total_ops": 280166400,
+        "ops_per_sec_per_cpu": 3891170.55,
         "exec_ok": true,
         "monitor": {
-          "wall_ms": 1060.83,
+          "wall_ms": 3007.66,
           "timeout_hit": false,
           "dropped": false,
           "drop_reason": "",
           "heartbeat_ticks": 0,
-          "last_activity_ms": 1016.79,
-          "stdout_bytes": 167,
-          "stderr_bytes": 110,
+          "last_activity_ms": 3004.59,
+          "stdout_bytes": 169,
+          "stderr_bytes": 220,
           "rc": 0
         },
         "binary_bytes": 22912,
         "exec_pass": "post_meld",
-        "vs_baseline_ratio": 0.9322
+        "vs_baseline_ratio": 0.9081
       }
     ],
     "runners_tested": 11,
     "winners": {
       "best_execution": {
-        "id": "cxx_g16_belt_1",
-        "label": "C++ \u2014 g16 belt_1_0",
-        "ops_per_sec": 84873248.15
+        "id": "cxx_g16_belt_2",
+        "label": "C++ \u2014 g16 belt_2_0",
+        "ops_per_sec": 102843184.74
       },
       "fastest_compile": null,
       "slowest_compile": null,
       "best_per_language": {
         "c": {
           "id": "c_g16_belt_1",
-          "ops_per_sec": 67976456.75
+          "ops_per_sec": 99454820.63
         },
         "cxx": {
-          "id": "cxx_g16_belt_1",
-          "ops_per_sec": 84873248.15
+          "id": "cxx_g16_belt_2",
+          "ops_per_sec": 102843184.74
         },
         "cmake": {
           "id": "cmake_host_o2",
-          "ops_per_sec": 82218972.32
+          "ops_per_sec": 98892364.74
         },
         "python": {
-          "id": "python_gpy",
-          "ops_per_sec": 710020.71
+          "id": "python_host",
+          "ops_per_sec": 843828.62
         }
       },
       "best_amortized_first_run": {
-        "id": "cxx_g16_belt_1",
-        "label": "C++ \u2014 g16 belt_1_0",
-        "amortized_ops_per_sec": 84873248.15
+        "id": "cxx_g16_belt_2",
+        "label": "C++ \u2014 g16 belt_2_0",
+        "amortized_ops_per_sec": 102843184.74
       }
     }
   },
@@ -732,52 +741,52 @@
       ],
       "statement": "Runners were wave-converted at stage time. This bench ranks field execution only \u2014 C, C++, CMake, and Python on the same FieldX86 kernel."
     },
-    "target_sec": 1,
+    "target_sec": 3,
     "baseline_id": "cxx_host_o2",
-    "baseline_ops_per_sec": 86567966.75,
+    "baseline_ops_per_sec": 95921291.57,
     "best_id": "cxx_host_o2",
     "best_label": "C++ \u2014 host g++ -O2",
     "best_lang": "cxx",
-    "best_ops_per_sec": 86567966.75,
+    "best_ops_per_sec": 95921291.57,
     "best_by_lang": {
       "cxx": {
         "id": "cxx_host_o2",
         "label": "C++ \u2014 host g++ -O2",
         "lang": "cxx",
-        "ops_per_sec": 86567966.75,
-        "field_execution_ms": 1000.72,
+        "ops_per_sec": 95921291.57,
+        "field_execution_ms": 3001.5,
         "binary_bytes": 21640,
         "speedup_vs_baseline": 1.0,
         "color": "#94a3b8"
-      },
-      "c": {
-        "id": "c_g16_belt_2",
-        "label": "C \u2014 g16 belt_2_0",
-        "lang": "c",
-        "ops_per_sec": 85695761.13,
-        "field_execution_ms": 1000.87,
-        "binary_bytes": 16248,
-        "speedup_vs_baseline": 0.9899246146958857,
-        "color": "#38bdf8"
       },
       "cmake": {
         "id": "cmake_host_o2",
         "label": "CMake \u2014 host g++ -O2",
         "lang": "cmake",
-        "ops_per_sec": 74915701.92,
-        "field_execution_ms": 1000.55,
+        "ops_per_sec": 95373095.42,
+        "field_execution_ms": 3000.72,
         "binary_bytes": 21640,
-        "speedup_vs_baseline": 0.8653974990119541,
+        "speedup_vs_baseline": 0.9942849377752598,
         "color": "#c4b5fd"
+      },
+      "c": {
+        "id": "c_g16_belt_2",
+        "label": "C \u2014 g16 belt_2_0",
+        "lang": "c",
+        "ops_per_sec": 84374575.62,
+        "field_execution_ms": 3000.11,
+        "binary_bytes": 16248,
+        "speedup_vs_baseline": 0.8796230142337731,
+        "color": "#38bdf8"
       },
       "python": {
         "id": "python_gpy",
         "label": "Python \u2014 gpy-16 GrokVM",
         "lang": "python",
-        "ops_per_sec": 700661.92,
-        "field_execution_ms": 1052.26,
+        "ops_per_sec": 931674.58,
+        "field_execution_ms": 3033.51,
         "binary_bytes": 0,
-        "speedup_vs_baseline": 0.008093778175747671,
+        "speedup_vs_baseline": 0.009712906954761931,
         "color": "#f472b6"
       }
     },
@@ -786,70 +795,70 @@
         "id": "cxx_host_o2",
         "label": "C++ \u2014 host g++ -O2",
         "lang": "cxx",
-        "ops_per_sec": 86567966.75,
-        "field_execution_ms": 1000.72,
+        "ops_per_sec": 95921291.57,
+        "field_execution_ms": 3001.5,
         "binary_bytes": 21640,
         "speedup_vs_baseline": 1.0,
         "color": "#94a3b8"
       },
       {
-        "id": "c_g16_belt_2",
-        "label": "C \u2014 g16 belt_2_0",
-        "lang": "c",
-        "ops_per_sec": 85695761.13,
-        "field_execution_ms": 1000.87,
-        "binary_bytes": 16248,
-        "speedup_vs_baseline": 0.9899246146958857,
-        "color": "#38bdf8"
-      },
-      {
-        "id": "c_host_o2",
-        "label": "C \u2014 host gcc -O2",
-        "lang": "c",
-        "ops_per_sec": 79736257.19,
-        "field_execution_ms": 1000.16,
-        "binary_bytes": 24568,
-        "speedup_vs_baseline": 0.9210827074207562,
-        "color": "#60a5fa"
-      },
-      {
         "id": "cxx_g16_belt_2",
         "label": "C++ \u2014 g16 belt_2_0",
         "lang": "cxx",
-        "ops_per_sec": 76877738.31,
-        "field_execution_ms": 1000.59,
+        "ops_per_sec": 95584689.3,
+        "field_execution_ms": 3000.5,
         "binary_bytes": 22912,
-        "speedup_vs_baseline": 0.8880621920116889,
+        "speedup_vs_baseline": 0.9964908492734967,
         "color": "#3ecf8e"
       },
       {
         "id": "cmake_host_o2",
         "label": "CMake \u2014 host g++ -O2",
         "lang": "cmake",
-        "ops_per_sec": 74915701.92,
-        "field_execution_ms": 1000.55,
+        "ops_per_sec": 95373095.42,
+        "field_execution_ms": 3000.72,
         "binary_bytes": 21640,
-        "speedup_vs_baseline": 0.8653974990119541,
+        "speedup_vs_baseline": 0.9942849377752598,
         "color": "#c4b5fd"
+      },
+      {
+        "id": "c_g16_belt_2",
+        "label": "C \u2014 g16 belt_2_0",
+        "lang": "c",
+        "ops_per_sec": 84374575.62,
+        "field_execution_ms": 3000.11,
+        "binary_bytes": 16248,
+        "speedup_vs_baseline": 0.8796230142337731,
+        "color": "#38bdf8"
+      },
+      {
+        "id": "c_host_o2",
+        "label": "C \u2014 host gcc -O2",
+        "lang": "c",
+        "ops_per_sec": 82082300.52,
+        "field_execution_ms": 3000.06,
+        "binary_bytes": 24568,
+        "speedup_vs_baseline": 0.8557255555728127,
+        "color": "#60a5fa"
       },
       {
         "id": "python_gpy",
         "label": "Python \u2014 gpy-16 GrokVM",
         "lang": "python",
-        "ops_per_sec": 700661.92,
-        "field_execution_ms": 1052.26,
+        "ops_per_sec": 931674.58,
+        "field_execution_ms": 3033.51,
         "binary_bytes": 0,
-        "speedup_vs_baseline": 0.008093778175747671,
+        "speedup_vs_baseline": 0.009712906954761931,
         "color": "#f472b6"
       },
       {
         "id": "python_host",
         "label": "Python \u2014 host CPython 3",
         "lang": "python",
-        "ops_per_sec": 684952.58,
-        "field_execution_ms": 1076.4,
+        "ops_per_sec": 889606.86,
+        "field_execution_ms": 3038.83,
         "binary_bytes": 0,
-        "speedup_vs_baseline": 0.007912309896085205,
+        "speedup_vs_baseline": 0.00927434196766206,
         "color": "#fbbf24"
       }
     ],
@@ -867,12 +876,12 @@
         "wave_conversion": true,
         "single_plane": true,
         "binary_bytes": 24568,
-        "elapsed_sec": 0,
-        "pct": 0,
-        "field_execution_ms": 1000.16,
-        "epochs": 649,
-        "total_ops": 79749120.0,
-        "ops_per_sec": 79736257.19
+        "elapsed_sec": 2,
+        "pct": 66,
+        "epochs": 2004,
+        "total_ops": 246251520.0,
+        "field_execution_ms": 3000.06,
+        "ops_per_sec": 82082300.52
       },
       "c_g16_belt_2": {
         "id": "c_g16_belt_2",
@@ -886,12 +895,12 @@
         "wave_conversion": true,
         "single_plane": true,
         "binary_bytes": 16248,
-        "elapsed_sec": 0,
-        "pct": 0,
-        "field_execution_ms": 1000.87,
-        "epochs": 698,
-        "total_ops": 85770240.0,
-        "ops_per_sec": 85695761.13
+        "elapsed_sec": 2,
+        "pct": 66,
+        "epochs": 2060,
+        "total_ops": 253132800.0,
+        "field_execution_ms": 3000.11,
+        "ops_per_sec": 84374575.62
       },
       "cxx_host_o2": {
         "id": "cxx_host_o2",
@@ -905,12 +914,12 @@
         "wave_conversion": true,
         "single_plane": true,
         "binary_bytes": 21640,
-        "elapsed_sec": 1,
+        "elapsed_sec": 3,
         "pct": 100,
-        "epochs": 705,
-        "total_ops": 86630400.0,
-        "field_execution_ms": 1000.72,
-        "ops_per_sec": 86567966.75
+        "epochs": 2343,
+        "total_ops": 287907840.0,
+        "field_execution_ms": 3001.5,
+        "ops_per_sec": 95921291.57
       },
       "cxx_g16_belt_2": {
         "id": "cxx_g16_belt_2",
@@ -924,12 +933,12 @@
         "wave_conversion": true,
         "single_plane": true,
         "binary_bytes": 22912,
-        "elapsed_sec": 1,
-        "pct": 100,
-        "epochs": 626,
-        "total_ops": 76922880.0,
-        "field_execution_ms": 1000.59,
-        "ops_per_sec": 76877738.31
+        "elapsed_sec": 2,
+        "pct": 66,
+        "epochs": 2334,
+        "total_ops": 286801920.0,
+        "field_execution_ms": 3000.5,
+        "ops_per_sec": 95584689.3
       },
       "cmake_host_o2": {
         "id": "cmake_host_o2",
@@ -943,12 +952,12 @@
         "wave_conversion": true,
         "single_plane": true,
         "binary_bytes": 21640,
-        "elapsed_sec": 1,
-        "pct": 100,
-        "epochs": 610,
-        "total_ops": 74956800.0,
-        "field_execution_ms": 1000.55,
-        "ops_per_sec": 74915701.92
+        "elapsed_sec": 2,
+        "pct": 66,
+        "epochs": 2329,
+        "total_ops": 286187520.0,
+        "field_execution_ms": 3000.72,
+        "ops_per_sec": 95373095.42
       },
       "python_host": {
         "id": "python_host",
@@ -962,12 +971,12 @@
         "wave_conversion": true,
         "single_plane": false,
         "binary_bytes": 0,
-        "elapsed_sec": 1,
-        "pct": 107,
-        "epochs": 6,
-        "total_ops": 737280.0,
-        "field_execution_ms": 1076.4,
-        "ops_per_sec": 684952.58
+        "elapsed_sec": 2,
+        "pct": 68,
+        "epochs": 22,
+        "total_ops": 2703360.0,
+        "field_execution_ms": 3038.83,
+        "ops_per_sec": 889606.86
       },
       "python_gpy": {
         "id": "python_gpy",
@@ -981,12 +990,12 @@
         "wave_conversion": true,
         "single_plane": false,
         "binary_bytes": 0,
-        "elapsed_sec": 1,
-        "pct": 105,
-        "epochs": 6,
-        "total_ops": 737280.0,
-        "field_execution_ms": 1052.26,
-        "ops_per_sec": 700661.92
+        "elapsed_sec": 2,
+        "pct": 73,
+        "epochs": 23,
+        "total_ops": 2826240.0,
+        "field_execution_ms": 3033.51,
+        "ops_per_sec": 931674.58
       }
     }
   },
@@ -1038,42 +1047,51 @@
         "ts": "2026-06-26T23:00:20.558674+00:00"
       },
       {
-        "profile": "field_opt",
+        "profile": "field_physics",
         "pgo_kind": "cxx",
-        "compile_ms": 1337,
-        "run_ms": 8,
-        "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.86032 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:14:58.663841+00:00"
-      },
-      {
-        "profile": "belt_1_0",
-        "pgo_kind": "cxx",
-        "compile_ms": 1386,
-        "run_ms": 7,
-        "binary_bytes": 22712,
-        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.60706 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:15:01.257822+00:00"
-      },
-      {
-        "profile": "belt_2_0",
-        "pgo_kind": "cxx",
-        "compile_ms": 1831,
-        "run_ms": 11,
-        "binary_bytes": 22840,
-        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.17425 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:15:04.379441+00:00"
+        "compile_ms": 7636,
+        "run_ms": 13,
+        "binary_bytes": 21192,
+        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=4.058 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:14:00.699319+00:00"
       },
       {
         "profile": "heavy",
         "pgo_kind": "cxx",
-        "compile_ms": 1315,
+        "compile_ms": 7390,
+        "run_ms": 14,
+        "binary_bytes": 22824,
+        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.67537 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:14:02.799614+00:00"
+      },
+      {
+        "profile": "field_opt",
+        "pgo_kind": "cxx",
+        "compile_ms": 6337,
+        "run_ms": 7,
+        "binary_bytes": 22696,
+        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=3.08318 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:19:18.351584+00:00"
+      },
+      {
+        "profile": "belt_1_0",
+        "pgo_kind": "cxx",
+        "compile_ms": 6305,
         "run_ms": 6,
-        "binary_bytes": 22840,
-        "run_line": "grok16_field_bench profile=field_opt std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.4278 nexus_checksum=-nan",
-        "ts": "2026-06-27T13:27:43.291184+00:00"
+        "binary_bytes": 22696,
+        "run_line": "grok16_field_bench profile=belt_1_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=256 belt_chunk=1 redata_chunk=512 wall_ms=2.89213 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:19:25.360991+00:00"
+      },
+      {
+        "profile": "belt_2_0",
+        "pgo_kind": "cxx",
+        "compile_ms": 9962,
+        "run_ms": 11,
+        "binary_bytes": 22824,
+        "run_line": "grok16_field_bench profile=belt_2_0 std=gnu++26 __cplusplus=202400 frames=240 prog_ops=512 die_slots=512 belt_chunk=64 redata_chunk=8192 wall_ms=3.66176 nexus_checksum=-nan",
+        "ts": "2026-06-27T19:19:36.198548+00:00"
       }
     ],
-    "updated": "2026-06-27T13:27:43.291184+00:00"
+    "updated": "2026-06-27T19:19:36.198548+00:00"
   }
 }

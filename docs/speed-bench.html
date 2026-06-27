@@ -71,8 +71,8 @@
     </div>
   </nav>
 
-  <h1>Speed bench — report v4.7.1</h1>
-  <p>Distro <strong>4.7.1</strong> · suite <code>speed_demo</code> @ <code>1.1.0</code> · schema <code>grok16-field-exec-full-bench/v5</code></p>
+  <h1>Speed bench — report v5.0.0</h1>
+  <p>Distro <strong>5.0.0</strong> · suite <code>speed_demo</code> @ <code>1.1.0</code> · schema <code>grok16-field-exec-full-bench/v5</code></p>
 
   <aside class="callout callout-accent">
     <strong>Version stamps:</strong> Every run writes <code>docs/field-exec-full-bench.json</code> with distro, g16, suite, and report versions. Doctrine: <code>data/grok16-speed-bench-version.json</code>
@@ -80,49 +80,49 @@
 
   <figure class="fig-wide">
     <img src="assets/speed-bench-chart.svg" alt="Speed bench bar chart" width="920" height="280" />
-    <figcaption>Execution ops/s by runner — 2026-06-27T14:31:48Z on <code>default-X870-Pro-RS</code></figcaption>
+    <figcaption>Execution ops/s by runner — 2026-06-27T19:20:27Z on <code>default-X870-Pro-RS</code></figcaption>
   </figure>
 
   <h2 id="winners">Winners</h2>
   <div class="winner-grid">
-    <div class="winner-card"><strong>Fastest execution</strong><span class="val">84.87M</span><span class="sub">C++ — g16 belt_1_0</span></div>
+    <div class="winner-card"><strong>Fastest execution</strong><span class="val">102.84M</span><span class="sub">C++ — g16 belt_2_0</span></div>
     <div class="winner-card"><strong>Fastest compile</strong><span class="val">— ms</span><span class="sub">—</span></div>
-    <div class="winner-card"><strong>Best Python</strong><span class="val">710,021</span><span class="sub">interpreter — no compile</span></div>
-    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">84.87M</span><span class="sub">C++ — g16 belt_1_0</span></div>
+    <div class="winner-card"><strong>Best Python</strong><span class="val">843,829</span><span class="sub">interpreter — no compile</span></div>
+    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">102.84M</span><span class="sub">C++ — g16 belt_2_0</span></div>
   </div>
 
-  <h2 id="results">Full results (1s window)</h2>
+  <h2 id="results">Full results (3s window)</h2>
   <table>
     <tr><th>Runner</th><th>Compile (ms)</th><th>Exec wall (ms)</th><th>ops/s</th><th>Binary bytes</th></tr>
-    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td>1,101</td><td><strong>84,873,248.15</strong></td><td>22,784</td></tr>
-    <tr><td>CMake — host g++ -O2</td><td>—</td><td>1,007</td><td><strong>82,218,972.32</strong></td><td>21,640</td></tr>
-    <tr><td>C++ — g16 sense hostess_secure</td><td>—</td><td>1,027</td><td><strong>78,352,710.24</strong></td><td>22,784</td></tr>
-    <tr><td>C++ — host g++ -O2</td><td>—</td><td>1,026</td><td><strong>78,141,944.13</strong></td><td>21,640</td></tr>
-    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td>1,035</td><td><strong>73,905,275.09</strong></td><td>22,912</td></tr>
-    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td>1,061</td><td><strong>68,895,542.15</strong></td><td>22,912</td></tr>
-    <tr><td>C — g16 belt_1_0</td><td>—</td><td>1,056</td><td><strong>67,976,456.75</strong></td><td>16,192</td></tr>
-    <tr><td>C — host gcc -O2</td><td>—</td><td>1,009</td><td><strong>67,677,454.11</strong></td><td>24,568</td></tr>
-    <tr><td>C — g16 belt_2_0</td><td>—</td><td>1,011</td><td><strong>64,340,647.49</strong></td><td>16,248</td></tr>
-    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>1,211</td><td><strong>710,020.71</strong></td><td>—</td></tr>
-    <tr><td>Python — host CPython 3</td><td>—</td><td>1,167</td><td><strong>683,227.28</strong></td><td>—</td></tr>
+    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td>3,071</td><td><strong>102,843,184.74</strong></td><td>22,912</td></tr>
+    <tr><td>C++ — host g++ -O2</td><td>—</td><td>3,083</td><td><strong>101,093,393.65</strong></td><td>21,640</td></tr>
+    <tr><td>C — g16 belt_1_0</td><td>—</td><td>3,006</td><td><strong>99,454,820.63</strong></td><td>16,192</td></tr>
+    <tr><td>CMake — host g++ -O2</td><td>—</td><td>3,014</td><td><strong>98,892,364.74</strong></td><td>21,640</td></tr>
+    <tr><td>C — host gcc -O2</td><td>—</td><td>3,006</td><td><strong>97,416,875.40</strong></td><td>24,568</td></tr>
+    <tr><td>C — g16 belt_2_0</td><td>—</td><td>3,006</td><td><strong>95,729,447.71</strong></td><td>16,248</td></tr>
+    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td>3,040</td><td><strong>95,052,367.49</strong></td><td>22,784</td></tr>
+    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td>3,008</td><td><strong>93,388,093.30</strong></td><td>22,912</td></tr>
+    <tr><td>C++ — g16 sense belt_2_0</td><td>—</td><td>3,078</td><td><strong>91,070,985.42</strong></td><td>22,784</td></tr>
+    <tr><td>Python — host CPython 3</td><td>—</td><td>3,110</td><td><strong>843,828.62</strong></td><td>—</td></tr>
+    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>3,210</td><td><strong>755,552.29</strong></td><td>—</td></tr>
   </table>
 
   <h2 id="plate-meld">Plate meld analysis</h2>
   <p>Cycle: <code>field-plate-meld.py fuse</code> + <code>g16-compiler-sense-plate.py cycle</code> before compiles. Doctrine: <code>data/grok16-plate-meld-bench-doctrine.json</code></p>
   <table>
     <tr><th>Metric</th><th>Value</th></tr>
-    <tr><td>Meld generation</td><td>6</td></tr>
-    <tr><td>Plates fused</td><td>24</td></tr>
-    <tr><td>Compiler sense profile</td><td><code>hostess_secure</code> (sense_watch)</td></tr>
-    <tr><td>Sense vs belt_2_0 exec ratio</td><td>1.0602</td></tr>
-    <tr><td>Meld helps profile ladder</td><td><strong>yes</strong></td></tr>
+    <tr><td>Meld generation</td><td>0</td></tr>
+    <tr><td>Plates fused</td><td>0</td></tr>
+    <tr><td>Compiler sense profile</td><td><code>belt_2_0</code> (unknown)</td></tr>
+    <tr><td>Sense vs belt_2_0 exec ratio</td><td>0.8855</td></tr>
+    <tr><td>Meld helps profile ladder</td><td><strong>no</strong></td></tr>
   </table>
   <aside class="callout callout-accent">
-    <strong>Professional verdict:</strong> Plate meld does not block the ELF hot path. On this host, compiler-sense compile was <strong>0 ms</strong> vs static <code>belt_2_0</code>; sense execution ratio <strong>1.0602</strong>. Profile ladder unlocks when meld generation ≥ 6.
+    <strong>Professional verdict:</strong> Plate meld does not block the ELF hot path. On this host, compiler-sense compile was <strong>0 ms</strong> vs static <code>belt_2_0</code>; sense execution ratio <strong>0.8855</strong>. Profile ladder unlocks when meld generation ≥ 0.
   </aside>
 
   <h2 id="bench-all">bench-all cross-reference</h2>
-  <p>9 profile runs from <code>data/bench/latest.json</code> (field-nexus-bench). Run: <code>./scripts/grok16-toolchain.sh bench-all</code></p>
+  <p>10 profile runs from <code>data/bench/latest.json</code> (field-nexus-bench). Run: <code>./scripts/grok16-toolchain.sh bench-all</code></p>
 
   <h2 id="doctrine">Doctrine</h2>
   <ul>

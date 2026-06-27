@@ -84,6 +84,17 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 > **Grok16 5.0.0** — belt_2_0 single-fabric default, Speed Bench v5 locked, RISC-V + `.launch` chambers, Queen/World_Redata canonical integration. See [RELEASE-5.0.md](RELEASE-5.0.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
 
+### Version legend
+
+| Field | Value | Meaning |
+|-------|-------|---------|
+| `g16_version` | **16.2.0** | Compiler engine / `-dumpversion` |
+| `distro_version` | **5.0.0** | Product release track (README, pkgversion) |
+| `upload_version` | **4.9.0** | GitHub release asset tag (`v4.9.0`) — distro stays 5.0.0 |
+| `tag` | **v5.0.0** | Source tree git tag for 5.0 stable |
+
+**Thermal note:** `field_opt` / `belt_2_0` use `-ffast-math` for throughput. For sustained NEXUS/CANVAS kernels that must preserve entropy/FP invariants, use **`field_physics`** — see [PERFORMANCE.md](PERFORMANCE.md).
+
 ```bash
 ./scripts/grok16-launch-verify.sh          # all example .launch chambers
 ./scripts/grok16-toolchain.sh bench-refresh  # triad + compare + bench-all + charts
@@ -217,6 +228,7 @@ Grok16 defaults to **gnu++26** (`G16_CXX_STD`). Build profiles target AI / Field
 | Profile | CMake include | Use case |
 |---------|---------------|----------|
 | `field_opt` | `cmake/grok16-profile-field-opt.cmake` | **Primary** — entropy/oracle, wave phase, FieldX86 throughput |
+| `field_physics` | `cmake/grok16-profile-field-physics.cmake` | **Physics-safe** — belt_2_0 without `-ffast-math` + thermal guard |
 | `ai` | `cmake/grok16-profile-ai.cmake` | NEXUS scoring, matrix/simd/mdspan paths |
 | `field_compute` | `cmake/grok16-profile-field.cmake` | FieldX86 / CANVAS dispatch kernels |
 | `vulkan_rtx` | `cmake/grok16-profile-vulkan.cmake` | AMOURANTHRTX-style SIMD CPU prep |
@@ -289,7 +301,7 @@ No hardcoded Desktop paths. Override via environment:
 | `G16_FIELD_SPEED` | `1` → Field-Opt profile (default bench) |
 | `G16_RELEASE_PROFILE` | `1` → production LTO + PGO + field_opt |
 | `G16_FULL_REBUILD` | `1` → disable fast-rebuild default |
-| `G16_BENCH_PROFILE` | `field_opt` \| `ai` \| `field_compute` \| `vulkan_rtx` |
+| `G16_BENCH_PROFILE` | `field_opt` \| `field_physics` \| `belt_2_0` \| `ai` \| `field_compute` \| `vulkan_rtx` |
 
 Template: `data/grok16-config.json`.
 

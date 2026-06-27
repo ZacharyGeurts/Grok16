@@ -1,5 +1,6 @@
 {
   "distro_version": "5.0.0",
+  "upload_version": "4.9.0",
   "release_track": {
     "current": "5.0.0",
     "previous": "4.8.0",
@@ -7,7 +8,9 @@
     "status": "stable",
     "released": true,
     "tag": "v5.0.0",
-    "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, not pushed pending review",
+    "upload_tag": "v4.9.0",
+    "upload_note": "Assets upload as 4.9.0 — public distro_version and pkgversion remain 5.0.0",
+    "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
       "expert",
@@ -23,7 +26,7 @@
   },
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-5.0.0",
-  "tag": "v4.0.0",
+  "tag": "v5.0.0",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -155,6 +158,9 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "5.0.0: field_physics profile \u2014 belt_2_0 without -ffast-math + thermal guard for entropy/FP invariants",
+    "5.0.0: AmmoCode field instill \u2014 flat field, no subfields, defield when resting on field; binary sidecar + linker witness",
+    "5.0.0: upload_version 4.9.0 \u2014 GitHub assets ship as v4.9.0 while distro_version stays 5.0.0",
     "5.0.0: stable release \u2014 belt_2_0 sovereign Field compiler, RELEASE-5.0.md, bench-triad + integrate gates green",
     "5.0.0-staging: compiler symlink installer \u2014 gcc/g++/cc/c++/cpp \u2192 g16/g++16, always-optimal env, integrate hook",
     "5.0.0-staging: forge compiler_symlink_tools.py + grok16-compiler-symlinks.sh verify/install",
