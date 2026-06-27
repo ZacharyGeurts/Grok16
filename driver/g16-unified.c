@@ -155,10 +155,35 @@ static int env_force(const char *name)
     return v && *v && strcmp(v, "0") != 0;
 }
 
+static int path_is_safe(const char *path)
+{
+    size_t i;
+    if (!path || !*path)
+        return 0;
+    if (strlen(path) >= PATH_MAX - 1)
+        return 0;
+    if (strstr(path, "..") != NULL)
+        return 0;
+    for (i = 0; path[i]; i++) {
+        if (path[i] == '\0')
+            break;
+        if ((unsigned char)path[i] < 32 && path[i] != '\t')
+            return 0;
+    }
+    return 1;
+}
+
+static int argv_has_mixed_c_cpp(int argc, char **argv)
+{
+    int has_c = argv_has_source(argc, argv, has_c_extension);
+    int has_cpp = argv_has_source(argc, argv, has_cpp_extension);
+    return has_c && has_cpp;
+}
+
 static const char *lang_from_path(const char *path)
 {
     size_t i;
-    if (!path)
+    if (!path || !path_is_safe(path))
         return NULL;
     if (has_ext(path, ".o.d"))
         return NULL;
@@ -579,6 +604,18 @@ int main(int argc, char **argv)
     char target[PATH_MAX];
     const char *lang;
     const char *backend; /* used by exec_backend */
+    const char *guard;
+
+    if (argc >= 2 && strcmp(argv[1], "--g16-discern") != 0) {
+        if (argv_has_mixed_c_cpp(argc, argv)) {
+            guard = getenv("G16_MIXED_SOURCE_GUARD");
+            if (!guard || strcmp(guard, "0") != 0) {
+                fprintf(stderr,
+                        "g16: mixed C and C++ sources — split compile units or set G16_MIXED_SOURCE_GUARD=0\n");
+                return 2;
+            }
+        }
+    }
 
     if (argc >= 2 && strcmp(argv[1], "--g16-discern") == 0) {
         fputs(discern_lang(argc, argv), stdout);

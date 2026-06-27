@@ -666,6 +666,13 @@ cmd_test_battery_release() {
 
 cmd_test_battery_belt() {
   local fail=0
+  local extra=("$@")
+  for arg in "${extra[@]}"; do
+    case "$arg" in
+      --sanitizers) export G16_SANITIZER_GATE=1 ;;
+      --riscv-smoke) export G16_RISCV_SMOKE=1 ;;
+    esac
+  done
   run_step() {
     echo "battery-belt: $1"
     if ! "${@:2}"; then
@@ -676,6 +683,9 @@ cmd_test_battery_belt() {
   run_step release cmd_test_battery_release
   if [[ -f "$GROK16_ROOT/tests/test_g16_belt_battery.py" ]]; then
     run_step belt-py g16_gpy_run "$GROK16_ROOT/tests/test_g16_belt_battery.py"
+  fi
+  if [[ "${G16_SANITIZER_GATE:-}" == "1" ]] && grok16_ready; then
+    run_step sanitizers bash -c 'G16_EXTRA_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=all" _bench_run_one belt_2_0 cxx'
   fi
   if grok16_ready; then
     run_step belt-bench _bench_run_one belt_1_0 cxx
@@ -694,6 +704,13 @@ cmd_test_battery_belt() {
 }
 
 cmd_bench_triad() {
+  if [[ "${1:-}" == "--riscv-smoke" || "${1:-}" == "--riscv" ]]; then
+    if [[ -x "$GROK16_ROOT/scripts/grok16-riscv-smoke.sh" ]]; then
+      exec "$GROK16_ROOT/scripts/grok16-riscv-smoke.sh"
+    fi
+    echo "triad: riscv-smoke skipped (script missing or cross toolchain not installed)"
+    exec "$GROK16_SCRIPTS/grok16-bench-triad.sh" triad
+  fi
   exec "$GROK16_SCRIPTS/grok16-bench-triad.sh" triad
 }
 
@@ -970,11 +987,11 @@ case "${1:-}" in
   test-battery-heavy) cmd_test_battery_heavy ;;
   test-battery-full) cmd_test_battery_full ;;
   test-battery-release) cmd_test_battery_release ;;
-  test-battery-belt) cmd_test_battery_belt ;;
+  test-battery-belt) shift; cmd_test_battery_belt "$@" ;;
   integrate) cmd_integrate ;;
   bench) cmd_bench ;;
   bench-compare) cmd_bench_compare ;;
-  bench-triad) cmd_bench_triad ;;
+  bench-triad) shift; cmd_bench_triad "$@" ;;
   bench-charts) cmd_bench_charts ;;
   bench-refresh) cmd_bench_refresh ;;
   speed-demo) cmd_speed_demo ;;

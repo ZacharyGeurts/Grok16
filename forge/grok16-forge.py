@@ -21,6 +21,7 @@ from linker_tools import LINKER_TOOLS, linker_status, write_linker_manifest  # n
 from rtx_gate import gate_status  # noqa: E402
 from language_tools import hostess_gate, install_language_wrappers, language_status, write_language_manifest  # noqa: E402
 from engine import ForgeContext, ForgeEngine  # noqa: E402
+from module_integrity import gate_from_env as forge_integrity_gate  # noqa: E402
 
 ALL_TOOLS = {
     **GCC_TOOLS,
@@ -35,6 +36,7 @@ ALL_TOOLS = {
 
 def forge_status() -> dict:
     ctx = ForgeContext.from_env()
+    integrity = forge_integrity_gate()
     gate = hostess_gate(ctx)
     iron = ironclad_sanity_status(ctx)
     write_field_cmake_manifest(ctx)
@@ -44,7 +46,8 @@ def forge_status() -> dict:
     write_linker_manifest(ctx)
     return {
         "product": "Grok16",
-        "ok": True,
+        "ok": integrity.get("ok", True),
+        "forge_integrity": integrity,
         **g16_status(ctx),
         "binutils": binutils_status(ctx),
         "field_build": field_build_status(ctx),

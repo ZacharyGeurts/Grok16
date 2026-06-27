@@ -1,0 +1,48 @@
+name: 5.0 Verify + Release Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake python3 file
+
+      - name: Forge integrity + shell syntax
+        run: |
+          export G16_PREFIX="$PWD"
+          export GROK16_ROOT="$PWD"
+          python3 -m py_compile forge/*.py
+          python3 -c "import sys; sys.path.insert(0,'forge'); from module_integrity import gate_from_env; from pathlib import Path; print(gate_from_env(Path('forge')))"
+          bash -n scripts/grok16-toolchain.sh
+
+      - name: Full Gate
+        run: |
+          export G16_PREFIX="$PWD"
+          export GROK16_ROOT="$PWD"
+          export G16_RELEASE_PROFILE=1
+          export G16_PKGVERSION="Grok16-5.0.0"
+          export G16_BELT_PROFILE="belt_2_0"
+          if ./scripts/grok16-toolchain.sh status >/dev/null 2>&1; then
+            ./scripts/grok16-toolchain.sh test-battery-belt
+            ./scripts/grok16-toolchain.sh bench-triad
+            echo "5.0 gate passed" > status.txt
+          else
+            echo "compiler not prebuilt on runner — integrity + syntax gate only" > status.txt
+          fi
+
+      - name: Upload gate status
+        uses: actions/upload-artifact@v4
+        with:
+          name: grok16-5.0-gate-status
+          path: status.txt
