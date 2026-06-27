@@ -76,7 +76,27 @@ def _env_true(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")
 
 
+def _ideal_compile_profile(root: Path) -> str | None:
+    comb = root / "lib" / "g16-compile-combinatronics.py"
+    if not comb.is_file():
+        return None
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("g16_compile_combinatronics", comb)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    if hasattr(mod, "resolve_compile_profile"):
+        prof = str(mod.resolve_compile_profile() or "").strip()
+        return prof or None
+    return None
+
+
 def _default_profile() -> str:
+    root = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
+    ideal = _ideal_compile_profile(root)
+    if ideal:
+        return ideal
     if _env_true("G16_FIELD_SPEED"):
         return "field_opt"
     return os.environ.get("G16_BENCH_PROFILE", "field_opt")

@@ -8,20 +8,21 @@
 | **Field Research book** | https://zacharygeurts.github.io/Field_Research/ |
 | **Speed bench** | https://zacharygeurts.github.io/Grok16/speed-bench.html |
 | **Repo** | https://github.com/ZacharyGeurts/Grok16 |
-| **Tag** | `v4.0.0` |
+| **Tag** | `v4.2.0` |
 | **Compiler** | `g16 (Grok16-16.2.0) 16.2.0` |
 
 ## MCP (4.0)
 
 **Model Context Protocol** — `mcp/grok16_mcp_server.py` exposes version, toolchain, RTX gate, speed bench, power sort. [Setup](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/README.md)
 
-## Speed bench (report v4.0.0)
+## Speed bench (report v4.2.0)
 
 | Category | Winner | Compile | Execution |
 |----------|--------|--------:|----------:|
-| **Fastest execution** | CMake host g++ -O2 | BSP hit | **91.8M ops/s** |
-| **Best g16 C++** | g16 belt_2_0 | BSP hit | **89.3M ops/s** |
-| **Best Python** | gpy-16 GrokVM | — | **849K ops/s** |
+| **Fastest execution** | C++ host g++ -O2 | BSP hit | **95.3M ops/s** |
+| **Best g16 C++** | g16 belt_2_0 | BSP hit | **92.6M ops/s** |
+| **Fastest compile** | C g16 belt_1_0 | rocket | **357 ms** |
+| **Best Python** | host CPython 3 | — | **800K ops/s** |
 
 Report: [SPEED-BENCH-REPORT.md](https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md) · Wiki: [Speed-Bench](Speed-Bench)
 
@@ -41,7 +42,7 @@ Thirteen chapters from combinatorics endpoint to compatibility layers — [Field
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16 && git checkout v3.0.0
+cd Grok16 && git checkout v4.2.0
 export G16_PREFIX="$(pwd)"
 export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild

@@ -16,14 +16,28 @@ PREFIX = Path(os.environ.get("G16_PREFIX", ROOT))
 G16 = PREFIX / "bin" / "g16"
 PROFILE = os.environ.get("G16_AI_PROFILE", "ai_agent")
 PROFILE_SCRIPT = ROOT / "scripts" / "grok16-profile-flags.py"
+COMB_SCRIPT = ROOT / "lib" / "g16-compile-combinatronics.py"
 
 
-def _profile_flags(kind: str = "cxx") -> list[str]:
+def _comb_mod():
+    if not COMB_SCRIPT.is_file():
+        return None
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("g16_compile_combinatronics", COMB_SCRIPT)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _profile_flags(kind: str = "cxx", *, profile: str | None = None) -> list[str]:
+    prof = profile or PROFILE
     if not PROFILE_SCRIPT.is_file():
         return ["-std=gnu++26", "-O2"]
-    env = {**os.environ, "GROK16_ROOT": str(ROOT), "G16_PREFIX": str(PREFIX), "G16_BENCH_PROFILE": PROFILE}
+    env = {**os.environ, "GROK16_ROOT": str(ROOT), "G16_PREFIX": str(PREFIX), "G16_BENCH_PROFILE": prof}
     proc = subprocess.run(
-        [sys.executable, str(PROFILE_SCRIPT), PROFILE, kind],
+        [sys.executable, str(PROFILE_SCRIPT), prof, kind],
         capture_output=True, text=True, timeout=30, env=env,
     )
     if proc.returncode != 0:
@@ -54,24 +68,38 @@ def compile_source(
 ) -> dict:
     if not G16.is_file():
         return {"ok": False, "error": f"missing g16 at {G16}"}
+    comb_mod = _comb_mod()
+    gate: dict = {}
+    profile = PROFILE
+    if comb_mod and hasattr(comb_mod, "compile_gate"):
+        gate = comb_mod.compile_gate(profile=PROFILE)
+        profile = str(gate.get("profile") or PROFILE)
     suffix = ".cpp" if lang == "cxx" else ".c"
     std_flag = "-std=gnu++26" if lang == "cxx" else "-std=gnu17"
     with tempfile.TemporaryDirectory(prefix="g16-ai-") as td:
         src = Path(td) / f"snippet{suffix}"
         out = Path(td) / out_name
         src.write_text(source, encoding="utf-8")
-        flags = _profile_flags("cxx" if lang == "cxx" else "c")
+        env = {**os.environ, "GROK16_ROOT": str(ROOT), "G16_PREFIX": str(PREFIX), "G16_BENCH_PROFILE": profile}
+        flags = _profile_flags("cxx" if lang == "cxx" else "c", profile=profile)
         if std_flag not in flags:
             flags = [std_flag, *flags]
         cmd = [str(G16), *flags, "-o", str(out), str(src)]
         t0 = time.time()
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=120, env=env)
         ms = int((time.time() - t0) * 1000)
         errors = _parse_errors(proc.stderr)
+        stamp: dict = {}
+        if proc.returncode == 0 and out.is_file() and comb_mod and hasattr(comb_mod, "stamp_compiled_artifact"):
+            stamp = comb_mod.stamp_compiled_artifact(
+                out,
+                comb=gate.get("combinatronics"),
+                compile_meta={"profile": profile, "lang": lang, "compile_ms": ms},
+            )
         return {
             "schema": "grok16-ai-compile/v1",
             "ok": proc.returncode == 0,
-            "profile": PROFILE,
+            "profile": profile,
             "lang": lang,
             "compile_ms": ms,
             "returncode": proc.returncode,
@@ -79,6 +107,8 @@ def compile_source(
             "stderr_tail": proc.stderr[-4000:] if proc.stderr else "",
             "stdout": proc.stdout.strip(),
             "binary": str(out) if out.is_file() else "",
+            "combinatronics_gate": gate or None,
+            "combinatronics_stamp": stamp or None,
             "hostess_truth_floor": 58,
         }
 

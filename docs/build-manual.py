@@ -9,19 +9,19 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
-DISTRO = "4.0.0"
+DISTRO = "4.7.0"
 G16 = "16.2.0"
-CACHE = "v10"
-BENCH_REPORT = "4.0.0"
+CACHE = "v11"
+BENCH_REPORT = "4.7.0"
 BENCH_SUITE = "speed_demo"
-BENCH_SUITE_VER = "1.0.0"
+BENCH_SUITE_VER = "1.1.0"
 
 NAV = [
     ("index.html", "Home"),
     ("speed-bench.html", "Speed Bench"),
     ("uncompiled.html", "Uncompiled"),
     ("cmake-linking.html", "CMake & Link"),
-    ("release.html", "Release 3.0"),
+    ("release.html", "Release 4.2"),
     ("single-fabric.html", "Single Fabric"),
     ("safety.html", "Safety"),
     ("getting-started.html", "Getting Started"),
@@ -45,6 +45,34 @@ def load_bench() -> dict:
     if path.is_file():
         return json.loads(path.read_text(encoding="utf-8"))
     return {}
+
+
+def load_triad() -> dict:
+    path = ROOT.parent / "data" / "bench" / "triad-latest.json"
+    if path.is_file():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    return {}
+
+
+def triad_table_html(data: dict) -> str:
+    cases = {c["id"]: c for c in data.get("cases", [])}
+    rows = []
+    for kid, prof in (("host_gcc", "-O3 -march=native"), ("belt_1_0", "belt_1_0"), ("belt_2_0", "belt_2_0")):
+        c = cases.get(kid)
+        if not c:
+            continue
+        tool = "g++" if kid == "host_gcc" else "g16"
+        rows.append(
+            f"    <tr><td>{'host' if kid == 'host_gcc' else ''} <code>{tool}</code></td>"
+            f"<td><code>{prof}</code></td>"
+            f"<td>{c.get('compile_ms', '—')}</td>"
+            f"<td>{c.get('run_wall_ms', '—')}</td>"
+            f"<td>{c.get('binary_bytes', '—'):,}</td></tr>"
+        )
+    return "\n".join(rows) if rows else "    <tr><td colspan=\"5\">Run bench-triad</td></tr>"
 
 
 def fmt_ops(v: float | int | None) -> str:
@@ -77,8 +105,19 @@ def bench_table_html(data: dict, *, compact: bool = False) -> str:
     return "\n".join(rows) if rows else f"    <tr><td colspan=\"{colspan}\">Run field-exec-full-bench.py</td></tr>"
 
 
+def _bench_version_doc() -> dict:
+    path = ROOT.parent / "data" / "grok16-speed-bench-version.json"
+    if path.is_file():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    return {}
+
+
 def bench_meta(data: dict) -> dict:
     v = data.get("versions", {})
+    ver_doc = _bench_version_doc()
     w = data.get("winners", {})
     pm = data.get("plate_meld") or {}
     ctx = pm.get("context") or {}
@@ -90,10 +129,10 @@ def bench_meta(data: dict) -> dict:
         "bench_at": data.get("bench_at", "—"),
         "host": data.get("host", "—"),
         "target_sec": data.get("target_sec", 3),
-        "report": v.get("report_version", BENCH_REPORT),
-        "distro": v.get("distro_version", DISTRO),
-        "suite": v.get("bench_suite", BENCH_SUITE),
-        "suite_ver": v.get("bench_suite_version", BENCH_SUITE_VER),
+        "report": ver_doc.get("report_version") or v.get("report_version", BENCH_REPORT),
+        "distro": ver_doc.get("distro_version") or v.get("distro_version", DISTRO),
+        "suite": ver_doc.get("bench_suite") or v.get("bench_suite", BENCH_SUITE),
+        "suite_ver": ver_doc.get("bench_suite_version") or v.get("bench_suite_version", BENCH_SUITE_VER),
         "best_exec_label": best_exec.get("label", "—"),
         "best_exec_ops": fmt_ops(best_exec.get("ops_per_sec")),
         "fast_compile_label": fast_compile.get("label", "—"),
@@ -102,13 +141,15 @@ def bench_meta(data: dict) -> dict:
         "amort_label": amort.get("label", "—"),
         "amort_ops": fmt_ops(amort.get("amortized_ops_per_sec")),
         "runners_tested": data.get("runners_tested", len(data.get("rows", []))),
-        "schema": data.get("schema", "grok16-field-exec-full-bench/v4"),
+        "schema": ver_doc.get("bench_schema") or data.get("schema", "grok16-field-exec-full-bench/v4"),
         "meld_gen": ctx.get("meld_generation", "—"),
         "meld_plates": ctx.get("plates_fused", "—"),
         "sense_profile": ctx.get("sense_profile", "—"),
         "sense_reason": ctx.get("sense_reason", "—"),
         "sense_vs_belt2": pm.get("sense_vs_belt_2_ops_ratio", "—"),
         "meld_helps": "yes" if pm.get("meld_helps_profile") else "no",
+        "meld_compile_delta": pm.get("sense_vs_belt_2_compile_delta_ms"),
+        "meld_ops_ratio": pm.get("sense_vs_belt_2_ops_ratio"),
         "bench_all_n": len(data.get("bench_all_profiles") or []),
     }
 
@@ -194,9 +235,11 @@ def page(title: str, body: str) -> str:
 
 def pages_dict() -> dict[str, tuple[str, str]]:
     bench = load_bench()
+    triad = load_triad()
     meta = bench_meta(bench)
     table = bench_table_html(bench)
     table_compact = bench_table_html(bench, compact=True)
+    triad_table = triad_table_html(triad)
     return {
     "index.html": (
         "Home",
@@ -260,7 +303,7 @@ def pages_dict() -> dict[str, tuple[str, str]]:
     <tr><td><a href="speed-bench.html">Speed Bench</a></td><td>Versioned compile ms + execution ops/s — report v{meta['report']}</td></tr>
     <tr><td><a href="uncompiled.html">Uncompiled</a></td><td>Python interpreter, chamber compile-ahead, Queen .launch</td></tr>
     <tr><td><a href="cmake-linking.html">CMake &amp; Linking</a></td><td>Toolchain file, speed_demo CMake, g16-ld mandate</td></tr>
-    <tr><td><a href="release.html">Release 3.0</a></td><td>3.0 changelog, upgrade from v2.0.0</td></tr>
+    <tr><td><a href="release.html">Release 4.2</a></td><td>4.2 changelog — .launch chambers, MCP, power sort line safety</td></tr>
     <tr><td><a href="single-fabric.html">Single Fabric</a></td><td>2.0 technology — one belt die, one field amplitude</td></tr>
     <tr><td><a href="safety.html">Safety</a></td><td>Depth-field impossible, linear time, Ironclad gates</td></tr>
     <tr><td><a href="getting-started.html">Getting Started</a></td><td>Bootstrap, rebuild modes, first verify</td></tr>
@@ -276,7 +319,7 @@ def pages_dict() -> dict[str, tuple[str, str]]:
         "Speed Bench",
         f"""
   <h1>Speed bench — report v{meta['report']}</h1>
-  <p>Distro <strong>{meta['distro']}</strong> · suite <code>{meta['suite']}</code> @ <code>{meta['suite_ver']}</code> · schema <code>grok16-field-exec-full-bench/v3</code></p>
+  <p>Distro <strong>{meta['distro']}</strong> · suite <code>{meta['suite']}</code> @ <code>{meta['suite_ver']}</code> · schema <code>{meta['schema']}</code></p>
 
   <aside class="callout callout-accent">
     <strong>Version stamps:</strong> Every run writes <code>docs/field-exec-full-bench.json</code> with distro, g16, suite, and report versions. Doctrine: <code>data/grok16-speed-bench-version.json</code>
@@ -312,7 +355,7 @@ def pages_dict() -> dict[str, tuple[str, str]]:
     <tr><td>Meld helps profile ladder</td><td><strong>{meta['meld_helps']}</strong></td></tr>
   </table>
   <aside class="callout callout-accent">
-    <strong>Professional verdict:</strong> Plate meld does not slow the ELF hot path. It helps when compiler-sense picks <code>expert</code> over static <code>belt_2_0</code> — faster compile (−413 ms on reference host) and +9.8% execution throughput.
+    <strong>Professional verdict:</strong> Plate meld does not block the ELF hot path. On this host, compiler-sense compile was <strong>{meta['meld_compile_delta']} ms</strong> vs static <code>belt_2_0</code>; sense execution ratio <strong>{meta['meld_ops_ratio']}</strong>. Profile ladder unlocks when meld generation ≥ {meta['meld_gen']}.
   </aside>
 
   <h2 id="bench-all">bench-all cross-reference</h2>
@@ -356,8 +399,8 @@ G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh ex
   <table>
     <tr><th>Lane</th><th>Dev behavior</th><th>speed_demo @ {meta['target_sec']}s</th></tr>
     <tr><td><strong>Python</strong></td><td>True interpreter (CPython / gpy-16 GrokVM)</td><td>~{meta['best_py_ops']} ops/s</td></tr>
-    <tr><td><strong>C / C++</strong></td><td>Chamber <strong>compile ahead</strong> — no line-by-line interpreter</td><td>~79–85M ops/s after plane cache</td></tr>
-    <tr><td><strong>CMake</strong></td><td>Configure + build once; bin reused</td><td>~82.6M ops/s</td></tr>
+    <tr><td><strong>C / C++</strong></td><td>Chamber <strong>compile ahead</strong> — no line-by-line interpreter</td><td>~87–95M ops/s after plane cache</td></tr>
+    <tr><td><strong>CMake</strong></td><td>Configure + build once; bin reused</td><td>~93M ops/s</td></tr>
   </table>
   <p>Doctrine: <code>data/field-exec-uncompiled-doctrine.json</code></p>
 
@@ -433,10 +476,10 @@ cmake --build build/g16 -j$(nproc)</code></pre>
 """,
     ),
     "release.html": (
-        "Release 3.0",
+        "Release 4.2",
         f"""
   <h1>Release {DISTRO}</h1>
-  <p>Grok16 <strong>3.0</strong> — versioned compile+execution speed bench, uncompiled doctrine, Queen-themed manual. Compiler <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous: <code>v2.0.0</code>.</p>
+  <p>Grok16 <strong>4.2</strong> — portable <code>.launch</code> chambers, self-monitor bench v5, 17-platform matrix (incl. RISC-V), MCP server, power sort line safety. Compiler <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous: <code>v4.0.0</code>.</p>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
@@ -468,7 +511,7 @@ SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
     <li><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench</code></li>
     <li><code>./scripts/grok16-integrate.sh</code> to publish env to SG consumers</li>
   </ol>
-  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-3.0.md">RELEASE-3.0.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="single-fabric.html">Single Fabric</a></p>
+  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.2.md">RELEASE-4.2.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="single-fabric.html">Single Fabric</a></p>
 """,
     ),
     "getting-started.html": (
@@ -731,17 +774,30 @@ pythong forge/g16-linker.py json</code></pre>
 {table_compact}
   </table>
 
+  <figure class="fig-wide">
+    <img src="assets/triad-chart.svg" alt="Belt triad compile and run comparison" width="920" height="280" loading="lazy" />
+    <figcaption>bench-triad — host gcc vs belt_1_0 vs belt_2_0</figcaption>
+  </figure>
+
   <h2 id="triad">Belt triad (bench-triad)</h2>
   <p>Workload: <code>examples/field-nexus-bench</code> — 240 frames, FieldX86 + entropy + wave + NEXUS.</p>
   <table>
     <tr><th>Toolchain</th><th>Profile</th><th>compile_ms</th><th>run wall_ms</th><th>binary bytes</th></tr>
-    <tr><td>host <code>g++</code></td><td>-O3 -march=native</td><td>~2575</td><td>~3</td><td>~27264</td></tr>
-    <tr><td><code>g16</code></td><td><code>belt_1_0</code></td><td>~2377</td><td>~3</td><td>~22712</td></tr>
-    <tr><td><code>g16</code></td><td><code>belt_2_0</code></td><td>~3708</td><td>~5</td><td>~22840</td></tr>
+{triad_table}
   </table>
   <p><code>belt_1_0</code> matches host runtime; <code>belt_2_0</code> trades compile time for production single-fabric belt.</p>
   <pre><code>./scripts/grok16-toolchain.sh bench-triad
 cat data/bench/triad-latest.json</code></pre>
+
+  <figure class="fig-wide">
+    <img src="assets/compare-chart.svg" alt="Field g16 vs host compile comparison" width="920" height="300" loading="lazy" />
+    <figcaption>bench-compare — field g16 vs host gcc/g++</figcaption>
+  </figure>
+
+  <figure class="fig-wide">
+    <img src="assets/bench-all-chart.svg" alt="bench-all profile suite" width="920" height="260" loading="lazy" />
+    <figcaption>bench-all — field-nexus-bench across profiles</figcaption>
+  </figure>
 
   <h2 id="field-bench">Field-Opt vs baseline</h2>
   <table>
@@ -845,11 +901,11 @@ G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench
     }
 
 SEARCH_INDEX = [
-    {"t": "speed bench", "p": "speed-bench.html", "g": "3.0", "d": "Versioned compile ms execution ops/s report v3.0.0"},
+    {"t": "speed bench", "p": "speed-bench.html", "g": "4.2", "d": "Versioned compile ms execution ops/s report v4.2.0"},
     {"t": "exec-full-bench", "p": "speed-bench.html#reproduce", "g": "Bench", "d": "field-exec-full-bench compile and execution"},
-    {"t": "uncompiled", "p": "uncompiled.html", "g": "3.0", "d": "Python interpreter C C++ chamber compile ahead"},
+    {"t": "uncompiled", "p": "uncompiled.html", "g": "4.2", "d": "Python interpreter C C++ chamber compile ahead"},
     {"t": "cmake linking", "p": "cmake-linking.html", "g": "Build", "d": "grok16-toolchain.cmake g16-ld speed_demo"},
-    {"t": "speed_demo", "p": "speed-bench.html", "g": "Suite", "d": "speed_demo v1.0.0 FieldX86 kernel bench"},
+    {"t": "speed_demo", "p": "speed-bench.html", "g": "Suite", "d": "speed_demo v1.1.0 FieldX86 kernel bench"},
     {"t": "single fabric", "p": "single-fabric.html", "g": "2.0", "d": "One belt die one field amplitude knowing fixed-size"},
     {"t": "belt_2_0", "p": "profiles.html#belt-2", "g": "Profile", "d": "2.0 production belt chunked redata 8192"},
     {"t": "bench-triad", "p": "performance.html#triad", "g": "Bench", "d": "host gcc vs belt_1_0 vs belt_2_0"},
@@ -861,7 +917,7 @@ SEARCH_INDEX = [
     {"t": "test-battery-expert", "p": "batteries.html#expert", "g": "Battery", "d": "Ironclad linker RTX expert profile"},
     {"t": "g16-ld", "p": "linker.html", "g": "Linker", "d": "Field linker 16 targets mandate flags"},
     {"t": "GPY-16", "p": "toolkits.html#gpy16", "g": "Toolkit", "d": "Built-in Python GrokVM gpy-16"},
-    {"t": "v3.0.0", "p": "release.html", "g": "Release", "d": "Speed bench uncompiled doctrine Queen manual"},
+    {"t": "v4.2.0", "p": "release.html", "g": "Release", "d": "Launch chambers MCP power sort line safety"},
     {"t": "queen theme", "p": "index.html", "g": "UI", "d": "Queen navy gold emerald manual theme"},
     {"t": "bootstrap", "p": "getting-started.html#bootstrap", "g": "Workflow", "d": "First GCC fetch host build install"},
     {"t": "g16 unified", "p": "architecture.html#unified-driver", "g": "Driver", "d": "Single g16 C C++ Python discern"},

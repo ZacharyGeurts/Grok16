@@ -1,48 +1,57 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-4.2.0-brightgreen)
-![Bench](https://img.shields.io/badge/speed__bench-v4.2.0-gold)
+![Status](https://img.shields.io/badge/release-4.7.0-brightgreen)
+![Bench](https://img.shields.io/badge/speed__bench-v4.7.0-gold)
 ![Launch](https://img.shields.io/badge/.launch-ready-blue)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
-![Track](https://img.shields.io/badge/roadmap-4.2%20%E2%86%92%204.3-lightgrey)
+![Track](https://img.shields.io/badge/roadmap-4.7%20%E2%86%92%204.8-lightgrey)
 ![RISC](https://img.shields.io/badge/RISC--V-linux--gnu--riscv64-orange)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-## Speed bench — all executions tested (report v4.0.0)
+## Speed bench — all executions tested (report v4.7.0)
 
-**Distro 4.0.0** · **suite `speed_demo` @ 1.1.0** · **schema v4** · **11 runners** · **3s window**  
-[SPEED-BENCH-REPORT.md](docs/SPEED-BENCH-REPORT.md) · [COMPREHENSIVE-BENCH-REPORT.md](docs/COMPREHENSIVE-BENCH-REPORT.md) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
+**Distro 4.7.0** · **suite `speed_demo` @ 1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**  
+Host: `default-X870-Pro-RS` · [field-exec-full-bench.json](docs/field-exec-full-bench.json) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
+
+### Winners (cold exec, BSP rocket)
+
+| Category | Winner | Value |
+|----------|--------|------:|
+| **Fastest execution** | C++ — host g++ -O2 | **95.3M ops/s** |
+| **Best g16 C++** | C++ — g16 belt_2_0 | **92.6M ops/s** |
+| **Fastest compile** | C — g16 belt_1_0 | **357 ms** |
+| **Best amortized first-run** | C — g16 belt_1_0 | **66.4M eff.** |
+| **Best Python** | host CPython 3 | **800K ops/s** |
 
 ### speed_demo — every runner (cold exec)
 
 | Runner | Profile | Compile (ms) | ops/s | Pass |
 |--------|---------|-------------:|------:|------|
-| CMake — host g++ -O2 | — | 2,814 | **85.8M** | cold |
-| C++ — host g++ -O2 | — | 1,710 | 83.9M | cold |
-| C++ — g16 sense **expert** | expert | 1,608 | 82.1M | plate meld |
-| C++ — g16 belt_1_0 | belt_1_0 | 1,888 | 78.4M | cold |
-| C — g16 belt_1_0 | belt_1_0 | 395 | 77.0M | cold |
-| C — g16 belt_2_0 | belt_2_0 | **296** | 75.0M | cold |
-| C++ — g16 belt_2_0 | belt_2_0 | 2,021 | 74.8M | cold |
-| C — host gcc -O2 | — | 459 | 73.7M | cold |
-| Python — gpy-16 GrokVM | — | — | **777K** | interpreter |
-| Python — host CPython 3 | — | — | 748K | interpreter |
+| C++ — host g++ -O2 | — | 1,588 | **95.3M** | cold |
+| CMake — host g++ -O2 | — | 2,174 | 93.0M | cold |
+| C++ — g16 belt_2_0 | belt_2_0 | 1,883 | **92.6M** | cold |
+| C — g16 belt_1_0 | belt_1_0 | **357** | 90.1M | cold |
+| C++ — g16 sense field_opt | field_opt | 1,774 | 89.6M | plate meld |
+| C — g16 belt_2_0 | belt_2_0 | 449 | 87.5M | cold |
+| C++ — g16 belt_1_0 | belt_1_0 | 1,768 | 87.1M | cold |
+| C — host gcc -O2 | — | 496 | 82.6M | cold |
+| Python — host CPython 3 | — | — | **800K** | interpreter |
+| Python — gpy-16 GrokVM | — | — | 751K | interpreter |
 
-### Plate meld helps (measured)
+### Plate meld (measured, gen 2)
 
-After `field-plate-meld.py fuse` + `g16-compiler-sense-plate.py cycle` (gen **2**, **24** plates fused):
+After `field-plate-meld.py fuse` + `g16-compiler-sense-plate.py cycle` (**4** plates fused on this bench witness):
 
-| Situation | Without meld | With meld (sense) | Delta |
-|-----------|-------------|-------------------|-------|
-| C++ profile chosen | belt_2_0 | **expert** (eye_ear_green) | meld unlocks ladder |
-| C++ compile | 2,021 ms | **1,608 ms** | **−413 ms** (20% faster) |
-| C++ execution | 74.8M ops/s | **82.1M ops/s** | **+9.8%** throughput |
-| Post-meld re-exec (same ELF) | 74.8M | 85.9M | CPU warm-cache; meld witness only |
+| Metric | Value |
+|--------|------:|
+| Sense vs belt_2_0 compile | **−109 ms** |
+| Sense vs belt_2_0 exec ratio | **0.967** |
+| Post-meld belt_2 re-exec | **82.9M ops/s** (same ELF witness) |
 
-**Verdict:** Plate meld does not slow the hot path. It **helps** by routing compile through compiler-sense **expert** profile — faster wave-convert and higher ops/s on this host.
+**Verdict:** Plate meld does not block the hot path. Compiler-sense trades a small exec delta for faster wave-convert on this host; profile ladder unlocks when meld generation ≥ 2.
 
 ### bench-all profiles (field-nexus-bench)
 
@@ -97,7 +106,7 @@ JSON: `docs/field-exec-full-bench.json` · Doctrine: `data/grok16-plate-meld-ben
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 
-**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 3.0](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 4.2](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ### Single fabric & safety (2.0)
 

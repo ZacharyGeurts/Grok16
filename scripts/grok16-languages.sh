@@ -44,6 +44,22 @@ cmd_discern() {
   check d foo.d
   check ada foo.adb
   check objc foo.m
+  check basic foo.bas
+  check qbasic foo.qb
+  check pascal foo.pas
+  check turbo_pascal foo.tp
+  check ammolang foo.aml
+  check javascript foo.js
+  check typescript foo.ts
+  check java foo.java
+  check ruby foo.rb
+  check shell foo.sh
+  check haskell foo.hs
+  check kotlin foo.kt
+  check swift foo.swift
+  check field foo.fld
+  check delphi foo.dpr
+  check matlab foo.m
   [[ "$fail" -eq 0 ]] || exit 1
   echo "discern: PASS"
 }
@@ -90,8 +106,13 @@ cmd_verify() {
   echo "verify: PASS"
 }
 
+cmd_sync() {
+  g16_gpy_run "${GROK16_ROOT}/scripts/sync-all-languages.py"
+}
+
 case "${1:-}" in
   install) cmd_install ;;
+  sync) cmd_sync ;;
   status) cmd_status ;;
   discern) cmd_discern ;;
   hostess-gate) cmd_hostess_gate ;;

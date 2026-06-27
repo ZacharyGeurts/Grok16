@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 260" role="img" aria-label="bench-all profile suite">
+  <rect width="920" height="260" fill="#0a0f18" rx="12"/>
+  <text x="24" y="32" fill="#e8c878" font-size="18" font-weight="700">bench-all — field-nexus-bench profiles</text>
+  <text x="24" y="54" fill="#8fb4d9" font-size="12">9 profiles · compile_ms median</text>
+  <rect x="140" y="72" width="600" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="84" fill="#060a12" font-size="10" font-weight="600">expert · 2275ms compile · 14ms run</text>
+  <rect x="140" y="94" width="483" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="106" fill="#060a12" font-size="10" font-weight="600">heavy · 1835ms compile · 9ms run</text>
+  <rect x="140" y="116" width="482" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="128" fill="#060a12" font-size="10" font-weight="600">belt_2_0 · 1831ms compile · 11ms run</text>
+  <rect x="140" y="138" width="365" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="150" fill="#060a12" font-size="10" font-weight="600">belt_1_0 · 1386ms compile · 7ms run</text>
+  <rect x="140" y="160" width="352" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="172" fill="#060a12" font-size="10" font-weight="600">field_opt · 1337ms compile · 8ms run</text>
+  <rect x="140" y="182" width="231" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="194" fill="#060a12" font-size="10" font-weight="600">vulkan_rtx · 876ms compile · 4ms run</text>
+  <rect x="140" y="204" width="193" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="216" fill="#060a12" font-size="10" font-weight="600">ai · 735ms compile · 6ms run</text>
+  <rect x="140" y="226" width="174" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="238" fill="#060a12" font-size="10" font-weight="600">ai_agent · 662ms compile · 7ms run</text>
+  <rect x="140" y="248" width="143" height="16" fill="#e8c878" rx="3"/>
+  <text x="148" y="260" fill="#060a12" font-size="10" font-weight="600">field_compute · 543ms compile · 3ms run</text>
+</svg>

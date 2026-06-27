@@ -2,8 +2,8 @@
   {
     "t": "speed bench",
     "p": "speed-bench.html",
-    "g": "3.0",
-    "d": "Versioned compile ms execution ops/s report v3.0.0"
+    "g": "4.2",
+    "d": "Versioned compile ms execution ops/s report v4.2.0"
   },
   {
     "t": "exec-full-bench",
@@ -14,7 +14,7 @@
   {
     "t": "uncompiled",
     "p": "uncompiled.html",
-    "g": "3.0",
+    "g": "4.2",
     "d": "Python interpreter C C++ chamber compile ahead"
   },
   {
@@ -27,7 +27,7 @@
     "t": "speed_demo",
     "p": "speed-bench.html",
     "g": "Suite",
-    "d": "speed_demo v1.0.0 FieldX86 kernel bench"
+    "d": "speed_demo v1.1.0 FieldX86 kernel bench"
   },
   {
     "t": "single fabric",
@@ -96,10 +96,10 @@
     "d": "Built-in Python GrokVM gpy-16"
   },
   {
-    "t": "v3.0.0",
+    "t": "v4.2.0",
     "p": "release.html",
     "g": "Release",
-    "d": "Speed bench uncompiled doctrine Queen manual"
+    "d": "Launch chambers MCP power sort line safety"
   },
   {
     "t": "queen theme",

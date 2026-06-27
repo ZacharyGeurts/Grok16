@@ -1,7 +1,7 @@
 {
   "schema": "grok16-platform-release/v1",
-  "distro_version": "4.2.0",
-  "distro_tag": "v4.2.0",
+  "distro_version": "4.7.0",
+  "distro_tag": "v4.7.0",
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-16.2.0",
   "upstream_gcc": "releases/gcc-15",

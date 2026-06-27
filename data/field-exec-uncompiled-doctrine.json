@@ -65,14 +65,38 @@
   "release_compile": {
     "trigger": "Compile mode — Queen Files right-click on compileable sources",
     "toolchain": "g16 belt_2_0",
-    "not_timed_in_compare": true
+    "not_timed_in_compare": true,
+    "combinatronics": {
+      "schema": "g16-compile-combinatronics/v1",
+      "module": "lib/g16-compile-combinatronics.py",
+      "doctrine": "data/g16-compile-combinatronics-doctrine.json",
+      "always_at_creation": true,
+      "gate": "compile_gate",
+      "stamp": "stamp_compiled_artifact",
+      "ideal_profile_from": "g16-ideal-compile.json",
+      "statement": "Release compile runs optimal combinatronics before wave-convert; plane.json carries stamped receipt."
+    }
+  },
+  "python_speedups": {
+    "schema": "grok16-python-speedups/v1",
+    "pythong_profile": "field_opt",
+    "env": {
+      "PYTHONG_FIELD": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "GROKPY_FIELD": "1",
+      "GPY16_FIELD": "1"
+    },
+    "drivers": ["gpy-16", "pythong", "python3"],
+    "interpreter_bsp": "lib/field_python_interpreter.py",
+    "statement": "Python runs interpreter lane — no compile on launch; GrokVM + field_opt profile active"
   },
   "optimization_backlog": [
     {
       "id": "gpy_vm_hot",
       "lane": "python_gpy",
       "target": "GrokVM hot loop",
-      "status": "pending"
+      "status": "active",
+      "note": "gpy-16 field_native + PYTHONDONTWRITEBYTECODE + interpreter BSP wired"
     },
     {
       "id": "pythong_wave",

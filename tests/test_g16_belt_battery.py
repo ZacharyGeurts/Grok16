@@ -29,10 +29,11 @@ def test_belt_profiles() -> None:
 
 def test_version_2_0() -> None:
     doc = json.loads((ROOT / "data" / "grok16-version.json").read_text(encoding="utf-8"))
-    assert doc["distro_version"] in ("2.0.0", "3.0.0", "4.0.0", "4.2.0")
-    assert doc["belt"]["version"] == "2.0"
-    assert "belt" in doc["release_track"]["validation_tiers"]
     track = doc["release_track"]
+    assert doc["distro_version"] == track["current"]
+    assert doc["belt"]["version"] == "2.0"
+    assert "belt" in track["validation_tiers"]
+    assert "bench_charts" in track["validation_tiers"] or "speed_bench" in track["validation_tiers"]
     assert track.get("released") is True or track.get("status") in ("rc", "preparing", "released")
     sf = doc.get("single_fabric", {})
     assert sf.get("doctrine") == "data/grok16-single-fabric-doctrine.json"

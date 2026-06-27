@@ -1,6 +1,6 @@
 {
   "schema": "g16-field-research-book-panel/v1",
-  "updated": "2026-06-27T09:42:32Z",
+  "updated": "2026-06-27T13:26:56Z",
   "ok": true,
   "title": "Field Research — Grok16 technology spine",
   "edition": "1.0",
@@ -226,7 +226,7 @@
   "verify": {
     "ok": true,
     "schema": "g16-field-research-verify/v1",
-    "updated": "2026-06-27T09:42:32Z",
+    "updated": "2026-06-27T13:26:56Z",
     "manifest_ok": true,
     "chapters": 13,
     "missing_modules": [],
@@ -319,23 +319,23 @@
   },
   "bench_receipts": {
     "schema": "g16-field-research-receipts/v1",
-    "bench_at": "2026-06-27T07:39:24Z",
-    "report_version": "4.0.0",
+    "bench_at": "2026-06-27T13:15:46Z",
+    "report_version": "4.2.0",
     "best_execution": {
       "label": "C++ — host g++ -O2",
-      "ops_per_sec": 95344504.64
+      "ops_per_sec": 101566776.95
     },
     "best_g16_cxx": {
       "label": "C++ — host g++ -O2",
-      "ops_per_sec": 95344504.64
+      "ops_per_sec": 101566776.95
     },
     "fastest_compile": {
-      "label": "C — g16 belt_1_0",
-      "compile_ms": 357.01
+      "label": null,
+      "compile_ms": null
     },
     "best_python": {
-      "label": "Python — host CPython 3",
-      "ops_per_sec": 799963.17
+      "label": "Python — gpy-16 GrokVM",
+      "ops_per_sec": 892711.58
     },
     "source": "docs/field-exec-full-bench.json",
     "label": "Implemented"

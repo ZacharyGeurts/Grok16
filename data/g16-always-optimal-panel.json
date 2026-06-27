@@ -1,6 +1,6 @@
 {
   "schema": "g16-always-optimal-panel/v1",
-  "updated": "2026-06-27T09:42:31Z",
+  "updated": "2026-06-27T13:26:55Z",
   "ok": true,
   "always_optimal": true,
   "degraded_gate": true,
@@ -14,13 +14,13 @@
     "gate_ok": false,
     "bench_best_g16": {
       "profile": "belt_2_0",
-      "ops_per_sec": 92625263.73,
+      "ops_per_sec": 98594554.32,
       "label": "C++ — g16 belt_2_0",
       "id": "cxx_g16_belt_2",
       "belt_profile": "belt_2_0",
       "die_slots": 512
     },
-    "compiler_sense_profile": null,
+    "compiler_sense_profile": "field_opt",
     "native_ceiling_ops_per_sec": 95344504.64,
     "terminal_leaf": {},
     "motto": "Combinatorics scores every facet; bench receipts pick the belt; one amplitude at depth 0.",
@@ -31,36 +31,36 @@
         "file_list_small": {
           "context": "file_list",
           "context_bench_id": "file_list_small",
-          "algorithm": "dirs_first",
+          "algorithm": "locale_ci",
           "n": 200,
-          "bench_us": 33.36,
+          "bench_us": 33.22,
           "cool": true,
-          "statement": "power_sort_dirs_first_for_file_list"
+          "statement": "power_sort_locale_ci_for_file_list"
         },
         "file_list_large": {
           "context": "file_list",
           "context_bench_id": "file_list_large",
           "algorithm": "locale_ci",
           "n": 5000,
-          "bench_us": 248.97,
+          "bench_us": 266.02,
           "cool": true,
           "statement": "power_sort_locale_ci_for_file_list"
         },
         "file_list": {
           "context": "file_list",
           "context_bench_id": "file_list_small",
-          "algorithm": "dirs_first",
+          "algorithm": "locale_ci",
           "n": 200,
-          "bench_us": 33.36,
+          "bench_us": 33.22,
           "cool": true,
-          "statement": "power_sort_dirs_first_for_file_list"
+          "statement": "power_sort_locale_ci_for_file_list"
         },
         "drive_index": {
           "context": "drive_index",
           "context_bench_id": "drive_index",
           "algorithm": "timsort_key",
           "n": null,
-          "bench_us": 1039.75,
+          "bench_us": 2532.35,
           "cool": true,
           "statement": "power_sort_timsort_key_for_drive_index"
         },
@@ -78,7 +78,7 @@
           "context_bench_id": "bench_rank",
           "algorithm": "desc_numeric",
           "n": null,
-          "bench_us": 4.41,
+          "bench_us": 6.46,
           "cool": true,
           "statement": "power_sort_desc_numeric_for_bench_rank"
         },
@@ -87,7 +87,7 @@
           "context_bench_id": "thermal_layers",
           "algorithm": "cool_sort",
           "n": null,
-          "bench_us": 3.23,
+          "bench_us": 4.96,
           "cool": true,
           "statement": "power_sort_cool_sort_for_thermal_layers"
         },
@@ -99,9 +99,18 @@
           "bench_us": null,
           "cool": true,
           "statement": "power_sort_narrow_band_for_chip_paths"
+        },
+        "format_table": {
+          "context": "format_table",
+          "context_bench_id": "format_table",
+          "algorithm": "family_then_label",
+          "n": null,
+          "bench_us": null,
+          "cool": true,
+          "statement": "power_sort_family_then_label_for_format_table"
         }
       },
-      "file_list_mode": "dirs_first",
+      "file_list_mode": "name",
       "drive_index_algorithm": "timsort_key",
       "recombinatorics_algorithm": "composite_bsp",
       "chip_paths_algorithm": "narrow_band",
@@ -122,7 +131,7 @@
     "power_sort_sections": {
       "file_list": {
         "available": false,
-        "algorithm": "dirs_first",
+        "algorithm": "locale_ci",
         "cool": true,
         "context": "file_list",
         "consumer": "queen_files",
@@ -279,7 +288,7 @@
       },
       "queen_files": {
         "available": false,
-        "algorithm": "dirs_first",
+        "algorithm": "locale_ci",
         "cool": true,
         "context": "file_list",
         "consumer": "queen_file_browser",
@@ -303,7 +312,7 @@
       },
       "compat_layers": {
         "available": false,
-        "algorithm": "dirs_first",
+        "algorithm": "locale_ci",
         "cool": true,
         "context": "compat_layers",
         "consumer": "field_compatibility_layers",
@@ -327,7 +336,7 @@
       },
       "panel": {
         "available": false,
-        "algorithm": "dirs_first",
+        "algorithm": "locale_ci",
         "cool": true,
         "context": "panel",
         "consumer": null,
@@ -351,12 +360,36 @@
       },
       "physics": {
         "available": false,
-        "algorithm": "dirs_first",
+        "algorithm": "locale_ci",
         "cool": true,
         "context": "physics",
         "consumer": "field_physics_witness",
         "bench_deferred": false,
         "manifest_api": "/api/physics-witness",
+        "physics": {
+          "thermal": {
+            "level": "ok",
+            "cool_ok": true,
+            "headroom_pct": 100.0
+          },
+          "entropy": {
+            "entropy_ok": true,
+            "entropy_norm": 0.5
+          },
+          "isotope": {
+            "ok": true,
+            "stem": "speed_demo"
+          }
+        }
+      },
+      "format_table": {
+        "available": false,
+        "algorithm": "family_then_label",
+        "cool": true,
+        "context": "format_table",
+        "consumer": "field_file_formats",
+        "bench_deferred": false,
+        "manifest_api": null,
         "physics": {
           "thermal": {
             "level": "ok",
@@ -379,19 +412,19 @@
     {
       "step": "fast_cycle",
       "ok": true,
-      "elapsed_ms": 85.49
+      "elapsed_ms": 415.63
     },
     {
       "step": "bridge",
       "ok": false,
-      "elapsed_ms": 1315.5
+      "elapsed_ms": 1989.96
     },
     {
       "step": "power_sort",
       "ok": true,
-      "elapsed_ms": 47.09
+      "elapsed_ms": 111.08
     }
   ],
-  "elapsed_ms": 1454.18,
+  "elapsed_ms": 2532.68,
   "integrate_env": "/home/default/Desktop/SG/Grok16/data/grok16-integrate.env"
 }

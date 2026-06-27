@@ -73,6 +73,113 @@ static int has_fortran_extension(const char *path)
            has_ext(path, ".f03") || has_ext(path, ".for");
 }
 
+static int has_turbo_pascal_extension(const char *path)
+{
+    return has_ext(path, ".tp") || has_ext(path, ".tpu");
+}
+
+static int has_pascal_extension(const char *path)
+{
+    return has_ext(path, ".pas") || has_ext(path, ".pp");
+}
+
+static int has_qbasic_extension(const char *path)
+{
+    return has_ext(path, ".qb") || has_ext(path, ".qbs");
+}
+
+static int has_basic_extension(const char *path)
+{
+    return has_ext(path, ".bas") || has_ext(path, ".inc");
+}
+
+static int has_aml_extension(const char *path)
+{
+    return has_ext(path, ".aml");
+}
+
+/* Extension → language (longer / specific suffixes first) */
+static const struct {
+    const char *ext;
+    const char *lang;
+} g16_ext_lang[] = {
+    {".tpu", "turbo_pascal"}, {".tp", "turbo_pascal"},
+    {".qbs", "qbasic"}, {".qb", "qbasic"}, {".qbi", "quickbasic"},
+    {".fbi", "freebasic"}, {".dfm", "delphi"}, {".dpr", "delphi"},
+    {".f90", "fortran"}, {".f95", "fortran"}, {".f03", "fortran"}, {".for", "fortran"},
+    {".adb", "ada"}, {".ads", "ada"},
+    {".aml", "ammolang"},
+    {".bas", "basic"}, {".inc", "basic"},
+    {".pas", "pascal"}, {".pp", "pascal"}, {".mod", "modula2"},
+    {".tsx", "typescript"}, {".jsx", "javascript"},
+    {".cpp", "cxx"}, {".cxx", "cxx"}, {".hpp", "cxx"}, {".ixx", "cxx"},
+    {".cc", "cxx"}, {".hh", "cxx"}, {".C", "cxx"},
+    {".mjs", "javascript"}, {".cjs", "javascript"},
+    {".kts", "kotlin"},
+    {".cljc", "clojure"}, {".cljs", "clojure"},
+    {".exs", "elixir"},
+    {".hrl", "erlang"},
+    {".mli", "ocaml"},
+    {".lhs", "haskell"},
+    {".fth", "forth"},
+    {".vbs", "visual_basic"}, {".vba", "vba"}, {".vb", "visual_basic"},
+    {".mm", "objc"},
+    {".rs", "rust"}, {".go", "go"}, {".zig", "zig"},
+    {".java", "java"}, {".kt", "kotlin"},
+    {".ts", "typescript"}, {".js", "javascript"},
+    {".py", "python"}, {".gpy", "python"},
+    {".s", "asm"}, {".S", "asm"}, {".asm", "asm"},
+    {".f", "fortran"}, {".d", "d"},
+    {".hs", "haskell"}, {".lisp", "lisp"}, {".lsp", "lisp"}, {".cl", "lisp"},
+    {".rb", "ruby"}, {".php", "php"}, {".lua", "lua"},
+    {".cs", "csharp"}, {".swift", "swift"},
+    {".cob", "cobol"}, {".cbl", "cobol"},
+    {".pro", "prolog"}, {".sv", "verilog"}, {".v", "verilog"},
+    {".ex", "elixir"}, {".erl", "erlang"},
+    {".scala", "scala"}, {".sc", "scala"},
+    {".pm", "perl"}, {".pl", "perl"},
+    {".jl", "julia"}, {".ml", "ocaml"},
+    {".clj", "clojure"}, {".nim", "nim"}, {".dart", "dart"},
+    {".fld", "field"}, {".st", "smalltalk"}, {".fs", "forth"},
+    {".apl", "apl"}, {".alg", "algol"}, {".sno", "snobol"},
+    {".sql", "sql"}, {".sh", "shell"}, {".bash", "shell"}, {".zsh", "shell"}, {".ps1", "shell"},
+    {".fb", "freebasic"}, {".bi", "freebasic"},
+    {".c", "c"}, {".h", "c"},
+    {".m", "matlab"}, {".R", "r"}, {".r", "r"},
+    {NULL, NULL}
+};
+
+static const char *lang_from_path(const char *path)
+{
+    size_t i;
+    if (!path)
+        return NULL;
+    if (has_ext(path, ".o.d"))
+        return NULL;
+    if (env_force("G16_FORCE_OBJC") && has_ext(path, ".m"))
+        return "objc";
+    for (i = 0; g16_ext_lang[i].ext; i++) {
+        if (has_ext(path, g16_ext_lang[i].ext))
+            return g16_ext_lang[i].lang;
+    }
+    return NULL;
+}
+
+static const char *discern_from_extensions(int argc, char **argv)
+{
+    int i;
+    for (i = 1; i < argc; i++) {
+        const char *a = argv[i];
+        const char *lang;
+        if (!a || a[0] == '-')
+            continue;
+        lang = lang_from_path(a);
+        if (lang)
+            return lang;
+    }
+    return NULL;
+}
+
 static int argv_has_source(int argc, char **argv, int (*pred)(const char *))
 {
     int i;
@@ -220,10 +327,15 @@ static int argv_invokes_cpp(int argc, char **argv)
 
 static const char *discern_lang(int argc, char **argv)
 {
+    const char *ext_lang;
+
     if (argv_invokes_python(argc, argv))
         return "python";
     if (argv_invokes_asm(argc, argv))
         return "asm";
+    ext_lang = discern_from_extensions(argc, argv);
+    if (ext_lang)
+        return ext_lang;
     if (argv_invokes_lang(argc, argv, "G16_FORCE_RUST", "g16-rust", has_rs_extension))
         return "rust";
     if (argv_invokes_lang(argc, argv, "G16_FORCE_GO", "g16-go", has_go_extension))
@@ -238,6 +350,16 @@ static const char *discern_lang(int argc, char **argv)
         return "ada";
     if (argv_invokes_lang(argc, argv, "G16_FORCE_OBJC", "g16-objc", has_objc_extension))
         return "objc";
+    if (argv_invokes_lang(argc, argv, "G16_FORCE_TURBO_PASCAL", "g16-fpc", has_turbo_pascal_extension))
+        return "turbo_pascal";
+    if (argv_invokes_lang(argc, argv, "G16_FORCE_PASCAL", "g16-fpc", has_pascal_extension))
+        return "pascal";
+    if (argv_invokes_lang(argc, argv, "G16_FORCE_QBASIC", "g16-qbasic", has_qbasic_extension))
+        return "qbasic";
+    if (argv_invokes_lang(argc, argv, "G16_FORCE_BASIC", "g16-qbasic", has_basic_extension))
+        return "basic";
+    if (argv_invokes_lang(argc, argv, "G16_FORCE_AMMOLANG", "g16-aml", has_aml_extension))
+        return "ammolang";
     if (argv_invokes_cpp(argc, argv))
         return "cxx";
     return "c";
@@ -395,6 +517,50 @@ static int lang_driver_path(char *out, size_t outlen, const char *lang)
         {"d", "g16-gdc"},
         {"ada", "g16-gnat"},
         {"objc", "g16-objc"},
+        {"pascal", "g16-fpc"},
+        {"turbo_pascal", "g16-fpc"},
+        {"qbasic", "g16-qbasic"},
+        {"basic", "g16-qbasic"},
+        {"ammolang", "g16-aml"},
+        {"javascript", "g16-interp"},
+        {"typescript", "g16-interp"},
+        {"java", "g16-interp"},
+        {"kotlin", "g16-interp"},
+        {"sql", "g16-interp"},
+        {"shell", "g16-interp"},
+        {"haskell", "g16-interp"},
+        {"lisp", "g16-interp"},
+        {"ruby", "g16-interp"},
+        {"php", "g16-interp"},
+        {"lua", "g16-interp"},
+        {"csharp", "g16-interp"},
+        {"swift", "g16-interp"},
+        {"cobol", "g16-interp"},
+        {"prolog", "g16-interp"},
+        {"verilog", "g16-interp"},
+        {"elixir", "g16-interp"},
+        {"erlang", "g16-interp"},
+        {"scala", "g16-interp"},
+        {"perl", "g16-interp"},
+        {"r", "g16-interp"},
+        {"julia", "g16-interp"},
+        {"ocaml", "g16-interp"},
+        {"clojure", "g16-interp"},
+        {"matlab", "g16-interp"},
+        {"nim", "g16-interp"},
+        {"dart", "g16-interp"},
+        {"field", "g16-interp"},
+        {"smalltalk", "g16-interp"},
+        {"forth", "g16-interp"},
+        {"apl", "g16-interp"},
+        {"algol", "g16-interp"},
+        {"snobol", "g16-interp"},
+        {"delphi", "g16-fpc"},
+        {"modula2", "g16-fpc"},
+        {"quickbasic", "g16-qbasic"},
+        {"freebasic", "g16-fpc"},
+        {"visual_basic", "g16-interp"},
+        {"vba", "g16-interp"},
         {NULL, NULL}
     };
     size_t i;
@@ -422,11 +588,7 @@ int main(int argc, char **argv)
 
     lang = discern_lang(argc, argv);
 
-    if (strcmp(lang, "python") == 0 || strcmp(lang, "asm") == 0 ||
-        strcmp(lang, "rust") == 0 || strcmp(lang, "go") == 0 ||
-        strcmp(lang, "zig") == 0 || strcmp(lang, "fortran") == 0 ||
-        strcmp(lang, "d") == 0 || strcmp(lang, "ada") == 0 ||
-        strcmp(lang, "objc") == 0) {
+    if (strcmp(lang, "c") != 0 && strcmp(lang, "cxx") != 0) {
         if (!lang_driver_path(target, sizeof target, lang)) {
             fprintf(stderr, "g16: %s discerned but field driver missing (install languages)\n", lang);
             return 127;

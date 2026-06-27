@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 — Getting Started</title>
-  <meta name="description" content="Grok16 3.0.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <meta name="description" content="Grok16 4.7.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/getting-started.html" />
   <script>
   (function (d) {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v10"></script>
-  <script src="manual-search.js?v10"></script>
-  <script src="manual-layout.js?v10"></script>
-  <link rel="stylesheet" href="manual.css?v10" />
+  <script src="manual-theme.js?v11"></script>
+  <script src="manual-search.js?v11"></script>
+  <script src="manual-layout.js?v11"></script>
+  <link rel="stylesheet" href="manual.css?v11" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 3.0.0</span>
+        <span class="nav-version">distro 4.7.0</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -52,7 +52,7 @@
       <a href="speed-bench.html">Speed Bench</a>
       <a href="uncompiled.html">Uncompiled</a>
       <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 3.0</a>
+      <a href="release.html">Release 4.2</a>
       <a href="single-fabric.html">Single Fabric</a>
       <a href="safety.html">Safety</a>
       <a href="getting-started.html">Getting Started</a>
@@ -72,7 +72,7 @@
   </nav>
 
   <h1>Getting Started</h1>
-  <p>Grok16 <strong>3.0.0</strong> ships a unified <code>g16</code> driver. One binary compiles C and C++; backends live in <code>libexec/grok16/</code>. <code>g++16</code> is a compat symlink.</p>
+  <p>Grok16 <strong>4.7.0</strong> ships a unified <code>g16</code> driver. One binary compiles C and C++; backends live in <code>libexec/grok16/</code>. <code>g++16</code> is a compat symlink.</p>
 
   <h2>Requirements</h2>
   <ul>
@@ -85,7 +85,7 @@
   <h2 id="bootstrap">Bootstrap</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
-git checkout v3.0.0
+git checkout v4.7.0
 export G16_PREFIX="$(pwd)"
 
 ./scripts/grok16-toolchain.sh bootstrap
@@ -116,10 +116,10 @@ G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></pre>
 ./scripts/grok16-toolchain.sh bench-all</code></pre>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 3.0.0</a> ·
+    <a href="release.html">Release 4.7.0</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 3.0.0 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 4.7.0 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

@@ -51,6 +51,38 @@
         "seed": "NewLatest/data/field-chip-path-predict-seed.json",
         "power_sort_context": "chip_paths"
       }
+    },
+    "g16_universal": {
+      "module": "NewLatest/lib/field-g16-universal-combinatronic.py",
+      "rebalance": "NewLatest/lib/g16-combinatronic-rebalance.py",
+      "panel": "field-g16-universal-combinatronic-panel.json",
+      "doctrine": "NewLatest/data/field-g16-universal-combinatronic-doctrine.json",
+      "sub_facets": ["chips_battery", "program_combinatronic", "sense_universal"],
+      "condense_group": "g16_universal",
+      "motto": "G16 does everything — every chip, every language, one combinatronic."
+    },
+    "program_combinatronic": {
+      "module": "NewLatest/lib/field-program-combinatronic.py",
+      "panel": "field-program-combinatronic-panel.json",
+      "seed": "NewLatest/data/field-program-combinatronic-seed.json",
+      "doctrine": "NewLatest/data/field-program-combinatronic-doctrine.json",
+      "canonical_facet": "single_combinatronic",
+      "boil_target_pct": 100,
+      "sources": ["seed", "grok16_languages", "queen_code_languages", "heuristic"],
+      "retro_classic": ["basic", "qbasic", "pascal", "turbo_pascal"],
+      "combinatorics_native": ["ammolang", "field"],
+      "motto": "Every programming command in every language — AmmoLang sequences universal g16 combinatronic rebalance."
+    },
+    "sense_universal": {
+      "module": "NewLatest/lib/field-sense-package-meld.py",
+      "panel": "field-sense-package-panel.json",
+      "eye_ear_plate": "eye-ear-plate.json",
+      "universal_protector": "universal-protector-panel.json",
+      "doctrine": "NewLatest/data/field-sense-package-doctrine.json",
+      "condense_group": "universal_lock",
+      "members": ["final_eye", "final_ear", "zocr", "mouth_neural", "eye_ear_plate", "universal_protector"],
+      "lock_gate": "universal_protector.equipment_holds_gate",
+      "motto": "Eye · Ear · ZOCR · Mouth — locked everywhere through combinatorics universal condense."
     }
   },
   "speed_cap": {
@@ -102,5 +134,20 @@
     "cxx_field_opt_belt_1",
     "cxx_belt_2",
     "spatial_lattice_tick"
-  ]
+  ],
+  "compiled_creation": {
+    "schema": "g16-compile-combinatronics/v1",
+    "module": "lib/g16-compile-combinatronics.py",
+    "doctrine": "data/g16-compile-combinatronics-doctrine.json",
+    "always_at_creation": true,
+    "pipeline": ["fast_cycle", "resolve_ideal_profile", "compile_with_profile", "stamp_combinatronics_receipt"],
+    "receipt_suffix": ".combinatronics.json",
+    "wired": [
+      "scripts/grok16-ai-compile.py",
+      "scripts/grok16-profile-flags.py",
+      "scripts/grok16-toolchain.sh",
+      "Queen/lib/queen-launch-singular-field.py"
+    ],
+    "motto": "Every compiled file is born optimal — combinatronics gate before compile, stamped receipt after."
+  }
 }

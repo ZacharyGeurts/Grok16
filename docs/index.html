@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 — Home</title>
-  <meta name="description" content="Grok16 3.0.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <meta name="description" content="Grok16 4.7.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/home.html" />
   <script>
   (function (d) {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v10"></script>
-  <script src="manual-search.js?v10"></script>
-  <script src="manual-layout.js?v10"></script>
-  <link rel="stylesheet" href="manual.css?v10" />
+  <script src="manual-theme.js?v11"></script>
+  <script src="manual-search.js?v11"></script>
+  <script src="manual-layout.js?v11"></script>
+  <link rel="stylesheet" href="manual.css?v11" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 3.0.0</span>
+        <span class="nav-version">distro 4.7.0</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -52,7 +52,7 @@
       <a href="speed-bench.html">Speed Bench</a>
       <a href="uncompiled.html">Uncompiled</a>
       <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 3.0</a>
+      <a href="release.html">Release 4.2</a>
       <a href="single-fabric.html">Single Fabric</a>
       <a href="safety.html">Safety</a>
       <a href="getting-started.html">Getting Started</a>
@@ -73,31 +73,31 @@
 
   <div class="bench-hero">
     <div class="bench-stamps">
-      <span class="bench-stamp">report v3.2.0</span>
-      <span class="bench-stamp">distro 3.0.0</span>
+      <span class="bench-stamp">report v4.7.0</span>
+      <span class="bench-stamp">distro 4.7.0</span>
       <span class="bench-stamp">speed_demo @ 1.1.0</span>
       <span class="bench-stamp">3s window</span>
     </div>
     <h1>Speed bench — compile vs execution</h1>
     <p class="lead">Versioned compile+exec benchmark on identical <code>speed_demo</code> kernel. Python = interpreter (~0.8M ops/s). C/C++ = chamber <strong>compile ahead</strong>, not line-by-line interpretation.</p>
     <div class="winner-grid">
-      <div class="winner-card"><strong>Fastest execution</strong><span class="val">91.83M ops/s</span><span class="sub">CMake — host g++ -O2</span></div>
+      <div class="winner-card"><strong>Fastest execution</strong><span class="val">101.57M ops/s</span><span class="sub">C++ — host g++ -O2</span></div>
       <div class="winner-card"><strong>Fastest compile</strong><span class="val">— ms</span><span class="sub">—</span></div>
-      <div class="winner-card"><strong>Best Python</strong><span class="val">848,725 ops/s</span><span class="sub">no compile — interpreter</span></div>
-      <div class="winner-card"><strong>Best first-run</strong><span class="val">91.83M eff.</span><span class="sub">CMake — host g++ -O2</span></div>
+      <div class="winner-card"><strong>Best Python</strong><span class="val">892,712 ops/s</span><span class="sub">no compile — interpreter</span></div>
+      <div class="winner-card"><strong>Best first-run</strong><span class="val">101.57M eff.</span><span class="sub">C++ — host g++ -O2</span></div>
     </div>
-    <p><a href="speed-bench.html">Full speed bench manual →</a> · Host: <code>default-X870-Pro-RS</code> · 2026-06-27T06:40:44Z</p>
+    <p><a href="speed-bench.html">Full speed bench manual →</a> · Host: <code>default-X870-Pro-RS</code> · 2026-06-27T13:15:46Z</p>
   </div>
 
   <figure class="fig-wide">
     <img src="assets/speed-bench-chart.svg" alt="Compile vs execution ops per second chart" width="920" height="280" loading="lazy" />
-    <figcaption>Compile time (one-time) vs execution throughput — report v3.2.0</figcaption>
+    <figcaption>Compile time (one-time) vs execution throughput — report v4.7.0</figcaption>
   </figure>
 
   <div class="hero hero-image">
     <img src="assets/g16-hero-banner.png" alt="" class="hero-bg" width="1200" height="675" />
     <div class="hero-overlay">
-      <p class="hero-badge">Stable release 3.0.0 — Queen theme manual</p>
+      <p class="hero-badge">Stable release 4.7.0 — Queen theme manual</p>
       <h1>Grok16 Field Compiler</h1>
       <p class="lead">Self-hosted <code>g16</code> @ <strong>16.2.0</strong> — <strong>single fabric</strong> belt (<code>belt_2_0</code>), versioned speed bench, uncompiled doctrine, CMake &amp; linking guide.</p>
       <p class="hero-cta">Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search commands, batteries, profiles, env vars.</p>
@@ -106,9 +106,9 @@
 
   <h2>Engineer workflow</h2>
   <div class="workflow">
-    <a href="getting-started.html#bootstrap"><strong>1 clone</strong>v3.0.0 tag</a>
+    <a href="getting-started.html#bootstrap"><strong>1 clone</strong>v4.7.0 tag</a>
     <a href="getting-started.html#rebuild"><strong>2 rebuild</strong>belt_2_0 + release</a>
-    <a href="speed-bench.html#reproduce"><strong>3 bench</strong>exec-full-bench v3.2.0</a>
+    <a href="speed-bench.html#reproduce"><strong>3 bench</strong>exec-full-bench v4.7.0</a>
     <a href="uncompiled.html"><strong>4 uncompiled</strong>Python + chamber</a>
     <a href="integration.html#integrate"><strong>5 integrate</strong>Queen / WRDT + safety</a>
   </div>
@@ -127,10 +127,10 @@
   <h2>Manuals</h2>
   <table>
     <tr><th>Doc</th><th>For engineers who need…</th></tr>
-    <tr><td><a href="speed-bench.html">Speed Bench</a></td><td>Versioned compile ms + execution ops/s — report v3.2.0</td></tr>
+    <tr><td><a href="speed-bench.html">Speed Bench</a></td><td>Versioned compile ms + execution ops/s — report v4.7.0</td></tr>
     <tr><td><a href="uncompiled.html">Uncompiled</a></td><td>Python interpreter, chamber compile-ahead, Queen .launch</td></tr>
     <tr><td><a href="cmake-linking.html">CMake &amp; Linking</a></td><td>Toolchain file, speed_demo CMake, g16-ld mandate</td></tr>
-    <tr><td><a href="release.html">Release 3.0</a></td><td>3.0 changelog, upgrade from v2.0.0</td></tr>
+    <tr><td><a href="release.html">Release 4.2</a></td><td>4.2 changelog — .launch chambers, MCP, power sort line safety</td></tr>
     <tr><td><a href="single-fabric.html">Single Fabric</a></td><td>2.0 technology — one belt die, one field amplitude</td></tr>
     <tr><td><a href="safety.html">Safety</a></td><td>Depth-field impossible, linear time, Ironclad gates</td></tr>
     <tr><td><a href="getting-started.html">Getting Started</a></td><td>Bootstrap, rebuild modes, first verify</td></tr>
@@ -142,10 +142,10 @@
   </table>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 3.0.0</a> ·
+    <a href="release.html">Release 4.7.0</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 3.0.0 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 4.7.0 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

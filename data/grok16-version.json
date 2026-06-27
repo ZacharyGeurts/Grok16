@@ -1,14 +1,14 @@
 {
-  "distro_version": "4.2.0",
+  "distro_version": "4.7.0",
   "release_track": {
-    "current": "4.2.0",
-    "previous": "4.0.0",
-    "next": "4.3",
+    "current": "4.7.0",
+    "previous": "4.2.0",
+    "next": "4.8",
     "status": "released",
     "released": true,
-    "tag": "v4.2.0",
-    "validation_tiers": ["expert", "heavy", "release", "belt", "speed_bench", "power_sort", "line_safety", "test_gate"],
-    "roadmap": "4.2.0 — CPU library, FFNT fonts, clipboard ghost wire, line safety plate widths, test gate"
+    "tag": "v4.7.0",
+    "validation_tiers": ["expert", "heavy", "release", "belt", "speed_bench", "bench_charts", "bench_refresh", "test_gate"],
+    "roadmap": "4.7.0 — bench-refresh pipeline, comparison SVG charts, gcc-14 host pin, legacy isolation chamber pairing"
   },
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-16.2.0",
@@ -27,7 +27,7 @@
     "integrate": "scripts/grok16-integrate.sh"
   },
   "speed_bench": {
-    "report_version": "4.2.0",
+    "report_version": "4.7.0",
     "suite": "speed_demo",
     "suite_version": "1.1.0",
     "schema": "grok16-field-exec-full-bench/v5",
@@ -99,7 +99,7 @@
     "targets": 17,
     "includes_riscv": true
   },
-  "notes": "Grok16 4.2.0 — portable .launch, self-monitor bench v5, 17-platform release matrix incl. RISC-V",
+  "notes": "Grok16 4.7.0 — bench-refresh + comparison charts, gcc-14 host pin, portable .launch, 17-platform matrix",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -107,6 +107,10 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "4.7.0: bench-refresh — triad + compare + bench-all + exec-comprehensive + SVG charts + manual rebuild",
+    "4.7.0: bench-charts — speed-bench, triad, compare, bench-all SVGs from live JSON manifest",
+    "4.7.0: Toolchain stamps — gcc-14 host, pythong 16.1.0-gpy16 on speed bench reports",
+    "4.7.0: performance.html — live triad table + embedded comparison chart figures",
     "4.2.0: Line safety plate — narrow_band_width 16, pipe_policy adjacent_narrow_only on power sort plate",
     "4.2.0: CPU library — 271 dies, Queen World UI, combinatorics + chip battery merge",
     "4.2.0: FFNT Amouranth Bold SDF + secured clipboard font editor",

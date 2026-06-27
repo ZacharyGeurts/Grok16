@@ -5,7 +5,7 @@ set -euo pipefail
 
 GROK16_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SG_ROOT="${SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}"
-VERSION="${1:-4.2.0}"
+VERSION="${1:-4.7.0}"
 TAG="v${VERSION}"
 PUSH=0
 NO_GH=0
@@ -147,7 +147,8 @@ build_tarball() {
     --exclude='./lib' --exclude='./libexec' --exclude='./include' \
     --exclude='./share' --exclude='./dist' --exclude='./.git' \
     --exclude='./.nexus-state' --exclude='./.nexus-release-state' \
-    --exclude='./data/bench' --exclude='./cmake/grok16-toolchain.cmake' \
+    --exclude='./.grok16-state' --exclude='./data/bench' \
+    --exclude='./cmake/grok16-toolchain.cmake' \
     -cf - . | tar -C "$STAGE" -xf -
   mv "$STAGE" "$STAGE-src"
   STAGE="$STAGE-src"
@@ -161,7 +162,7 @@ git_release() {
   if ! git diff --quiet HEAD 2>/dev/null; then
     log "commit release tree"
     git add -A
-    git commit -m "Grok16 ${VERSION} — self-monitor, portable .launch, platform release matrix"
+    git commit -m "Grok16 ${VERSION} — bench-refresh, comparison charts, gcc-14 host pin"
   fi
   if git rev-parse "$TAG" >/dev/null 2>&1; then
     log "tag $TAG exists"

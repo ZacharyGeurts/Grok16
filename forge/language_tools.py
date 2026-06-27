@@ -131,6 +131,95 @@ exec "$G16_PREFIX/bin/g16" -x objective-c++ "$@"
 """
 
 
+def _wrapper_fpc(prefix: Path) -> str:
+    return f"""#!/usr/bin/env bash
+# G16-FPC — Pascal / Turbo Pascal field driver
+set -euo pipefail
+G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
+for c in "$G16_PREFIX/bin/g16-fpc" fpc; do
+  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
+done
+echo "g16-fpc: install Free Pascal (fpc) for Pascal/Turbo Pascal" >&2
+exit 127
+"""
+
+
+def _wrapper_aml(prefix: Path) -> str:
+    nexus = os.environ.get("NEXUS_INSTALL_ROOT", str(prefix.parent / "NewLatest"))
+    return f"""#!/usr/bin/env bash
+# G16-AmmoLang — AmmoOS combinatorics sequence language
+set -euo pipefail
+G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
+NEXUS="${{NEXUS_INSTALL_ROOT:-{nexus}}}"
+PY="${{PYTHONG:-pythong}}"
+AML=""
+for a in "$@"; do [[ "$a" == *.aml ]] && AML="$a"; done
+if [[ -z "$AML" ]]; then
+  echo "g16-aml: usage g16-aml [--compile|-c] file.aml" >&2
+  exit 2
+fi
+if [[ "${{1:-}}" == "--compile" ]] || [[ "${{1:-}}" == "-c" ]]; then
+  exec "$PY" "$NEXUS/lib/field-ammolang.py" compile "$AML"
+fi
+exec "$PY" "$NEXUS/lib/field-ammolang.py" run "$AML" --live
+"""
+
+
+def _wrapper_qbasic(prefix: Path) -> str:
+    return f"""#!/usr/bin/env bash
+# G16-QBasic — BASIC / QBasic field driver
+set -euo pipefail
+G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
+for c in "$G16_PREFIX/bin/g16-qb64" qb64 qb64-ng; do
+  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
+done
+echo "g16-qbasic: install QB64 for BASIC/QBasic combinatronic compile" >&2
+exit 127
+"""
+
+
+def _wrapper_interp(prefix: Path) -> str:
+    nexus = os.environ.get("NEXUS_INSTALL_ROOT", str(prefix.parent / "NewLatest"))
+    return f"""#!/usr/bin/env bash
+# G16-Interp — uncompiled field runner (no compile on launch)
+set -euo pipefail
+G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
+NEXUS="${{NEXUS_INSTALL_ROOT:-{nexus}}}"
+PY="${{PYTHONG:-pythong}}"
+SRC=""
+for a in "$@"; do [[ -f "$a" ]] && SRC="$a"; done
+[[ -n "$SRC" ]] || {{ echo "g16-interp: usage g16-interp file" >&2; exit 2; }}
+ext="${{SRC##*.}}"
+ext_lc="$(printf '%s' "$ext" | tr '[:upper:]' '[:lower:]')"
+run() {{ command -v "$1" >/dev/null 2>&1 && exec "$1" "${{@:2}}"; }}
+case "$ext_lc" in
+  js|mjs|cjs|jsx) run node "$SRC" ;;
+  ts|tsx) run ts-node "$SRC" || run node "$SRC" ;;
+  rb) run ruby "$SRC" ;;
+  php) run php "$SRC" ;;
+  lua) run lua "$SRC" ;;
+  pl|pm) run perl "$SRC" ;;
+  jl) run julia "$SRC" ;;
+  ex|exs) run elixir "$SRC" ;;
+  erl) run erl -noshell -s hello main -s init stop ;;
+  hs) run runghc "$SRC" || run ghc -e 'main' "$SRC" ;;
+  clj|cljs|cljc) run clojure "$SRC" ;;
+  scala|sc) run scala "$SRC" ;;
+  cs) run dotnet run --project "$(dirname "$SRC")" ;;
+  swift) run swift "$SRC" ;;
+  java|kt|kts) run java "$SRC" 2>/dev/null || run kotlinc "$SRC" -include-runtime -d /tmp/g16-kt.jar && run java -jar /tmp/g16-kt.jar ;;
+  sh|bash|zsh|ps1) run bash "$SRC" ;;
+  sql) run sqlite3 :memory: < "$SRC" || cat "$SRC" ;;
+  fld) exec "$PY" "$NEXUS/lib/field-plate-field.py" json ;;
+  aml) exec "$PY" "$NEXUS/lib/field-ammolang.py" run "$SRC" --live ;;
+  m) exec "$PY" -c "exec(open('$SRC').read())" ;;
+  *) exec "$PY" "$SRC" ;;
+esac
+echo "g16-interp: no runner for .$ext_lc — install toolchain or use pythong" >&2
+exit 127
+"""
+
+
 def _gpy16_driver_path(ctx: ForgeContext) -> Path:
     env = os.environ.get("GPY16_DRIVER", "").strip()
     if env:
@@ -169,6 +258,10 @@ WRAPPERS: dict[str, Any] = {
     "g16-gdc": _wrapper_gdc,
     "g16-gnat": _wrapper_gnat,
     "g16-objc": _wrapper_objc,
+    "g16-fpc": _wrapper_fpc,
+    "g16-qbasic": _wrapper_qbasic,
+    "g16-aml": _wrapper_aml,
+    "g16-interp": _wrapper_interp,
 }
 
 
@@ -244,6 +337,20 @@ def language_status(ctx: ForgeContext) -> dict[str, Any]:
             "rust": _probe_discern(g16, "foo.rs"),
             "go": _probe_discern(g16, "foo.go"),
             "fortran": _probe_discern(g16, "foo.f90"),
+            "basic": _probe_discern(g16, "foo.bas"),
+            "qbasic": _probe_discern(g16, "foo.qb"),
+            "pascal": _probe_discern(g16, "foo.pas"),
+            "turbo_pascal": _probe_discern(g16, "foo.tp"),
+            "ammolang": _probe_discern(g16, "foo.aml"),
+            "javascript": _probe_discern(g16, "foo.js"),
+            "typescript": _probe_discern(g16, "foo.ts"),
+            "java": _probe_discern(g16, "foo.java"),
+            "ruby": _probe_discern(g16, "foo.rb"),
+            "shell": _probe_discern(g16, "foo.sh"),
+            "haskell": _probe_discern(g16, "foo.hs"),
+            "kotlin": _probe_discern(g16, "foo.kt"),
+            "swift": _probe_discern(g16, "foo.swift"),
+            "field": _probe_discern(g16, "foo.fld"),
         },
         "hostess7": hostess,
         "hostess_satisfied": gate.get("satisfied", False),

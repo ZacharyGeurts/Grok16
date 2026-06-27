@@ -1,8 +1,8 @@
 {
   "product": "Grok16-languages",
-  "updated": "2026-06-26T04:37:54.035992+00:00",
-  "languages_total": 11,
-  "languages_ready": 11,
+  "updated": "2026-06-27T12:33:15.931206+00:00",
+  "languages_total": 55,
+  "languages_ready": 55,
   "memory_safe": [
     "rust",
     "go",
@@ -22,6 +22,9 @@
       "backend": "libexec/grok16/g16-cc",
       "std": "gnu17",
       "memory": "manual",
+      "belt": "belt_2_0",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/libexec/grok16/g16-cc",
       "ready": true,
       "discern": "c"
@@ -40,6 +43,9 @@
       "backend": "libexec/grok16/g16-cxx",
       "std": "gnu++26",
       "memory": "manual+RAII",
+      "belt": "belt_2_0",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/libexec/grok16/g16-cxx",
       "ready": true,
       "discern": "cxx"
@@ -50,10 +56,16 @@
         ".gpy"
       ],
       "driver": "gpy-16",
+      "tree": "python/",
       "pair": "GPY-16",
+      "builtin": true,
       "memory": "gc",
       "secure": "truth_floor_58",
-      "path": "/home/default/Desktop/SG/GrokPy/bin/gpy-16",
+      "belt": "ai_agent",
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "python",
+      "path": "/home/default/Desktop/SG/Grok16/bin/gpy-16",
       "ready": true,
       "discern": "python"
     },
@@ -65,6 +77,9 @@
       ],
       "driver": "g16-as",
       "memory": "manual",
+      "belt": "field_opt",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-as",
       "ready": true,
       "discern": "asm"
@@ -79,6 +94,9 @@
       ],
       "driver": "g16-gfortran",
       "memory": "manual",
+      "belt": "belt_2_0",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-gfortran",
       "ready": true,
       "discern": "fortran"
@@ -90,6 +108,9 @@
       "driver": "g16-rust",
       "memory": "ownership",
       "secure_flags": "-D warnings -C overflow-checks=on",
+      "belt": "memory_safe",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-rust",
       "ready": true,
       "discern": "rust"
@@ -100,6 +121,9 @@
       ],
       "driver": "g16-go",
       "memory": "gc",
+      "belt": "memory_safe",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-go",
       "ready": true,
       "discern": "go"
@@ -110,6 +134,9 @@
       ],
       "driver": "g16-zig",
       "memory": "manual+comptime",
+      "belt": "memory_safe",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-zig",
       "ready": true,
       "discern": "zig"
@@ -120,6 +147,9 @@
       ],
       "driver": "g16-gdc",
       "memory": "gc_optional",
+      "belt": "belt_2_0",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-gdc",
       "ready": true,
       "discern": "d"
@@ -131,6 +161,9 @@
       ],
       "driver": "g16-objc",
       "memory": "arc",
+      "belt": "belt_2_0",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-objc",
       "ready": true,
       "discern": "objc"
@@ -143,9 +176,786 @@
       "driver": "g16-gnat",
       "memory": "manual",
       "secure": "spark_subset",
+      "belt": "memory_safe",
+      "uncompiled": false,
+      "launch_packaging": true,
       "path": "/home/default/Desktop/SG/Grok16/bin/g16-gnat",
       "ready": true,
       "discern": "ada"
+    },
+    "basic": {
+      "extensions": [
+        ".bas",
+        ".inc"
+      ],
+      "driver": "g16-qbasic",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_1_0",
+      "universal_isa": [
+        "x86",
+        "m6502",
+        "m6809",
+        "z80",
+        "coco"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "basic",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-qbasic",
+      "ready": true,
+      "discern": "basic"
+    },
+    "qbasic": {
+      "extends": "basic",
+      "extensions": [
+        ".qb",
+        ".qbs"
+      ],
+      "driver": "g16-qbasic",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_1_0",
+      "universal_isa": [
+        "x86"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "qbasic",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-qbasic",
+      "ready": true,
+      "discern": "qbasic"
+    },
+    "pascal": {
+      "extensions": [
+        ".pas",
+        ".pp"
+      ],
+      "driver": "g16-fpc",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_2_0",
+      "universal_isa": [
+        "x86"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "pascal",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-fpc",
+      "ready": true,
+      "discern": "pascal"
+    },
+    "turbo_pascal": {
+      "extends": "pascal",
+      "extensions": [
+        ".tp",
+        ".tpu"
+      ],
+      "driver": "g16-fpc",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_2_0",
+      "dialect": "turbo",
+      "universal_isa": [
+        "x86",
+        "cyrix"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "turbo_pascal",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-fpc",
+      "ready": true,
+      "discern": "turbo_pascal"
+    },
+    "ammolang": {
+      "extensions": [
+        ".aml"
+      ],
+      "driver": "g16-aml",
+      "memory": "gc",
+      "combinatronic": true,
+      "belt": "belt_2_0",
+      "product": "AmmoOS",
+      "runtime": "ammolang",
+      "universal_isa": [
+        "x86",
+        "arm",
+        "riscv",
+        "combinatronics"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-aml",
+      "ready": true,
+      "discern": "ammolang"
+    },
+    "quickbasic": {
+      "extends": "qbasic",
+      "extensions": [
+        ".qb",
+        ".qbi",
+        ".qbs"
+      ],
+      "driver": "g16-qbasic",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_1_0",
+      "universal_isa": [
+        "x86"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "qbasic",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-qbasic",
+      "ready": true,
+      "discern": "qbasic"
+    },
+    "freebasic": {
+      "extends": "quickbasic",
+      "extensions": [
+        ".bi",
+        ".fb",
+        ".fbi",
+        ".qb",
+        ".qbi",
+        ".qbs"
+      ],
+      "driver": "g16-fpc",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_2_0",
+      "universal_isa": [
+        "x86"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "qbasic",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-fpc",
+      "ready": true,
+      "discern": "c"
+    },
+    "delphi": {
+      "extensions": [
+        ".dfm",
+        ".dpr",
+        ".pas",
+        ".pp"
+      ],
+      "driver": "g16-fpc",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_2_0",
+      "universal_isa": [
+        "x86"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "pascal",
+      "extends": "pascal",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-fpc",
+      "ready": true,
+      "discern": "c"
+    },
+    "modula2": {
+      "extensions": [
+        ".mod",
+        ".pas",
+        ".pp"
+      ],
+      "driver": "g16-fpc",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_2_0",
+      "universal_isa": [
+        "x86"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "pascal",
+      "extends": "pascal",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-fpc",
+      "ready": true,
+      "discern": "c"
+    },
+    "visual_basic": {
+      "extensions": [
+        ".bas",
+        ".inc",
+        ".vb",
+        ".vbs"
+      ],
+      "driver": "g16-interp",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_1_0",
+      "universal_isa": [
+        "x86",
+        "m6502",
+        "m6809",
+        "z80",
+        "coco"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "basic",
+      "extends": "basic",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "basic"
+    },
+    "vba": {
+      "extensions": [
+        ".bas",
+        ".inc",
+        ".vb",
+        ".vba",
+        ".vbs"
+      ],
+      "driver": "g16-interp",
+      "memory": "manual",
+      "combinatronic": true,
+      "belt": "belt_1_0",
+      "universal_isa": [
+        "x86",
+        "m6502",
+        "m6809",
+        "z80",
+        "coco"
+      ],
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "basic",
+      "extends": "visual_basic",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "basic"
+    },
+    "javascript": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "javascript",
+      "extensions": [
+        ".js",
+        ".mjs",
+        ".cjs",
+        ".jsx"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "typescript": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "typescript",
+      "extensions": [
+        ".cjs",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".ts",
+        ".tsx"
+      ],
+      "belt": "belt_2_0",
+      "extends": "javascript",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "java": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "java",
+      "extensions": [
+        ".java",
+        ".kt",
+        ".kts"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "sql": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "sql",
+      "extensions": [
+        ".sql"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "shell": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "shell",
+      "extensions": [
+        ".sh",
+        ".bash",
+        ".zsh",
+        ".ps1"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "haskell": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "haskell",
+      "extensions": [
+        ".hs",
+        ".lhs"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "lisp": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "lisp",
+      "extensions": [
+        ".lisp",
+        ".lsp",
+        ".cl"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "ruby": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "ruby",
+      "extensions": [
+        ".rb"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "php": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "php",
+      "extensions": [
+        ".php"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "lua": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "lua",
+      "extensions": [
+        ".lua"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "csharp": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "csharp",
+      "extensions": [
+        ".cs"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "swift": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "swift",
+      "extensions": [
+        ".swift"
+      ],
+      "belt": "memory_safe",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "kotlin": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "kotlin",
+      "extensions": [
+        ".java",
+        ".kt",
+        ".kts"
+      ],
+      "belt": "memory_safe",
+      "extends": "java",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "cobol": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "cobol",
+      "extensions": [
+        ".cob",
+        ".cbl"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "prolog": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "prolog",
+      "extensions": [
+        ".pl",
+        ".pro"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "verilog": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "verilog",
+      "extensions": [
+        ".v",
+        ".sv"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "elixir": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "elixir",
+      "extensions": [
+        ".ex",
+        ".exs"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "erlang": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "erlang",
+      "extensions": [
+        ".erl",
+        ".hrl"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "scala": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "scala",
+      "extensions": [
+        ".scala",
+        ".sc"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "perl": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "perl",
+      "extensions": [
+        ".pl",
+        ".pm"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "r": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "r",
+      "extensions": [
+        ".r",
+        ".R"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "julia": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "julia",
+      "extensions": [
+        ".jl"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "ocaml": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "ocaml",
+      "extensions": [
+        ".ml",
+        ".mli"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "clojure": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "clojure",
+      "extensions": [
+        ".clj",
+        ".cljs",
+        ".cljc"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "matlab": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "matlab",
+      "extensions": [
+        ".m"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "objc"
+    },
+    "nim": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "nim",
+      "extensions": [
+        ".nim"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "dart": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "dart",
+      "extensions": [
+        ".dart"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "field": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "field",
+      "extensions": [
+        ".fld"
+      ],
+      "belt": "belt_2_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "smalltalk": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "smalltalk",
+      "extensions": [
+        ".st"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "forth": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "forth",
+      "extensions": [
+        ".fs",
+        ".fth"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "apl": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "apl",
+      "extensions": [
+        ".apl"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "algol": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "algol",
+      "extensions": [
+        ".alg"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
+    },
+    "snobol": {
+      "driver": "g16-interp",
+      "memory": "gc",
+      "combinatronic": true,
+      "uncompiled": true,
+      "launch_packaging": true,
+      "runtime": "snobol",
+      "extensions": [
+        ".sno"
+      ],
+      "belt": "belt_1_0",
+      "path": "/home/default/Desktop/SG/Grok16/bin/g16-interp",
+      "ready": true,
+      "discern": "c"
     }
   },
   "discern_probe": {
@@ -155,7 +965,21 @@
     "asm": "asm",
     "rust": "rust",
     "go": "go",
-    "fortran": "fortran"
+    "fortran": "fortran",
+    "basic": "basic",
+    "qbasic": "qbasic",
+    "pascal": "pascal",
+    "turbo_pascal": "turbo_pascal",
+    "ammolang": "ammolang",
+    "javascript": "c",
+    "typescript": "c",
+    "java": "c",
+    "ruby": "c",
+    "shell": "c",
+    "haskell": "c",
+    "kotlin": "c",
+    "swift": "c",
+    "field": "c"
   },
   "hostess7": {
     "truth_adapt_floor": 58,
@@ -168,8 +992,8 @@
   "hostess_gate": {
     "schema": "grok16-hostess-gate/v1",
     "truth_adapt_floor": 58,
-    "score": 15,
-    "max": 15,
+    "score": 21,
+    "max": 21,
     "checks": {
       "g16": true,
       "g16_as": true,
@@ -179,6 +1003,12 @@
       "gpy16_field_native": true,
       "field_native_doctrine": true,
       "mandate_cmake": true,
+      "ironclad_meld": true,
+      "field_sanity_doctrine": true,
+      "ironclad_bridge": true,
+      "sanity_operator": true,
+      "linker_doctrine": true,
+      "linker_orchestrator": true,
       "languages_json": true,
       "profiles_json": true,
       "hostess_stack": true,

@@ -27,6 +27,11 @@ def test_discern_forever() -> None:
         ("foo.rs", "rust"),
         ("foo.go", "go"),
         ("foo.f90", "fortran"),
+        ("foo.bas", "basic"),
+        ("foo.qb", "qbasic"),
+        ("foo.pas", "pascal"),
+        ("foo.tp", "turbo_pascal"),
+        ("foo.aml", "ammolang"),
     ]
     for args, expect in cases:
         proc = subprocess.run([str(g16), "--g16-discern", args], capture_output=True, text=True, timeout=10)

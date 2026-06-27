@@ -1,6 +1,6 @@
 {
   "schema": "g16-power-sort-panel/v1",
-  "updated": "2026-06-27T09:43:00Z",
+  "updated": "2026-06-27T13:27:14Z",
   "ok": true,
   "always_best_sort": true,
   "plate_not_wire": true,
@@ -14,7 +14,7 @@
         "context_bench_id": "file_list_small",
         "algorithm": "dirs_first",
         "n": 200,
-        "bench_us": 33.19,
+        "bench_us": 34.33,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -23,7 +23,7 @@
         "context_bench_id": "file_list_large",
         "algorithm": "dirs_first",
         "n": 5000,
-        "bench_us": 236.94,
+        "bench_us": 230.4,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -32,7 +32,7 @@
         "context_bench_id": "file_list_small",
         "algorithm": "dirs_first",
         "n": 200,
-        "bench_us": 33.19,
+        "bench_us": 34.33,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -41,7 +41,7 @@
         "context_bench_id": "drive_index",
         "algorithm": "timsort_key",
         "n": null,
-        "bench_us": 1081.33,
+        "bench_us": 956.14,
         "cool": true,
         "statement": "power_sort_timsort_key_for_drive_index"
       },
@@ -59,7 +59,7 @@
         "context_bench_id": "bench_rank",
         "algorithm": "desc_numeric",
         "n": null,
-        "bench_us": 5.66,
+        "bench_us": 6.47,
         "cool": true,
         "statement": "power_sort_desc_numeric_for_bench_rank"
       },
@@ -68,7 +68,7 @@
         "context_bench_id": "thermal_layers",
         "algorithm": "cool_sort",
         "n": null,
-        "bench_us": 4.24,
+        "bench_us": 4.9,
         "cool": true,
         "statement": "power_sort_cool_sort_for_thermal_layers"
       },
@@ -80,6 +80,15 @@
         "bench_us": null,
         "cool": true,
         "statement": "power_sort_narrow_band_for_chip_paths"
+      },
+      "format_table": {
+        "context": "format_table",
+        "context_bench_id": "format_table",
+        "algorithm": "family_then_label",
+        "n": null,
+        "bench_us": null,
+        "cool": true,
+        "statement": "power_sort_family_then_label_for_format_table"
       }
     },
     "file_list_mode": "dirs_first",
@@ -353,6 +362,30 @@
           "stem": "speed_demo"
         }
       }
+    },
+    "format_table": {
+      "available": false,
+      "algorithm": "family_then_label",
+      "cool": true,
+      "context": "format_table",
+      "consumer": "field_file_formats",
+      "bench_deferred": false,
+      "manifest_api": null,
+      "physics": {
+        "thermal": {
+          "level": "ok",
+          "cool_ok": true,
+          "headroom_pct": 100.0
+        },
+        "entropy": {
+          "entropy_ok": true,
+          "entropy_norm": 0.5
+        },
+        "isotope": {
+          "ok": true,
+          "stem": "speed_demo"
+        }
+      }
     }
   },
   "thermal": {
@@ -370,8 +403,8 @@
     {
       "step": "bench",
       "ok": true,
-      "elapsed_ms": 31.56
+      "elapsed_ms": 30.37
     }
   ],
-  "elapsed_ms": 801.0
+  "elapsed_ms": 622.72
 }

@@ -122,6 +122,45 @@ sync_power_sort() {
   fi
 }
 
+sync_nexus_g16_integrate() {
+  local nexus="${GROK16_SG_ROOT:-$SG}/NewLatest"
+  local rc_py="$nexus/lib/nexus-g16-recompile.py"
+  [[ -f "$rc_py" ]] || return 0
+  g16_gpy_run - <<PY
+import json
+from pathlib import Path
+nexus = Path("${nexus}")
+doc_path = nexus / "data" / "nexus-g16-integrate-doctrine.json"
+doc = {}
+if doc_path.is_file():
+    try:
+        doc = json.loads(doc_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        pass
+doc.setdefault("schema", "nexus-g16-integrate-doctrine/v1")
+doc["grok16_integrated"] = True
+doc["grok16_root"] = "${GROK16_ROOT}"
+doc["combinatronics"] = {
+    **(doc.get("combinatronics") or {}),
+    "gate": "Grok16/lib/g16-compile-combinatronics.py",
+    "always_at_creation": True,
+}
+doc_path.write_text(json.dumps(doc, indent=2) + "\\n", encoding="utf-8")
+print("integrate: nexus-g16-integrate-doctrine.json stamped")
+PY
+  echo "integrate: NewLatest nexus-g16-recompile wired"
+}
+
+sync_compile_combinatronics_env() {
+  local env_path="$GROK16_ROOT/data/grok16-integrate.env"
+  [[ -f "$env_path" ]] || return 0
+  grep -q 'G16_OPTIMAL_COMBINATRONICS_AT_COMPILE' "$env_path" 2>/dev/null || \
+    echo 'export G16_OPTIMAL_COMBINATRONICS_AT_COMPILE=1' >>"$env_path"
+  grep -q 'NEXUS_G16_INTEGRATED' "$env_path" 2>/dev/null || \
+    echo 'export NEXUS_G16_INTEGRATED=1' >>"$env_path"
+  echo "integrate: combinatronics-at-compile env pinned"
+}
+
 sync_field_research_book() {
   local fr_py="$GROK16_ROOT/lib/field-research-book.py"
   [[ -f "$fr_py" ]] || return 0
@@ -141,6 +180,8 @@ cmd_integrate() {
   sync_zocr_field_compiler
   sync_world_redata
   sync_always_optimal
+  sync_nexus_g16_integrate
+  sync_compile_combinatronics_env
   sync_field_research_book
   if [[ -x "$GROK16_ROOT/scripts/grok16-bench-triad.sh" ]] && \
      "$GROK16_ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then

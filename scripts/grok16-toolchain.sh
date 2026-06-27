@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|test-gate|test-gate-full|bench|bench-compare|bench-triad|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -709,6 +709,14 @@ cmd_bench_compare() {
   exec "$GROK16_SCRIPTS/grok16-bench-compare.sh" compare
 }
 
+cmd_bench_charts() {
+  exec python3 "$GROK16_SCRIPTS/grok16-bench-charts.py"
+}
+
+cmd_bench_refresh() {
+  exec "$GROK16_SCRIPTS/grok16-bench-refresh.sh"
+}
+
 cmd_field_bench_real() {
   exec "$GROK16_SCRIPTS/grok16-field-bench.sh"
 }
@@ -762,6 +770,10 @@ _bench_run_one() {
     return 0
   fi
 
+  if [[ -f "$GROK16_ROOT/lib/g16-compile-combinatronics.py" ]]; then
+    g16_gpy_run "$GROK16_ROOT/lib/g16-compile-combinatronics.py" gate >/dev/null 2>&1 || true
+  fi
+
   local t0 t1 compile_ms run_ms bytes
   t0=$(date +%s%3N)
   # shellcheck disable=SC2086
@@ -782,6 +794,10 @@ _bench_run_one() {
   t1=$(date +%s%3N)
   run_ms=$((t1 - t0))
   bytes=$(stat -c%s "$out" 2>/dev/null || stat -f '%z' "$out" 2>/dev/null || echo 0)
+
+  if [[ -f "$GROK16_ROOT/lib/g16-compile-combinatronics.py" ]]; then
+    g16_gpy_run "$GROK16_ROOT/lib/g16-compile-combinatronics.py" stamp "$out" >/dev/null 2>&1 || true
+  fi
 
   echo "bench: profile=$profile pgo=$pgo_kind compile_ms=$compile_ms run_ms=$run_ms binary_bytes=$bytes"
   echo "bench: $run_line"
@@ -905,6 +921,8 @@ case "${1:-}" in
   bench) cmd_bench ;;
   bench-compare) cmd_bench_compare ;;
   bench-triad) cmd_bench_triad ;;
+  bench-charts) cmd_bench_charts ;;
+  bench-refresh) cmd_bench_refresh ;;
   speed-demo) cmd_speed_demo ;;
   exec-compare) cmd_exec_compare ;;
   exec-full-bench) cmd_exec_full_bench "$@" ;;
