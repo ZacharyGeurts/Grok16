@@ -1,6 +1,6 @@
-# Grok16 4.7.0
+# Grok16 4.7.1
 
-**Tag:** `v4.7.0` · **Compiler:** `g16 @ 16.2.0` · **Previous:** `v4.2.0` · **Platforms:** 17 (incl. RISC-V)
+**Tag:** `v4.7.1` · **Compiler:** `g16 @ 16.2.0` · **Previous:** `v4.2.0` · **Platforms:** 17 (incl. RISC-V)
 
 ## Speed & comparison charts (refreshed)
 
@@ -38,10 +38,10 @@ python3 NewLatest/Queen/lib/queen-launch-chamber.py run examples/speed-demo/spee
 
 ## Multi-platform release
 
-Source bootstrap per platform — see `data/grok16-platform-release.json` and `grok16-4.7.0-PLATFORMS.md`.
+Source bootstrap per platform — see `data/grok16-platform-release.json` and `grok16-4.7.1-PLATFORMS.md`.
 
 ```bash
-./scripts/grok16-release.sh 4.7.0 --push
+./scripts/grok16-release.sh 4.7.1 --push
 ```
 
 ## What's new in 4.7
@@ -65,4 +65,4 @@ export SG_ROOT=/path/to/SG
 1. `grok16-test-gate.sh smoke` green
 2. `bench-refresh` writes 4 charts + `charts-manifest.json`
 3. `grok16-launch-verify.sh` — all example `.launch` chambers
-4. Speed bench report v4.7.0 in `docs/field-exec-full-bench.json`
+4. Speed bench report v4.7.1 in `docs/field-exec-full-bench.json`

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 — Speed Bench</title>
-  <meta name="description" content="Grok16 4.7.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <meta name="description" content="Grok16 4.7.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/speed-bench.html" />
   <script>
   (function (d) {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v12"></script>
-  <script src="manual-search.js?v12"></script>
-  <script src="manual-layout.js?v12"></script>
-  <link rel="stylesheet" href="manual.css?v12" />
+  <script src="manual-theme.js?v13"></script>
+  <script src="manual-search.js?v13"></script>
+  <script src="manual-layout.js?v13"></script>
+  <link rel="stylesheet" href="manual.css?v13" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 4.7.0</span>
+        <span class="nav-version">distro 4.7.1</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -71,8 +71,8 @@
     </div>
   </nav>
 
-  <h1>Speed bench — report v4.7.0</h1>
-  <p>Distro <strong>4.7.0</strong> · suite <code>speed_demo</code> @ <code>1.1.0</code> · schema <code>grok16-field-exec-full-bench/v5</code></p>
+  <h1>Speed bench — report v4.7.1</h1>
+  <p>Distro <strong>4.7.1</strong> · suite <code>speed_demo</code> @ <code>1.1.0</code> · schema <code>grok16-field-exec-full-bench/v5</code></p>
 
   <aside class="callout callout-accent">
     <strong>Version stamps:</strong> Every run writes <code>docs/field-exec-full-bench.json</code> with distro, g16, suite, and report versions. Doctrine: <code>data/grok16-speed-bench-version.json</code>
@@ -80,45 +80,45 @@
 
   <figure class="fig-wide">
     <img src="assets/speed-bench-chart.svg" alt="Speed bench bar chart" width="920" height="280" />
-    <figcaption>Execution ops/s by runner — 2026-06-27T13:15:46Z on <code>default-X870-Pro-RS</code></figcaption>
+    <figcaption>Execution ops/s by runner — 2026-06-27T14:31:48Z on <code>default-X870-Pro-RS</code></figcaption>
   </figure>
 
   <h2 id="winners">Winners</h2>
   <div class="winner-grid">
-    <div class="winner-card"><strong>Fastest execution</strong><span class="val">101.57M</span><span class="sub">C++ — host g++ -O2</span></div>
+    <div class="winner-card"><strong>Fastest execution</strong><span class="val">84.87M</span><span class="sub">C++ — g16 belt_1_0</span></div>
     <div class="winner-card"><strong>Fastest compile</strong><span class="val">— ms</span><span class="sub">—</span></div>
-    <div class="winner-card"><strong>Best Python</strong><span class="val">892,712</span><span class="sub">interpreter — no compile</span></div>
-    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">101.57M</span><span class="sub">C++ — host g++ -O2</span></div>
+    <div class="winner-card"><strong>Best Python</strong><span class="val">710,021</span><span class="sub">interpreter — no compile</span></div>
+    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">84.87M</span><span class="sub">C++ — g16 belt_1_0</span></div>
   </div>
 
-  <h2 id="results">Full results (3s window)</h2>
+  <h2 id="results">Full results (1s window)</h2>
   <table>
     <tr><th>Runner</th><th>Compile (ms)</th><th>Exec wall (ms)</th><th>ops/s</th><th>Binary bytes</th></tr>
-    <tr><td>C++ — host g++ -O2</td><td>—</td><td>3,007</td><td><strong>101,566,776.95</strong></td><td>21,640</td></tr>
-    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td>3,006</td><td><strong>98,594,554.32</strong></td><td>22,912</td></tr>
-    <tr><td>C — g16 belt_1_0</td><td>—</td><td>3,006</td><td><strong>95,570,201.62</strong></td><td>16,192</td></tr>
-    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td>3,009</td><td><strong>94,755,013.65</strong></td><td>22,912</td></tr>
-    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td>3,006</td><td><strong>93,980,616.87</strong></td><td>22,784</td></tr>
-    <tr><td>C++ — g16 sense field_opt</td><td>—</td><td>3,006</td><td><strong>93,916,538.59</strong></td><td>22,784</td></tr>
-    <tr><td>C — g16 belt_2_0</td><td>—</td><td>3,009</td><td><strong>92,999,709.86</strong></td><td>16,248</td></tr>
-    <tr><td>C — host gcc -O2</td><td>—</td><td>3,010</td><td><strong>91,735,004.27</strong></td><td>24,568</td></tr>
-    <tr><td>CMake — host g++ -O2</td><td>—</td><td>3,015</td><td><strong>89,062,960.01</strong></td><td>21,640</td></tr>
-    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>3,106</td><td><strong>892,711.58</strong></td><td>—</td></tr>
-    <tr><td>Python — host CPython 3</td><td>—</td><td>3,106</td><td><strong>880,766.80</strong></td><td>—</td></tr>
+    <tr><td>C++ — g16 belt_1_0</td><td>—</td><td>1,101</td><td><strong>84,873,248.15</strong></td><td>22,784</td></tr>
+    <tr><td>CMake — host g++ -O2</td><td>—</td><td>1,007</td><td><strong>82,218,972.32</strong></td><td>21,640</td></tr>
+    <tr><td>C++ — g16 sense hostess_secure</td><td>—</td><td>1,027</td><td><strong>78,352,710.24</strong></td><td>22,784</td></tr>
+    <tr><td>C++ — host g++ -O2</td><td>—</td><td>1,026</td><td><strong>78,141,944.13</strong></td><td>21,640</td></tr>
+    <tr><td>C++ — g16 belt_2_0</td><td>—</td><td>1,035</td><td><strong>73,905,275.09</strong></td><td>22,912</td></tr>
+    <tr><td>C++ — g16 belt_2_0 (post-meld re-exec)</td><td>—</td><td>1,061</td><td><strong>68,895,542.15</strong></td><td>22,912</td></tr>
+    <tr><td>C — g16 belt_1_0</td><td>—</td><td>1,056</td><td><strong>67,976,456.75</strong></td><td>16,192</td></tr>
+    <tr><td>C — host gcc -O2</td><td>—</td><td>1,009</td><td><strong>67,677,454.11</strong></td><td>24,568</td></tr>
+    <tr><td>C — g16 belt_2_0</td><td>—</td><td>1,011</td><td><strong>64,340,647.49</strong></td><td>16,248</td></tr>
+    <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>1,211</td><td><strong>710,020.71</strong></td><td>—</td></tr>
+    <tr><td>Python — host CPython 3</td><td>—</td><td>1,167</td><td><strong>683,227.28</strong></td><td>—</td></tr>
   </table>
 
   <h2 id="plate-meld">Plate meld analysis</h2>
   <p>Cycle: <code>field-plate-meld.py fuse</code> + <code>g16-compiler-sense-plate.py cycle</code> before compiles. Doctrine: <code>data/grok16-plate-meld-bench-doctrine.json</code></p>
   <table>
     <tr><th>Metric</th><th>Value</th></tr>
-    <tr><td>Meld generation</td><td>1</td></tr>
-    <tr><td>Plates fused</td><td>5</td></tr>
-    <tr><td>Compiler sense profile</td><td><code>field_opt</code> (default)</td></tr>
-    <tr><td>Sense vs belt_2_0 exec ratio</td><td>0.9526</td></tr>
+    <tr><td>Meld generation</td><td>6</td></tr>
+    <tr><td>Plates fused</td><td>24</td></tr>
+    <tr><td>Compiler sense profile</td><td><code>hostess_secure</code> (sense_watch)</td></tr>
+    <tr><td>Sense vs belt_2_0 exec ratio</td><td>1.0602</td></tr>
     <tr><td>Meld helps profile ladder</td><td><strong>yes</strong></td></tr>
   </table>
   <aside class="callout callout-accent">
-    <strong>Professional verdict:</strong> Plate meld does not block the ELF hot path. On this host, compiler-sense compile was <strong>0 ms</strong> vs static <code>belt_2_0</code>; sense execution ratio <strong>0.9526</strong>. Profile ladder unlocks when meld generation ≥ 1.
+    <strong>Professional verdict:</strong> Plate meld does not block the ELF hot path. On this host, compiler-sense compile was <strong>0 ms</strong> vs static <code>belt_2_0</code>; sense execution ratio <strong>1.0602</strong>. Profile ladder unlocks when meld generation ≥ 6.
   </aside>
 
   <h2 id="bench-all">bench-all cross-reference</h2>
@@ -134,7 +134,7 @@
 
   <h2 id="reproduce">Reproduce (comprehensive)</h2>
   <pre><code>cd Grok16
-git checkout v4.7.0
+git checkout v4.7.1
 export G16_PREFIX="$(pwd)"
 export GROK16_SG_ROOT=/path/to/SG
 export NEXUS_STATE_DIR=$GROK16_SG_ROOT/NewLatest/state
@@ -143,10 +143,10 @@ G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh ex
   <p>JSON: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json">field-exec-full-bench.json</a> · MD: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md">SPEED-BENCH-REPORT.md</a></p>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 4.7.0</a> ·
+    <a href="release.html">Release 4.7.1</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 4.7.0 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 4.7.1 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

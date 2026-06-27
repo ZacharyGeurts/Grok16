@@ -1,6 +1,6 @@
-# Release 4.7.0
+# Release 4.7.1
 
-**Tag:** `v4.7.0` · **Compiler:** `g16 @ 16.2.0` · **Previous tag:** v4.2.0 · **Platforms:** 17 (incl. RISC-V)
+**Tag:** `v4.7.1` · **Compiler:** `g16 @ 16.2.0` · **Previous tag:** v4.2.0 · **Platforms:** 17 (incl. RISC-V)
 
 Web: [release.html](https://zacharygeurts.github.io/Grok16/release.html) · Repo: [RELEASE-4.7.md](https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md)
 
@@ -20,7 +20,7 @@ Web: [release.html](https://zacharygeurts.github.io/Grok16/release.html) · Repo
 
 Manifest: `data/bench/charts-manifest.json`
 
-## Speed bench (report v4.7.0)
+## Speed bench (report v4.7.1)
 
 Versioned **compile + execution** benchmark — `speed_demo` suite @ `1.1.0`, 3s window, schema v5.
 
@@ -50,7 +50,7 @@ export GROK16_ROOT=/path/to/Grok16 SG_ROOT=/path/to/SG
 
 Agents connect via [mcp/grok16_mcp_server.py](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/grok16_mcp_server.py):
 
-- `grok16_version` — distro 4.7.0 stamps
+- `grok16_version` — distro 4.7.1 stamps
 - `grok16_toolchain` — status, verify, bench gates
 - `grok16_rtx_gate` — queen_rtx permit
 - `grok16_speed_bench` — published JSON
@@ -61,7 +61,7 @@ Setup: [mcp/README.md](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/REA
 ## Checkout & gates
 
 ```bash
-git checkout v4.7.0
+git checkout v4.7.1
 export G16_PREFIX="$(pwd)"
 export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
@@ -82,7 +82,7 @@ G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
 
 ## Upgrade from 4.2.0
 
-1. `git checkout v4.7.0`
+1. `git checkout v4.7.1`
 2. `test-battery-release` + `test-battery-belt`
 3. `./scripts/grok16-toolchain.sh bench-refresh` — compare charts to `docs/assets/`
 4. `./scripts/grok16-integrate.sh` before consumer deploy

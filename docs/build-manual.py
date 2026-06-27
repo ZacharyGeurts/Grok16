@@ -1,5 +1,5 @@
 #!/usr/bin/env pythong
-"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 4.7.0."""
+"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 4.7.1."""
 from __future__ import annotations
 
 import json
@@ -12,10 +12,10 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from readme_front import write_index as write_readme_index
-DISTRO = "4.7.0"
+DISTRO = "4.7.1"
 G16 = "16.2.0"
-CACHE = "v12"
-BENCH_REPORT = "4.7.0"
+CACHE = "v13"
+BENCH_REPORT = "4.7.1"
 BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.1.0"
 
@@ -845,7 +845,7 @@ G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench
     }
 
 SEARCH_INDEX = [
-    {"t": "speed bench", "p": "speed-bench.html", "g": "4.7", "d": "Versioned compile ms execution ops/s report v4.7.0"},
+    {"t": "speed bench", "p": "speed-bench.html", "g": "4.7", "d": "Versioned compile ms execution ops/s report v4.7.1"},
     {"t": "exec-full-bench", "p": "speed-bench.html#reproduce", "g": "Bench", "d": "field-exec-full-bench compile and execution"},
     {"t": "bench-refresh", "p": "release.html#charts", "g": "4.7", "d": "Regenerate triad compare bench-all charts SVG"},
     {"t": "uncompiled", "p": "uncompiled.html", "g": "4.7", "d": "Python interpreter C C++ chamber compile ahead"},
@@ -862,7 +862,7 @@ SEARCH_INDEX = [
     {"t": "test-battery-expert", "p": "batteries.html#expert", "g": "Battery", "d": "Ironclad linker RTX expert profile"},
     {"t": "g16-ld", "p": "linker.html", "g": "Linker", "d": "Field linker 16 targets mandate flags"},
     {"t": "GPY-16", "p": "toolkits.html#gpy16", "g": "Toolkit", "d": "Built-in Python GrokVM gpy-16"},
-    {"t": "v4.7.0", "p": "release.html", "g": "Release", "d": "Bench refresh charts gcc-14 legacy isolation chamber"},
+    {"t": "v4.7.1", "p": "release.html", "g": "Release", "d": "Bench refresh charts gcc-14 legacy isolation chamber"},
     {"t": "queen theme", "p": "index.html", "g": "UI", "d": "Queen navy gold emerald manual theme"},
     {"t": "bootstrap", "p": "getting-started.html#bootstrap", "g": "Workflow", "d": "First GCC fetch host build install"},
     {"t": "g16 unified", "p": "architecture.html#unified-driver", "g": "Driver", "d": "Single g16 C C++ Python discern"},

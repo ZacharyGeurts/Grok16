@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 — Release 4.7</title>
-  <meta name="description" content="Grok16 4.7.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <meta name="description" content="Grok16 4.7.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-4.7.html" />
   <script>
   (function (d) {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v12"></script>
-  <script src="manual-search.js?v12"></script>
-  <script src="manual-layout.js?v12"></script>
-  <link rel="stylesheet" href="manual.css?v12" />
+  <script src="manual-theme.js?v13"></script>
+  <script src="manual-search.js?v13"></script>
+  <script src="manual-layout.js?v13"></script>
+  <link rel="stylesheet" href="manual.css?v13" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 4.7.0</span>
+        <span class="nav-version">distro 4.7.1</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -71,8 +71,8 @@
     </div>
   </nav>
 
-  <h1>Release 4.7.0</h1>
-  <p>Grok16 <strong>4.7</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform matrix (incl. RISC-V). Compiler <strong>16.2.0</strong>. Tag <code>v4.7.0</code>. Previous: <code>v4.2.0</code>.</p>
+  <h1>Release 4.7.1</h1>
+  <p>Grok16 <strong>4.7</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform matrix (incl. RISC-V). Compiler <strong>16.2.0</strong>. Tag <code>v4.7.1</code>. Previous: <code>v4.2.0</code>.</p>
 
   <h2 id="charts">Speed &amp; comparison charts</h2>
   <pre><code>./scripts/grok16-toolchain.sh bench-refresh
@@ -89,7 +89,7 @@
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
-git checkout v4.7.0
+git checkout v4.7.1
 export G16_PREFIX="$(pwd)"
 export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
@@ -105,15 +105,15 @@ G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
     <li><strong>performance.html</strong> — embeds triad, compare, and bench-all charts with live triad table</li>
     <li><strong>gcc-14 host pin</strong> — speed bench chart header stamps host toolchain</li>
     <li><strong>Legacy isolation chamber</strong> — sealed BASIC/Pascal/VB tests in SG/NewLatest</li>
-    <li><strong>Speed bench v4.7.0</strong> — compile ms + execution ops/s with version stamps</li>
+    <li><strong>Speed bench v4.7.1</strong> — compile ms + execution ops/s with version stamps</li>
     <li><code>speed_demo</code> suite @ 1.1.0 — C, C++, CMake, Python (host + gpy-16)</li>
     <li>Portable <code>.launch</code> chambers — <code>./scripts/grok16-launch-verify.sh</code></li>
-    <li>Multi-platform release — <code>./scripts/grok16-release.sh 4.7.0 --push</code></li>
+    <li>Multi-platform release — <code>./scripts/grok16-release.sh 4.7.1 --push</code></li>
   </ul>
 
   <h2 id="upgrade">Upgrade from v4.2.0</h2>
   <ol>
-    <li>Checkout <code>v4.7.0</code></li>
+    <li>Checkout <code>v4.7.1</code></li>
     <li><code>G16_BELT_PROFILE=belt_2_0 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
     <li><code>test-battery-release</code> then <code>test-battery-belt</code></li>
     <li><code>./scripts/grok16-toolchain.sh bench-refresh</code></li>
@@ -122,10 +122,10 @@ G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
   <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md">RELEASE-4.7.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="single-fabric.html">Single Fabric</a></p>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 4.7.0</a> ·
+    <a href="release.html">Release 4.7.1</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 4.7.0 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 4.7.1 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

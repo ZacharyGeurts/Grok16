@@ -1,15 +1,15 @@
-# Speed Bench (report v4.7.0)
+# Speed Bench (report v4.7.1)
 
 Web: [speed-bench.html](https://zacharygeurts.github.io/Grok16/speed-bench.html) · JSON: [field-exec-full-bench.json](https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json)
 
-**Grok16 distro 4.7.0** · **speed_demo suite v1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**
+**Grok16 distro 4.7.1** · **speed_demo suite v1.1.0** · **schema v5** · **11 runners** · **3s window** · **2026-06-27**
 
 ## Version stamps
 
 | Field | Value |
 |-------|-------|
-| Report | `4.7.0` |
-| Distro | `4.7.0` (`v4.7.0`) |
+| Report | `4.7.1` |
+| Distro | `4.7.1` (`v4.7.1`) |
 | g16 pkg | `Grok16-16.2.0` |
 | Bench suite | `speed_demo` @ `1.1.0` |
 | Schema | `grok16-field-exec-full-bench/v5` |

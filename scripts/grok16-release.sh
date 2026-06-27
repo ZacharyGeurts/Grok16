@@ -5,7 +5,7 @@ set -euo pipefail
 
 GROK16_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SG_ROOT="${SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}"
-VERSION="${1:-4.7.0}"
+VERSION="${1:-4.7.1}"
 TAG="v${VERSION}"
 PUSH=0
 NO_GH=0

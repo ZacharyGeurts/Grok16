@@ -1,7 +1,7 @@
 {
   "schema": "grok16-platform-release/v1",
-  "distro_version": "4.7.0",
-  "distro_tag": "v4.7.0",
+  "distro_version": "4.7.1",
+  "distro_tag": "v4.7.1",
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-16.2.0",
   "upstream_gcc": "releases/gcc-15",
@@ -21,7 +21,11 @@
       "os": "linux",
       "arch": "x86_64",
       "format": "elf",
-      "bootstrap": {"CC": "gcc", "CXX": "g++", "deps": "build-essential flex bison libgmp-dev libmpfr-dev libmpc-dev"},
+      "bootstrap": {
+        "CC": "gcc",
+        "CXX": "g++",
+        "deps": "build-essential flex bison libgmp-dev libmpfr-dev libmpc-dev"
+      },
       "cross_prefix": null,
       "notes": "Primary dev + bench host"
     },
@@ -30,7 +34,11 @@
       "os": "linux",
       "arch": "i386",
       "format": "elf",
-      "bootstrap": {"CC": "gcc", "CXX": "g++", "multilib": true},
+      "bootstrap": {
+        "CC": "gcc",
+        "CXX": "g++",
+        "multilib": true
+      },
       "cross_prefix": "i686-linux-gnu-",
       "notes": "32-bit GNU/Linux"
     },
@@ -39,16 +47,20 @@
       "os": "linux",
       "arch": "aarch64",
       "format": "elf",
-      "bootstrap": {"host": "linux-gnu-x86_64"},
+      "bootstrap": {
+        "host": "linux-gnu-x86_64"
+      },
       "cross_prefix": "aarch64-linux-gnu-",
-      "notes": "ARM64 Linux — cross bootstrap from x86_64 host"
+      "notes": "ARM64 Linux \u2014 cross bootstrap from x86_64 host"
     },
     {
       "id": "linux-gnu-arm",
       "os": "linux",
       "arch": "arm",
       "format": "elf",
-      "bootstrap": {"host": "linux-gnu-x86_64"},
+      "bootstrap": {
+        "host": "linux-gnu-x86_64"
+      },
       "cross_prefix": "arm-linux-gnueabihf-",
       "notes": "ARM32 GNU/Linux"
     },
@@ -57,16 +69,21 @@
       "os": "linux",
       "arch": "riscv64",
       "format": "elf",
-      "bootstrap": {"host": "linux-gnu-x86_64"},
+      "bootstrap": {
+        "host": "linux-gnu-x86_64"
+      },
       "cross_prefix": "riscv64-linux-gnu-",
-      "notes": "RISC-V 64 — cross GCC + binutils; g16 linker emulation elf64lriscv"
+      "notes": "RISC-V 64 \u2014 cross GCC + binutils; g16 linker emulation elf64lriscv"
     },
     {
       "id": "android-aarch64",
       "os": "android",
       "arch": "aarch64",
       "format": "elf",
-      "bootstrap": {"ndk": true, "ANDROID_NDK_ROOT": "required"},
+      "bootstrap": {
+        "ndk": true,
+        "ANDROID_NDK_ROOT": "required"
+      },
       "triple": "aarch64-linux-android",
       "notes": "NDK r26+ recommended"
     },
@@ -75,7 +92,9 @@
       "os": "android",
       "arch": "arm",
       "format": "elf",
-      "bootstrap": {"ndk": true},
+      "bootstrap": {
+        "ndk": true
+      },
       "triple": "armv7a-linux-androideabi"
     },
     {
@@ -83,7 +102,9 @@
       "os": "android",
       "arch": "x86_64",
       "format": "elf",
-      "bootstrap": {"ndk": true},
+      "bootstrap": {
+        "ndk": true
+      },
       "triple": "x86_64-linux-android"
     },
     {
@@ -91,15 +112,21 @@
       "os": "darwin",
       "arch": "x86_64",
       "format": "mach-o",
-      "bootstrap": {"CC": "clang", "CXX": "clang++"},
-      "notes": "macOS Intel — bootstrap on host"
+      "bootstrap": {
+        "CC": "clang",
+        "CXX": "clang++"
+      },
+      "notes": "macOS Intel \u2014 bootstrap on host"
     },
     {
       "id": "darwin-aarch64",
       "os": "darwin",
       "arch": "aarch64",
       "format": "mach-o",
-      "bootstrap": {"CC": "clang", "CXX": "clang++"},
+      "bootstrap": {
+        "CC": "clang",
+        "CXX": "clang++"
+      },
       "notes": "Apple Silicon"
     },
     {
@@ -107,7 +134,9 @@
       "os": "ios",
       "arch": "aarch64",
       "format": "mach-o",
-      "bootstrap": {"xcode": true},
+      "bootstrap": {
+        "xcode": true
+      },
       "triple": "arm64-apple-ios"
     },
     {
@@ -115,7 +144,9 @@
       "os": "windows",
       "arch": "x86_64",
       "format": "pe",
-      "bootstrap": {"mingw": true},
+      "bootstrap": {
+        "mingw": true
+      },
       "triple": "x86_64-pc-windows-msvc"
     },
     {
@@ -123,7 +154,9 @@
       "os": "windows",
       "arch": "aarch64",
       "format": "pe",
-      "bootstrap": {"mingw": true},
+      "bootstrap": {
+        "mingw": true
+      },
       "triple": "aarch64-pc-windows-msvc"
     },
     {
@@ -131,7 +164,9 @@
       "os": "none",
       "arch": "x86_64",
       "format": "elf",
-      "bootstrap": {"host": "linux-gnu-x86_64"},
+      "bootstrap": {
+        "host": "linux-gnu-x86_64"
+      },
       "notes": "Bare-metal ELF"
     },
     {
@@ -139,7 +174,9 @@
       "os": "none",
       "arch": "aarch64",
       "format": "elf",
-      "bootstrap": {"host": "linux-gnu-x86_64"},
+      "bootstrap": {
+        "host": "linux-gnu-x86_64"
+      },
       "notes": "Bare-metal AArch64"
     },
     {
@@ -147,7 +184,9 @@
       "os": "none",
       "arch": "riscv64",
       "format": "elf",
-      "bootstrap": {"host": "linux-gnu-x86_64"},
+      "bootstrap": {
+        "host": "linux-gnu-x86_64"
+      },
       "cross_prefix": "riscv64-linux-gnu-",
       "notes": "Bare-metal RISC-V"
     }

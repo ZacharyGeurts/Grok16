@@ -1,4 +1,4 @@
-# Grok16 @ 4.7.0
+# Grok16 @ 4.7.1
 
 **Stable release** — self-hosted `g16` @ **16.2.0**, **versioned speed bench**, benchmark chart refresh, uncompiled doctrine, Queen-themed manual.
 
@@ -8,10 +8,10 @@
 | **Field Research book** | https://zacharygeurts.github.io/Field_Research/ |
 | **Speed bench** | https://zacharygeurts.github.io/Grok16/speed-bench.html |
 | **Repo** | https://github.com/ZacharyGeurts/Grok16 |
-| **Tag** | `v4.7.0` |
+| **Tag** | `v4.7.1` |
 | **Compiler** | `g16 (Grok16-16.2.0) 16.2.0` |
 
-## Speed bench (report v4.7.0)
+## Speed bench (report v4.7.1)
 
 | Category | Winner | Compile | Execution |
 |----------|--------|--------:|----------:|
@@ -56,7 +56,7 @@ Thirteen chapters from combinatorics endpoint to compatibility layers — [Field
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16 && git checkout v4.7.0
+cd Grok16 && git checkout v4.7.1
 export G16_PREFIX="$(pwd)"
 export G16_BELT_PROFILE=belt_2_0
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild

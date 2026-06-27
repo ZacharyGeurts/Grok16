@@ -3,7 +3,7 @@
     "t": "speed bench",
     "p": "speed-bench.html",
     "g": "4.7",
-    "d": "Versioned compile ms execution ops/s report v4.7.0"
+    "d": "Versioned compile ms execution ops/s report v4.7.1"
   },
   {
     "t": "exec-full-bench",
@@ -102,7 +102,7 @@
     "d": "Built-in Python GrokVM gpy-16"
   },
   {
-    "t": "v4.7.0",
+    "t": "v4.7.1",
     "p": "release.html",
     "g": "Release",
     "d": "Bench refresh charts gcc-14 legacy isolation chamber"

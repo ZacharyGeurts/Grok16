@@ -2,7 +2,7 @@
 
 Web: [performance.html](https://zacharygeurts.github.io/Grok16/performance.html) · [speed-bench.html](https://zacharygeurts.github.io/Grok16/speed-bench.html)
 
-## Speed bench (4.7 — report v4.7.0)
+## Speed bench (4.7 — report v4.7.1)
 
 **Suite:** `speed_demo` @ `1.1.0` · **3s execution window** · Schema: `grok16-field-exec-full-bench/v5`
 

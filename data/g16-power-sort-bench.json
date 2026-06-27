@@ -1,8 +1,8 @@
 {
   "schema": "g16-power-sort-bench/v1",
-  "updated": "2026-06-27T13:27:13Z",
+  "updated": "2026-06-27T14:32:19Z",
   "ok": true,
-  "elapsed_ms": 30.37,
+  "elapsed_ms": 0.27,
   "contexts": {
     "file_list_small": {
       "best": "locale_ci",
@@ -164,5 +164,8 @@
       ],
       "n": 12000
     }
-  }
+  },
+  "bench_deferred": true,
+  "thermal_level": "crit",
+  "reason": "never_bench_under_heat"
 }

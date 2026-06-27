@@ -1,6 +1,6 @@
 {
   "schema": "g16-power-sort-panel/v1",
-  "updated": "2026-06-27T13:27:14Z",
+  "updated": "2026-06-27T14:32:19Z",
   "ok": true,
   "always_best_sort": true,
   "plate_not_wire": true,
@@ -116,12 +116,12 @@
       "cool": true,
       "context": "file_list",
       "consumer": "queen_files",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -140,12 +140,12 @@
       "cool": true,
       "context": "drive_index",
       "consumer": "field_drive_indexer",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -164,12 +164,12 @@
       "cool": true,
       "context": "recombinatorics",
       "consumer": "combinatorics_bridge",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -188,7 +188,7 @@
       "cool": true,
       "context": "chip_paths",
       "consumer": "chip_battery",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "narrow_band_width": 16,
       "pipe_policy": "adjacent_narrow_only",
@@ -205,8 +205,8 @@
       },
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -225,12 +225,12 @@
       "cool": true,
       "context": "bench_rank",
       "consumer": "field_exec_bench",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -249,12 +249,12 @@
       "cool": true,
       "context": "thermal_layers",
       "consumer": "field_sanity",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -273,12 +273,12 @@
       "cool": true,
       "context": "file_list",
       "consumer": "queen_file_browser",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -297,12 +297,12 @@
       "cool": true,
       "context": "compat_layers",
       "consumer": "field_compatibility_layers",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -321,12 +321,12 @@
       "cool": true,
       "context": "panel",
       "consumer": null,
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": "/api/power-sort",
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -345,12 +345,12 @@
       "cool": true,
       "context": "physics",
       "consumer": "field_physics_witness",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": "/api/physics-witness",
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -369,12 +369,12 @@
       "cool": true,
       "context": "format_table",
       "consumer": "field_file_formats",
-      "bench_deferred": false,
+      "bench_deferred": true,
       "manifest_api": null,
       "physics": {
         "thermal": {
-          "level": "ok",
-          "cool_ok": true,
+          "level": "crit",
+          "cool_ok": false,
           "headroom_pct": 100.0
         },
         "entropy": {
@@ -389,22 +389,22 @@
     }
   },
   "thermal": {
-    "level": "ok",
-    "hot": false,
-    "cool_ok": true,
-    "cool_required": false,
+    "level": "crit",
+    "hot": true,
+    "cool_ok": false,
+    "cool_required": true,
     "anomaly_active": false,
     "headroom_mult": null,
-    "peak_c": null
+    "peak_c": 95.62
   },
   "bench_ref": "/home/default/Desktop/SG/Grok16/data/g16-power-sort-bench.json",
-  "bench_deferred": false,
+  "bench_deferred": true,
   "steps": [
     {
       "step": "bench",
       "ok": true,
-      "elapsed_ms": 30.37
+      "elapsed_ms": 0.27
     }
   ],
-  "elapsed_ms": 622.72
+  "elapsed_ms": 701.74
 }
