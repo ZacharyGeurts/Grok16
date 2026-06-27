@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|bench|bench-compare|bench-triad|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|bench|bench-compare|bench-triad|speed-demo|exec-compare|exec-full-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -677,6 +677,18 @@ cmd_bench_triad() {
   exec "$GROK16_SCRIPTS/grok16-bench-triad.sh" triad
 }
 
+cmd_speed_demo() {
+  exec "$GROK16_SCRIPTS/grok16-speed-demo.sh" run
+}
+
+cmd_exec_compare() {
+  exec "$GROK16_SCRIPTS/grok16-speed-demo.sh" exec
+}
+
+cmd_exec_full_bench() {
+  exec python3 "$GROK16_SCRIPTS/field-exec-full-bench.py" "$@"
+}
+
 cmd_integrate() {
   exec "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
 }
@@ -866,6 +878,9 @@ case "${1:-}" in
   bench) cmd_bench ;;
   bench-compare) cmd_bench_compare ;;
   bench-triad) cmd_bench_triad ;;
+  speed-demo) cmd_speed_demo ;;
+  exec-compare) cmd_exec_compare ;;
+  exec-full-bench) cmd_exec_full_bench "$@" ;;
   field-bench-real) cmd_field_bench_real ;;
   speed-diagnosis) g16_gpy_run "$GROK16_SCRIPTS/grok16-speed-diagnosis.py" ;;
   field-bench) cmd_field_bench ;;

@@ -1,0 +1,36 @@
+{
+  "schema": "queen-launch/v1",
+  "title": "speed-demo",
+  "chamber_root": "/home/default/Desktop/SG/Grok16/examples/speed-demo",
+  "entry": "speed_demo.py",
+  "runtime": "python",
+  "cwd": ".",
+  "env": {},
+  "chamber": {
+    "mode": "folder_mirror",
+    "include": [
+      "**/*"
+    ],
+    "exclude": [
+      "*.a",
+      "*.o",
+      "*.pyc",
+      "*.so",
+      "*.tmp",
+      ".git",
+      ".nexus-field-drive",
+      ".nexus-state",
+      ".venv",
+      ".venv-browser",
+      "__pycache__",
+      "build",
+      "dist",
+      "node_modules"
+    ]
+  },
+  "file_count": 4,
+  "bytes": 15001,
+  "uncompiled": true,
+  "created": "2026-06-27T02:42:07Z",
+  "updated": "2026-06-27T02:42:07Z"
+}
