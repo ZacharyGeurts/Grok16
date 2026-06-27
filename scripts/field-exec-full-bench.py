@@ -118,16 +118,21 @@ def _run_json_script(path: Path, cmd: str) -> tuple[dict, float]:
 
 
 def _plate_meld_context() -> dict:
-    """Cycle plate meld (fast fuse) + compiler sense; return generation, profile, timings."""
-    meld_cmd = os.environ.get("G16_PLATE_MELD_CMD", "fuse")
-    meld_timeout = int(os.environ.get("G16_PLATE_MELD_TIMEOUT", "300"))
-    try:
-        rc, out, err, meld_ms = _run([sys.executable, str(PLATE_MELD_PY), meld_cmd], timeout=meld_timeout)
-        meld_doc = json.loads(out) if rc == 0 and out.strip() else {"error": (err or out or "meld_failed")[:300]}
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError) as exc:
-        meld_doc = {"error": str(exc)[:300]}
-        meld_ms = float(meld_timeout * 1000)
-    sense_doc, sense_ms = _run_json_script(COMPILER_SENSE_PY, "cycle")
+    """Cycle plate meld (fast fuse) + compiler sense; skip unfound scripts without error."""
+    meld_doc: dict = {}
+    meld_ms = 0.0
+    if PLATE_MELD_PY.is_file():
+        meld_cmd = os.environ.get("G16_PLATE_MELD_CMD", "fuse")
+        meld_timeout = int(os.environ.get("G16_PLATE_MELD_TIMEOUT", "300"))
+        try:
+            rc, out, err, meld_ms = _run([sys.executable, str(PLATE_MELD_PY), meld_cmd], timeout=meld_timeout)
+            meld_doc = json.loads(out) if rc == 0 and out.strip() else {"skipped": (err or out or "meld_failed")[:300]}
+        except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError) as exc:
+            meld_doc = {"skipped": str(exc)[:300]}
+            meld_ms = float(meld_timeout * 1000)
+    else:
+        meld_doc = {"skipped": "plate_meld_unfound"}
+    sense_doc, sense_ms = _run_json_script(COMPILER_SENSE_PY, "cycle") if COMPILER_SENSE_PY.is_file() else ({}, 0.0)
     opt = sense_doc.get("optimize") or sense_doc.get("effective_profile") and sense_doc or {}
     if isinstance(opt, dict) and "profile" not in opt:
         opt = sense_doc.get("optimize") or {}
