@@ -1,7 +1,7 @@
 {
   "schema": "queen-launch/v1",
   "title": "field-nexus-bench",
-  "chamber_root": "/home/default/Desktop/SG/Grok16/examples/field-nexus-bench",
+  "chamber_root": "${GROK16_ROOT}/examples/field-nexus-bench",
   "entry": "CMakeLists.txt",
   "runtime": "cmake",
   "cwd": ".",

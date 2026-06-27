@@ -1,6 +1,6 @@
 {
   "schema": "g16-power-sort-panel/v1",
-  "updated": "2026-06-27T06:59:37Z",
+  "updated": "2026-06-27T09:43:00Z",
   "ok": true,
   "always_best_sort": true,
   "plate_not_wire": true,
@@ -14,25 +14,25 @@
         "context_bench_id": "file_list_small",
         "algorithm": "dirs_first",
         "n": 200,
-        "bench_us": 32.53,
+        "bench_us": 33.19,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
       "file_list_large": {
         "context": "file_list",
         "context_bench_id": "file_list_large",
-        "algorithm": "locale_ci",
+        "algorithm": "dirs_first",
         "n": 5000,
-        "bench_us": 229.84,
+        "bench_us": 236.94,
         "cool": true,
-        "statement": "power_sort_locale_ci_for_file_list"
+        "statement": "power_sort_dirs_first_for_file_list"
       },
       "file_list": {
         "context": "file_list",
         "context_bench_id": "file_list_small",
         "algorithm": "dirs_first",
         "n": 200,
-        "bench_us": 32.53,
+        "bench_us": 33.19,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -41,7 +41,7 @@
         "context_bench_id": "drive_index",
         "algorithm": "timsort_key",
         "n": null,
-        "bench_us": 1025.0,
+        "bench_us": 1081.33,
         "cool": true,
         "statement": "power_sort_timsort_key_for_drive_index"
       },
@@ -59,7 +59,7 @@
         "context_bench_id": "bench_rank",
         "algorithm": "desc_numeric",
         "n": null,
-        "bench_us": 6.28,
+        "bench_us": 5.66,
         "cool": true,
         "statement": "power_sort_desc_numeric_for_bench_rank"
       },
@@ -68,21 +68,41 @@
         "context_bench_id": "thermal_layers",
         "algorithm": "cool_sort",
         "n": null,
-        "bench_us": 4.91,
+        "bench_us": 4.24,
         "cool": true,
         "statement": "power_sort_cool_sort_for_thermal_layers"
+      },
+      "chip_paths": {
+        "context": "chip_paths",
+        "context_bench_id": "chip_paths",
+        "algorithm": "narrow_band",
+        "n": null,
+        "bench_us": null,
+        "cool": true,
+        "statement": "power_sort_narrow_band_for_chip_paths"
       }
     },
     "file_list_mode": "dirs_first",
     "drive_index_algorithm": "timsort_key",
     "recombinatorics_algorithm": "composite_bsp",
+    "chip_paths_algorithm": "narrow_band",
     "bench_rank_algorithm": "desc_numeric",
     "thermal_algorithm": "cool_sort",
+    "line_safety": {
+      "schema": "g16-line-safety/v1",
+      "narrow_band_width": 16,
+      "pipe_policy": "adjacent_narrow_only",
+      "wide_piping_prevented": true,
+      "algorithm": "narrow_band",
+      "consumer": "chip_battery",
+      "hot_pipe": "narrow",
+      "cold_pipe": "cold"
+    },
     "motto": "We understand the shape of the data; bench receipts pick the sort; never pay for the wrong comparator."
   },
   "sections": {
     "file_list": {
-      "available": true,
+      "available": false,
       "algorithm": "dirs_first",
       "cool": true,
       "context": "file_list",
@@ -106,7 +126,7 @@
       }
     },
     "drive_index": {
-      "available": true,
+      "available": false,
       "algorithm": "timsort_key",
       "cool": true,
       "context": "drive_index",
@@ -130,7 +150,7 @@
       }
     },
     "recombinatorics": {
-      "available": true,
+      "available": false,
       "algorithm": "composite_bsp",
       "cool": true,
       "context": "recombinatorics",
@@ -153,8 +173,45 @@
         }
       }
     },
+    "chip_paths": {
+      "available": false,
+      "algorithm": "narrow_band",
+      "cool": true,
+      "context": "chip_paths",
+      "consumer": "chip_battery",
+      "bench_deferred": false,
+      "manifest_api": null,
+      "narrow_band_width": 16,
+      "pipe_policy": "adjacent_narrow_only",
+      "wide_piping_prevented": true,
+      "line_safety": {
+        "schema": "g16-line-safety/v1",
+        "narrow_band_width": 16,
+        "pipe_policy": "adjacent_narrow_only",
+        "wide_piping_prevented": true,
+        "algorithm": "narrow_band",
+        "consumer": "chip_battery",
+        "hot_pipe": "narrow",
+        "cold_pipe": "cold"
+      },
+      "physics": {
+        "thermal": {
+          "level": "ok",
+          "cool_ok": true,
+          "headroom_pct": 100.0
+        },
+        "entropy": {
+          "entropy_ok": true,
+          "entropy_norm": 0.5
+        },
+        "isotope": {
+          "ok": true,
+          "stem": "speed_demo"
+        }
+      }
+    },
     "bench_rank": {
-      "available": true,
+      "available": false,
       "algorithm": "desc_numeric",
       "cool": true,
       "context": "bench_rank",
@@ -178,7 +235,7 @@
       }
     },
     "thermal_layers": {
-      "available": true,
+      "available": false,
       "algorithm": "cool_sort",
       "cool": true,
       "context": "thermal_layers",
@@ -202,7 +259,7 @@
       }
     },
     "queen_files": {
-      "available": true,
+      "available": false,
       "algorithm": "dirs_first",
       "cool": true,
       "context": "file_list",
@@ -226,7 +283,7 @@
       }
     },
     "compat_layers": {
-      "available": true,
+      "available": false,
       "algorithm": "dirs_first",
       "cool": true,
       "context": "compat_layers",
@@ -250,7 +307,7 @@
       }
     },
     "panel": {
-      "available": true,
+      "available": false,
       "algorithm": "dirs_first",
       "cool": true,
       "context": "panel",
@@ -274,7 +331,7 @@
       }
     },
     "physics": {
-      "available": true,
+      "available": false,
       "algorithm": "dirs_first",
       "cool": true,
       "context": "physics",
@@ -305,7 +362,7 @@
     "cool_required": false,
     "anomaly_active": false,
     "headroom_mult": null,
-    "peak_c": 92.75
+    "peak_c": null
   },
   "bench_ref": "/home/default/Desktop/SG/Grok16/data/g16-power-sort-bench.json",
   "bench_deferred": false,
@@ -313,8 +370,8 @@
     {
       "step": "bench",
       "ok": true,
-      "elapsed_ms": 39.24
+      "elapsed_ms": 31.56
     }
   ],
-  "elapsed_ms": 1150.9
+  "elapsed_ms": 801.0
 }

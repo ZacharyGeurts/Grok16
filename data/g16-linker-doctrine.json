@@ -43,7 +43,8 @@
     {"id": "win32-x86_64", "os": "windows", "abi": "msvc", "arch": "x86_64", "format": "pe", "backend": "pe", "triple": "x86_64-pc-windows-msvc", "page_size": 4096, "active": true},
     {"id": "win32-aarch64", "os": "windows", "abi": "msvc", "arch": "aarch64", "format": "pe", "backend": "pe", "triple": "aarch64-pc-windows-msvc", "page_size": 4096, "active": true},
     {"id": "bare-elf-x86_64", "os": "none", "abi": "elf", "arch": "x86_64", "format": "elf", "backend": "bfd", "emulation": "elf_x86_64", "page_size": 4096, "active": true},
-    {"id": "bare-elf-aarch64", "os": "none", "abi": "elf", "arch": "aarch64", "format": "elf", "backend": "bfd", "emulation": "aarch64linux", "page_size": 16384, "active": true}
+    {"id": "bare-elf-aarch64", "os": "none", "abi": "elf", "arch": "aarch64", "format": "elf", "backend": "bfd", "emulation": "aarch64linux", "page_size": 16384, "active": true},
+    {"id": "bare-elf-riscv64", "os": "none", "abi": "elf", "arch": "riscv64", "format": "elf", "backend": "bfd", "emulation": "elf64lriscv", "page_size": 4096, "active": true}
   ],
   "pass": ["discern", "ironclad_witness", "field_sanity", "silicon_mandate", "backend_resolve", "backend_dispatch", "receipt"],
   "layers": [

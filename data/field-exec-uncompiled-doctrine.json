@@ -19,10 +19,15 @@
     "compile": false,
     "trim_excess": true,
     "runner_policy": {
-      "python": "interpreter",
+      "python": "interpreter_bsp",
       "native": "bsp_reuse",
       "cmake": "staged_binary",
       "shell": "interpreter"
+    },
+    "python_interpreter": {
+      "module": "lib/field_python_interpreter.py",
+      "case_ids": ["python_gpy", "python_host"],
+      "statement": "Python BSP — staged GrokVM driver from exec-plane, same parity as native BSP reuse"
     }
   },
   "singular_field_plane": {

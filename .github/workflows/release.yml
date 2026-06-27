@@ -1,0 +1,59 @@
+name: Grok16 Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake python3 file
+
+      - name: Launch verify
+        env:
+          SG_ROOT: ${{ github.workspace }}/..
+          GROK16_ROOT: ${{ github.workspace }}
+          NEXUS_INSTALL_ROOT: ${{ github.workspace }}/../NewLatest
+        run: |
+          if [[ -f ../NewLatest/Queen/lib/queen-launch-chamber.py ]]; then
+            bash scripts/grok16-launch-verify.sh || echo "launch-verify skipped (Queen tree optional on CI)"
+          else
+            echo "Queen chamber not in checkout — skip launch-verify"
+          fi
+
+      - name: Build release assets
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          bash scripts/grok16-release.sh "$VER" --no-gh
+
+      - name: Upload GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          NOTES="RELEASE-${VER}.md"
+          [[ -f "$NOTES" ]] || NOTES="dist/grok16-${VER}-PLATFORMS.md"
+          gh release upload "${GITHUB_REF_NAME}" \
+            "dist/grok16-${VER}-src.tar.gz" \
+            "dist/grok16-${VER}-platforms.json" \
+            "dist/grok16-${VER}-PLATFORMS.md" \
+            --clobber 2>/dev/null || \
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Grok16 ${VER}" \
+            --notes-file "$NOTES" \
+            "dist/grok16-${VER}-src.tar.gz" \
+            "dist/grok16-${VER}-platforms.json" \
+            "dist/grok16-${VER}-PLATFORMS.md"

@@ -1,7 +1,7 @@
 {
   "schema": "queen-launch/v1",
   "title": "minimal-cmake-project",
-  "chamber_root": "/home/default/Desktop/SG/Grok16/examples/minimal-cmake-project",
+  "chamber_root": "${GROK16_ROOT}/examples/minimal-cmake-project",
   "entry": "CMakeLists.txt",
   "runtime": "cmake",
   "cwd": ".",

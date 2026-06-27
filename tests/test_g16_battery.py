@@ -10,14 +10,26 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SG_ROOT = ROOT.parent
+sys.path.insert(0, str(ROOT / "lib"))
+from g16_self_monitor import run_monitored  # noqa: E402
+
 G16 = ROOT / "bin" / "g16"
 GPY = Path(os.environ.get("GPY16_DRIVER", ROOT / "bin" / "gpy-16"))
 FORGE = ROOT / "forge" / "grok16-forge.py"
 FORGE_LIB = ROOT / "forge"
 
 
-def _run(cmd: list[str], *, timeout: int = 30) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, check=False)
+def _run(cmd: list[str], *, timeout: int = 30, label: str = "") -> subprocess.CompletedProcess[str]:
+    res = run_monitored(
+        cmd,
+        label=label or cmd[0],
+        timeout_sec=timeout,
+        stall_sec=max(15, timeout // 2),
+        heartbeat_sec=int(os.environ.get("G16_MONITOR_HEARTBEAT_SEC", "8")),
+        log_heartbeats=False,
+    )
+    assert not res.dropped, f"monitor drop-out: {res.drop_reason} {res.to_dict()}"
+    return subprocess.CompletedProcess(cmd, res.rc, res.stdout, res.stderr)
 
 
 def test_g16_discern() -> None:

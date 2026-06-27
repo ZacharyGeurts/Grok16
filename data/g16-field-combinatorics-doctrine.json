@@ -37,6 +37,20 @@
     "launch": {
       "modes": ["organized_field", "singular_field", "compile"],
       "doctrine": "data/field-exec-uncompiled-doctrine.json"
+    },
+    "chips_battery": {
+      "module": "NewLatest/lib/field-chip-battery.py",
+      "panel": "field-chip-battery-panel.json",
+      "seed": "NewLatest/data/field-chip-battery-seed.json",
+      "doctrine": "NewLatest/data/field-chip-battery-doctrine.json",
+      "sources": ["seed", "mame", "chips_manifest", "queen_game_room", "isa_data"],
+      "vendors": ["Cyrix", "Tandy", "MAME", "CHIPS", "Motorola", "Intel", "AMD"],
+      "code_path_prediction": {
+        "hard_percent": true,
+        "narrow_band_width": 16,
+        "seed": "NewLatest/data/field-chip-path-predict-seed.json",
+        "power_sort_context": "chip_paths"
+      }
     }
   },
   "speed_cap": {

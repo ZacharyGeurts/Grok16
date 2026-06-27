@@ -1,14 +1,14 @@
 {
-  "distro_version": "4.0.0",
+  "distro_version": "4.2.0",
   "release_track": {
-    "current": "4.0.0",
-    "previous": "3.0.0",
-    "next": "4.1",
+    "current": "4.2.0",
+    "previous": "4.0.0",
+    "next": "4.3",
     "status": "released",
     "released": true,
-    "tag": "v4.0.0",
-    "validation_tiers": ["expert", "heavy", "release", "belt", "speed_bench", "power_sort"],
-    "roadmap": "4.0.0 — power sort plate, cool combinatorics plating, section availability → 4.1"
+    "tag": "v4.2.0",
+    "validation_tiers": ["expert", "heavy", "release", "belt", "speed_bench", "power_sort", "line_safety", "test_gate"],
+    "roadmap": "4.2.0 — CPU library, FFNT fonts, clipboard ghost wire, line safety plate widths, test gate"
   },
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-16.2.0",
@@ -27,10 +27,11 @@
     "integrate": "scripts/grok16-integrate.sh"
   },
   "speed_bench": {
-    "report_version": "4.0.0",
+    "report_version": "4.2.0",
     "suite": "speed_demo",
     "suite_version": "1.1.0",
-    "schema": "grok16-field-exec-full-bench/v4",
+    "schema": "grok16-field-exec-full-bench/v5",
+    "self_monitor": "lib/g16_self_monitor.py",
     "doctrine": "data/grok16-speed-bench-version.json",
     "uncompiled": "data/field-exec-uncompiled-doctrine.json",
     "scripts": {
@@ -67,7 +68,38 @@
     "declaration": "Single fabric is the 2.0 technology — one belt amplitude, one field depth, linear sovereign time",
     "safety": ["depth_field_impossible", "ironclad_field_sanity", "sovereign_linear_time"]
   },
-  "notes": "Grok16 4.0.0 — power sort plate, cool combinatorics plating, section availability, speed bench v4",
+  "line_safety": {
+    "doctrine": "data/g16-power-sort-doctrine.json",
+    "narrow_band_width": 16,
+    "pipe_policy": "adjacent_narrow_only",
+    "plate_module": "lib/g16-power-sort-plate.py",
+    "consumer": "NewLatest/lib/field-chip-battery.py"
+  },
+  "test_gate": {
+    "script": "scripts/grok16-test-gate.sh",
+    "monitor": "scripts/g16-run-monitored.sh",
+    "modes": ["smoke", "full"],
+    "default_timeout_sec": 300,
+    "self_monitor": {
+      "module": "lib/g16_self_monitor.py",
+      "heartbeat_sec": 8,
+      "stall_drop": true,
+      "timeout_drop": true
+    }
+  },
+  "launch": {
+    "extension": ".launch",
+    "schema": "queen-launch/v1",
+    "verify": "scripts/grok16-launch-verify.sh",
+    "portable_chamber_root": "${GROK16_ROOT}/examples/<name>"
+  },
+  "platform_release": {
+    "manifest": "data/grok16-platform-release.json",
+    "script": "scripts/grok16-release.sh",
+    "targets": 17,
+    "includes_riscv": true
+  },
+  "notes": "Grok16 4.2.0 — portable .launch, self-monitor bench v5, 17-platform release matrix incl. RISC-V",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -75,6 +107,13 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "4.2.0: Line safety plate — narrow_band_width 16, pipe_policy adjacent_narrow_only on power sort plate",
+    "4.2.0: CPU library — 271 dies, Queen World UI, combinatorics + chip battery merge",
+    "4.2.0: FFNT Amouranth Bold SDF + secured clipboard font editor",
+    "4.2.0: Clipboard ghost wire — historic ring, clipboard_master, no visible manager",
+    "4.2.0: Self-monitor — g16_self_monitor.py heartbeat/stall drop-out on bench + tests",
+    "4.2.0: Speed bench v5 — metrics block, runner overhead, monitor stamps in JSON report",
+    "4.2.0: grok16-test-gate.sh — monitored per-step runs, smoke + full modes",
     "4.0.0: MCP server — grok16_version, toolchain, rtx_gate, speed_bench, power_sort for Cursor/agents",
     "4.0.0: Power sort plate — Ironclad meld, cool_sort thermal layers, sections pass to Queen/compat/drive",
     "4.0.0: Combinatorics bridge runs_cool — thermal gate + power sort sections gate exec posture",

@@ -14,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "lib"))
+from g16_self_monitor import MonitoredResult, aggregate_monitor, run_monitored  # noqa: E402
 from field_exec_bsp import (  # noqa: E402
     bsp_enabled,
     bsp_store,
@@ -72,6 +73,7 @@ def _kernel_spec() -> dict:
 
 
 KERNEL_SPEC = _kernel_spec()
+_MONITOR_LOG: list[MonitoredResult] = []
 
 
 def _utc() -> str:
@@ -172,41 +174,80 @@ def _bench_env(extra: dict | None = None) -> dict[str, str]:
     return env
 
 
-def _run(cmd: list[str], *, cwd: Path | None = None, timeout: int = 600, env_extra: dict | None = None) -> tuple[int, str, str, float]:
-    t0 = time.perf_counter()
-    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=str(cwd or ROOT), env=_bench_env(env_extra), timeout=timeout)
-    ms = round((time.perf_counter() - t0) * 1000, 2)
-    return proc.returncode, proc.stdout, proc.stderr, ms
+def _monitor_snapshot(res: MonitoredResult) -> dict:
+    return {
+        "wall_ms": res.wall_ms,
+        "timeout_hit": res.timeout_hit,
+        "dropped": res.dropped,
+        "drop_reason": res.drop_reason,
+        "heartbeat_ticks": res.heartbeat_ticks,
+        "last_activity_ms": res.last_activity_ms,
+        "stdout_bytes": res.stdout_bytes,
+        "stderr_bytes": res.stderr_bytes,
+        "rc": res.rc,
+    }
 
 
-def _run_json_script(path: Path, cmd: str) -> tuple[dict, float]:
+def _run(
+    cmd: list[str],
+    *,
+    cwd: Path | None = None,
+    timeout: int = 600,
+    env_extra: dict | None = None,
+    label: str = "",
+) -> tuple[int, str, str, float, dict]:
+    stall = min(int(os.environ.get("G16_MONITOR_STALL_SEC", "90")), max(30, timeout // 2))
+    res = run_monitored(
+        cmd,
+        label=label or " ".join(cmd[:3]),
+        timeout_sec=timeout,
+        stall_sec=stall,
+        heartbeat_sec=int(os.environ.get("G16_MONITOR_HEARTBEAT_SEC", "10")),
+        cwd=str(cwd or ROOT),
+        env=_bench_env(env_extra),
+    )
+    _MONITOR_LOG.append(res)
+    snap = _monitor_snapshot(res)
+    return res.rc, res.stdout, res.stderr, res.wall_ms, snap
+
+
+def _run_json_script(path: Path, cmd: str) -> tuple[dict, float, dict]:
     if not path.is_file():
-        return {}, 0.0
-    rc, out, err, ms = _run([sys.executable, str(path), cmd], timeout=120)
+        return {}, 0.0, {}
+    rc, out, err, ms, mon = _run([sys.executable, str(path), cmd], timeout=120, label=f"{path.name}:{cmd}")
     if rc != 0:
-        return {"error": (err or out or "failed")[:500], "rc": rc}, ms
+        return {"error": (err or out or "failed")[:500], "rc": rc}, ms, mon
     try:
-        return json.loads(out), ms
+        return json.loads(out), ms, mon
     except json.JSONDecodeError:
-        return {"error": "invalid_json", "raw": out[:500]}, ms
+        return {"error": "invalid_json", "raw": out[:500]}, ms, mon
 
 
 def _plate_meld_context() -> dict:
     """Cycle plate meld (fast fuse) + compiler sense; skip unfound scripts without error."""
     meld_doc: dict = {}
     meld_ms = 0.0
+    meld_mon: dict = {}
     if PLATE_MELD_PY.is_file():
         meld_cmd = os.environ.get("G16_PLATE_MELD_CMD", "fuse")
         meld_timeout = int(os.environ.get("G16_PLATE_MELD_TIMEOUT", "300"))
-        try:
-            rc, out, err, meld_ms = _run([sys.executable, str(PLATE_MELD_PY), meld_cmd], timeout=meld_timeout)
-            meld_doc = json.loads(out) if rc == 0 and out.strip() else {"skipped": (err or out or "meld_failed")[:300]}
-        except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError) as exc:
-            meld_doc = {"skipped": str(exc)[:300]}
-            meld_ms = float(meld_timeout * 1000)
+        rc, out, err, meld_ms, meld_mon = _run(
+            [sys.executable, str(PLATE_MELD_PY), meld_cmd],
+            timeout=meld_timeout,
+            label="plate-meld",
+        )
+        if meld_mon.get("dropped"):
+            meld_doc = {"skipped": meld_mon.get("drop_reason", "dropped"), "monitor": meld_mon}
+        elif rc == 0 and out.strip():
+            try:
+                meld_doc = json.loads(out)
+            except json.JSONDecodeError:
+                meld_doc = {"skipped": "invalid_json", "monitor": meld_mon}
+        else:
+            meld_doc = {"skipped": (err or out or "meld_failed")[:300], "monitor": meld_mon}
     else:
         meld_doc = {"skipped": "plate_meld_unfound"}
-    sense_doc, sense_ms = _run_json_script(COMPILER_SENSE_PY, "cycle") if COMPILER_SENSE_PY.is_file() else ({}, 0.0)
+    sense_doc, sense_ms, sense_mon = _run_json_script(COMPILER_SENSE_PY, "cycle") if COMPILER_SENSE_PY.is_file() else ({}, 0.0, {})
     opt = sense_doc.get("optimize") or sense_doc.get("effective_profile") and sense_doc or {}
     if isinstance(opt, dict) and "profile" not in opt:
         opt = sense_doc.get("optimize") or {}
@@ -214,6 +255,8 @@ def _plate_meld_context() -> dict:
     return {
         "meld_ms": meld_ms,
         "sense_ms": sense_ms,
+        "meld_monitor": meld_mon,
+        "sense_monitor": sense_mon,
         "meld_generation": int(meld_doc.get("generation") or 0),
         "meld_chain_hash": (meld_doc.get("chain_hash") or "")[:16],
         "sense_profile": profile,
@@ -235,14 +278,14 @@ def _compile_g16_binary(
     lang: str,
     link_math: bool = False,
     case_id: str = "",
-) -> tuple[bool, float, str]:
+) -> tuple[bool, float, str, dict]:
     case_id = case_id or out.name
     sources = [src]
     hit, copy_ms, note = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=profile)
     if hit:
-        return True, copy_ms, note
+        return True, copy_ms, note, {"bsp_hit": True}
     if not G16.is_file():
-        return False, 0.0, "g16 unfound"
+        return False, 0.0, "g16 unfound", {}
     kind = "c" if lang == "c" else "cxx"
     default = ["-std=gnu17", "-O3", "-march=native"] if lang == "c" else ["-std=gnu++26", "-O3", "-march=native"]
     flags = [
@@ -257,14 +300,14 @@ def _compile_g16_binary(
     cmd = [tool, *flags, f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(src)]
     if link_math:
         cmd.append("-lm")
-    rc, _, _, ms = _run(cmd)
+    rc, _, _, ms, mon = _run(cmd, label=f"compile:{case_id}")
     if rc == 0 and out.is_file():
         out.chmod(out.stat().st_mode | 0o111)
         fp = fingerprint(case_id=case_id, profile=profile, sources=sources)
         bsp_store(OUTDIR, case_id=case_id, binary=out, fp=fp)
         note = "rocket g16 compile" if rocket_enabled() else "g16 compile"
-        return True, ms, note
-    return False, ms, "compile failed"
+        return True, ms, note, mon
+    return False, ms, "compile failed", mon
 
 
 def _compile_host_binary(
@@ -277,22 +320,22 @@ def _compile_host_binary(
     case_id: str,
     lang: str,
     link_math: bool = False,
-) -> tuple[bool, float, str]:
+) -> tuple[bool, float, str, dict]:
     sources = [src]
     hit, copy_ms, note = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=tag)
     if hit:
-        return True, copy_ms, note
+        return True, copy_ms, note, {"bsp_hit": True}
     cmd = [rocket_tool(tool), *flags, *rocket_compile_flags(lang), f'-DTOOLCHAIN_TAG="{tag}"', "-o", str(out), str(src)]
     if link_math:
         cmd.append("-lm")
-    rc, _, _, ms = _run(cmd)
+    rc, _, _, ms, mon = _run(cmd, label=f"compile:{case_id}")
     if rc == 0 and out.is_file():
         out.chmod(out.stat().st_mode | 0o111)
         fp = fingerprint(case_id=case_id, profile=tag, sources=sources)
         bsp_store(OUTDIR, case_id=case_id, binary=out, fp=fp)
         note = "rocket host compile" if rocket_enabled() else "host compile"
-        return True, ms, note
-    return False, ms, "compile failed"
+        return True, ms, note, mon
+    return False, ms, "compile failed", mon
 
 
 def _cmake_build(
@@ -302,28 +345,32 @@ def _cmake_build(
     configure: list[str],
     sources: list[Path],
     profile: str,
-) -> tuple[Path | None, float, float, str]:
+) -> tuple[Path | None, float, float, str, dict]:
     hit, copy_ms, note = bsp_try_reuse(OUTDIR, case_id=case_id, sources=sources, profile=profile)
     if hit:
-        return hit, 0.0, copy_ms, note
+        return hit, 0.0, copy_ms, note, {"bsp_hit": True}
     if force_compile() and build_dir.is_dir():
         shutil.rmtree(build_dir, ignore_errors=True)
     build_dir.mkdir(parents=True, exist_ok=True)
     cfg = ["cmake", *ninja_generator_args(), "-S", str(CMAKE_SRC), "-B", str(build_dir), *configure]
-    rc, _, _, cfg_ms = _run(cfg)
+    rc, _, _, cfg_ms, cfg_mon = _run(cfg, label=f"cmake-config:{case_id}")
     bld_ms = 0.0
+    bld_mon: dict = {}
     if rc == 0:
-        rc, _, _, bld_ms = _run(["cmake", "--build", str(build_dir), "-j", str(os.cpu_count() or 4)])
+        rc, _, _, bld_ms, bld_mon = _run(
+            ["cmake", "--build", str(build_dir), "-j", str(os.cpu_count() or 4)],
+            label=f"cmake-build:{case_id}",
+        )
     binary = build_dir / "grok16_speed_demo"
     if rc != 0 or not binary.is_file():
-        return None, cfg_ms, bld_ms, "cmake skip"
+        return None, cfg_ms, bld_ms, "cmake skip", {**cfg_mon, "build": bld_mon}
     staged = OUTDIR / case_id
     shutil.copy2(binary, staged)
     staged.chmod(staged.stat().st_mode | 0o111)
     fp = fingerprint(case_id=case_id, profile=profile, sources=sources)
     bsp_store(OUTDIR, case_id=case_id, binary=staged, fp=fp)
     note = "rocket cmake" if rocket_enabled() else "cmake"
-    return staged, cfg_ms, bld_ms, note
+    return staged, cfg_ms, bld_ms, note, {**cfg_mon, "build": bld_mon}
 
 
 def _load_bench_all_runs() -> list[dict]:
@@ -339,12 +386,16 @@ def _load_bench_all_runs() -> list[dict]:
 def _profile_flags(profile: str, kind: str) -> list[str]:
     if not PROFILE_PY.is_file():
         return []
-    rc, out, _, _ = _run([sys.executable, str(PROFILE_PY), profile, kind], timeout=30)
+    rc, out, _, _, _ = _run([sys.executable, str(PROFILE_PY), profile, kind], timeout=30, label=f"profile:{profile}")
     return out.strip().split() if rc == 0 and out.strip() else []
 
 
 def _g16_extra() -> list[str]:
-    rc, out, _, _ = _run(["bash", "-lc", f'source "{ROOT}/scripts/grok16-config.sh" && grok16_driver_extra_flags'], timeout=15)
+    rc, out, _, _, _ = _run(
+        ["bash", "-lc", f'source "{ROOT}/scripts/grok16-config.sh" && grok16_driver_extra_flags'],
+        timeout=15,
+        label="g16-extra-flags",
+    )
     return out.strip().split() if rc == 0 and out.strip() else []
 
 
@@ -399,20 +450,64 @@ def _exec_runner(row: dict) -> dict:
         cmd = list(row["cmd"])
     else:
         cmd = [str(row["path"])]
-    t0 = time.perf_counter()
-    proc = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=TARGET_SEC + 30, cwd=str(ROOT))
-    wall_ms = round((time.perf_counter() - t0) * 1000, 2)
-    parsed = _parse_ops(proc.stdout) or {}
+    res = run_monitored(
+        cmd,
+        label=f"exec:{row.get('id', 'runner')}",
+        timeout_sec=TARGET_SEC + 30,
+        stall_sec=max(30, TARGET_SEC + 10),
+        heartbeat_sec=int(os.environ.get("G16_MONITOR_HEARTBEAT_SEC", "5")),
+        cwd=str(ROOT),
+        env=env,
+    )
+    _MONITOR_LOG.append(res)
+    parsed = _parse_ops(res.stdout) or {}
+    field_ms = parsed.get("wall_ms") or res.wall_ms
+    ops = parsed.get("ops_per_sec") or 0
     return {
-        "rc": proc.returncode,
-        "runner_wall_ms": wall_ms,
-        "field_execution_ms": parsed.get("wall_ms") or wall_ms,
-        "ops_per_sec": parsed.get("ops_per_sec") or 0,
+        "rc": res.rc,
+        "runner_wall_ms": res.wall_ms,
+        "field_execution_ms": field_ms,
+        "runner_overhead_ms": round(max(0.0, res.wall_ms - field_ms), 2),
+        "ops_per_sec": ops,
         "total_ops": parsed.get("total_ops") or 0,
+        "ops_per_sec_per_cpu": round(ops / max(1, os.cpu_count() or 1), 2),
+        "exec_ok": res.ok() and res.rc == 0 and ops > 0,
+        "monitor": _monitor_snapshot(res),
+    }
+
+
+def _bench_metrics(rows: list[dict], *, bench_wall_ms: float) -> dict:
+    compile_rows = [r for r in rows if (r.get("compile_ms") or 0) > 0]
+    exec_rows = [r for r in rows if r.get("ops_per_sec")]
+    compile_ms = [r["compile_ms"] for r in compile_rows]
+    exec_ms = [r.get("field_execution_ms") or r.get("runner_wall_ms") or 0 for r in rows if r.get("runner_wall_ms")]
+    ops_vals = [r.get("ops_per_sec") or 0 for r in exec_rows]
+    dropped = sum(1 for r in rows if (r.get("monitor") or {}).get("dropped") or (r.get("compile_monitor") or {}).get("dropped"))
+    timeouts = sum(1 for r in rows if (r.get("monitor") or {}).get("timeout_hit") or (r.get("compile_monitor") or {}).get("timeout_hit"))
+    exec_ok = sum(1 for r in rows if r.get("exec_ok"))
+    return {
+        "bench_wall_ms": round(bench_wall_ms, 2),
+        "cpu_count": os.cpu_count() or 1,
+        "compile_total_ms": round(sum(compile_ms), 2) if compile_ms else 0,
+        "exec_total_ms": round(sum(exec_ms), 2) if exec_ms else 0,
+        "mean_compile_ms": round(sum(compile_ms) / len(compile_ms), 2) if compile_ms else 0,
+        "median_compile_ms": round(sorted(compile_ms)[len(compile_ms) // 2], 2) if compile_ms else 0,
+        "mean_ops_per_sec": round(sum(ops_vals) / len(ops_vals), 2) if ops_vals else 0,
+        "max_ops_per_sec": round(max(ops_vals), 2) if ops_vals else 0,
+        "rows_total": len(rows),
+        "rows_exec_ok": exec_ok,
+        "rows_dropped": dropped,
+        "rows_timeout": timeouts,
+        "runner_overhead_mean_ms": round(
+            sum(r.get("runner_overhead_ms") or 0 for r in rows) / max(1, len(rows)), 2
+        ),
     }
 
 
 def bench_all() -> dict:
+    global _MONITOR_LOG
+    _MONITOR_LOG = []
+    bench_t0 = time.perf_counter()
     OUTDIR.mkdir(parents=True, exist_ok=True)
     bench_dir = OUTDIR / "full-bench-build"
     bench_dir.mkdir(parents=True, exist_ok=True)
@@ -436,10 +531,11 @@ def bench_all() -> dict:
         compile_ms: float,
         compile_note: str,
         profile: str = "",
+        compile_monitor: dict | None = None,
         extra: dict | None = None,
     ) -> None:
         nonlocal bsp_hits
-        if "bsp:" in compile_note:
+        if "bsp:" in compile_note or (compile_monitor or {}).get("bsp_hit"):
             bsp_hits += 1
         row = {
             "id": case_id,
@@ -455,13 +551,15 @@ def bench_all() -> dict:
         }
         if profile:
             row["profile"] = profile
+        if compile_monitor:
+            row["compile_monitor"] = compile_monitor
         if extra:
             row.update(extra)
         add(row)
 
     # C host
     out_c = OUTDIR / "c_host_o2"
-    ok, ms, note = _compile_host_binary(
+    ok, ms, note, cmon = _compile_host_binary(
         out_c,
         tool=host_gcc,
         flags=["-std=gnu17", "-O2", "-march=native", "-fPIE"],
@@ -472,23 +570,23 @@ def bench_all() -> dict:
         link_math=True,
     )
     if ok:
-        _bin_row(case_id="c_host_o2", label="C — host gcc -O2", lang="c", group="host", path=out_c, compile_ms=ms, compile_note=note)
+        _bin_row(case_id="c_host_o2", label="C — host gcc -O2", lang="c", group="host", path=out_c, compile_ms=ms, compile_note=note, compile_monitor=cmon)
 
     # C g16 belt_2_0
     out_cg2 = OUTDIR / "c_g16_belt_2"
-    ok, ms, note = _compile_g16_binary(out_cg2, src=SRC_C, profile="belt_2_0", tag="c_g16_belt_2", lang="c", link_math=True, case_id="c_g16_belt_2")
+    ok, ms, note, cmon = _compile_g16_binary(out_cg2, src=SRC_C, profile="belt_2_0", tag="c_g16_belt_2", lang="c", link_math=True, case_id="c_g16_belt_2")
     if ok:
-        _bin_row(case_id="c_g16_belt_2", label="C — g16 belt_2_0", lang="c", group="g16", path=out_cg2, compile_ms=ms, compile_note=note, profile="belt_2_0")
+        _bin_row(case_id="c_g16_belt_2", label="C — g16 belt_2_0", lang="c", group="g16", path=out_cg2, compile_ms=ms, compile_note=note, profile="belt_2_0", compile_monitor=cmon)
 
     # C g16 belt_1_0
     out_cg1 = OUTDIR / "c_g16_belt_1"
-    ok, ms, note = _compile_g16_binary(out_cg1, src=SRC_C, profile="belt_1_0", tag="c_g16_belt_1", lang="c", link_math=True, case_id="c_g16_belt_1")
+    ok, ms, note, cmon = _compile_g16_binary(out_cg1, src=SRC_C, profile="belt_1_0", tag="c_g16_belt_1", lang="c", link_math=True, case_id="c_g16_belt_1")
     if ok:
-        _bin_row(case_id="c_g16_belt_1", label="C — g16 belt_1_0", lang="c", group="g16", path=out_cg1, compile_ms=ms, compile_note=note, profile="belt_1_0")
+        _bin_row(case_id="c_g16_belt_1", label="C — g16 belt_1_0", lang="c", group="g16", path=out_cg1, compile_ms=ms, compile_note=note, profile="belt_1_0", compile_monitor=cmon)
 
     # C++ host
     out_cxx = OUTDIR / "cxx_host_o2"
-    ok, ms, note = _compile_host_binary(
+    ok, ms, note, cmon = _compile_host_binary(
         out_cxx,
         tool=host_gxx,
         flags=["-std=gnu++23", "-O2", "-march=native", "-fPIE"],
@@ -498,24 +596,24 @@ def bench_all() -> dict:
         lang="cxx",
     )
     if ok:
-        _bin_row(case_id="cxx_host_o2", label="C++ — host g++ -O2", lang="cxx", group="host", path=out_cxx, compile_ms=ms, compile_note=note)
+        _bin_row(case_id="cxx_host_o2", label="C++ — host g++ -O2", lang="cxx", group="host", path=out_cxx, compile_ms=ms, compile_note=note, compile_monitor=cmon)
 
     # C++ g16 belt_2_0
     out_cxxg2 = OUTDIR / "cxx_g16_belt_2"
-    ok, ms, note = _compile_g16_binary(out_cxxg2, src=SRC_CXX, profile="belt_2_0", tag="cxx_g16_belt_2", lang="cxx", case_id="cxx_g16_belt_2")
+    ok, ms, note, cmon = _compile_g16_binary(out_cxxg2, src=SRC_CXX, profile="belt_2_0", tag="cxx_g16_belt_2", lang="cxx", case_id="cxx_g16_belt_2")
     if ok:
-        _bin_row(case_id="cxx_g16_belt_2", label="C++ — g16 belt_2_0", lang="cxx", group="g16", path=out_cxxg2, compile_ms=ms, compile_note=note, profile="belt_2_0")
+        _bin_row(case_id="cxx_g16_belt_2", label="C++ — g16 belt_2_0", lang="cxx", group="g16", path=out_cxxg2, compile_ms=ms, compile_note=note, profile="belt_2_0", compile_monitor=cmon)
 
     # C++ g16 belt_1_0
     out_cxxg1 = OUTDIR / "cxx_g16_belt_1"
-    ok, ms, note = _compile_g16_binary(out_cxxg1, src=SRC_CXX, profile="belt_1_0", tag="cxx_g16_belt_1", lang="cxx", case_id="cxx_g16_belt_1")
+    ok, ms, note, cmon = _compile_g16_binary(out_cxxg1, src=SRC_CXX, profile="belt_1_0", tag="cxx_g16_belt_1", lang="cxx", case_id="cxx_g16_belt_1")
     if ok:
-        _bin_row(case_id="cxx_g16_belt_1", label="C++ — g16 belt_1_0", lang="cxx", group="g16", path=out_cxxg1, compile_ms=ms, compile_note=note, profile="belt_1_0")
+        _bin_row(case_id="cxx_g16_belt_1", label="C++ — g16 belt_1_0", lang="cxx", group="g16", path=out_cxxg1, compile_ms=ms, compile_note=note, profile="belt_1_0", compile_monitor=cmon)
 
     # C++ g16 compiler-sense profile (post plate meld)
     sense_prof = plate_ctx.get("sense_profile") or "field_opt"
     out_cxx_sense = OUTDIR / "cxx_g16_sense"
-    ok, ms, note = _compile_g16_binary(
+    ok, ms, note, cmon = _compile_g16_binary(
         out_cxx_sense, src=SRC_CXX, profile=sense_prof, tag=f"cxx_g16_{sense_prof}", lang="cxx", case_id="cxx_g16_sense"
     )
     if ok:
@@ -528,12 +626,13 @@ def bench_all() -> dict:
             compile_ms=ms,
             compile_note=f"{note} · sense ({plate_ctx.get('sense_reason')})",
             profile=sense_prof,
+            compile_monitor=cmon,
             extra={"plate_meld": True, "meld_generation": plate_ctx.get("meld_generation")},
         )
 
     # CMake host
     cmake_sources = [SRC_CXX, CMAKE_SRC / "CMakeLists.txt"]
-    staged, cfg_ms, bld_ms, note = _cmake_build(
+    staged, cfg_ms, bld_ms, note, cmon = _cmake_build(
         case_id="cmake_host_o2",
         build_dir=bench_dir / "cmake-host",
         configure=[f"-DCMAKE_CXX_COMPILER={host_gxx}", "-DGROK16_HOST_PLANE=ON"],
@@ -549,12 +648,13 @@ def bench_all() -> dict:
             path=staged,
             compile_ms=round(cfg_ms + bld_ms, 2),
             compile_note=note,
+            compile_monitor=cmon,
             extra={"compile_configure_ms": cfg_ms, "compile_build_ms": bld_ms},
         )
 
     # CMake g16
     if TOOLCHAIN_CMAKE.is_file() and G16.is_file():
-        staged, cfg_ms, bld_ms, note = _cmake_build(
+        staged, cfg_ms, bld_ms, note, cmon = _cmake_build(
             case_id="cmake_belt_2",
             build_dir=bench_dir / "cmake-g16",
             configure=[f"-DCMAKE_TOOLCHAIN_FILE={TOOLCHAIN_CMAKE}", "-DGROK16_PROFILE=belt_2_0"],
@@ -571,6 +671,7 @@ def bench_all() -> dict:
                 compile_ms=round(cfg_ms + bld_ms, 2),
                 compile_note=note,
                 profile="belt_2_0",
+                compile_monitor=cmon,
                 extra={"compile_configure_ms": cfg_ms, "compile_build_ms": bld_ms},
             )
 
@@ -665,8 +766,11 @@ def bench_all() -> dict:
     }
 
     versions = _bench_versions()
+    bench_wall_ms = round((time.perf_counter() - bench_t0) * 1000, 2)
+    self_monitor = aggregate_monitor(_MONITOR_LOG)
+    metrics = _bench_metrics(rows, bench_wall_ms=bench_wall_ms)
     doc = {
-        "schema": "grok16-field-exec-full-bench/v4",
+        "schema": "grok16-field-exec-full-bench/v5",
         "bench_at": _utc(),
         "target_sec": TARGET_SEC,
         "kernel": "speed_demo — FieldX86 loop (256×16 die, 240 frames/epoch, 512 prog_ops/frame)",
@@ -675,6 +779,8 @@ def bench_all() -> dict:
         "host": os.uname().nodename,
         "host_uname": " ".join(os.uname()),
         "versions": versions,
+        "self_monitor": self_monitor,
+        "metrics": metrics,
         "plate_meld": plate_meld_analysis,
         "bsp": {
             "enabled": bsp_enabled(),
@@ -731,11 +837,12 @@ def _write_report_md(doc: dict) -> None:
         f"**Report version:** {ver.get('report_version', '4.0.0')} · **Distro:** {ver.get('distro_version', '4.0.0')} ({ver.get('distro_tag', 'v4.0.0')})  ",
         f"**Compiler:** {ver.get('g16_pkgversion', 'Grok16-16.2.0')} · dumpversion `{ver.get('g16_dumpversion', '?')}`  ",
         f"**Bench suite:** {ver.get('bench_suite', 'speed_demo')} @ {ver.get('bench_suite_version', '1.1.0')}  ",
-        f"**Schema:** {doc.get('schema', 'grok16-field-exec-full-bench/v4')}  ",
+        f"**Schema:** {doc.get('schema', 'grok16-field-exec-full-bench/v5')}  ",
         f"**Bench date:** {doc['bench_at']}  ",
         f"**Runners tested:** {doc.get('runners_tested', len(rows))}  ",
         f"**Target execution window:** {doc['target_sec']}s per runner  ",
         f"**Host:** {doc.get('host_uname', doc['host'])}",
+        f"**Bench wall:** {(doc.get('metrics') or {}).get('bench_wall_ms', '—')} ms · **CPU cores:** {(doc.get('metrics') or {}).get('cpu_count', '—')}",
         "",
         "## Methodology (professional)",
         "",
@@ -764,6 +871,14 @@ def _write_report_md(doc: dict) -> None:
         "Separates **wave-convert / compile** (one-time, chamber cache) from **bin execution** (timed field run).",
         "",
     ]
+    m = doc.get("metrics") or {}
+    sm = doc.get("self_monitor") or {}
+    lines.extend([
+        f"- **Bench wall:** {m.get('bench_wall_ms', '—')} ms · compile total {m.get('compile_total_ms', '—')} ms · exec total {m.get('exec_total_ms', '—')} ms",
+        f"- **Mean ops/s:** {field_display(m.get('mean_ops_per_sec') or 0)} · max {field_display(m.get('max_ops_per_sec') or 0)}",
+        f"- **Self-monitor:** {sm.get('runs', 0)} runs · {sm.get('heartbeat_ticks', 0)} heartbeats · dropped {sm.get('dropped', 0)} · timeouts {sm.get('timeouts', 0)}",
+        "",
+    ])
     if w.get("best_execution"):
         be = w["best_execution"]
         lines.append(f"- **Fastest execution:** {be['label']} — **{field_display(be['ops_per_sec'])} ops/s**")
@@ -785,20 +900,29 @@ def _write_report_md(doc: dict) -> None:
         "",
         "## Full results (all executions)",
         "",
-        "| Runner | Profile | Compile (ms) | Exec wall (ms) | ops/s | Bytes | Pass |",
-        "|--------|---------|-------------:|---------------:|------:|------:|------|",
+        "| Runner | Profile | Compile (ms) | Exec wall (ms) | Overhead (ms) | ops/s | Bytes | Pass | Mon |",
+        "|--------|---------|-------------:|---------------:|--------------:|------:|------:|------|-----|",
     ])
     for r in sorted(rows, key=lambda x: -(x.get("ops_per_sec") or 0)):
         compile_ms = r.get("compile_ms", 0)
         compile_s = "—" if r.get("kind") == "script" and not compile_ms else (f"{compile_ms:,.0f}" if compile_ms else "0")
         wall = r.get("field_execution_ms") or r.get("runner_wall_ms") or 0
+        overhead = r.get("runner_overhead_ms") or 0
         ops = field_display(r.get("ops_per_sec") or 0)
         bbytes = r.get("binary_bytes") or "—"
         if isinstance(bbytes, int):
             bbytes = f"{bbytes:,}"
         prof = r.get("profile") or "—"
         epass = r.get("exec_pass") or "cold"
-        lines.append(f"| {r['label']} | {prof} | {compile_s} | {wall:,.0f} | {ops} | {bbytes} | {epass} |")
+        mon = r.get("monitor") or {}
+        mon_s = "—"
+        if mon.get("dropped"):
+            mon_s = f"DROP:{mon.get('drop_reason', '?')}"
+        elif mon.get("timeout_hit"):
+            mon_s = "TIMEOUT"
+        elif mon.get("heartbeat_ticks"):
+            mon_s = f"hb:{mon.get('heartbeat_ticks')}"
+        lines.append(f"| {r['label']} | {prof} | {compile_s} | {wall:,.0f} | {overhead:,.0f} | {ops} | {bbytes} | {epass} | {mon_s} |")
     bench_profiles = doc.get("bench_all_profiles") or []
     if bench_profiles:
         lines.extend(["", "## bench-all profile suite (field-nexus-bench)", "", "| Profile | compile_ms | run_ms | binary_bytes | kernel |", "|---------|------------|--------|--------------|--------|"])

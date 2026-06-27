@@ -1,7 +1,7 @@
 {
   "product": "G16-field-linker",
   "schema": "g16-linker-toolchain/v1",
-  "updated": "2026-06-27T06:57:09.596657+00:00",
+  "updated": "2026-06-27T09:43:36.939130+00:00",
   "prefix": "/home/default/Desktop/SG/Grok16",
   "driver": "/home/default/Desktop/SG/Grok16/bin/g16-ld",
   "driver_mode": "field_pass+bfd",
@@ -9,8 +9,8 @@
   "orchestrator": "/home/default/Desktop/SG/Grok16/forge/g16-linker.py",
   "doctrine": "/home/default/Desktop/SG/Grok16/data/g16-linker-doctrine.json",
   "ready": true,
-  "targets_total": 16,
-  "targets_active": 16,
+  "targets_total": 17,
+  "targets_active": 17,
   "os_families": [
     "android",
     "darwin",

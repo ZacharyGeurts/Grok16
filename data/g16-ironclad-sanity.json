@@ -23,7 +23,7 @@
       "integral": "one_pass_simplify",
       "heat_avoided": 0,
       "layers_out": 0,
-      "updated": "2026-06-27T06:53:03Z"
+      "updated": "2026-06-27T09:42:25Z"
     },
     "spatial_existence": {
       "id": "g16_spatial_existence",
@@ -48,7 +48,7 @@
         "lesson": "That one \u2014 there, uncorroborated"
       },
       "existence_correlation": 0.0,
-      "updated": "2026-06-27T06:57:09Z"
+      "updated": "2026-06-27T09:43:36Z"
     },
     "g1id": {
       "id": "g1id",
@@ -62,8 +62,8 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782543429579546252,
-        "derived_utc": "2026-06-27T06:57:09Z",
+        "linear_ns": 1782553416922722812,
+        "derived_utc": "2026-06-27T09:43:36Z",
         "sealed": true,
         "synced": true,
         "never_desync": true,
@@ -73,9 +73,9 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-06-27T06:57:09Z"
+      "updated": "2026-06-27T09:43:36Z"
     },
-    "updated": "2026-06-27T06:57:09Z"
+    "updated": "2026-06-27T09:43:36Z"
   },
   "field_sanity": {
     "id": "g16_field_sanity",
@@ -123,7 +123,17 @@
       "lesson": "That one \u2014 there, uncorroborated"
     },
     "existence_correlation": 0.0,
-    "updated": "2026-06-27T06:57:09Z"
+    "updated": "2026-06-27T09:43:36Z"
+  },
+  "iron_plate_spot": {
+    "id": "iron_plate_spot",
+    "absorbed": true,
+    "ok": true,
+    "spot_count": 9,
+    "coolest_spot": "chain:browser_display",
+    "low_power": true,
+    "meld_citation": "ironclad:meld:2",
+    "citation": "ironclad:field_sanity:2"
   },
   "checks": {
     "ironclad_meld_manifest": true,
@@ -143,10 +153,13 @@
     "spatial_existence_doctrine": true,
     "spatial_existence_bridge": true,
     "spatial_existence_ok": true,
-    "spatial_existence_pass": true
+    "spatial_existence_pass": true,
+    "iron_plate_spot_detector": true,
+    "iron_plate_spot_ok": true,
+    "iron_plate_spot_count": 9
   },
-  "score": 18,
-  "max": 18,
+  "score": 21,
+  "max": 21,
   "ok": true,
   "satisfied": true
 }

@@ -1,7 +1,7 @@
 {
   "schema": "queen-launch/v1",
   "title": "ai-matrix-bench",
-  "chamber_root": "/home/default/Desktop/SG/Grok16/examples/ai-matrix-bench",
+  "chamber_root": "${GROK16_ROOT}/examples/ai-matrix-bench",
   "entry": "CMakeLists.txt",
   "runtime": "cmake",
   "cwd": ".",

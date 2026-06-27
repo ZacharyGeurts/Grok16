@@ -32,6 +32,14 @@
     "module": "lib/field_truth_blocks.py",
     "statement": "Bigger verified blocks carved from iron twins — more blocks unlock free plate melding"
   },
+  "spot_detector": {
+    "schema": "iron-plate-spot/v1",
+    "nexus_module": "NewLatest/lib/iron-plate-spot-detector.py",
+    "g16_module": "lib/g16-iron-plate-spot-detector.py",
+    "doctrine": "NewLatest/data/iron-plate-spot-doctrine.json",
+    "meld_citation": "ironclad:meld:2",
+    "policy": "cache-first thermal gate cool_sort — slower OK when joules drop"
+  },
   "registered_twins": [
     {
       "stem": "speed_demo",

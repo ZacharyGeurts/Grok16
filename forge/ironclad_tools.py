@@ -46,9 +46,11 @@ def ironclad_sanity_status(ctx: ForgeContext) -> dict[str, Any]:
     ic_mod = _load_module(forge / "g16-ironclad.py", "g16_ironclad_tools")
     fs_mod = _load_module(forge / "g16-field-sanity.py", "g16_field_sanity_tools")
     se_mod = _load_module(forge / "g16-spatial-existence.py", "g16_spatial_existence_tools")
+    spot_mod = _load_module(root / "lib" / "g16-iron-plate-spot-detector.py", "g16_spot_tools")
     iron = _run_slice(ic_mod, "meld_slice")
     sanity = _run_slice(fs_mod, "meld_slice")
     spatial = _run_slice(se_mod, "meld_slice")
+    plate_spot = _run_slice(spot_mod, "meld_slice")
     doctrine = root / "data" / "g16-field-sanity-doctrine.json"
     meld = root / "data" / "g16-ironclad-meld.json"
     nexus_ic = install / "lib" / "ironclad-plate.py"
@@ -72,6 +74,9 @@ def ironclad_sanity_status(ctx: ForgeContext) -> dict[str, Any]:
         "spatial_existence_bridge": (forge / "g16-spatial-existence.py").is_file(),
         "spatial_existence_ok": bool(spatial.get("absorbed")),
         "spatial_existence_pass": bool(spatial.get("pass_ok")),
+        "iron_plate_spot_detector": (root / "lib" / "g16-iron-plate-spot-detector.py").is_file(),
+        "iron_plate_spot_ok": bool(plate_spot.get("ok")),
+        "iron_plate_spot_count": plate_spot.get("spot_count"),
     }
     score = sum(1 for v in checks.values() if v)
     return {
@@ -84,6 +89,7 @@ def ironclad_sanity_status(ctx: ForgeContext) -> dict[str, Any]:
         "ironclad": iron,
         "field_sanity": sanity,
         "spatial_existence": spatial,
+        "iron_plate_spot": plate_spot,
         "checks": checks,
         "score": score,
         "max": len(checks),

@@ -79,6 +79,24 @@
       ]
     },
     {
+      "id": "iron_plate_spot",
+      "title": "Iron Plate Spot — cool meld points without heat",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Plate spot detector finds meld attachment points from cache — thermal gate first, never heavy import under heat."
+        },
+        {
+          "v": 2,
+          "text": "cool_sort ranks spots by thermo_proxy — coolest first; low_power default trades speed for joules."
+        },
+        {
+          "v": 3,
+          "text": "g16-iron-plate-spot-detector.py bridges NewLatest iron-plate-spot-detector into forge ironclad sanity gates."
+        }
+      ]
+    },
+    {
       "id": "spatial_existence",
       "title": "Spatial Existence — This One / That One on G16",
       "verses": [

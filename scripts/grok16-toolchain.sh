@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|bench|bench-compare|bench-triad|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|test-gate|test-gate-full|bench|bench-compare|bench-triad|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -882,6 +882,19 @@ case "${1:-}" in
   verify) cmd_verify ;;
   verify-python) cmd_verify_python ;;
   discern) cmd_discern ;;
+  test-gate|test-gate-smoke)
+    exec "$GROK16_SCRIPTS/grok16-test-gate.sh" smoke
+    ;;
+  test-gate-full)
+    exec "$GROK16_SCRIPTS/grok16-test-gate.sh" full
+    ;;
+  launch-verify)
+    exec "$GROK16_SCRIPTS/grok16-launch-verify.sh"
+    ;;
+  release)
+    shift
+    exec "$GROK16_SCRIPTS/grok16-release.sh" "$@"
+    ;;
   test-battery) cmd_test_battery ;;
   test-battery-expert) cmd_test_battery_expert ;;
   test-battery-heavy) cmd_test_battery_heavy ;;

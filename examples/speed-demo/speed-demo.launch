@@ -1,7 +1,7 @@
 {
   "schema": "queen-launch/v1",
   "title": "speed-demo",
-  "chamber_root": "/home/default/Desktop/SG/Grok16/examples/speed-demo",
+  "chamber_root": "${GROK16_ROOT}/examples/speed-demo",
   "entry": "speed_demo.py",
   "runtime": "python",
   "cwd": ".",

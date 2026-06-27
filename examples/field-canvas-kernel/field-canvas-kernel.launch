@@ -1,7 +1,7 @@
 {
   "schema": "queen-launch/v1",
   "title": "field-canvas-kernel",
-  "chamber_root": "/home/default/Desktop/SG/Grok16/examples/field-canvas-kernel",
+  "chamber_root": "${GROK16_ROOT}/examples/field-canvas-kernel",
   "entry": "CMakeLists.txt",
   "runtime": "cmake",
   "cwd": ".",
