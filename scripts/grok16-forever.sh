@@ -17,7 +17,10 @@ if "$ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then
   run "$ROOT/scripts/grok16-toolchain.sh" bench-compare
 fi
 run "$ROOT/scripts/grok16-languages.sh" hostess-gate
+if [[ -x "$ROOT/scripts/grok16-integrate.sh" ]]; then
+  run "$ROOT/scripts/grok16-integrate.sh" integrate
+fi
 if [[ -f "$ROOT/data/grok16-field-native.json" ]]; then
   echo "forever: field-native doctrine active"
 fi
-echo "forever: PASS — Hostess 7 satisfied, field-native"
+echo "forever: PASS — Hostess 7 satisfied, belt 2.0 integrated"

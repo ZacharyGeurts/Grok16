@@ -1,6 +1,6 @@
 # Master Coder — C++
 
-Grok16 @ **16.1.1** — every C++ command for the unified `g16` driver.
+Grok16 @ **16.2.0** — every C++ command for the unified `g16` driver.
 
 **Web:** [master-coder-cxx.html](https://zacharygeurts.github.io/Grok16/master-coder-cxx.html)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Grok16 — G16 unified field compiler @ 16.1.1 (g16 discerns C/C++/Python)
+# Grok16 — G16 unified field compiler @ 16.2.0 (g16 discerns C/C++/Python, belt 2.0)
 # Copyright (C) 2026 Zachary Geurts
 # License: GNU General Public License v3 or later — see LICENSE
 # Upstream: GNU Compiler Collection (GCC) — Free Software Foundation, Inc.
@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/grok16-config.sh"
 
 BIN="$G16_PREFIX/bin"
-G16_VERSION="${G16_VERSION:-16.1.1}"
+G16_VERSION="${G16_VERSION:-16.2.0}"
 FORGE="$GROK16_ROOT/forge/grok16-forge.py"
 G16_DRIVER="$BIN/g16"
 VERIFY_SRC="$GROK16_ROOT/examples/minimal-cmake-project/main.cpp"
@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|bench|bench-compare|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|bench|bench-compare|bench-triad|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -26,7 +26,8 @@ Environment (see data/grok16-config.json):
   G16_PKGVERSION G16_CXX_STD G16_C_STD G16_DISABLE_BOOTSTRAP GROK16_BUILD_JOBS
   G16_FAST_REBUILD G16_FULL_REBUILD G16_RELEASE_PROFILE G16_FIELD_SPEED
   G16_ENABLE_LTO G16_ENABLE_PGO G16_PGO_GENERATE GROK16_USE_CCACHE
-  G16_BENCH_PROFILE (field_opt|ai|field_compute|vulkan_rtx)
+  G16_BENCH_PROFILE (field_opt|belt_1_0|belt_2_0|ai|field_compute|vulkan_rtx)
+  G16_BELT_PROFILE (belt_1_0|belt_2_0) — default belt_2_0 on distro 2.0
 EOF
   exit 2
 }
@@ -78,6 +79,7 @@ EOF
 write_cmake_toolchain() {
   mkdir -p "$GROK16_ROOT/cmake"
   cat >"$GROK16_ROOT/cmake/grok16-toolchain.cmake" <<EOF
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY CACHE STRING "Grok16 cmake probe mode" FORCE)
 set(CMAKE_C_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 unified g16 (C mode)" FORCE)
 set(CMAKE_CXX_COMPILER "${G16_PREFIX}/bin/g16" CACHE FILEPATH "Grok16 unified g16 (C++ mode)" FORCE)
 if(EXISTS "${G16_PREFIX}/bin/g16-as")
@@ -642,6 +644,43 @@ cmd_test_battery_release() {
   echo "test-battery-release: PASS (1.0 release gate)"
 }
 
+cmd_test_battery_belt() {
+  local fail=0
+  run_step() {
+    echo "battery-belt: $1"
+    if ! "${@:2}"; then
+      echo "battery-belt FAIL: $1" >&2
+      fail=1
+    fi
+  }
+  run_step release cmd_test_battery_release
+  if [[ -f "$GROK16_ROOT/tests/test_g16_belt_battery.py" ]]; then
+    run_step belt-py g16_gpy_run "$GROK16_ROOT/tests/test_g16_belt_battery.py"
+  fi
+  if grok16_ready; then
+    run_step belt-bench _bench_run_one belt_1_0 cxx
+    run_step belt2-bench _bench_run_one belt_2_0 cxx
+    if [[ -x "$GROK16_SCRIPTS/grok16-bench-triad.sh" ]]; then
+      run_step triad "$GROK16_SCRIPTS/grok16-bench-triad.sh" triad
+    fi
+  else
+    echo "battery-belt: skip belt benches (compiler not ready)"
+  fi
+  if [[ -x "$GROK16_SCRIPTS/grok16-integrate.sh" ]]; then
+    run_step integrate "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
+  fi
+  [[ "$fail" -eq 0 ]] || exit 1
+  echo "test-battery-belt: PASS (2.0 belt gate)"
+}
+
+cmd_bench_triad() {
+  exec "$GROK16_SCRIPTS/grok16-bench-triad.sh" triad
+}
+
+cmd_integrate() {
+  exec "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
+}
+
 cmd_bench_compare() {
   exec "$GROK16_SCRIPTS/grok16-bench-compare.sh" compare
 }
@@ -786,7 +825,7 @@ cmd_bench_all() {
     echo "not ready — run: $0 bootstrap" >&2
     exit 1
   fi
-  for profile in field_opt ai field_compute vulkan_rtx; do
+  for profile in field_opt belt_1_0 belt_2_0 ai field_compute vulkan_rtx; do
     _bench_run_one "$profile" cxx || return 1
   done
   echo "bench-all: PASS"
@@ -822,8 +861,11 @@ case "${1:-}" in
   test-battery-heavy) cmd_test_battery_heavy ;;
   test-battery-full) cmd_test_battery_full ;;
   test-battery-release) cmd_test_battery_release ;;
+  test-battery-belt) cmd_test_battery_belt ;;
+  integrate) cmd_integrate ;;
   bench) cmd_bench ;;
   bench-compare) cmd_bench_compare ;;
+  bench-triad) cmd_bench_triad ;;
   field-bench-real) cmd_field_bench_real ;;
   speed-diagnosis) g16_gpy_run "$GROK16_SCRIPTS/grok16-speed-diagnosis.py" ;;
   field-bench) cmd_field_bench ;;

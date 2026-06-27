@@ -5,7 +5,7 @@ Web: [architecture.html](https://zacharygeurts.github.io/Grok16/architecture.htm
 ## Stack (1.0)
 
 ```
-vendor/gcc (gcc-15, BASE-VER 16.1.1)
+vendor/gcc (gcc-15, BASE-VER 16.2.0)
     → build/gcc (host + self-host)
     → bin/g16 (unified driver)
     → libexec/grok16/{g16-cc,g16-cxx,g16-ld-bfd}

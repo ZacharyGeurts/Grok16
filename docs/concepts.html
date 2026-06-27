@@ -15,15 +15,15 @@
     } catch (e) { d.documentElement.setAttribute("data-theme", "light"); }
   })(document);
   </script>
-  <script src="manual-theme.js?v8"></script>
-  <script src="manual-search.js?v8"></script>
-  <script src="manual-layout.js?v8"></script>
-  <link rel="stylesheet" href="manual.css?v8" />
+  <script src="manual-theme.js?v9"></script>
+  <script src="manual-search.js?v9"></script>
+  <script src="manual-layout.js?v9"></script>
+  <link rel="stylesheet" href="manual.css?v9" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
-      <div class="nav-brand"><strong>Grok16</strong> <span class="nav-version">distro 1.0.0</span><span class="nav-g16">g16 @ 16.1.1</span></div>
+      <div class="nav-brand"><strong>Grok16</strong> <span class="nav-version">distro 2.0.0</span><span class="nav-g16">g16 @ 16.2.0</span></div>
       <div class="nav-controls" aria-label="Display preferences">
         <div class="control-chip">
           <label class="control-label" for="g16-font-scale">Size</label>
@@ -41,9 +41,11 @@
         </div>
       </div>
     </div>
-        <div class="nav-links">
+            <div class="nav-links">
       <a href="index.html">Home</a>
-      <a href="release.html">Release 1.0</a>
+      <a href="release.html">Release 2.0</a>
+      <a href="single-fabric.html">Single Fabric</a>
+      <a href="safety.html">Safety</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="batteries.html">Batteries</a>
@@ -62,7 +64,11 @@
   <h1>C/C++ Concepts — Textbook Reference</h1>
   <p class="lead">Visual primers for ideas you hit every day with <code>g16</code>. Reference-first, with textbook diagrams. Compile examples with <code>g16 -std=gnu17</code> (C) or <code>g16 -std=gnu++26</code> (C++).</p>
 
-  <aside class="callout">
+    <aside class="callout callout-accent">
+    <strong>Single fabric (2.0):</strong> Knowing is fixed-size on one belt die — parallel I/O fans in, truth stays one amplitude at depth 0. Time is linear (<code>ironclad:time:1</code>). See <a href="single-fabric.html">Single Fabric</a> and <a href="safety.html">Safety</a>.
+  </aside>
+
+<aside class="callout">
     <strong>Workflow tip:</strong> Press <kbd>Ctrl</kbd>+<kbd>K</kbd> anywhere in the manual to search commands, env vars, and these concepts.
   </aside>
 

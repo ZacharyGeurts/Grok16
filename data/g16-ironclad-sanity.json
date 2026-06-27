@@ -23,9 +23,58 @@
       "integral": "one_pass_simplify",
       "heat_avoided": 0,
       "layers_out": 0,
-      "updated": "2026-06-26T22:12:32Z"
+      "updated": "2026-06-26T21:40:46Z"
     },
-    "updated": "2026-06-26T23:06:08Z"
+    "spatial_existence": {
+      "id": "g16_spatial_existence",
+      "absorbed": true,
+      "pass_ok": true,
+      "meld_citation": "ironclad:meld:2",
+      "citation": "ironclad:spatial_existence:1 \u2014 This one is here \u2014 the operator, the friendly, the witnessed entity carries a place receipt; individuality begins where geography can name it.",
+      "this_one": {
+        "kind": "this_one",
+        "has_place_receipt": true,
+        "existence_correlation": 0.0,
+        "markers": [],
+        "citation": "ironclad:spatial_existence:1 \u2014 This one is here \u2014 the operator, the friendly, the witnessed entity carries a place receipt; individuality begins where geography can name it.",
+        "lesson": "This one \u2014 here, witnessed"
+      },
+      "that_one": {
+        "kind": "that_one",
+        "has_place_receipt": false,
+        "existence_correlation": 0.0,
+        "markers": [],
+        "citation": "ironclad:spatial_existence:2 \u2014 That one is there \u2014 remote claims, phantom bearings, and ventriloquist lanes stay that one until existence correlates; never collapse this one into that one.",
+        "lesson": "That one \u2014 there, uncorroborated"
+      },
+      "existence_correlation": 0.0,
+      "updated": "2026-06-27T00:18:42Z"
+    },
+    "g1id": {
+      "id": "g1id",
+      "absorbed": true,
+      "meld_citation": "ironclad:meld:2",
+      "citation": "ironclad:g1id:2",
+      "policy": "sovereign_time_only",
+      "sovereign_time_ok": true,
+      "sovereign_time": {
+        "source": "lib/sovereign-time.py",
+        "clock": "lib/sovereign-clock.py",
+        "schema": "sovereign-time-meld-input/v1",
+        "linear_ns": 1782519522111425381,
+        "derived_utc": "2026-06-27T00:18:42Z",
+        "sealed": true,
+        "synced": true,
+        "never_desync": true,
+        "immutable_linear": true,
+        "witness_only": true,
+        "not_geometry_t": true,
+        "citation": "ironclad:g1id:2"
+      },
+      "example_valid": true,
+      "updated": "2026-06-27T00:18:42Z"
+    },
+    "updated": "2026-06-27T00:18:42Z"
   },
   "field_sanity": {
     "id": "g16_field_sanity",
@@ -50,6 +99,31 @@
       "pass_ok": true
     }
   },
+  "spatial_existence": {
+    "id": "g16_spatial_existence",
+    "absorbed": true,
+    "pass_ok": true,
+    "meld_citation": "ironclad:meld:2",
+    "citation": "ironclad:spatial_existence:1 \u2014 This one is here \u2014 the operator, the friendly, the witnessed entity carries a place receipt; individuality begins where geography can name it.",
+    "this_one": {
+      "kind": "this_one",
+      "has_place_receipt": true,
+      "existence_correlation": 0.0,
+      "markers": [],
+      "citation": "ironclad:spatial_existence:1 \u2014 This one is here \u2014 the operator, the friendly, the witnessed entity carries a place receipt; individuality begins where geography can name it.",
+      "lesson": "This one \u2014 here, witnessed"
+    },
+    "that_one": {
+      "kind": "that_one",
+      "has_place_receipt": false,
+      "existence_correlation": 0.0,
+      "markers": [],
+      "citation": "ironclad:spatial_existence:2 \u2014 That one is there \u2014 remote claims, phantom bearings, and ventriloquist lanes stay that one until existence correlates; never collapse this one into that one.",
+      "lesson": "That one \u2014 there, uncorroborated"
+    },
+    "existence_correlation": 0.0,
+    "updated": "2026-06-27T00:18:42Z"
+  },
   "checks": {
     "ironclad_meld_manifest": true,
     "field_sanity_doctrine": true,
@@ -64,10 +138,14 @@
     "linker_doctrine": true,
     "linker_orchestrator": true,
     "linker_driver": true,
-    "linker_bfd_backend": true
+    "linker_bfd_backend": true,
+    "spatial_existence_doctrine": true,
+    "spatial_existence_bridge": true,
+    "spatial_existence_ok": true,
+    "spatial_existence_pass": true
   },
-  "score": 14,
-  "max": 14,
+  "score": 18,
+  "max": 18,
   "ok": true,
   "satisfied": true
 }

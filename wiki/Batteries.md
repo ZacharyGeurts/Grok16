@@ -2,36 +2,34 @@
 
 Web: [batteries.html](https://zacharygeurts.github.io/Grok16/batteries.html)
 
-Grok16 1.0 gates releases through layered batteries. Run locally before tagging or pointing consumers at your prefix.
+## Tiers (2.0)
 
-## Tiers
+| Tier | Command | Proves |
+|------|---------|--------|
+| Smoke | `test-battery` | paths, discern, ironclad sanity |
+| Expert | `test-battery-expert` | + linker, RTX gate |
+| Heavy | `test-battery-heavy` | release profile bench |
+| Release | `test-battery-release` | production gate |
+| **Belt** | **`test-battery-belt`** | **2.0 belt doctrine + triad** |
 
-| Tier | Command | Profile |
-|------|---------|---------|
-| Smoke | `test-battery` | default |
-| Expert | `test-battery-expert` | `expert` + ironclad + linker + RTX |
-| Heavy | `test-battery-heavy` | `heavy` + release bench |
-| **Release** | `test-battery-release` | heavy + py + forever + binutils + verify |
-
-## Release gate (1.0)
+## 2.0 belt gate
 
 ```bash
-export G16_RELEASE_PROFILE=1
-./scripts/grok16-toolchain.sh test-battery-release
+./scripts/grok16-toolchain.sh test-battery-belt
 ```
 
-Steps bundled:
-- `test-battery-heavy`
-- `tests/test_g16_battery.py`
-- `tests/test_g16_forever_battery.py`
-- `tests/g16-binutils-battery.sh`
-- `verify` (linker smoke required)
+Checks:
 
-## Triage
+- `data/grok16-belt-doctrine.json`
+- `data/grok16-single-fabric-doctrine.json`
+- `belt_1_0` / `belt_2_0` profiles
+- `bench-triad` script present
+- `tests/test_g16_belt_battery.py`
 
-| Symptom | Check |
-|---------|-------|
-| `libgcc_s.so.1` link error | `file lib64/libgcc_s.so.1` → must be **shared object** |
-| LTO failure | `grok16-profile-flags.py` thin LTO normalize |
-| PGO warnings | Only use when `data/pgo/*.gcda` exist |
-| Linker missing | `grok16-binutils.sh install` |
+## Release chain
+
+```bash
+G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh test-battery-release
+./scripts/grok16-toolchain.sh test-battery-belt
+./scripts/grok16-toolchain.sh integrate
+```

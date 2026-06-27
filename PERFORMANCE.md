@@ -1,6 +1,27 @@
-# Grok16 Performance — G16 @ 16.0.0
+# Grok16 Performance — G16 @ 16.2.0 / distro 2.0.0 belt
 
-Measured on **Linux x86_64** with self-hosted `g++16 (Grok16-16.0.0) 16.0.0`, **gnu++26** (`__cplusplus=202400`).
+Measured on **Linux x86_64** with self-hosted `g16 (Grok16-16.2.0)`, **gnu++26** (`__cplusplus=202400`).
+
+## Belt triad (`bench-triad`) — host gcc vs belt 1.0 vs belt 2.0
+
+Workload: `field-nexus-bench` (240 frames, FieldX86 + entropy + wave + NEXUS).
+
+| Toolchain | Profile | compile_ms | run wall_ms | binary bytes |
+|-----------|---------|------------|-------------|--------------|
+| host `g++` | `-O3 -march=native` (gnu++20) | ~2575 | ~3 | ~27264 |
+| `g16` | **belt_1_0** (1.0 field_opt baseline) | ~2377 | ~3 | ~22712 |
+| `g16` | **belt_2_0** (chunked redata, Hostess+LTO) | ~3708 | ~5 | ~22840 |
+
+**Takeaways:**
+- **belt_1_0** matches host runtime; compile ~8% faster than host g++ on same source.
+- **belt_2_0** trades compile time for production belt (8192 redata chunk, wave-massive, Hostess gates); runtime ~5ms with larger die (512 slots).
+- Triad artifact: `data/bench/triad-latest.json`
+
+```bash
+./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh integrate   # auto-wire SG consumers + triad
+./scripts/grok16-toolchain.sh test-battery-belt
+```
 
 Host: local SG desktop build (partial prefix layout; driver uses `-B$GROK16_GCC_BUILD/gcc/` when needed).
 

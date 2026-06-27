@@ -49,8 +49,8 @@ for key in ("g16_version", "pkgversion", "cxx_std_default", "c_std_default"):
 PY
 )"
   fi
-  G16_VERSION="${G16_VERSION:-16.1.1}"
-  G16_PKGVERSION="${G16_PKGVERSION:-Grok16-16.1.1}"
+  G16_VERSION="${G16_VERSION:-16.2.0}"
+  G16_PKGVERSION="${G16_PKGVERSION:-Grok16-16.2.0}"
   G16_CXX_STD="${G16_CXX_STD:-gnu++26}"
   G16_C_STD="${G16_C_STD:-gnu17}"
   GROK16_BUILD_JOBS="${GROK16_BUILD_JOBS:-${QUEEN_BUILD_JOBS:-$(nproc 2>/dev/null || echo 4)}}"
@@ -65,8 +65,9 @@ PY
     : "${G16_FIELD_SPEED:=1}"
   fi
   if [[ ${G16_FIELD_SPEED:-} == 1 || ${G16_FIELD_SPEED:-} == true ]]; then
-    : "${G16_BENCH_PROFILE:=field_opt}"
+    : "${G16_BENCH_PROFILE:=${G16_BELT_PROFILE:-belt_2_0}}"
   fi
+  : "${G16_BELT_PROFILE:=belt_2_0}"
   # Dev fast path default for rebuild iteration (override with G16_FULL_REBUILD=1)
   if [[ ${G16_FULL_REBUILD:-} == 1 || ${G16_FULL_REBUILD:-} == true || ${G16_FULL_REBUILD:-} == yes ]]; then
     G16_FAST_REBUILD=0
@@ -111,7 +112,7 @@ g16_gpy() {
 
 # Extra driver flags when install prefix lacks full lib/gcc (dev/consolidated layouts).
 grok16_driver_extra_flags() {
-  local ver="${G16_VERSION:-16.1.1}"
+  local ver="${G16_VERSION:-16.2.0}"
   local inc="$G16_PREFIX/lib/gcc/x86_64-pc-linux-gnu/${ver}/include"
   local relocated="$G16_PREFIX/libexec/grok16/.relocated"
   if [[ -f "$relocated" && -d "$GROK16_GCC_BUILD/gcc" ]]; then

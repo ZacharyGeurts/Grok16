@@ -8,7 +8,11 @@
 #include <span>
 #include <vector>
 
-#if defined(GROK16_PROFILE_FIELD_OPT)
+#if defined(GROK16_BELT_2_0)
+constexpr const char* kProfile = "belt_2_0";
+#elif defined(GROK16_BELT_1_0)
+constexpr const char* kProfile = "belt_1_0";
+#elif defined(GROK16_PROFILE_FIELD_OPT)
 constexpr const char* kProfile = "field_opt";
 #elif defined(GROK16_PROFILE_AI)
 constexpr const char* kProfile = "ai";
@@ -21,8 +25,17 @@ constexpr const char* kProfile = "default";
 namespace {
 
 constexpr float kPhi = 0.6180339887f;
+#if defined(GROK16_BELT_2_0)
+constexpr std::size_t kDieSlots = 512;
+constexpr std::size_t kBeltChunk = 64;
+constexpr std::size_t kRedataChunk = 8192;
+constexpr std::size_t kWaveBands = 32;
+#else
 constexpr std::size_t kDieSlots = 256;
+constexpr std::size_t kBeltChunk = 1;
+constexpr std::size_t kRedataChunk = 512;
 constexpr std::size_t kWaveBands = 16;
+#endif
 
 enum class Op : std::uint8_t { Add, Mul, Xor, EntropyFold, WavePhase, Nop };
 
@@ -56,7 +69,12 @@ struct FieldInsn {
 }
 
 [[gnu::hot]] void fieldx86_run(std::span<const FieldInsn> prog, std::span<float> die) noexcept {
-  for (const FieldInsn& in : prog) {
+  const std::size_t chunks = (prog.size() + kBeltChunk - 1) / kBeltChunk;
+  for (std::size_t ci = 0; ci < chunks; ++ci) {
+    const std::size_t base = ci * kBeltChunk;
+    const std::size_t end = (base + kBeltChunk < prog.size()) ? base + kBeltChunk : prog.size();
+    for (std::size_t pi = base; pi < end; ++pi) {
+      const FieldInsn& in = prog[pi];
     switch (in.op) {
       case Op::Add:
         die[in.dst % kDieSlots] += die[in.src % kDieSlots];
@@ -77,6 +95,7 @@ struct FieldInsn {
       case Op::Nop:
       default:
         break;
+    }
     }
   }
 }
@@ -106,6 +125,22 @@ int main() {
   const auto t0 = std::chrono::steady_clock::now();
   constexpr int frames = 240;
   volatile float sink = 0.f;
+#if defined(GROK16_BELT_2_0)
+  constexpr int kBeltFrameChunk = 8;
+  for (int f0 = 0; f0 < frames; f0 += kBeltFrameChunk) {
+    const int fend = (f0 + kBeltFrameChunk < frames) ? f0 + kBeltFrameChunk : frames;
+    for (int f = f0; f < fend; ++f) {
+      fieldx86_run(prog, die);
+      for (std::size_t b = 0; b < kWaveBands; ++b) {
+        die[b] = wave_phase_decouple(die[b], die[(b + 1) % kDieSlots], static_cast<int>(b));
+      }
+      for (std::size_t i = 0; i < kDieSlots; ++i) {
+        signals[i] = die[i] * entropy_fold(die[i], die[(i + 17) % kDieSlots]);
+      }
+      sink += nexus_score(weights, signals);
+    }
+  }
+#else
   for (int f = 0; f < frames; ++f) {
     fieldx86_run(prog, die);
     for (std::size_t b = 0; b < kWaveBands; ++b) {
@@ -116,12 +151,16 @@ int main() {
     }
     sink += nexus_score(weights, signals);
   }
+#endif
   const auto t1 = std::chrono::steady_clock::now();
   const auto ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
 
   std::cout << "grok16_field_bench profile=" << kProfile
             << " std=gnu++26 __cplusplus=" << __cplusplus
             << " frames=" << frames << " prog_ops=" << prog.size()
+            << " die_slots=" << kDieSlots
+            << " belt_chunk=" << kBeltChunk
+            << " redata_chunk=" << kRedataChunk
             << " wall_ms=" << ms
             << " nexus_checksum=" << sink << '\n';
   return ms > 0.0 ? 0 : 1;

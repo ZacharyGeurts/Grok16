@@ -1,15 +1,16 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-1.0.0-brightgreen)
-![Version](https://img.shields.io/badge/G16-16.1.1-blue)
-![Track](https://img.shields.io/badge/roadmap-1.0%20%E2%86%92%201.1-lightgrey)
+![Status](https://img.shields.io/badge/release-2.0.0-brightgreen)
+![Version](https://img.shields.io/badge/G16-16.2.0-blue)
+![Belt](https://img.shields.io/badge/belt-2.0-purple)
+![Track](https://img.shields.io/badge/roadmap-2.0%20%E2%86%92%202.1-lightgrey)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.1.1** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. Scripts and CMake integration ship in git; **no prebuilt binaries** (reproducible bootstrap from GPL GCC sources).
+**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **2.0** ships **single fabric** belt dispatch (`belt_2_0`), Ironclad safety meld, and depth-field impossibility at integrated consumers.
 
-> **Grok16 @ 16.0.0** — sovereign G16 field compiler. Upstream tree is **gcc-15** with BASE-VER **16.0.0** (not upstream `releases/gcc-16`). See [PERFORMANCE.md](PERFORMANCE.md) for benchmark numbers.
+> **Grok16 2.0.0** — single fabric knowing: one belt amplitude, one field depth, linear sovereign time. Default profile `belt_2_0`. See [PERFORMANCE.md](PERFORMANCE.md) and [RELEASE-2.0.md](RELEASE-2.0.md).
 
 ## What you get
 
@@ -28,7 +29,16 @@
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 
-**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Release 1.0](https://zacharygeurts.github.io/Grok16/release.html) · [Batteries](https://zacharygeurts.github.io/Grok16/batteries.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Release 2.0](https://zacharygeurts.github.io/Grok16/release.html) · [Batteries](https://zacharygeurts.github.io/Grok16/batteries.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+
+### Single fabric & safety (2.0)
+
+| Doctrine | Role |
+|----------|------|
+| `data/grok16-single-fabric-doctrine.json` | One belt die · one field amplitude · knowing fixed-size |
+| `data/grok16-belt-doctrine.json` | `belt_2_0` chunked redata, wave-massive, single-location reads |
+| `data/g16-ironclad-meld.json` | Time linear · depth-field impossible · field sanity meld |
+| `scripts/grok16-integrate.sh` | Wire Queen / WRDT / ZOCR + safety env to SG tree |
 
 ## Architecture (short)
 
@@ -64,12 +74,15 @@ Full detail: [ARCHITECTURE.md](ARCHITECTURE.md).
 git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
 export G16_PREFIX="$(pwd)"          # install prefix = repo root
-export G16_PKGVERSION=Grok16-16.0.0
+export G16_PKGVERSION=Grok16-16.2.0
+export G16_BELT_PROFILE=belt_2_0
 
 ./scripts/grok16-toolchain.sh bootstrap   # fetch + host build + install
 ./scripts/grok16-toolchain.sh rebuild     # self-host
 ./scripts/grok16-toolchain.sh verify      # gnu++26 compile + optional CMake smoke
-./scripts/grok16-toolchain.sh bench       # Field/AI matrix micro-benchmark
+./scripts/grok16-toolchain.sh test-battery-belt
+./scripts/grok16-toolchain.sh bench-triad # host gcc vs belt_1_0 vs belt_2_0
+./scripts/grok16-toolchain.sh integrate   # auto-wire SG consumers
 ./scripts/grok16-toolchain.sh status
 ```
 

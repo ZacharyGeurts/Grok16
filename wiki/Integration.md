@@ -2,7 +2,35 @@
 
 Web: [integration.html](https://zacharygeurts.github.io/Grok16/integration.html)
 
-Requires Grok16 **v1.0.0** prefix with `test-battery-release` green.
+Requires Grok16 **v2.0.0** with `test-battery-release` + `test-battery-belt` green.
+
+## Auto-integrate (2.0)
+
+```bash
+./scripts/grok16-integrate.sh
+```
+
+Wires canonical prefix + `G16_BELT_PROFILE=belt_2_0` to:
+
+- `NewLatest/Queen`
+- `World_Redata`
+- `ZOCR` / Final_Ear
+- `PythonG`
+
+Env template: `data/grok16-integrate.env`
+
+## Safety at consumers {#gates}
+
+Integrated SG tree enforces **single fabric** safety:
+
+| Consumer | Depth field | Ironclad |
+|----------|-------------|----------|
+| Queen field-net | `depth_field_impossible` | classify strip |
+| Queen browser | navigate enforce | tab URL clean |
+| NEXUS panel | HTTP 302 strip | field-depth-singularizer |
+| Field sanity | integral preflight | `ironclad:field_sanity:4` |
+
+Doctrine cross-ref: `NewLatest/data/single-field-depth-doctrine.json`
 
 ## World_Redata
 
@@ -13,43 +41,19 @@ PYTHONPATH=. pythong -m redata.cli parity
 PYTHONPATH=. pythong -m redata.cli security
 ```
 
-Uses `../Grok16/scripts/grok16-toolchain.sh` by default.
-
 ## Env
 
 ```bash
 export G16_PREFIX=/path/to/Grok16
+export G16_BELT_PROFILE=belt_2_0
 export WRDT_G16_PREFIX="$G16_PREFIX"
+source data/grok16-integrate.env
 ```
-
-## Stack (L0–L5)
-
-| Layer | Component |
-|-------|-----------|
-| L0–L1 | WRZC/WRDT/ZAC7 |
-| L2 | C++ engine (Grok16) |
-| L3 | Python redata |
-| L4 | CLI, GUI |
-| L5 | Grok16 |
 
 ## Queen
 
-`./scripts/consolidate.sh` — symlink Queen vendor → Grok16.
+`./scripts/grok16-integrate.sh` updates Queen `g16-toolchain.json` and browser doctrine.
 
-## Manifest
+## Ironclad
 
-`data/grok16-toolchain.json` at install. Python helper: `World_Redata/redata/grok16.py`.
-
-## Sense package / OBS (orthogonal)
-
-Grok16 and OBS-FieldVoiceFilter share field vocabulary but operate on different planes:
-
-| Plane | Component | Security model |
-|-------|-----------|----------------|
-| **Compile-time (Grok16)** | `g16-field-mandate`, linker mandate, `redata.cli security` | Binary hardening — RELRO, PIE, fortify, World_Redata L2 gates |
-| **Runtime (OBS)** | `field-security-posterity.c`, `field-repeat-field.c` | Streaming threat confirmation — posterity ring decides repeating hostile signatures |
-
-- **No Grok16 code dependency** on OBS posterity or threat ledger.
-- **NewLatest** bridges OBS via `lib/obs-threat-posterity-bridge.py` and `field-sense-package-meld.py` (see `NewLatest/data/field-sense-package-doctrine.json`).
-- **Optional:** build `obs-field-voice-filter.so` with Grok16 toolchain + `g16-field-mandate.cmake` for hardened native plugin binaries — does not change posterity logic.
-- Grok16 CI batteries (`test-battery-expert`, `test-battery-heavy`) validate the **toolchain**, not OBS runtime threats.
+`data/g16-ironclad-meld.json` — single fabric, linear time, field sanity absorbed at forge link pass.

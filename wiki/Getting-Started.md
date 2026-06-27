@@ -9,18 +9,20 @@ Web: [getting-started.html](https://zacharygeurts.github.io/Grok16/getting-start
 - GCC build dependencies
 - ~6 GB disk
 
-## Bootstrap (v1.0.0)
+## Bootstrap (v2.0.0)
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
-git checkout v1.0.0
+git checkout v2.0.0
 export G16_PREFIX="$(pwd)"
+export G16_BELT_PROFILE=belt_2_0
 
 ./scripts/grok16-toolchain.sh bootstrap
 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh verify
 ./scripts/grok16-toolchain.sh test-battery-release
+./scripts/grok16-toolchain.sh test-battery-belt
 ```
 
 ## Rebuild
@@ -35,6 +37,8 @@ export G16_PREFIX="$(pwd)"
 
 ```bash
 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh test-battery-release
+./scripts/grok16-toolchain.sh test-battery-belt
+./scripts/grok16-toolchain.sh integrate
 ```
 
-See [Batteries](Batteries).
+See [Batteries](Batteries) · [Single Fabric](Single-Fabric) · [Safety](Safety).

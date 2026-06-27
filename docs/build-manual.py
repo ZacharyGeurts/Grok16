@@ -1,20 +1,23 @@
 #!/usr/bin/env pythong
-"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 1.0.0."""
+"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 2.0.0."""
 from __future__ import annotations
 
 import json
 import pathlib
+import re
 import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
-DISTRO = "1.0.0"
-G16 = "16.1.1"
-CACHE = "v8"
+DISTRO = "2.0.0"
+G16 = "16.2.0"
+CACHE = "v9"
 
 NAV = [
     ("index.html", "Home"),
-    ("release.html", "Release 1.0"),
+    ("release.html", "Release 2.0"),
+    ("single-fabric.html", "Single Fabric"),
+    ("safety.html", "Safety"),
     ("getting-started.html", "Getting Started"),
     ("architecture.html", "Architecture"),
     ("batteries.html", "Batteries"),
@@ -117,9 +120,9 @@ PAGES: dict[str, tuple[str, str]] = {
   <div class="hero hero-image">
     <img src="assets/g16-hero-banner.png" alt="" class="hero-bg" width="1200" height="675" />
     <div class="hero-overlay">
-      <p class="hero-badge">Stable release {DISTRO}</p>
+      <p class="hero-badge">Stable release {DISTRO} — single fabric</p>
       <h1>Grok16 Field Compiler</h1>
-      <p class="lead">Self-hosted <code>g16</code> @ <strong>{G16}</strong> — unified driver, <code>gnu++26</code> / <code>gnu17</code>, batteries through release gate.</p>
+      <p class="lead">Self-hosted <code>g16</code> @ <strong>{G16}</strong> — <strong>single fabric</strong> belt (<code>belt_2_0</code>), Ironclad safety meld, unified driver, batteries through belt gate.</p>
       <p class="hero-cta">Press <kbd>Ctrl</kbd>+<kbd>K</kbd> to search commands, batteries, profiles, env vars.</p>
     </div>
   </div>
@@ -127,10 +130,10 @@ PAGES: dict[str, tuple[str, str]] = {
   <h2>Engineer workflow</h2>
   <div class="workflow">
     <a href="getting-started.html#bootstrap"><strong>1 clone</strong>v{DISTRO} tag</a>
-    <a href="getting-started.html#rebuild"><strong>2 rebuild</strong>self-host g16</a>
-    <a href="batteries.html#release"><strong>3 gate</strong>test-battery-release</a>
-    <a href="performance.html#field-bench"><strong>4 bench</strong>field_opt metrics</a>
-    <a href="integration.html#gates"><strong>5 integrate</strong>Queen / WRDT</a>
+    <a href="getting-started.html#rebuild"><strong>2 rebuild</strong>belt_2_0 + release</a>
+    <a href="batteries.html#belt"><strong>3 gate</strong>release + belt battery</a>
+    <a href="performance.html#triad"><strong>4 bench</strong>belt triad</a>
+    <a href="integration.html#integrate"><strong>5 integrate</strong>Queen / WRDT + safety</a>
   </div>
 
   <div class="figure-row">
@@ -147,7 +150,9 @@ PAGES: dict[str, tuple[str, str]] = {
   <h2>Manuals</h2>
   <table>
     <tr><th>Doc</th><th>For engineers who need…</th></tr>
-    <tr><td><a href="release.html">Release 1.0</a></td><td>What shipped, upgrade path from v0.9c</td></tr>
+    <tr><td><a href="release.html">Release 2.0</a></td><td>Single fabric, safety meld, upgrade from v1.0.0</td></tr>
+    <tr><td><a href="single-fabric.html">Single Fabric</a></td><td>2.0 technology — one belt die, one field amplitude</td></tr>
+    <tr><td><a href="safety.html">Safety</a></td><td>Depth-field impossible, linear time, Ironclad gates</td></tr>
     <tr><td><a href="getting-started.html">Getting Started</a></td><td>Bootstrap, rebuild modes, first verify</td></tr>
     <tr><td><a href="architecture.html">Architecture</a></td><td>Forge pipeline, unified driver, directories</td></tr>
     <tr><td><a href="batteries.html">Batteries</a></td><td>Validation tiers, CI gate, failure triage</td></tr>
@@ -161,37 +166,41 @@ PAGES: dict[str, tuple[str, str]] = {
 """.format(DISTRO=DISTRO, G16=G16),
     ),
     "release.html": (
-        "Release 1.0",
+        "Release 2.0",
         """
   <h1>Release {DISTRO}</h1>
-  <p>First <strong>stable</strong> Grok16 distro. Compiler lineage <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous tagged point: <code>v0.9c</code>.</p>
+  <p>Grok16 <strong>2.0</strong> — <strong>single fabric</strong> belt dispatch. Compiler <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous: <code>v1.0.0</code>.</p>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
 cd Grok16
 git checkout v{DISTRO}
 export G16_PREFIX="$(pwd)"
-export G16_RELEASE_PROFILE=1
-./scripts/grok16-toolchain.sh rebuild
-./scripts/grok16-toolchain.sh test-battery-release</code></pre>
+export G16_BELT_PROFILE=belt_2_0
+G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh test-battery-release
+./scripts/grok16-toolchain.sh test-battery-belt
+./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh integrate</code></pre>
 
   <h2 id="shipped">What shipped</h2>
   <ul>
-    <li>Unified <code>g16</code> — C, C++, Python/GPY-16, ASM, Rust, Go, Zig, Fortran, D, Ada, ObjC</li>
-    <li>In-tree toolkits — <code>data/grok16-toolkits.json</code>, binutils field tools</li>
-    <li>G16 field linker — 16 silicon targets, Ironclad witness, mandate hardening</li>
-    <li><code>test-battery-release</code> — production gate (heavy + py + forever + binutils + verify)</li>
-    <li>Linker fix — no <code>-pie</code> on <code>-shared</code> links (prevents <code>libgcc_s.so.1</code> corruption)</li>
-    <li>Profile/LTO/PGO — <code>-flto=thin</code> normalize, conditional PGO, expert/heavy flags</li>
+    <li><strong>Single fabric</strong> — <code>belt_2_0</code> chunked redata (8192), wave-massive, single-location reads</li>
+    <li><strong>Safety meld</strong> — depth-field creation forbidden; time is linear (<code>ironclad:time:1</code>)</li>
+    <li><code>grok16-integrate.sh</code> — auto-wire Queen, World_Redata, ZOCR, PythonG</li>
+    <li><code>test-battery-belt</code> — 2.0 validation atop release tier</li>
+    <li><code>bench-triad</code> — host gcc vs <code>belt_1_0</code> vs <code>belt_2_0</code></li>
+    <li>Unified <code>g16</code> @ {G16} — compat with 1.0 profiles (<code>belt_1_0</code> aliases <code>field_opt</code>)</li>
   </ul>
 
-  <h2 id="upgrade">Upgrade from v0.9c</h2>
+  <h2 id="upgrade">Upgrade from v1.0.0</h2>
   <ol>
     <li>Checkout <code>v{DISTRO}</code></li>
-    <li><code>G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
-    <li>Run <code>test-battery-release</code> before pointing consumers at prefix</li>
+    <li><code>G16_BELT_PROFILE=belt_2_0 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
+    <li><code>test-battery-release</code> then <code>test-battery-belt</code></li>
+    <li><code>./scripts/grok16-integrate.sh</code> to publish env to SG consumers</li>
   </ol>
-  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-1.0.md">RELEASE-1.0.md</a></p>
+  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-2.0.md">RELEASE-2.0.md</a> · <a href="single-fabric.html">Single Fabric</a> · <a href="safety.html">Safety</a></p>
 """.format(DISTRO=DISTRO, G16=G16),
     ),
     "getting-started.html": (
@@ -231,13 +240,15 @@ G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></pre>
   <h2 id="verify">Verify &amp; gate</h2>
   <pre><code>./scripts/grok16-toolchain.sh verify
 ./scripts/grok16-toolchain.sh test-battery-expert
-./scripts/grok16-toolchain.sh test-battery-release</code></pre>
+./scripts/grok16-toolchain.sh test-battery-release
+./scripts/grok16-toolchain.sh test-battery-belt</code></pre>
   <p>See <a href="batteries.html">Batteries</a> for tier breakdown.</p>
 
   <h2 id="bench">Benchmarks</h2>
-  <pre><code>./scripts/grok16-toolchain.sh field-bench
-./scripts/grok16-toolchain.sh bench-all
-./scripts/grok16-toolchain.sh profile</code></pre>
+  <pre><code>export G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh field-bench
+./scripts/grok16-toolchain.sh bench-all</code></pre>
 """.format(DISTRO=DISTRO, G16=G16),
     ),
     "architecture.html": (
@@ -310,6 +321,10 @@ forge/grok16-forge.py run gcc_rebuild     # self-host with g16</code></pre>
     <tr><td>verify</td><td>Full verify incl. linker link smoke</td></tr>
   </table>
 
+  <h2 id="belt">Belt — <code>test-battery-belt</code> (2.0)</h2>
+  <pre><code>./scripts/grok16-toolchain.sh test-battery-belt</code></pre>
+  <p>Doctrine <code>data/grok16-single-fabric-doctrine.json</code> · profiles <code>belt_1_0</code> / <code>belt_2_0</code> · <code>tests/test_g16_belt_battery.py</code> · triad artifact optional.</p>
+
   <h2 id="triage">Failure triage</h2>
   <ul>
     <li><strong>Linker / libgcc_s</strong> — ensure <code>file lib64/libgcc_s.so.1</code> shows <em>shared object</em>, not PIE executable</li>
@@ -375,23 +390,202 @@ pythong forge/g16-linker.py json</code></pre>
   <p>Env overrides: <code>G16_LINK_TARGET</code>, <code>ANDROID_NDK_ROOT</code>, <code>G16_CROSS_PREFIX</code>.</p>
 """,
     ),
+    "single-fabric.html": (
+        "Single Fabric",
+        """
+  <h1>Single fabric (2.0)</h1>
+  <p><strong>Single fabric</strong> is the Grok16 2.0 technology: fixed-size <strong>knowing</strong> on one belt die — not nested fields, not monolithic blast.</p>
+  <p>Doctrine: <code>data/grok16-single-fabric-doctrine.json</code> · Citation: <code>ironclad:field_sanity:5</code></p>
+
+  <h2 id="rules">Rules</h2>
+  <table>
+    <tr><th>Layer</th><th>Rule</th></tr>
+    <tr><td>Belt</td><td><code>belt_2_0</code> — 8192 redata chunk, wave-massive, <strong>single-location reads</strong></td></tr>
+    <tr><td>Field</td><td>One amplitude at depth 0 — parallel I/O fans in, truth stays single</td></tr>
+    <tr><td>Time</td><td>Linear sovereign clock — <code>ironclad:time:1</code>, not geometry <code>t</code></td></tr>
+    <tr><td>Safety</td><td>Depth-field creation <strong>forbidden</strong> — stripped at every gate</td></tr>
+  </table>
+
+  <h2 id="profiles">Belt profiles</h2>
+  <table>
+    <tr><th>Profile</th><th>Role</th></tr>
+    <tr><td><code>belt_1_0</code></td><td>1.0 baseline (aliases <code>field_opt</code>) — triad compare</td></tr>
+    <tr><td><code>belt_2_0</code></td><td><strong>2.0 production</strong> — single fabric dispatch, 512 die slots</td></tr>
+  </table>
+  <pre><code>export G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh bench-triad</code></pre>
+  <p>See <a href="profiles.html#belt">Profiles</a> · <a href="performance.html#triad">Belt triad</a> · <a href="safety.html">Safety</a></p>
+""",
+    ),
+    "safety.html": (
+        "Safety",
+        """
+  <h1>Safety (2.0)</h1>
+  <p>Grok16 2.0 safety is melded into Ironclad at integrate time — compile-time mandate plus consumer depth impossibility.</p>
+
+  <h2 id="depth">Depth field impossible</h2>
+  <table>
+    <tr><th>Gate</th><th>Behavior</th></tr>
+    <tr><td><code>field-depth-singularizer</code></td><td>Strip <code>field_depth</code>, zero nested layers, ledger violations</td></tr>
+    <tr><td>Queen field-net</td><td><code>depth_field_impossible: true</code> on classify</td></tr>
+    <tr><td>Queen browser</td><td>Navigate strips depth before tab persist</td></tr>
+    <tr><td>NEXUS HTTP</td><td>302 redirect when <code>?field_depth=</code> present</td></tr>
+  </table>
+  <p><strong>Rule:</strong> one field, depth zero always. Creation cannot persist.</p>
+
+  <h2 id="ironclad">Ironclad meld</h2>
+  <ul>
+    <li><code>data/g16-ironclad-meld.json</code> — time linear, single fabric, field sanity verses</li>
+    <li><code>g16-ironclad-sanity</code> gate in forge and batteries</li>
+    <li><code>G16_FIELD_SAFETY_MANDATE_v1</code> on field targets</li>
+  </ul>
+
+  <h2 id="time">Sovereign time</h2>
+  <p>Time is linear (<code>ironclad:time:1</code>). G1ID meld uses <code>linear_ns</code> only — <code>t</code> forbidden in geometry.</p>
+
+  <h2 id="integrate">Integrate</h2>
+  <pre><code>./scripts/grok16-integrate.sh</code></pre>
+  <p>Publishes <code>data/grok16-integrate.env</code> and wires Queen / World_Redata / ZOCR to canonical prefix + belt profile. See <a href="integration.html">Integration</a>.</p>
+""",
+    ),
+    "performance.html": (
+        "Performance",
+        """
+  <h1>Performance</h1>
+  <p>Measured: Linux x86_64, <code>g16 (Grok16-{G16}) {G16}</code>, gnu++26. Repo: <code>PERFORMANCE.md</code>.</p>
+
+  <h2 id="triad">Belt triad (bench-triad)</h2>
+  <p>Workload: <code>examples/field-nexus-bench</code> — 240 frames, FieldX86 + entropy + wave + NEXUS.</p>
+  <table>
+    <tr><th>Toolchain</th><th>Profile</th><th>compile_ms</th><th>run wall_ms</th><th>binary bytes</th></tr>
+    <tr><td>host <code>g++</code></td><td>-O3 -march=native</td><td>~2575</td><td>~3</td><td>~27264</td></tr>
+    <tr><td><code>g16</code></td><td><code>belt_1_0</code></td><td>~2377</td><td>~3</td><td>~22712</td></tr>
+    <tr><td><code>g16</code></td><td><code>belt_2_0</code></td><td>~3708</td><td>~5</td><td>~22840</td></tr>
+  </table>
+  <p><code>belt_1_0</code> matches host runtime; <code>belt_2_0</code> trades compile time for production single-fabric belt.</p>
+  <pre><code>./scripts/grok16-toolchain.sh bench-triad
+cat data/bench/triad-latest.json</code></pre>
+
+  <h2 id="field-bench">Field-Opt vs baseline</h2>
+  <table>
+    <tr><th>Build</th><th>Flags</th><th>kernel wall_ms</th><th>binary bytes</th></tr>
+    <tr><td>baseline</td><td>-std=gnu++26 -O2</td><td>2.65</td><td>17144</td></tr>
+    <tr><td>field_opt / belt_1_0</td><td>profile flags</td><td>2.11–2.19</td><td>22616</td></tr>
+  </table>
+  <p>Delta: ~19% faster kernel vs -O2 on same source.</p>
+
+  <h2 id="bench-all">Profile suite (bench-all)</h2>
+  <table>
+    <tr><th>Profile</th><th>compile_ms</th><th>run_ms</th><th>bytes</th><th>kernel</th></tr>
+    <tr><td>field_opt</td><td>828–874</td><td>4–5</td><td>22616</td><td>wall_ms ~2.1</td></tr>
+    <tr><td>belt_2_0</td><td>~3708</td><td>~5</td><td>22840</td><td>single fabric</td></tr>
+    <tr><td>ai</td><td>735</td><td>6–7</td><td>18232</td><td>wall_ms ~4.0</td></tr>
+    <tr><td>vulkan_rtx</td><td>864–876</td><td>4–5</td><td>22728</td><td>wall_ms ~2.1</td></tr>
+  </table>
+
+  <h2 id="reproduce">Reproduce</h2>
+  <pre><code>export G16_PREFIX="$(pwd)"
+export G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh field-bench
+./scripts/grok16-toolchain.sh bench-all</code></pre>
+
+  <h2 id="pgo">PGO</h2>
+  <pre><code>./scripts/grok16-toolchain.sh profile
+G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
+""".format(G16=G16),
+    ),
+    "integration.html": (
+        "Integration",
+        """
+  <h1>Integration</h1>
+  <p>Requires Grok16 <strong>v{DISTRO}</strong> with <code>test-battery-release</code> + <code>test-battery-belt</code> green.</p>
+
+  <h2 id="integrate">Auto-integrate (2.0)</h2>
+  <pre><code>./scripts/grok16-integrate.sh</code></pre>
+  <p>Wires canonical prefix + <code>G16_BELT_PROFILE=belt_2_0</code> to Queen, World_Redata, ZOCR/Final_Ear, PythonG. Env: <code>data/grok16-integrate.env</code></p>
+
+  <h2 id="gates">Safety at consumers</h2>
+  <p>Integrated SG tree enforces <strong>single fabric</strong> safety:</p>
+  <table>
+    <tr><th>Consumer</th><th>Depth field</th><th>Ironclad</th></tr>
+    <tr><td>Queen field-net</td><td><code>depth_field_impossible</code></td><td>classify strip</td></tr>
+    <tr><td>Queen browser</td><td>navigate enforce</td><td>tab URL clean</td></tr>
+    <tr><td>NEXUS panel</td><td>HTTP 302 strip</td><td>field-depth-singularizer</td></tr>
+    <tr><td>Field sanity</td><td>integral preflight</td><td><code>ironclad:field_sanity:4</code></td></tr>
+  </table>
+  <p>Doctrine: <code>NewLatest/data/single-field-depth-doctrine.json</code> · <a href="safety.html">Safety manual</a></p>
+
+  <h2 id="wrdt">World_Redata</h2>
+  <pre><code>cd World_Redata
+./build-cpp.sh
+PYTHONPATH=. pythong -m redata.cli parity
+PYTHONPATH=. pythong -m redata.cli security</code></pre>
+
+  <h2 id="env">Downstream env</h2>
+  <pre><code>export G16_PREFIX=/path/to/Grok16
+export G16_BELT_PROFILE=belt_2_0
+export WRDT_G16_PREFIX="$G16_PREFIX"
+source data/grok16-integrate.env</code></pre>
+
+  <h2 id="ironclad">Ironclad</h2>
+  <p><code>data/g16-ironclad-meld.json</code> — single fabric, linear time, field sanity absorbed at forge link pass.</p>
+""".format(DISTRO=DISTRO),
+    ),
+    "profiles.html": (
+        "Profiles",
+        """
+  <h1>Build Profiles</h1>
+  <p>Defined in <code>data/grok16-profiles.json</code>. Default C++ standard: <code>gnu++26</code>. Distro 2.0 default belt: <code>belt_2_0</code>.</p>
+
+  <h2 id="belt">Belt profiles (2.0)</h2>
+  <table>
+    <tr><th>Name</th><th>CMake</th><th>Use</th></tr>
+    <tr id="belt-2"><td><strong>belt_2_0</strong></td><td>grok16-profile-belt-2.cmake</td><td>Single fabric production — 8192 chunk, wave-massive, 512 slots</td></tr>
+    <tr id="belt-1"><td>belt_1_0</td><td>grok16-profile-field-opt.cmake</td><td>1.0 baseline (field_opt) — triad compare</td></tr>
+  </table>
+  <pre><code>export G16_BELT_PROFILE=belt_2_0
+G16_BENCH_PROFILE=belt_2_0 ./scripts/grok16-toolchain.sh bench</code></pre>
+
+  <h2>Classic profiles</h2>
+  <table>
+    <tr><th>Name</th><th>CMake</th><th>Bench source</th><th>Use</th></tr>
+    <tr id="field-opt"><td>field_opt</td><td>grok16-profile-field-opt.cmake</td><td>examples/field-nexus-bench/</td><td>FieldX86, entropy, NEXUS (1.0 primary)</td></tr>
+    <tr id="ai"><td>ai</td><td>grok16-profile-ai.cmake</td><td>examples/ai-matrix-bench/</td><td>Matrix / scoring loops</td></tr>
+    <tr id="field-compute"><td>field_compute</td><td>grok16-profile-field.cmake</td><td>examples/field-canvas-kernel/</td><td>CANVAS-style dispatch</td></tr>
+    <tr id="vulkan-rtx"><td>vulkan_rtx</td><td>grok16-profile-vulkan.cmake</td><td>field-nexus-bench</td><td>AVX2/FMA CPU kernels</td></tr>
+  </table>
+
+  <h2 id="bench">Bench profile selection</h2>
+  <pre><code>G16_BENCH_PROFILE=belt_2_0 ./scripts/grok16-toolchain.sh bench
+G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench
+./scripts/grok16-toolchain.sh bench-triad</code></pre>
+
+  <h2 id="mandate">Safety mandate</h2>
+  <p>All field targets include <code>cmake/g16-field-mandate.cmake</code> (<code>G16_FIELD_SAFETY_MANDATE_v1</code>). See <a href="safety.html">Safety</a>.</p>
+""",
+    ),
 }
 
 SEARCH_INDEX = [
-    {"t": "test-battery-release", "p": "batteries.html#release", "g": "Battery", "d": "1.0 production gate — heavy py forever binutils verify"},
+    {"t": "single fabric", "p": "single-fabric.html", "g": "2.0", "d": "One belt die one field amplitude knowing fixed-size"},
+    {"t": "belt_2_0", "p": "profiles.html#belt-2", "g": "Profile", "d": "2.0 production belt chunked redata 8192"},
+    {"t": "bench-triad", "p": "performance.html#triad", "g": "Bench", "d": "host gcc vs belt_1_0 vs belt_2_0"},
+    {"t": "test-battery-belt", "p": "batteries.html#belt", "g": "Battery", "d": "2.0 belt validation atop release"},
+    {"t": "grok16-integrate", "p": "integration.html#integrate", "g": "Integrate", "d": "Auto-wire Queen WRDT ZOCR belt_2_0"},
+    {"t": "depth field impossible", "p": "safety.html#depth", "g": "Safety", "d": "field_depth forbidden stripped at gates"},
+    {"t": "ironclad:time:1", "p": "safety.html#time", "g": "Safety", "d": "Sovereign linear time linear_ns only"},
+    {"t": "test-battery-release", "p": "batteries.html#release", "g": "Battery", "d": "Production gate heavy py forever binutils verify"},
     {"t": "test-battery-expert", "p": "batteries.html#expert", "g": "Battery", "d": "Ironclad linker RTX expert profile"},
-    {"t": "test-battery-heavy", "p": "batteries.html#heavy", "g": "Battery", "d": "Release profile heavy bench gate"},
     {"t": "g16-ld", "p": "linker.html", "g": "Linker", "d": "Field linker 16 targets mandate flags"},
-    {"t": "libgcc_s", "p": "batteries.html#triage", "g": "Linker", "d": "Shared lib corruption triage -pie on -shared"},
     {"t": "GPY-16", "p": "toolkits.html#gpy16", "g": "Toolkit", "d": "Built-in Python GrokVM gpy-16"},
-    {"t": "v1.0.0", "p": "release.html", "g": "Release", "d": "Stable distro tag checkout rebuild gate"},
+    {"t": "v2.0.0", "p": "release.html", "g": "Release", "d": "Single fabric distro tag checkout belt gate"},
     {"t": "bootstrap", "p": "getting-started.html#bootstrap", "g": "Workflow", "d": "First GCC fetch host build install"},
-    {"t": "rebuild", "p": "getting-started.html#rebuild", "g": "Workflow", "d": "Self-host fast full release modes"},
     {"t": "g16 unified", "p": "architecture.html#unified-driver", "g": "Driver", "d": "Single g16 C C++ Python discern"},
-    {"t": "field_opt", "p": "profiles.html#field-opt", "g": "Profile", "d": "Primary Field throughput entropy NEXUS"},
-    {"t": "G16_RELEASE_PROFILE", "p": "getting-started.html#rebuild", "g": "Env", "d": "LTO PGO field_opt production rebuild"},
+    {"t": "field_opt", "p": "profiles.html#field-opt", "g": "Profile", "d": "1.0 primary Field throughput belt_1_0 alias"},
+    {"t": "G16_BELT_PROFILE", "p": "profiles.html#belt", "g": "Env", "d": "Default belt_2_0 single fabric dispatch"},
+    {"t": "G16_RELEASE_PROFILE", "p": "getting-started.html#rebuild", "g": "Env", "d": "LTO PGO production rebuild"},
     {"t": "gnu++26", "p": "field-primer.html#standard", "g": "C++", "d": "Default C++ standard"},
-    {"t": "forge gcc_rebuild", "p": "architecture.html#forge-flow", "g": "Forge", "d": "Self-host GCC with g16 backends"},
 ]
 
 
@@ -411,11 +605,9 @@ def write_search() -> None:
 def patch_legacy_pages() -> None:
     """Bump cache version and nav on hand-maintained pages."""
     legacy = [
-        "profiles.html", "performance.html", "integration.html",
         "field-primer.html", "reference.html", "concepts.html", "io.html",
         "master-coder.html", "master-coder-c.html", "master-coder-cxx.html",
     ]
-    old_nav_marker = '<a href="index.html">Index</a>'
     new_links = "\n".join(
         f'      <a href="{h}">{l}</a>' for h, l in NAV if h != "index.html"
     )
@@ -423,20 +615,19 @@ def patch_legacy_pages() -> None:
       <a href="index.html">Home</a>
 {new_links}
     </div>"""
+    cache_pat = re.compile(r"manual-(?:css|theme|search|layout)\.js\?v\d+|manual\.css\?v\d+")
     for fname in legacy:
         path = ROOT / fname
         if not path.is_file():
             continue
         text = path.read_text(encoding="utf-8")
-        text = text.replace("manual.css?v=7", f"manual.css?{CACHE}")
-        text = text.replace("manual-theme.js?v=7", f"manual-theme.js?{CACHE}")
-        text = text.replace("manual-search.js?v=7", f"manual-search.js?{CACHE}")
-        text = text.replace("manual-layout.js?v=7", f"manual-layout.js?{CACHE}")
+        text = cache_pat.sub(lambda m: m.group(0).rsplit("v", 1)[0] + CACHE, text)
         text = text.replace('<span class="nav-version">v16.1.1</span>',
+                            f'<span class="nav-version">distro {DISTRO}</span><span class="nav-g16">g16 @ {G16}</span>')
+        text = text.replace(f'<span class="nav-version">distro 1.0.0</span><span class="nav-g16">g16 @ 16.1.1</span>',
                             f'<span class="nav-version">distro {DISTRO}</span><span class="nav-g16">g16 @ {G16}</span>')
         text = text.replace("<strong>Grok16 Manual</strong>", "<strong>Grok16</strong>")
         if '<div class="nav-links">' in text:
-            import re
             text = re.sub(
                 r'<div class="nav-links">.*?</div>',
                 new_nav_block,
@@ -448,10 +639,29 @@ def patch_legacy_pages() -> None:
         print(f"patched {fname}")
 
 
+def patch_concepts_single_fabric() -> None:
+    """Insert 2.0 single-fabric callout on concepts page."""
+    path = ROOT / "concepts.html"
+    if not path.is_file():
+        return
+    marker = '<aside class="callout">\n    <strong>Workflow tip:</strong>'
+    insert = """  <aside class="callout callout-accent">
+    <strong>Single fabric (2.0):</strong> Knowing is fixed-size on one belt die — parallel I/O fans in, truth stays one amplitude at depth 0. Time is linear (<code>ironclad:time:1</code>). See <a href="single-fabric.html">Single Fabric</a> and <a href="safety.html">Safety</a>.
+  </aside>
+
+"""
+    text = path.read_text(encoding="utf-8")
+    if "Single fabric (2.0)" not in text and marker in text:
+        text = text.replace(marker, insert + marker, 1)
+        path.write_text(text, encoding="utf-8")
+        print("patched concepts.html (single fabric callout)")
+
+
 def main() -> int:
     write_pages()
     write_search()
     patch_legacy_pages()
+    patch_concepts_single_fabric()
     gen = ROOT / "gen-master-pages.py"
     if gen.is_file():
         subprocess.run([sys.executable, str(gen)], check=False)

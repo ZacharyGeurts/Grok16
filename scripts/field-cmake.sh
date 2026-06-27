@@ -94,6 +94,8 @@ cmd_configure() {
   write_queen_inside_marker
   export GROK16_ROOT GROK16_FIELD_PROFILE="$prof"
   echo "field-cmake: configure $src -> $build (profile=$prof)" >&2
+  # CMake compiler probes link tiny test binaries — not field-witnessed; allow for configure only.
+  export G16_LINKER_ALLOW_UNWITNESSED=1
   local -a cache_init=()
   if [[ "$prof" == "queen_rtx" && -f "${GROK16_ROOT}/cmake/grok16-field-queen-rtx.cmake" ]]; then
     cache_init=(-C "${GROK16_ROOT}/cmake/grok16-field-queen-rtx.cmake")
@@ -106,6 +108,7 @@ cmd_configure() {
     -DCMAKE_PROJECT_INCLUDE="${GROK16_ROOT}/cmake/grok16-field.cmake" \
     -DGROK16_FIELD_PROFILE="$prof" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
     "$@"
 }
 
@@ -119,6 +122,9 @@ cmd_build() {
   [[ -x "$g16_bin" ]] || { echo "field-g16: g16 missing at $g16_bin" >&2; exit 1; }
   export CC="$g16_bin"
   export CXX="$g16_bin"
+  export GROK16_SG_ROOT="${GROK16_SG_ROOT:-${SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}}"
+  export NEXUS_INSTALL_ROOT="${NEXUS_INSTALL_ROOT:-${GROK16_SG_ROOT}/NewLatest}"
+  export NEXUS_STATE_DIR="${NEXUS_STATE_DIR:-${NEXUS_INSTALL_ROOT}/.nexus-state}"
   if [[ -f "$build/build.ninja" ]] && ninja_available; then
     echo "field-g16: ninja -C $build -j$jobs $target (CC/CXX=g16)" >&2
     ninja -C "$build" -j "$jobs" "$target"

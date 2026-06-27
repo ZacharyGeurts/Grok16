@@ -6,7 +6,33 @@
   "meld_citation": "ironclad:meld:2",
   "g16_mandate": "G16_FIELD_SAFETY_MANDATE_v1",
   "policy": "G16 builds under Ironclad — subsidiary field sanity melds without amending sealed doctrine.",
+  "time_is_linear": {
+    "declaration": "Time is linear.",
+    "citation": "ironclad:time:1",
+    "not_geometry_t": true
+  },
+  "single_fabric": {
+    "declaration": "Single fabric — one belt amplitude, one field depth.",
+    "citation": "ironclad:field_sanity:5",
+    "depth_field_impossible": true,
+    "max_field_depth": 0,
+    "g16_belt": "belt_2_0"
+  },
   "books": [
+    {
+      "id": "time",
+      "title": "Time — Linear sovereign clock (Ironclad extension)",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Time is linear — G16 forge and linker timestamp from sovereign linear_ns only; never rewind, never branch."
+        },
+        {
+          "v": 2,
+          "text": "G1ID meld inputs carry linear_ns and derived_utc — geometry stays 3D; wall clock is witness only."
+        }
+      ]
+    },
     {
       "id": "field_sanity",
       "title": "G16 Field Sanity — integral forge simplify",
