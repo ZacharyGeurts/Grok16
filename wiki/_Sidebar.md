@@ -1,6 +1,11 @@
 **[Home](Home)**
 
-### Release 2.0
+### Speed & execution (3.0)
+- [Speed Bench](Speed-Bench)
+- [Uncompiled Execution](Uncompiled-Execution)
+- [CMake and Linking](CMake-and-Linking)
+
+### Release 3.0
 - [Release](Release)
 - [Single Fabric](Single-Fabric)
 - [Safety](Safety)

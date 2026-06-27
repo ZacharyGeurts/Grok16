@@ -1,5 +1,35 @@
 [
   {
+    "t": "speed bench",
+    "p": "speed-bench.html",
+    "g": "3.0",
+    "d": "Versioned compile ms execution ops/s report v3.0.0"
+  },
+  {
+    "t": "exec-full-bench",
+    "p": "speed-bench.html#reproduce",
+    "g": "Bench",
+    "d": "field-exec-full-bench compile and execution"
+  },
+  {
+    "t": "uncompiled",
+    "p": "uncompiled.html",
+    "g": "3.0",
+    "d": "Python interpreter C C++ chamber compile ahead"
+  },
+  {
+    "t": "cmake linking",
+    "p": "cmake-linking.html",
+    "g": "Build",
+    "d": "grok16-toolchain.cmake g16-ld speed_demo"
+  },
+  {
+    "t": "speed_demo",
+    "p": "speed-bench.html",
+    "g": "Suite",
+    "d": "speed_demo v1.0.0 FieldX86 kernel bench"
+  },
+  {
     "t": "single fabric",
     "p": "single-fabric.html",
     "g": "2.0",
@@ -66,10 +96,16 @@
     "d": "Built-in Python GrokVM gpy-16"
   },
   {
-    "t": "v2.0.0",
+    "t": "v3.0.0",
     "p": "release.html",
     "g": "Release",
-    "d": "Single fabric distro tag checkout belt gate"
+    "d": "Speed bench uncompiled doctrine Queen manual"
+  },
+  {
+    "t": "queen theme",
+    "p": "index.html",
+    "g": "UI",
+    "d": "Queen navy gold emerald manual theme"
   },
   {
     "t": "bootstrap",

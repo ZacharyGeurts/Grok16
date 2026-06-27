@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Grok16 — Performance</title>
+  <title>Grok16 — Speed Bench</title>
   <meta name="description" content="Grok16 3.0.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
-  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/performance.html" />
+  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/speed-bench.html" />
   <script>
   (function (d) {
     try {
@@ -70,15 +70,29 @@
     </div>
   </nav>
 
-  <h1>Performance</h1>
-  <p>Measured: Linux x86_64, <code>g16 (Grok16-16.2.0) 16.2.0</code>, gnu++26. Repo: <code>PERFORMANCE.md</code>.</p>
+  <h1>Speed bench — report v3.0.0</h1>
+  <p>Distro <strong>3.0.0</strong> · suite <code>speed_demo</code> @ <code>1.0.0</code> · schema <code>grok16-field-exec-full-bench/v3</code></p>
 
-  <h2 id="speed-bench">Speed bench (report v3.0.0)</h2>
-  <p>Suite <code>speed_demo</code> @ <code>1.0.0</code> — compile ms + execution ops/s. Full manual: <a href="speed-bench.html">Speed Bench</a>.</p>
-  <pre><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
-./scripts/grok16-toolchain.sh exec-compare</code></pre>
+  <aside class="callout callout-accent">
+    <strong>Version stamps:</strong> Every run writes <code>docs/field-exec-full-bench.json</code> with distro, g16, suite, and report versions. Doctrine: <code>data/grok16-speed-bench-version.json</code>
+  </aside>
+
+  <figure class="fig-wide">
+    <img src="assets/speed-bench-chart.svg" alt="Speed bench bar chart" width="920" height="280" />
+    <figcaption>Execution ops/s by runner — 2026-06-27T03:02:28Z on <code>default-X870-Pro-RS</code></figcaption>
+  </figure>
+
+  <h2 id="winners">Winners</h2>
+  <div class="winner-grid">
+    <div class="winner-card"><strong>Fastest execution</strong><span class="val">85.29M</span><span class="sub">C++ — g16 belt_2_0</span></div>
+    <div class="winner-card"><strong>Fastest compile</strong><span class="val">318 ms</span><span class="sub">C — g16 belt_2_0</span></div>
+    <div class="winner-card"><strong>Best Python</strong><span class="val">777,876</span><span class="sub">interpreter — no compile</span></div>
+    <div class="winner-card"><strong>Amortized first-run</strong><span class="val">60.29M</span><span class="sub">C — g16 belt_2_0</span></div>
+  </div>
+
+  <h2 id="results">Full results (3s window)</h2>
   <table>
-    <tr><th>Runner</th><th>Compile (ms)</th><th>ops/s</th></tr>
+    <tr><th>Runner</th><th>Compile (ms)</th><th>Exec wall (ms)</th><th>ops/s</th><th>Binary bytes</th></tr>
     <tr><td>C++ — g16 belt_2_0</td><td>2,494</td><td>3,008</td><td><strong>85,294,665.80</strong></td><td>22,912</td></tr>
     <tr><td>C++ — host g++ -O2</td><td>1,710</td><td>3,006</td><td><strong>83,153,507.73</strong></td><td>21,640</td></tr>
     <tr><td>CMake — host g++ -O2</td><td>3,682</td><td>3,004</td><td><strong>82,620,718.84</strong></td><td>21,640</td></tr>
@@ -88,45 +102,23 @@
     <tr><td>Python — gpy-16 GrokVM</td><td>—</td><td>3,107</td><td><strong>765,841.56</strong></td><td>—</td></tr>
   </table>
 
-  <h2 id="triad">Belt triad (bench-triad)</h2>
-  <p>Workload: <code>examples/field-nexus-bench</code> — 240 frames, FieldX86 + entropy + wave + NEXUS.</p>
-  <table>
-    <tr><th>Toolchain</th><th>Profile</th><th>compile_ms</th><th>run wall_ms</th><th>binary bytes</th></tr>
-    <tr><td>host <code>g++</code></td><td>-O3 -march=native</td><td>~2575</td><td>~3</td><td>~27264</td></tr>
-    <tr><td><code>g16</code></td><td><code>belt_1_0</code></td><td>~2377</td><td>~3</td><td>~22712</td></tr>
-    <tr><td><code>g16</code></td><td><code>belt_2_0</code></td><td>~3708</td><td>~5</td><td>~22840</td></tr>
-  </table>
-  <p><code>belt_1_0</code> matches host runtime; <code>belt_2_0</code> trades compile time for production single-fabric belt.</p>
-  <pre><code>./scripts/grok16-toolchain.sh bench-triad
-cat data/bench/triad-latest.json</code></pre>
-
-  <h2 id="field-bench">Field-Opt vs baseline</h2>
-  <table>
-    <tr><th>Build</th><th>Flags</th><th>kernel wall_ms</th><th>binary bytes</th></tr>
-    <tr><td>baseline</td><td>-std=gnu++26 -O2</td><td>2.65</td><td>17144</td></tr>
-    <tr><td>field_opt / belt_1_0</td><td>profile flags</td><td>2.11–2.19</td><td>22616</td></tr>
-  </table>
-  <p>Delta: ~19% faster kernel vs -O2 on same source.</p>
-
-  <h2 id="bench-all">Profile suite (bench-all)</h2>
-  <table>
-    <tr><th>Profile</th><th>compile_ms</th><th>run_ms</th><th>bytes</th><th>kernel</th></tr>
-    <tr><td>field_opt</td><td>828–874</td><td>4–5</td><td>22616</td><td>wall_ms ~2.1</td></tr>
-    <tr><td>belt_2_0</td><td>~3708</td><td>~5</td><td>22840</td><td>single fabric</td></tr>
-    <tr><td>ai</td><td>735</td><td>6–7</td><td>18232</td><td>wall_ms ~4.0</td></tr>
-    <tr><td>vulkan_rtx</td><td>864–876</td><td>4–5</td><td>22728</td><td>wall_ms ~2.1</td></tr>
-  </table>
+  <h2 id="doctrine">Doctrine</h2>
+  <ul>
+    <li><strong>Dev / uncompiled:</strong> Python at interpreter speed (~0.8M ops/s). C/C++ rely on chamber organization + compile ahead.</li>
+    <li><strong>Release / plane:</strong> Staged binaries reach ~80–85M ops/s; compile excluded from timed execution after cache hit.</li>
+    <li><strong>Compare axis:</strong> <code>field_execution_ops_per_sec</code> on identical <code>speed_demo</code> kernel.</li>
+  </ul>
+  <p>See <a href="uncompiled.html">Uncompiled execution</a> · <a href="cmake-linking.html">CMake &amp; linking</a></p>
 
   <h2 id="reproduce">Reproduce</h2>
-  <pre><code>export G16_PREFIX="$(pwd)"
+  <pre><code>cd Grok16
+git checkout v3.0.0
+export G16_PREFIX="$(pwd)"
 export G16_BELT_PROFILE=belt_2_0
-./scripts/grok16-toolchain.sh bench-triad
-./scripts/grok16-toolchain.sh field-bench
-./scripts/grok16-toolchain.sh bench-all</code></pre>
-
-  <h2 id="pgo">PGO</h2>
-  <pre><code>./scripts/grok16-toolchain.sh profile
-G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
+SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+./scripts/grok16-toolchain.sh exec-compare
+python3 scripts/field-exec-stage.py</code></pre>
+  <p>JSON: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json">field-exec-full-bench.json</a> · MD: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md">SPEED-BENCH-REPORT.md</a></p>
   <footer>
     <a href="index.html">Home</a> ·
     <a href="release.html">Release 3.0.0</a> ·

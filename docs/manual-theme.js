@@ -2,6 +2,7 @@
   var STORAGE_THEME = "g16-theme";
   var STORAGE_SCALE = "g16-font-scale";
   var root = document.documentElement;
+  var THEMES = { light: 1, dark: 1, queen: 1 };
 
   function storageGet(key) {
     try {
@@ -18,11 +19,11 @@
   }
 
   function preferredTheme() {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return "queen";
   }
 
   function normalizeTheme(value) {
-    return value === "dark" ? "dark" : "light";
+    return THEMES[value] ? value : "queen";
   }
 
   function clearInlineBodyPaint() {
@@ -33,10 +34,10 @@
   }
 
   function updateThemeButtons(theme) {
-    var lightBtn = document.getElementById("g16-theme-light");
-    var darkBtn = document.getElementById("g16-theme-dark");
-    if (lightBtn) lightBtn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
-    if (darkBtn) darkBtn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    ["light", "dark", "queen"].forEach(function (name) {
+      var btn = document.getElementById("g16-theme-" + name);
+      if (btn) btn.setAttribute("aria-pressed", theme === name ? "true" : "false");
+    });
   }
 
   function applyTheme(theme) {
@@ -58,9 +59,9 @@
 
   function readInitialTheme() {
     var stored = storageGet(STORAGE_THEME);
-    if (stored === "dark" || stored === "light") return stored;
+    if (stored && THEMES[stored]) return stored;
     var attr = root.getAttribute("data-theme");
-    if (attr === "dark" || attr === "light") return attr;
+    if (attr && THEMES[attr]) return attr;
     return preferredTheme();
   }
 
@@ -72,22 +73,15 @@
       });
     }
 
-    var lightBtn = document.getElementById("g16-theme-light");
-    var darkBtn = document.getElementById("g16-theme-dark");
-
-    if (lightBtn) {
-      lightBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        applyTheme("light");
-      });
-    }
-
-    if (darkBtn) {
-      darkBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        applyTheme("dark");
-      });
-    }
+    ["light", "dark", "queen"].forEach(function (name) {
+      var btn = document.getElementById("g16-theme-" + name);
+      if (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          applyTheme(name);
+        });
+      }
+    });
   }
 
   function wrapTables() {

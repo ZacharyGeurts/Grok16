@@ -1,9 +1,21 @@
 {
-  "schema": "grok16-field-exec-full-bench/v1",
-  "bench_at": "2026-06-27T02:57:38Z",
+  "schema": "grok16-field-exec-full-bench/v3",
+  "bench_at": "2026-06-27T03:02:28Z",
   "target_sec": 3,
   "kernel": "speed_demo \u2014 FieldX86 loop (256\u00d716 die, 240 frames/epoch, 512 prog_ops/frame)",
+  "kernel_version": "1.0.0",
   "host": "default-X870-Pro-RS",
+  "versions": {
+    "schema": "grok16-speed-bench-version/v3",
+    "distro_version": "3.0.0",
+    "distro_tag": "v3.0.0",
+    "g16_pkgversion": "Grok16-16.2.0",
+    "g16_dumpversion": "16.1.1",
+    "bench_suite": "speed_demo",
+    "bench_suite_version": "1.0.0",
+    "report_version": "3.0.0",
+    "runners_version": "3.0.0"
+  },
   "rows": [
     {
       "id": "c_host_o2",
@@ -12,15 +24,15 @@
       "group": "host",
       "kind": "binary",
       "path": "c_host_o2",
-      "compile_ms": 621.06,
+      "compile_ms": 346.56,
       "compile_note": "single gcc invoke",
       "rc": 0,
-      "runner_wall_ms": 3002.41,
-      "field_execution_ms": 3001.17,
-      "ops_per_sec": 81437641.13,
-      "total_ops": 244408320,
+      "runner_wall_ms": 3001.84,
+      "field_execution_ms": 3000.04,
+      "ops_per_sec": 73440210.44,
+      "total_ops": 220323840,
       "binary_bytes": 24568,
-      "amortized_ops_per_sec": 50237277.540621564
+      "amortized_ops_per_sec": 54539129.66373574
     },
     {
       "id": "c_g16_belt_2",
@@ -29,15 +41,15 @@
       "group": "g16",
       "kind": "binary",
       "path": "c_g16_belt_2",
-      "compile_ms": 433.65,
+      "compile_ms": 317.86,
       "compile_note": "g16 belt_2_0",
       "rc": 0,
-      "runner_wall_ms": 3001.24,
-      "field_execution_ms": 3000.04,
-      "ops_per_sec": 80485448.98,
-      "total_ops": 241459200,
+      "runner_wall_ms": 3002.05,
+      "field_execution_ms": 3000.43,
+      "ops_per_sec": 79451081.93,
+      "total_ops": 238387200,
       "binary_bytes": 16248,
-      "amortized_ops_per_sec": 56140235.747916155
+      "amortized_ops_per_sec": 60287953.143733025
     },
     {
       "id": "cxx_host_o2",
@@ -46,15 +58,15 @@
       "group": "host",
       "kind": "binary",
       "path": "cxx_host_o2",
-      "compile_ms": 2035.35,
+      "compile_ms": 1710.44,
       "compile_note": "single g++ invoke",
       "rc": 0,
-      "runner_wall_ms": 3002.76,
-      "field_execution_ms": 3000.74,
-      "ops_per_sec": 85339576.29,
-      "total_ops": 256081920,
+      "runner_wall_ms": 3005.62,
+      "field_execution_ms": 3001.31,
+      "ops_per_sec": 83153507.73,
+      "total_ops": 249569280,
       "binary_bytes": 21640,
-      "amortized_ops_per_sec": 28115234.253051545
+      "amortized_ops_per_sec": 30678970.10448488
     },
     {
       "id": "cxx_g16_belt_2",
@@ -63,15 +75,15 @@
       "group": "g16",
       "kind": "binary",
       "path": "cxx_g16_belt_2",
-      "compile_ms": 2737.83,
+      "compile_ms": 2493.65,
       "compile_note": "g16 belt_2_0",
       "rc": 0,
-      "runner_wall_ms": 3003.73,
-      "field_execution_ms": 3000.92,
-      "ops_per_sec": 88487346.9,
-      "total_ops": 265543680,
+      "runner_wall_ms": 3007.92,
+      "field_execution_ms": 3000.88,
+      "ops_per_sec": 85294665.8,
+      "total_ops": 255959040,
       "binary_bytes": 22912,
-      "amortized_ops_per_sec": 23673454.089672353
+      "amortized_ops_per_sec": 24414198.846478608
     },
     {
       "id": "cmake_host_o2",
@@ -80,17 +92,17 @@
       "group": "host",
       "kind": "binary",
       "path": "cmake_host_o2",
-      "compile_ms": 2416.75,
-      "compile_configure_ms": 1239.97,
-      "compile_build_ms": 1176.78,
+      "compile_ms": 3681.7,
+      "compile_configure_ms": 1532.62,
+      "compile_build_ms": 2149.08,
       "compile_note": "cmake configure + build",
       "rc": 0,
-      "runner_wall_ms": 3005.41,
-      "field_execution_ms": 3001.06,
-      "ops_per_sec": 85739968.42,
-      "total_ops": 257310720,
+      "runner_wall_ms": 3003.73,
+      "field_execution_ms": 3001.33,
+      "ops_per_sec": 82620718.84,
+      "total_ops": 247971840,
       "binary_bytes": 21640,
-      "amortized_ops_per_sec": 25094012.854320627
+      "amortized_ops_per_sec": 17647589.303030953
     },
     {
       "id": "python_host",
@@ -108,10 +120,10 @@
       "compile_ms": 0,
       "compile_note": "interpreter \u2014 no compile",
       "rc": 0,
-      "runner_wall_ms": 3101.02,
-      "field_execution_ms": 3075.93,
-      "ops_per_sec": 719081.1,
-      "total_ops": 2211840
+      "runner_wall_ms": 3014.03,
+      "field_execution_ms": 3001.4,
+      "ops_per_sec": 777876.44,
+      "total_ops": 2334720
     },
     {
       "id": "python_gpy",
@@ -129,9 +141,9 @@
       "compile_ms": 0,
       "compile_note": "GrokVM interpreter \u2014 no compile",
       "rc": 0,
-      "runner_wall_ms": 3145.92,
-      "field_execution_ms": 3056.52,
-      "ops_per_sec": 763849.82,
+      "runner_wall_ms": 3107.44,
+      "field_execution_ms": 3048.57,
+      "ops_per_sec": 765841.56,
       "total_ops": 2334720
     }
   ],
@@ -139,40 +151,40 @@
     "best_execution": {
       "id": "cxx_g16_belt_2",
       "label": "C++ \u2014 g16 belt_2_0",
-      "ops_per_sec": 88487346.9
+      "ops_per_sec": 85294665.8
     },
     "fastest_compile": {
       "id": "c_g16_belt_2",
       "label": "C \u2014 g16 belt_2_0",
-      "compile_ms": 433.65
+      "compile_ms": 317.86
     },
     "slowest_compile": {
-      "id": "cxx_g16_belt_2",
-      "label": "C++ \u2014 g16 belt_2_0",
-      "compile_ms": 2737.83
+      "id": "cmake_host_o2",
+      "label": "CMake \u2014 host g++ -O2",
+      "compile_ms": 3681.7
     },
     "best_per_language": {
       "c": {
-        "id": "c_host_o2",
-        "ops_per_sec": 81437641.13
+        "id": "c_g16_belt_2",
+        "ops_per_sec": 79451081.93
       },
       "cxx": {
         "id": "cxx_g16_belt_2",
-        "ops_per_sec": 88487346.9
+        "ops_per_sec": 85294665.8
       },
       "cmake": {
         "id": "cmake_host_o2",
-        "ops_per_sec": 85739968.42
+        "ops_per_sec": 82620718.84
       },
       "python": {
-        "id": "python_gpy",
-        "ops_per_sec": 763849.82
+        "id": "python_host",
+        "ops_per_sec": 777876.44
       }
     },
     "best_amortized_first_run": {
       "id": "c_g16_belt_2",
       "label": "C \u2014 g16 belt_2_0",
-      "amortized_ops_per_sec": 56140235.747916155
+      "amortized_ops_per_sec": 60287953.143733025
     }
   }
 }

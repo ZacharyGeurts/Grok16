@@ -1,18 +1,18 @@
 {
-  "distro_version": "2.0.0",
+  "distro_version": "3.0.0",
   "release_track": {
-    "current": "2.0.0",
-    "previous": "1.0.0",
-    "next": "2.1",
+    "current": "3.0.0",
+    "previous": "2.0.0",
+    "next": "3.1",
     "status": "released",
     "released": true,
-    "tag": "v2.0.0",
-    "validation_tiers": ["expert", "heavy", "release", "belt"],
-    "roadmap": "2.0.0 — belt 2.0 gate (bench-triad + test-battery-belt) → 2.1"
+    "tag": "v3.0.0",
+    "validation_tiers": ["expert", "heavy", "release", "belt", "speed_bench"],
+    "roadmap": "3.0.0 — versioned compile+exec speed bench, uncompiled doctrine, Queen manual → 3.1"
   },
   "g16_version": "16.2.0",
   "pkgversion": "Grok16-16.2.0",
-  "tag": "v2.0.0",
+  "tag": "v3.0.0",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -25,6 +25,20 @@
     "baseline_profile": "belt_1_0",
     "bench_triad": "scripts/grok16-bench-triad.sh",
     "integrate": "scripts/grok16-integrate.sh"
+  },
+  "speed_bench": {
+    "report_version": "3.0.0",
+    "suite": "speed_demo",
+    "suite_version": "1.0.0",
+    "schema": "grok16-field-exec-full-bench/v3",
+    "doctrine": "data/grok16-speed-bench-version.json",
+    "uncompiled": "data/field-exec-uncompiled-doctrine.json",
+    "scripts": {
+      "full_bench": "scripts/field-exec-full-bench.py",
+      "compare": "scripts/field-exec-compare.py",
+      "stage": "scripts/field-exec-stage.py"
+    },
+    "toolchain_hook": "exec-full-bench"
   },
   "hostess7_pair": {
     "truth_adapt_floor": 58,
@@ -47,15 +61,16 @@
     "declaration": "Single fabric is the 2.0 technology — one belt amplitude, one field depth, linear sovereign time",
     "safety": ["depth_field_impossible", "ironclad_field_sanity", "sovereign_linear_time"]
   },
-  "notes": "Grok16 2.0.0 — single fabric belt, safety gates, auto-integrate, triad bench vs host gcc and belt 1.0",
+  "notes": "Grok16 3.0.0 — versioned compile+execution speed bench, uncompiled doctrine, Queen-themed manual, CMake/linking guide",
   "changelog": [
+    "3.0.0: Speed bench v3 — compile ms + execution ops/s with report/suite/distro version stamps",
+    "3.0.0: speed_demo suite — C, C++, CMake, Python (host + gpy-16) @ 3s window",
+    "3.0.0: Uncompiled doctrine — Python interpreter lane; C/C++ chamber compile-ahead",
+    "3.0.0: Queen-themed GitHub Pages manual — speed-bench, uncompiled, cmake-linking",
+    "3.0.0: exec-full-bench toolchain hook + docs/field-exec-full-bench.json publish",
     "2.0.0: Single fabric doctrine — knowing fixed-size; parallel I/O fans in, truth one amplitude",
     "2.0.0: Safety meld — depth fields sealed and destroyed; time is linear (ironclad:time:1)",
     "2.0.0: Belt 2.0 profile — chunked redata (8192), wave-massive, OpenMP belt lanes, LTO+Hostess",
-    "2.0.0: bench-triad — host gcc vs belt_1_0 vs belt_2_0 compile + runtime",
-    "2.0.0: grok16-integrate.sh — auto-wire Queen, World_Redata, ZOCR, PythonG",
-    "2.0.0: test-battery-belt — 2.0 validation gate atop release tier",
-    "2.0.0: g16 @ 16.2.0 — compat with 1.0 profiles (belt_1_0 aliases field_opt)",
     "1.0.0: Stable release — test-battery-release gate, linker -shared/-pie fix, profile/LTO/PGO hardening"
   ]
 }

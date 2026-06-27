@@ -1,0 +1,31 @@
+{
+  "schema": "grok16-speed-bench-version/v3",
+  "distro_version": "3.0.0",
+  "distro_tag": "v3.0.0",
+  "g16_pkgversion": "Grok16-16.2.0",
+  "g16_dumpversion_expected": "16.2.0",
+  "bench_suite": "speed_demo",
+  "bench_suite_version": "1.0.0",
+  "report_version": "3.0.0",
+  "compare_axis": "field_execution_ops_per_sec",
+  "compile_axis": "wave_convert_ms",
+  "kernels": {
+    "speed_demo": {
+      "version": "1.0.0",
+      "description": "FieldX86 loop — 256×16 die, 240 frames/epoch, 512 prog_ops/frame",
+      "sources": ["examples/speed-demo/speed_demo.c", "examples/speed-demo/speed_demo.cpp", "examples/speed-demo/speed_demo.py"]
+    }
+  },
+  "runners_version": "3.0.0",
+  "scripts": {
+    "stage": "scripts/field-exec-stage.py",
+    "compare": "scripts/field-exec-compare.py",
+    "full_bench": "scripts/field-exec-full-bench.py"
+  },
+  "doctrine": "data/field-exec-uncompiled-doctrine.json",
+  "changelog": [
+    "3.0.0: Full bench — compile ms + execution ops/s with version stamps",
+    "3.0.0: Uncompiled doctrine — Python interpreter, C/C++ chamber compile-ahead",
+    "3.0.0: Queen-themed manual — speed-bench, uncompiled, cmake-linking pages"
+  ]
+}

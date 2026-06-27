@@ -30,10 +30,45 @@ RESULT_JSON = OUTDIR / "field-exec-full-bench.json"
 REPORT_MD = ROOT / "data" / "bench" / "SPEED-BENCH-REPORT.md"
 DOCS_REPORT_MD = ROOT / "docs" / "SPEED-BENCH-REPORT.md"
 DOCS_RESULT_JSON = ROOT / "docs" / "field-exec-full-bench.json"
+BENCH_VERSION = ROOT / "data" / "grok16-speed-bench-version.json"
+G16_VERSION = ROOT / "data" / "grok16-version.json"
 
 
 def _utc() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _load_json(path: Path, default: dict | None = None) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return default or {}
+
+
+def _g16_dumpversion() -> str:
+    if not G16.is_file():
+        return "missing"
+    try:
+        proc = subprocess.run([str(G16), "-dumpversion"], capture_output=True, text=True, timeout=10)
+        return (proc.stdout or proc.stderr or "").strip() or "unknown"
+    except (OSError, subprocess.TimeoutExpired):
+        return "unknown"
+
+
+def _bench_versions() -> dict:
+    bench = _load_json(BENCH_VERSION, {"schema": "grok16-speed-bench-version/v3", "report_version": "3.0.0"})
+    distro = _load_json(G16_VERSION, {})
+    return {
+        "schema": bench.get("schema", "grok16-speed-bench-version/v3"),
+        "distro_version": bench.get("distro_version") or distro.get("distro_version") or "3.0.0",
+        "distro_tag": bench.get("distro_tag") or distro.get("tag") or "v3.0.0",
+        "g16_pkgversion": bench.get("g16_pkgversion") or distro.get("pkgversion") or "Grok16-16.2.0",
+        "g16_dumpversion": _g16_dumpversion(),
+        "bench_suite": bench.get("bench_suite", "speed_demo"),
+        "bench_suite_version": bench.get("bench_suite_version", "1.0.0"),
+        "report_version": bench.get("report_version", "3.0.0"),
+        "runners_version": bench.get("runners_version", "3.0.0"),
+    }
 
 
 def _run(cmd: list[str], *, cwd: Path | None = None, timeout: int = 600) -> tuple[int, str, str, float]:
@@ -270,12 +305,15 @@ def bench_all() -> dict:
             r["amortized_ops_per_sec"] = (r.get("ops_per_sec") or 0) / (1.0 + cs)
     best_amortized = max((r for r in rows if r.get("amortized_ops_per_sec")), key=lambda r: r["amortized_ops_per_sec"], default=None)
 
+    versions = _bench_versions()
     doc = {
-        "schema": "grok16-field-exec-full-bench/v1",
+        "schema": "grok16-field-exec-full-bench/v3",
         "bench_at": _utc(),
         "target_sec": TARGET_SEC,
         "kernel": "speed_demo — FieldX86 loop (256×16 die, 240 frames/epoch, 512 prog_ops/frame)",
+        "kernel_version": versions.get("bench_suite_version", "1.0.0"),
         "host": os.uname().nodename,
+        "versions": versions,
         "rows": rows,
         "winners": {
             "best_execution": {"id": best_exec["id"], "label": best_exec["label"], "ops_per_sec": best_exec["ops_per_sec"]} if best_exec else None,
@@ -309,9 +347,13 @@ def bench_all() -> dict:
 def _write_report_md(doc: dict) -> None:
     rows = doc["rows"]
     w = doc["winners"]
+    ver = doc.get("versions") or {}
     lines = [
         "# Grok16 speed-demo — compile + execution benchmark",
         "",
+        f"**Report version:** {ver.get('report_version', '3.0.0')} · **Distro:** {ver.get('distro_version', '3.0.0')} ({ver.get('distro_tag', 'v3.0.0')})  ",
+        f"**Compiler:** {ver.get('g16_pkgversion', 'Grok16-16.2.0')} · dumpversion `{ver.get('g16_dumpversion', '?')}`  ",
+        f"**Bench suite:** {ver.get('bench_suite', 'speed_demo')} @ {ver.get('bench_suite_version', '1.0.0')}  ",
         f"**Bench date:** {doc['bench_at']}  ",
         f"**Target execution window:** {doc['target_sec']}s per runner  ",
         f"**Kernel:** {doc['kernel']}  ",

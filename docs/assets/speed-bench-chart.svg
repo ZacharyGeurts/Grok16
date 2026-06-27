@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 320" role="img" aria-label="Speed demo compile vs execution">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0f18"/>
+      <stop offset="100%" stop-color="#060a12"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8c878"/>
+      <stop offset="100%" stop-color="#c8a030"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7ec8ff"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="320" fill="url(#bg)" rx="12"/>
+  <text x="24" y="36" fill="#e8c878" font-family="system-ui,sans-serif" font-size="18" font-weight="700">speed_demo v1.0 — compile (ms) vs execution (M ops/s)</text>
+  <text x="24" y="58" fill="#8fb4d9" font-family="system-ui,sans-serif" font-size="12">Grok16 3.0 · report v3.0.0 · chamber compile-ahead · Python interpreter lane</text>
+  <!-- compile bars (left axis) -->
+  <text x="24" y="92" fill="#a8a49c" font-size="11">COMPILE</text>
+  <rect x="140" y="78" width="434" height="18" fill="url(#gold)" rx="4"/><text x="148" y="92" fill="#060a12" font-size="11" font-weight="600">C g16 belt_2_0 · 434ms</text>
+  <rect x="140" y="104" width="621" height="18" fill="#c8a030" opacity="0.85" rx="4"/><text x="148" y="118" fill="#060a12" font-size="11">C host gcc · 621ms</text>
+  <rect x="140" y="130" width="2035" height="18" fill="#a67c00" opacity="0.7" rx="4"/><text x="148" y="144" fill="#fff" font-size="11">C++ host · 2035ms</text>
+  <rect x="140" y="156" width="2417" height="18" fill="#a67c00" opacity="0.55" rx="4"/><text x="148" y="170" fill="#fff" font-size="11">CMake host · 2417ms</text>
+  <rect x="140" y="182" width="2738" height="18" fill="#a67c00" opacity="0.45" rx="4"/><text x="148" y="196" fill="#fff" font-size="11">C++ g16 belt_2_0 · 2738ms</text>
+  <line x1="120" y1="210" x2="880" y2="210" stroke="#2a3140" stroke-width="1"/>
+  <!-- exec bars -->
+  <text x="24" y="232" fill="#a8a49c" font-size="11">EXECUTION</text>
+  <rect x="140" y="218" width="780" height="22" fill="url(#cyan)" rx="4"/><text x="148" y="234" fill="#060a12" font-size="11" font-weight="600">C++ g16 · 88.5M ops/s WINNER</text>
+  <rect x="140" y="248" width="756" height="18" fill="#38bdf8" opacity="0.85" rx="4"/><text x="148" y="262" fill="#060a12" font-size="11">CMake host · 85.7M</text>
+  <rect x="140" y="272" width="7" height="18" fill="#f472b6" rx="4"/><text x="152" y="286" fill="#f472b6" font-size="11">Python gpy · 0.76M (no compile)</text>
+  <text x="24" y="310" fill="#6e6a63" font-size="10">Scale normalized · full numbers in field-exec-full-bench.json v3</text>
+</svg>

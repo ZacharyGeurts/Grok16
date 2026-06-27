@@ -1,16 +1,47 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-2.0.0-brightgreen)
+![Status](https://img.shields.io/badge/release-3.0.0-brightgreen)
+![Bench](https://img.shields.io/badge/speed__bench-v3.0.0-gold)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
-![Track](https://img.shields.io/badge/roadmap-2.0%20%E2%86%92%202.1-lightgrey)
+![Track](https://img.shields.io/badge/roadmap-3.0%20%E2%86%92%203.1-lightgrey)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)
 ![C++](https://img.shields.io/badge/default-gnu++26-purple)
 
-**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **2.0** ships **single fabric** belt dispatch (`belt_2_0`), Ironclad safety meld, and depth fields sealed and destroyed at integrated consumers.
+## Speed bench — compile vs execution (report v3.0.0)
 
-> **Grok16 2.0.0** — single fabric knowing: one belt amplitude, one field depth, linear sovereign time. Default profile `belt_2_0`. See [PERFORMANCE.md](PERFORMANCE.md) and [RELEASE-2.0.md](RELEASE-2.0.md).
+**Distro 3.0.0** · **suite `speed_demo` @ 1.0.0** · **3s execution window** · [full report](docs/SPEED-BENCH-REPORT.md) · [web manual](https://zacharygeurts.github.io/Grok16/speed-bench.html)
+
+| Runner | Compile (ms) | Exec ops/s | Notes |
+|--------|-------------:|-----------:|-------|
+| C++ — g16 belt_2_0 | 2,494 | **85,294,666** | Fastest execution |
+| C++ — host g++ -O2 | 1,710 | 83,153,508 | |
+| CMake — host g++ -O2 | 3,682 | 82,620,719 | |
+| C — g16 belt_2_0 | **318** | 79,451,082 | Fastest compile |
+| C — host gcc -O2 | 347 | 73,440,210 | |
+| Python — host CPython 3 | — | **777,876** | No compile — interpreter |
+| Python — gpy-16 GrokVM | — | 765,842 | No compile — GrokVM |
+
+- **Fastest execution:** C++ g16 belt_2_0 — **85.3M ops/s**
+- **Fastest compile:** C g16 belt_2_0 — **318 ms**
+- **Best Python:** host CPython — **778K ops/s** (uncompiled lane)
+- **Best amortized first-run:** C g16 belt_2_0 — **60.3M** effective ops/s
+
+Python runs at **interpreter speed** (~0.8M ops/s). C/C++ use **chamber compile-ahead** — not line-by-line interpretation. See [Uncompiled doctrine](data/field-exec-uncompiled-doctrine.json) and [RELEASE-3.0.md](RELEASE-3.0.md).
+
+```bash
+SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+./scripts/grok16-toolchain.sh exec-compare
+```
+
+JSON: `docs/field-exec-full-bench.json` · Versions: `data/grok16-speed-bench-version.json`
+
+---
+
+**Grok16** is a **self-hosted G16 field compiler** — unified ELF `g16` @ **16.2.0** auto-detects C (`gnu17`) and C++ (`gnu++26`); `g++16` is a compat symlink. **3.0** adds **versioned compile+execution speed bench**; **2.0** single fabric belt (`belt_2_0`), Ironclad safety meld, depth fields sealed and destroyed at integrated consumers.
+
+> **Grok16 3.0.0** — speed bench v3, uncompiled doctrine, Queen-themed manual (CMake, linking, chamber). Default profile `belt_2_0`. See [RELEASE-3.0.md](RELEASE-3.0.md) and [wiki/Speed-Bench.md](wiki/Speed-Bench.md).
 
 ## What you get
 
@@ -29,7 +60,7 @@
 
 Local trees (`vendor/`, `build/`, `bin/`) are produced on your machine (~6G).
 
-**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Release 2.0](https://zacharygeurts.github.io/Grok16/release.html) · [Batteries](https://zacharygeurts.github.io/Grok16/batteries.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
+**Manual:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) · [Speed Bench](https://zacharygeurts.github.io/Grok16/speed-bench.html) · [Uncompiled](https://zacharygeurts.github.io/Grok16/uncompiled.html) · [CMake & Linking](https://zacharygeurts.github.io/Grok16/cmake-linking.html) · [Release 3.0](https://zacharygeurts.github.io/Grok16/release.html) · [Wiki](https://github.com/ZacharyGeurts/Grok16/wiki) · [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ### Single fabric & safety (2.0)
 
