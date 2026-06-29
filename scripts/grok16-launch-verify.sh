@@ -63,6 +63,15 @@ if [[ -f "$NL/lib/field-g16-launch.py" ]]; then
   fi
 fi
 
+if [[ -x "$GROK16_ROOT/scripts/grok16-verify-ammoos.sh" ]]; then
+  if bash "$GROK16_ROOT/scripts/grok16-verify-ammoos.sh"; then
+    log "PASS ammoos surfaces"
+  else
+    log "WARN ammoos surfaces partial"
+    FAIL=$((FAIL + 1))
+  fi
+fi
+
 if [[ "$FAIL" -eq 0 ]]; then
   log "grok16-launch-verify: PASS (${#LAUNCHES[@]} chambers)"
   exit 0

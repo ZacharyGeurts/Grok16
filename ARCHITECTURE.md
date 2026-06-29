@@ -68,7 +68,7 @@ Grok16 does not ship a forked GCC IR — it **configures and profiles** the fiel
 | Layer | Field tuning |
 |-------|----------------|
 | Forge rebuild | `G16_FIELD_SPEED` / `G16_RELEASE_PROFILE` → LTO, vectorize, unroll on `make` |
-| Consumer profiles | `field_opt`, `ai`, `field_compute`, `vulkan_rtx` in `data/grok16-profiles.json` |
+| Consumer profiles | `field_opt`, `ai`, `field_compute`, `vulkan_rtx`, **`ammoos`** in `data/grok16-profiles.json` |
 | Benchmarks | `field-bench` (FieldX86 + entropy + NEXUS), `bench-all`, PGO via `profile` |
 | Macros | `FIELD_ENTROPY_DISPATCH`, `FIELD_X86_DIE`, `FIELD_WAVE_PHASE`, `G16_FIELD_SPEED` |
 
@@ -84,8 +84,21 @@ Default rebuild is **fast iteration** (`G16_FAST_REBUILD=1`). Production: `G16_R
 | `ai` | Matrix-friendly `-O3`, vectorize, unroll; `GROK16_PROFILE_AI` |
 | `field_compute` | OpenMP SIMD, vector cost model; `FIELD_X86_DIE`, CANVAS-style kernels |
 | `vulkan_rtx` | AVX2/FMA, AMOURANTHRTX-style CPU prep |
+| **`ammoos`** | Queen + AmmoOS field desktop — `belt_2_0` + Hostess secure + ironclad; see `docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md` |
 
-CMake wrappers: `cmake/grok16-profile-{ai,field,vulkan}.cmake` — include via `-DCMAKE_PROJECT_INCLUDE=...` after `grok16-toolchain.cmake`.
+CMake wrappers: `cmake/grok16-profile-{ai,field,vulkan,ammoos}.cmake` — include via `-DCMAKE_PROJECT_INCLUDE=...` after `grok16-toolchain.cmake`.
+
+### AmmoOS incorporation
+
+Grok16 is the canonical compiler for AmmoOS (SG/NewLatest). Integration:
+
+```bash
+./scripts/grok16-integrate.sh          # wires Queen + AmmoOS manifest
+./scripts/grok16-toolchain.sh integrate-ammoos
+./scripts/grok16-toolchain.sh verify-ammoos-surfaces
+```
+
+Review doc: `docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md` · Manifest: `data/grok16-ammoos-integrate.json` (generated) · Smoke: `examples/ammoos-smoke/`
 
 Examples:
 

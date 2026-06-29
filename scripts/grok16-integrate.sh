@@ -205,6 +205,89 @@ sync_field_research_book() {
   fi
 }
 
+resolve_ammoos_root() {
+  local candidates=(
+    "${AMMOOS_ROOT:-}"
+    "${GROK16_SG_ROOT:-$SG}/NewLatest"
+    "${GROK16_SG_ROOT:-$SG}/AmmoOS"
+  )
+  local c
+  for c in "${candidates[@]}"; do
+    [[ -n "$c" && -f "$c/data/ammoos-version.json" ]] || continue
+    echo "$c"
+    return 0
+  done
+  return 1
+}
+
+sync_ammoos() {
+  local ammoos
+  ammoos="$(resolve_ammoos_root)" || {
+    echo "integrate: AmmoOS not found under SG (skip ammoos wire)"
+    return 0
+  }
+  echo "integrate: AmmoOS @ $ammoos"
+  g16_gpy_run - <<PY
+import json
+from pathlib import Path
+ammoos = Path("${ammoos}")
+grok = Path("${GROK16_ROOT}")
+doc = {
+    "schema": "grok16-ammoos-integrate/v1",
+    "grok16_root": str(grok),
+    "grok16_version": "5.0.0",
+    "ammoos_root": str(ammoos),
+    "profile": "ammoos",
+    "belt_profile": "${G16_BELT_PROFILE:-belt_2_0}",
+    "cmake_profile": "cmake/grok16-profile-ammoos.cmake",
+    "review": "docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md",
+    "ironclad": "data/g16-ironclad-meld.json",
+    "single_fabric": "data/grok16-single-fabric-doctrine.json",
+    "stack_layers": "data/field-stack-layer-doctrine.json",
+    "verify": "scripts/grok16-verify-ammoos.sh",
+    "launch_smoke": "examples/ammoos-smoke/ammoos-smoke.launch",
+    "pipelines": [
+        "scripts/ammoos-beta-pipeline.sh",
+        "scripts/ammoos-launch-verify.sh",
+        "scripts/pack-ammoos-release.sh",
+    ],
+    "queen_binary": "Queen/build/rtx/bin/Linux/queen-browser",
+    "combinatronic": "lib/g16-combinatronic-rebalance.py",
+}
+out = grok / "data" / "grok16-ammoos-integrate.json"
+out.write_text(json.dumps(doc, indent=2) + "\\n", encoding="utf-8")
+print("integrate: wrote", out)
+PY
+  if [[ -d "$QUEEN/data" ]]; then
+    g16_gpy_run - <<PY
+import json
+from pathlib import Path
+queen = Path("${QUEEN}/data/g16-toolchain.json")
+doc = {}
+if queen.is_file():
+    try:
+        doc = json.loads(queen.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        pass
+doc.setdefault("schema", "grok16-toolchain/v1")
+doc["ammoos_profile"] = "ammoos"
+doc["ammoos_integrate"] = "data/grok16-ammoos-integrate.json"
+doc["ammoos_root"] = "${ammoos}"
+queen.write_text(json.dumps(doc, indent=2) + "\\n", encoding="utf-8")
+print("integrate: Queen g16-toolchain.json ammoos profile stamped")
+PY
+  fi
+  local env_path="$GROK16_ROOT/data/grok16-integrate.env"
+  grep -q 'G16_AMMOOS_PROFILE=ammoos' "$env_path" 2>/dev/null || \
+    echo 'export G16_AMMOOS_PROFILE=ammoos' >>"$env_path"
+  grep -q 'AMMOOS_ROOT=' "$env_path" 2>/dev/null || \
+    echo "export AMMOOS_ROOT=\"${ammoos}\"" >>"$env_path"
+  if [[ -x "$GROK16_ROOT/scripts/grok16-verify-ammoos.sh" ]]; then
+    "$GROK16_ROOT/scripts/grok16-verify-ammoos.sh" || \
+      echo "integrate: warn — verify-ammoos partial" >&2
+  fi
+}
+
 cmd_integrate() {
   echo "integrate: Grok16 2.0 belt — SG auto-wire"
   dedupe_gpy_path
@@ -219,6 +302,7 @@ cmd_integrate() {
   sync_compiler_symlinks
   sync_compile_combinatronics_env
   sync_field_research_book
+  sync_ammoos
   if [[ -x "$GROK16_ROOT/scripts/grok16-bench-triad.sh" ]] && \
      "$GROK16_ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then
     run "$GROK16_ROOT/scripts/grok16-bench-triad.sh" triad || \

@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|integrate-ammoos|verify-ammoos-surfaces|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|binary-package|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -752,6 +752,15 @@ cmd_integrate() {
   exec "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
 }
 
+cmd_integrate_ammoos() {
+  export G16_AMMOOS_PROFILE=ammoos
+  exec "$GROK16_SCRIPTS/grok16-integrate.sh" integrate
+}
+
+cmd_verify_ammoos_surfaces() {
+  exec "$GROK16_SCRIPTS/grok16-verify-ammoos.sh"
+}
+
 cmd_bench_compare() {
   exec "$GROK16_SCRIPTS/grok16-bench-compare.sh" compare
 }
@@ -982,6 +991,10 @@ case "${1:-}" in
     shift
     exec "$GROK16_SCRIPTS/grok16-release.sh" "$@"
     ;;
+  binary-package)
+    shift
+    exec "$GROK16_SCRIPTS/grok16-binary-package.sh" "$@"
+    ;;
   test-battery) cmd_test_battery ;;
   test-battery-expert) cmd_test_battery_expert ;;
   test-battery-heavy) cmd_test_battery_heavy ;;
@@ -989,6 +1002,8 @@ case "${1:-}" in
   test-battery-release) cmd_test_battery_release ;;
   test-battery-belt) shift; cmd_test_battery_belt "$@" ;;
   integrate) cmd_integrate ;;
+  integrate-ammoos) cmd_integrate_ammoos ;;
+  verify-ammoos-surfaces) cmd_verify_ammoos_surfaces ;;
   bench) cmd_bench ;;
   bench-compare) cmd_bench_compare ;;
   bench-triad) shift; cmd_bench_triad "$@" ;;

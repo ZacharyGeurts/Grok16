@@ -8,6 +8,8 @@ Requires Grok16 **v2.0.0** with `test-battery-release` + `test-battery-belt` gre
 
 ```bash
 ./scripts/grok16-integrate.sh
+./scripts/grok16-toolchain.sh integrate-ammoos
+./scripts/grok16-toolchain.sh verify-ammoos-surfaces
 ```
 
 Publishes **Field Research book panel** (`lib/field-research-book.py publish`) and wires canonical prefix + `G16_BELT_PROFILE=belt_2_0` to:
@@ -60,9 +62,18 @@ export WRDT_G16_PREFIX="$G16_PREFIX"
 source data/grok16-integrate.env
 ```
 
+## AmmoOS
+
+Review: [`docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md`](../docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md)
+
+- Profile: `ammoos` in `data/grok16-profiles.json`
+- CMake: `cmake/grok16-profile-ammoos.cmake` (`G16_AMMOOS_PHYSICS=1` → field_physics variant)
+- Smoke chamber: `examples/ammoos-smoke/`
+- Generated manifest: `data/grok16-ammoos-integrate.json`
+
 ## Queen
 
-`./scripts/grok16-integrate.sh` updates Queen `g16-toolchain.json` and browser doctrine.
+`./scripts/grok16-integrate.sh` updates Queen `g16-toolchain.json` and browser doctrine. Stamps `ammoos_profile` when AmmoOS is detected under SG.
 
 ## Ironclad
 

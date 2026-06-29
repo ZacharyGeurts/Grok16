@@ -1,5 +1,5 @@
 #!/usr/bin/env pythong
-"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 4.7.1."""
+"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 5.0.0 — v1.0 framing."""
 from __future__ import annotations
 
 import json
@@ -12,21 +12,22 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from readme_front import write_index as write_readme_index
-DISTRO = "4.7.1"
+DISTRO = "5.0.0"
 G16 = "16.2.0"
-CACHE = "v13"
-BENCH_REPORT = "4.7.1"
+CACHE = "v14"
+BENCH_REPORT = "5.0.0"
 BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.1.0"
 
 NAV = [
     ("index.html", "Home"),
-    ("speed-bench.html", "Speed Bench"),
-    ("uncompiled.html", "Uncompiled"),
-    ("cmake-linking.html", "CMake & Link"),
-    ("release.html", "Release 4.7"),
-    ("single-fabric.html", "Single Fabric"),
+    ("field-platform.html", "Field Platform"),
     ("safety.html", "Safety"),
+    ("znetwork-connect.html", "ZNetwork"),
+    ("speed-bench.html", "Speed Bench"),
+    ("performance.html", "Performance"),
+    ("release.html", "Release 5.0"),
+    ("single-fabric.html", "Single Fabric"),
     ("getting-started.html", "Getting Started"),
     ("architecture.html", "Architecture"),
     ("batteries.html", "Batteries"),
@@ -405,57 +406,123 @@ cmake --build build/g16 -j$(nproc)</code></pre>
 """,
     ),
     "release.html": (
-        "Release 4.7",
+        "Release 5.0",
         f"""
-  <h1>Release {DISTRO}</h1>
-  <p>Grok16 <strong>4.7</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform matrix (incl. RISC-V). Compiler <strong>{G16}</strong>. Tag <code>v{DISTRO}</code>. Previous: <code>v4.2.0</code>.</p>
+  <h1>Release {DISTRO} — version one</h1>
+  <p>Grok16 <strong>5.0</strong> kicks off as <strong>v1.0</strong> operator framing. Compiler <strong>g16 @ {G16}</strong>. Tag <code>v{DISTRO}</code>. Prior 2.x–4.x remain in git history only.</p>
 
-  <h2 id="charts">Speed &amp; comparison charts</h2>
-  <pre><code>./scripts/grok16-toolchain.sh bench-refresh
-# stepwise: bench-triad · bench-compare · bench-all · exec-comprehensive-bench · bench-charts</code></pre>
-  <table>
-    <tr><th>Chart</th><th>Asset</th></tr>
-    <tr><td>speed_demo compile + exec</td><td><code>docs/assets/speed-bench-chart.svg</code></td></tr>
-    <tr><td>belt triad</td><td><code>docs/assets/triad-chart.svg</code></td></tr>
-    <tr><td>field vs host compare</td><td><code>docs/assets/compare-chart.svg</code></td></tr>
-    <tr><td>bench-all profiles</td><td><code>docs/assets/bench-all-chart.svg</code></td></tr>
-  </table>
-  <p>Manifest: <code>data/bench/charts-manifest.json</code> · Live JSON: <code>data/bench/triad-latest.json</code>, <code>compare-latest.json</code>, <code>docs/field-exec-full-bench.json</code></p>
+  <aside class="callout callout-warn">
+    <strong>Field platform:</strong> <a href="field-platform.html">Do not create field files</a> — use the 2D auto-field plane.
+  </aside>
+
+  <h2 id="shipped">What ships</h2>
+  <ul>
+    <li><strong>belt_2_0</strong> single fabric — 8192 redata chunk, 512 die slots</li>
+    <li><strong>field_physics</strong> — thermal guard, no <code>-ffast-math</code> for production</li>
+    <li><strong>Binary package</strong> — g16 + AmmoCode + signed settings (<code>binary-package</code>)</li>
+    <li><strong>2D field platform</strong> — <code>data/grok16-field-platform-doctrine.json</code></li>
+    <li><strong>ZNetwork field wire</strong> — egress convert / ingress deconvert design</li>
+    <li><strong>Speed bench v{meta['report']}</strong> — best exec <strong>{meta['best_exec_ops']}</strong> ops/s</li>
+    <li>Compiler symlinks · build-essential fabric · AmmoCode field instill</li>
+  </ul>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16
-git checkout v{DISTRO}
-export G16_PREFIX="$(pwd)"
-export G16_BELT_PROFILE=belt_2_0
-G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
-./scripts/grok16-toolchain.sh test-battery-release
+cd Grok16 && git checkout v{DISTRO}
+export G16_PREFIX="$(pwd)" G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh verify
 ./scripts/grok16-toolchain.sh test-battery-belt
-./scripts/grok16-toolchain.sh bench-refresh
-./scripts/grok16-toolchain.sh integrate</code></pre>
+./scripts/grok16-toolchain.sh bench-refresh</code></pre>
 
-  <h2 id="shipped">What shipped</h2>
+  <h2 id="binary">Binary package</h2>
+  <pre><code>./scripts/grok16-toolchain.sh binary-package
+tar xzf dist/grok16-{DISTRO}-linux-x86_64.tar.gz
+cd grok16-{DISTRO}-linux-x86_64 && source grok16-env.sh
+./share/ammocode/ammocode</code></pre>
+
+  <h2 id="charts">Benchmarks</h2>
+  <pre><code>./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
+  <p><a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="field-platform.html">Field Platform</a> · <a href="znetwork-connect.html">ZNetwork</a></p>
+""",
+    ),
+    "field-platform.html": (
+        "Field Platform",
+        f"""
+  <h1>2D field platform</h1>
+  <p>Grok16 <strong>{DISTRO}</strong> — flat operator plane. Everything on the plane is <strong>auto-field</strong> at depth 0.</p>
+
+  <aside class="callout callout-warn">
+    <strong>DO NOT CREATE FIELD FILES.</strong> Standalone <code>.field</code>, depth-field, or subfield JSON heats neighboring fields on the fabric. Gates flatten stray depth, but thermo debt hits adjacent dies first. Place entities on the 2D platform instead.
+  </aside>
+
+  <h2 id="rule">Platform rule</h2>
+  <table>
+    <tr><th>Axis</th><th>Policy</th></tr>
+    <tr><td>Plane</td><td>Flat <code>(x, y)</code> — placement implies field</td></tr>
+    <tr><td>Depth</td><td><code>max_field_depth: 0</code> always</td></tr>
+    <tr><td>Belt</td><td><code>belt_2_0</code> — 8192 redata chunk, 512 die slots</td></tr>
+    <tr><td>Production</td><td><code>field_physics</code> — thermal guard, no fast-math</td></tr>
+  </table>
+  <p>Doctrine: <code>data/grok16-field-platform-doctrine.json</code></p>
+
+  <h2 id="modules">Code modules</h2>
+  <table>
+    <tr><th>Role</th><th>Path</th></tr>
+    <tr><td>Plate amplitude</td><td><code>NewLatest/lib/field-plate-field.py</code></td></tr>
+    <tr><td>Panel truth</td><td><code>NewLatest/lib/field-panel-field.py</code></td></tr>
+    <tr><td>Depth singularizer</td><td><code>NewLatest/lib/field-depth-singularizer.py</code></td></tr>
+    <tr><td>Field sanity</td><td><code>Grok16/forge/g16-field-sanity.py</code></td></tr>
+    <tr><td>AmmoCode instill</td><td><code>lib/g16-ammocode-field-instill.py</code></td></tr>
+  </table>
+
+  <h2 id="ammocode">AmmoCode</h2>
+  <p>AmmoCode is a flat field — no subfields. Resting on a fielded host → <strong>defield</strong>. <code>data/g16-ammocode-field-doctrine.json</code></p>
+  <p><a href="safety.html">Safety</a> · <a href="single-fabric.html">Single Fabric</a></p>
+""",
+    ),
+    "znetwork-connect.html": (
+        "ZNetwork Connect",
+        f"""
+  <h1>ZNetwork — secure connect (design)</h1>
+  <p>Doctrine: <code>data/grok16-znetwork-field-wire-doctrine.json</code> · status: <strong>design review</strong></p>
+
+  <h2 id="verdict">Verdict</h2>
+  <table>
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td>Connect everyone securely?</td><td><strong>Yes in layers</strong> — not one open global directory today</td></tr>
+    <tr><td>Name + address, no phone?</td><td><strong>Wire-point tokens</strong> + sovereign receipts + invites</td></tr>
+    <tr><td>Fake accounts?</td><td><strong>Truth gate</strong> + gatekeeper — no username registry</td></tr>
+    <tr><td>Address theft?</td><td><strong>No central DB</strong> — local friends list, beacon pins</td></tr>
+    <tr><td>Both field computers?</td><td><strong>Direct belt talk</strong> — convert at egress, deconvert at ingress</td></tr>
+  </table>
+
+  <h2 id="field-wire">Field expansion down the wire</h2>
+  <pre><code>[Field A] → field-io packet (sealed) → wire → verify + deconvert → [Field B]</code></pre>
+  <p>Never ship raw field files on the wire. Modules: <code>field-io-packet.py</code>, <code>packet-field.py</code>, <code>connection-gatekeeper.py</code>.</p>
+
+  <h2 id="identity">Identity without cellphone</h2>
   <ul>
-    <li><strong>bench-refresh</strong> — one-shot triad + compare + bench-all + comprehensive exec + SVG charts + manual rebuild</li>
-    <li><strong>bench-charts</strong> — <code>scripts/grok16-bench-charts.py</code> generates comparison SVGs from live JSON</li>
-    <li><strong>performance.html</strong> — embeds triad, compare, and bench-all charts with live triad table</li>
-    <li><strong>gcc-14 host pin</strong> — speed bench chart header stamps host toolchain</li>
-    <li><strong>Legacy isolation chamber</strong> — sealed BASIC/Pascal/VB tests in SG/NewLatest</li>
-    <li><strong>Speed bench v{meta['report']}</strong> — compile ms + execution ops/s with version stamps</li>
-    <li><code>speed_demo</code> suite @ {meta['suite_ver']} — C, C++, CMake, Python (host + gpy-16)</li>
-    <li>Portable <code>.launch</code> chambers — <code>./scripts/grok16-launch-verify.sh</code></li>
-    <li>Multi-platform release — <code>./scripts/grok16-release.sh {DISTRO} --push</code></li>
+    <li><strong>Display name</strong> — public label only, not root of trust</li>
+    <li><strong>Wire-point</strong> — opaque HMAC token, rotates with sovereign receipt</li>
+    <li><strong>LAN beacon</strong> — polite discovery (AmmoCode port 9555)</li>
+    <li><strong>Invite URL</strong> — one-time collab token (WS :9556)</li>
+    <li><strong>USB sovereign key</strong> — optional physical anchor (no SMS)</li>
   </ul>
 
-  <h2 id="upgrade">Upgrade from v4.2.0</h2>
-  <ol>
-    <li>Checkout <code>v{DISTRO}</code></li>
-    <li><code>G16_BELT_PROFILE=belt_2_0 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
-    <li><code>test-battery-release</code> then <code>test-battery-belt</code></li>
-    <li><code>./scripts/grok16-toolchain.sh bench-refresh</code></li>
-    <li><code>./scripts/grok16-integrate.sh</code> to publish env to SG consumers</li>
-  </ol>
-  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md">RELEASE-4.7.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="single-fabric.html">Single Fabric</a></p>
+  <h2 id="safety">Safety concerns</h2>
+  <table>
+    <tr><th>Risk</th><th>Mitigation</th></tr>
+    <tr><td>Field files on wire</td><td>Sealed envelopes only; depth 0 at ingress</td></tr>
+    <tr><td>Central directory scrape</td><td>No shared plaintext address book</td></tr>
+    <tr><td>Sybil operators</td><td>Truth gate + block rating &lt; 25</td></tr>
+    <tr><td>Sustained wire heat</td><td><code>field_physics</code> + per-peer token bucket</td></tr>
+    <tr><td>ZNetwork ACTIVE early</td><td><code>REVIEW_ONLY</code> default; human checklist</td></tr>
+    <tr><td>MITM on open net</td><td>beacon_pin before tunnel_connect</td></tr>
+  </table>
+  <p>ZNetwork modes: <code>REVIEW_ONLY</code> (default) · <code>SHADOW</code> · <code>ACTIVE</code> (gated). AmmoCode: attach-only.</p>
+  <p><a href="field-platform.html">Field Platform</a> · <a href="safety.html">Safety</a></p>
 """,
     ),
     "getting-started.html": (
@@ -674,9 +741,12 @@ pythong forge/g16-linker.py json</code></pre>
     ),
     "safety.html": (
         "Safety",
-        """
-  <h1>Safety (2.0)</h1>
-  <p>Grok16 2.0 safety is melded into Ironclad at integrate time — compile-time mandate plus consumer depth impossibility.</p>
+        f"""
+  <h1>Safety — Grok16 {DISTRO}</h1>
+
+  <aside class="callout callout-warn">
+    <strong>DO NOT CREATE FIELD FILES.</strong> They heat neighboring fields. Use the <a href="field-platform.html">2D field platform</a> — placement is auto-field at depth 0.
+  </aside>
 
   <h2 id="depth">Depth fields sealed and destroyed</h2>
   <table>
@@ -698,9 +768,16 @@ pythong forge/g16-linker.py json</code></pre>
   <h2 id="time">Sovereign time</h2>
   <p>Time is linear (<code>ironclad:time:1</code>). G1ID meld uses <code>linear_ns</code> only — <code>t</code> forbidden in geometry.</p>
 
+  <h2 id="field-physics">field_physics profile</h2>
+  <table>
+    <tr><th>Profile</th><th>-ffast-math</th><th>Thermal guard</th></tr>
+    <tr><td>belt_2_0 / field_opt</td><td>yes</td><td>bench throughput</td></tr>
+    <tr><td><strong>field_physics</strong></td><td><strong>no</strong></td><td><strong>production NEXUS/CANVAS</strong></td></tr>
+  </table>
+
   <h2 id="integrate">Integrate</h2>
   <pre><code>./scripts/grok16-integrate.sh</code></pre>
-  <p>Publishes <code>data/grok16-integrate.env</code> and wires Queen / World_Redata / ZOCR to canonical prefix + belt profile. See <a href="integration.html">Integration</a>.</p>
+  <p>See <a href="integration.html">Integration</a> · <a href="znetwork-connect.html">ZNetwork</a></p>
 """,
     ),
     "performance.html": (
@@ -779,8 +856,14 @@ G16_ENABLE_PGO=1 ./scripts/grok16-toolchain.sh field-bench</code></pre>
   <p>Requires Grok16 <strong>v{DISTRO}</strong> with <code>test-battery-release</code> + <code>test-battery-belt</code> green.</p>
 
   <h2 id="integrate">Auto-integrate (2.0)</h2>
-  <pre><code>./scripts/grok16-integrate.sh</code></pre>
-  <p>Wires canonical prefix + <code>G16_BELT_PROFILE=belt_2_0</code> to Queen, World_Redata, ZOCR/Final_Ear, PythonG. Env: <code>data/grok16-integrate.env</code></p>
+  <pre><code>./scripts/grok16-integrate.sh
+./scripts/grok16-toolchain.sh integrate-ammoos
+./scripts/grok16-toolchain.sh verify-ammoos-surfaces</code></pre>
+  <p>Wires canonical prefix + <code>G16_BELT_PROFILE=belt_2_0</code> to Queen, World_Redata, ZOCR/Final_Ear, PythonG, and <strong>AmmoOS</strong> (SG/NewLatest). Env: <code>data/grok16-integrate.env</code> · Manifest: <code>data/grok16-ammoos-integrate.json</code></p>
+
+  <h2 id="ammoos">AmmoOS incorporation</h2>
+  <p>Review: <code>docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md</code> · Profile: <code>ammoos</code> in <code>data/grok16-profiles.json</code> · CMake: <code>cmake/grok16-profile-ammoos.cmake</code> · Smoke: <code>examples/ammoos-smoke/</code></p>
+  <p>Stack layers (NEXUS C2 → ZNetwork → Queen → AmmoOS inside Queen) documented in AmmoOS <code>data/field-stack-layer-doctrine.json</code>.</p>
 
   <h2 id="gates">Safety at consumers</h2>
   <p>Integrated SG tree enforces <strong>single fabric</strong> safety:</p>
@@ -845,7 +928,11 @@ G16_FIELD_SPEED=1 ./scripts/grok16-toolchain.sh field-bench
     }
 
 SEARCH_INDEX = [
-    {"t": "speed bench", "p": "speed-bench.html", "g": "4.7", "d": "Versioned compile ms execution ops/s report v4.7.1"},
+    {"t": "field platform", "p": "field-platform.html", "g": "5.0", "d": "2D auto-field DO NOT CREATE FIELD FILES heat"},
+    {"t": "znetwork connect", "p": "znetwork-connect.html", "g": "5.0", "d": "field wire egress convert ingress deconvert identity"},
+    {"t": "do not create field files", "p": "field-platform.html", "g": "Warning", "d": "field files heat neighboring fields depth zero"},
+    {"t": "grok16 5.0", "p": "index.html", "g": "Home", "d": "Version one clean start belt_2_0 binary package"},
+    {"t": "speed bench", "p": "speed-bench.html", "g": "5.0", "d": "Versioned compile ms execution ops/s report v5.0.0"},
     {"t": "exec-full-bench", "p": "speed-bench.html#reproduce", "g": "Bench", "d": "field-exec-full-bench compile and execution"},
     {"t": "bench-refresh", "p": "release.html#charts", "g": "4.7", "d": "Regenerate triad compare bench-all charts SVG"},
     {"t": "uncompiled", "p": "uncompiled.html", "g": "4.7", "d": "Python interpreter C C++ chamber compile ahead"},
