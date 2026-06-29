@@ -1,7 +1,7 @@
 # Grok16 5.0.1 — AmmoOS Incorporation
 
 **Released:** 2026-06-29  
-**Pairs with:** [AmmoOS 1.9.9e — Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9e)
+**Pairs with:** [AmmoOS 1.9.9h — Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9h)
 
 Grok16 5.0.1 closes the incorporation loop the 5.0.0 foundation opened. AmmoOS is no longer a reference in release notes — it has a profile, integration hooks, verification gate, and documentation path in the toolchain.
 

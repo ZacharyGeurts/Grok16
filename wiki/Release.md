@@ -1,7 +1,7 @@
 # Release 5.0.1 — AmmoOS incorporation
 
 Tag: `v5.0.1` · `distro_version: 5.0.1` · `g16` @ `16.2.0`  
-Pairs with: **[AmmoOS 1.9.9e — Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9e)**
+Pairs with: **[AmmoOS 1.9.9h — Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9h)**
 
 Prior 2.x–4.x tracks remain in git; **operator docs start at 5.0 = v1.0**. This patch closes the Grok Build incorporation loop for AmmoOS.
 

@@ -6,7 +6,7 @@
 |---|---|
 | **Distro** | `5.0.1` · tag `v5.0.1` |
 | **Compiler** | `g16` @ `16.2.0` (`Grok16-5.0.1`) |
-| **AmmoOS pair** | [1.9.9e Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9e) |
+| **AmmoOS pair** | [1.9.9h Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9h) |
 | **Default belt** | `belt_2_0` — single fabric, 8192 redata chunk, 512 die slots |
 | **Production safety** | `field_physics` — no `-ffast-math`, thermal guard |
 | **GUI** | AmmoCode in binary package · memory vault · ZNetwork attach |

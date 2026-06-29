@@ -9,7 +9,7 @@
     "released": true,
     "tag": "v5.0.1",
     "upload_tag": "v5.0.1",
-    "upload_note": "5.0.1 — AmmoOS incorporation patch; pairs with AmmoOS 1.9.9e Grok Expert Review",
+    "upload_note": "5.0.1 — AmmoOS incorporation patch; pairs with AmmoOS 1.9.9h Grok Expert Review",
     "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
@@ -151,7 +151,7 @@
     "policy": "symlink_replacement_always_optimal"
   },
   "ammoos_pair": {
-    "version": "1.9.9e",
+    "version": "1.9.9h",
     "release": "Grok Expert Review",
     "profile": "ammoos",
     "integrate_manifest": "data/grok16-ammoos-integrate.json",
@@ -166,7 +166,7 @@
   },
   "changelog": [
     "5.0.1: AmmoOS incorporation \u2014 ammoos profile, grok16-integrate.sh wiring, verify-ammoos-surfaces, smoke chamber",
-    "5.0.1: docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md \u2014 Grok Build review input; pairs AmmoOS 1.9.9e",
+    "5.0.1: docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md \u2014 Grok Build review input; pairs AmmoOS 1.9.9h",
     "5.0.1: wiki + GitHub.io sync \u2014 integration, field platform, ZNetwork connect pages",
     "5.0.0: wiki + GitHub.io rewrite \u2014 v1.0 framing, field platform warning, ZNetwork field wire design, live benchmarks",
     "5.0.0: binary package \u2014 g16 prefix + AmmoCode executable + ammocode-settings.secure.json preconfigured",
