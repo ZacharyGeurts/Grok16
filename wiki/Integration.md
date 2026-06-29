@@ -2,9 +2,9 @@
 
 Web: [integration.html](https://zacharygeurts.github.io/Grok16/integration.html)
 
-Requires Grok16 **v2.0.0** with `test-battery-release` + `test-battery-belt` green.
+Requires Grok16 **v5.1.0** with `test-battery-release` + `test-battery-belt` green.
 
-## Auto-integrate (2.0)
+## Auto-integrate
 
 ```bash
 ./scripts/grok16-integrate.sh
@@ -21,6 +21,8 @@ Publishes **Field Research book panel** (`lib/field-research-book.py publish`) a
 - `Field_Research` (book manifest cross-ref)
 
 Env template: `data/grok16-integrate.env`
+
+Stack fabric (5.1): `lib/g16-stack-fabric.py` stamps G1–G15 through integrate.
 
 ## Field Research book
 
@@ -62,18 +64,24 @@ export WRDT_G16_PREFIX="$G16_PREFIX"
 source data/grok16-integrate.env
 ```
 
-## AmmoOS
+## AmmoOS 2.0 Stack
 
 Review: [`docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md`](../docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md)
 
+- **Pair:** AmmoOS `2.0.0-beta3` on `main` (tarballs building now)
 - Profile: `ammoos` in `data/grok16-profiles.json`
 - CMake: `cmake/grok16-profile-ammoos.cmake` (`G16_AMMOOS_PHYSICS=1` → field_physics variant)
 - Smoke chamber: `examples/ammoos-smoke/`
 - Generated manifest: `data/grok16-ammoos-integrate.json`
+- Recompile hook: `NewLatest/scripts/nexus-g16-recompile.sh`
 
 ## Queen
 
 `./scripts/grok16-integrate.sh` updates Queen `g16-toolchain.json` and browser doctrine. Stamps `ammoos_profile` when AmmoOS is detected under SG.
+
+## MCP
+
+Agent integration: [MCP](MCP) — `grok16_toolchain integrate` via allowlisted MCP commands.
 
 ## Ironclad
 

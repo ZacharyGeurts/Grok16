@@ -1,4 +1,4 @@
-# Speed Bench v5.0.0
+# Speed Bench v5.1.0
 
 Live JSON: `docs/field-exec-full-bench.json` · triad: `data/bench/triad-latest.json`
 
@@ -9,20 +9,27 @@ Host: Linux x86_64 · `g16` @ 16.2.0 · suite `speed_demo` @ 1.1.0 · 3 s window
 | Category | Result |
 |----------|--------|
 | **Fastest execution** | **102.8M ops/s** — C++ g16 `belt_2_0` |
-| **C belt_2_0** | **95.7M ops/s** |
+| **C++ host g++ -O2** | **101.1M ops/s** |
+| **C belt_1_0** | **99.5M ops/s** |
 | **C host gcc -O2** | **97.4M ops/s** |
-| **Python gpy-16** | **0.76M ops/s** (interpreter — no compile) |
+| **Python host CPython** | **0.84M ops/s** (interpreter — no compile) |
+| **Python gpy-16** | **0.76M ops/s** |
 | **Self-monitor** | 15 runs, 0 dropped, 0 timeouts |
+
+**Overall:** Grok16 matches or beats host gcc/g++ on the FieldX86 kernel at steady state. Compile time is higher; execution throughput peaks on `belt_2_0`.
 
 ## Belt triad (`bench-triad`)
 
-Workload: `field-nexus-bench` — 240 frames, FieldX86 + entropy + wave + NEXUS.
+Workload: `field-nexus-bench` — 240 frames, FieldX86 + entropy + wave + NEXUS.  
+Updated: **2026-06-29**
 
 | Toolchain | Profile | compile_ms | run wall_ms | binary bytes |
 |-----------|---------|------------|-------------|--------------|
 | host `g++` | `-O3 -march=native` | 2078 | 4 | 27264 |
-| `g16` | `belt_1_0` | 6625 | 2 | 22696 |
-| `g16` | `belt_2_0` | 6626 | 4 | 22824 |
+| `g16` | `belt_1_0` | 4961 | **2** | 22696 |
+| `g16` | `belt_2_0` | 5068 | 3 | 22824 |
+
+`belt_1_0` runs **2× faster** wall time than host on this triad workload.
 
 ## bench-all profiles (kernel wall)
 
@@ -44,6 +51,8 @@ export G16_PREFIX="$(pwd)"
 ./scripts/grok16-toolchain.sh bench-refresh
 ./scripts/grok16-toolchain.sh exec-full-bench
 ```
+
+Via MCP: `grok16_speed_bench` · `grok16_toolchain exec-full-bench`
 
 Charts: `docs/assets/speed-bench-chart.svg`, `triad-chart.svg`, `compare-chart.svg`
 

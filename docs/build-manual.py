@@ -1,5 +1,5 @@
 #!/usr/bin/env pythong
-"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 5.0.0 — v1.0 framing."""
+"""Rebuild Grok16 GitHub Pages manual (docs/) for distro 5.1.0 — stack fabric."""
 from __future__ import annotations
 
 import json
@@ -12,9 +12,9 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from readme_front import write_index as write_readme_index
-DISTRO = "5.0.1"
+DISTRO = "5.1.0"
 G16 = "16.2.0"
-CACHE = "v14"
+CACHE = "v15"
 BENCH_REPORT = "5.0.0"
 BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.1.0"
@@ -26,7 +26,8 @@ NAV = [
     ("znetwork-connect.html", "ZNetwork"),
     ("speed-bench.html", "Speed Bench"),
     ("performance.html", "Performance"),
-    ("release.html", "Release 5.0"),
+    ("release.html", "Release 5.1"),
+    ("mcp.html", "MCP"),
     ("single-fabric.html", "Single Fabric"),
     ("getting-started.html", "Getting Started"),
     ("architecture.html", "Architecture"),
@@ -424,7 +425,8 @@ cmake --build build/g16 -j$(nproc)</code></pre>
     <li><strong>ZNetwork field wire</strong> — egress convert / ingress deconvert design</li>
     <li><strong>Speed bench v{meta['report']}</strong> — best exec <strong>{meta['best_exec_ops']}</strong> ops/s</li>
     <li>Compiler symlinks · build-essential fabric · AmmoCode field instill</li>
-    <li><strong>5.0.1 — AmmoOS</strong> — <code>ammoos</code> profile, <code>integrate-ammoos</code>, <code>verify-ammoos-surfaces</code> (pairs AmmoOS 1.9.9h)</li>
+    <li><strong>5.1.0 — Stack fabric</strong> — G1–G15 receipts, MCP stdio, truth gate, ZNetwork wire profile</li>
+    <li><strong>5.0.1 — AmmoOS</strong> — <code>ammoos</code> profile, <code>integrate-ammoos</code>, <code>verify-ammoos-surfaces</code> (pairs AmmoOS 2.0.0-beta3)</li>
   </ul>
 
   <h2 id="checkout">Checkout</h2>
@@ -893,6 +895,35 @@ source data/grok16-integrate.env</code></pre>
   <p><code>data/g16-ironclad-meld.json</code> — single fabric, linear time, field sanity absorbed at forge link pass.</p>
 """.format(DISTRO=DISTRO),
     ),
+    "mcp.html": (
+        "MCP",
+        f"""
+  <h1>MCP — Model Context Protocol</h1>
+  <p>Grok16 <strong>{DISTRO}</strong> ships a <strong>custom stdio MCP server</strong> for agents. Doctrine: <code>data/grok16-mcp.json</code> · Server: <code>mcp/grok16_mcp_server.py</code></p>
+
+  <h2 id="install">Install</h2>
+  <pre><code>pip install -r requirements-mcp.txt
+export GROK16_ROOT="$(pwd)" G16_PREFIX="$(pwd)"</code></pre>
+
+  <h2 id="tools">Tools</h2>
+  <table>
+    <tr><th>Tool</th><th>Description</th></tr>
+    <tr><td><code>grok16_version</code></td><td>Distro {DISTRO}, g16 {G16}, belt/speed_bench stamps</td></tr>
+    <tr><td><code>grok16_toolchain</code></td><td>Allowlisted <code>grok16-toolchain.sh</code> commands</td></tr>
+    <tr><td><code>grok16_rtx_gate</code></td><td><code>queen_rtx</code> / <code>vulkan_rtx</code> permit</td></tr>
+    <tr><td><code>grok16_speed_bench</code></td><td>Published <code>field-exec-full-bench.json</code></td></tr>
+    <tr><td><code>grok16_power_sort</code></td><td>Power sort doctrine + bench panel</td></tr>
+    <tr><td><code>grok16_forge_status</code></td><td>Bootstrap/build forge JSON</td></tr>
+  </table>
+
+  <h2 id="allowlist">Toolchain allowlist</h2>
+  <p><code>status</code>, <code>verify</code>, <code>paths</code>, <code>integrate</code>, <code>exec-bsp-bench</code>, <code>test-battery-belt</code>, <code>test-battery-release</code></p>
+
+  <h2 id="github">AmmoOS GitHub MCP (separate)</h2>
+  <p>AmmoOS publish uses the private GitHub MCP layer in NewLatest — <code>data/ammoos-mcp-layer.json</code>, stdio <code>scripts/github-mcp-stdio.sh</code>, env <code>~/.config/sg/github-mcp.env</code>.</p>
+  <p><a href="integration.html">Integration</a> · <a href="release.html">Release</a></p>
+""",
+    ),
     "profiles.html": (
         "Profiles",
         """
@@ -932,6 +963,8 @@ SEARCH_INDEX = [
     {"t": "field platform", "p": "field-platform.html", "g": "5.0", "d": "2D auto-field DO NOT CREATE FIELD FILES heat"},
     {"t": "znetwork connect", "p": "znetwork-connect.html", "g": "5.0", "d": "field wire egress convert ingress deconvert identity"},
     {"t": "do not create field files", "p": "field-platform.html", "g": "Warning", "d": "field files heat neighboring fields depth zero"},
+    {"t": "grok16 5.1", "p": "index.html", "g": "Home", "d": "Stack fabric G1-G15 MCP stdio belt_2_0"},
+    {"t": "mcp grok16", "p": "mcp.html", "g": "Agents", "d": "Custom stdio MCP toolchain bench rtx gate"},
     {"t": "grok16 5.0", "p": "index.html", "g": "Home", "d": "Version one clean start belt_2_0 binary package"},
     {"t": "speed bench", "p": "speed-bench.html", "g": "5.0", "d": "Versioned compile ms execution ops/s report v5.0.0"},
     {"t": "exec-full-bench", "p": "speed-bench.html#reproduce", "g": "Bench", "d": "field-exec-full-bench compile and execution"},

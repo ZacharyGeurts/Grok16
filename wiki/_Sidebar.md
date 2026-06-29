@@ -1,4 +1,4 @@
-**[Home](Home)** — Grok16 5.0 as v1.0
+**[Home](Home)** — Grok16 5.1 stack fabric
 
 ### Warning & platform
 - [Field Platform](Field-Platform) — **no field files**
@@ -15,9 +15,10 @@
 - [Profiles](Profiles)
 - [Batteries](Batteries)
 
-### Release 5.0
+### Release 5.1
 - [Release](Release)
 - [Integration](Integration)
+- [MCP](MCP) — custom agent tools
 
 ### Reference
 - [Architecture](Architecture)

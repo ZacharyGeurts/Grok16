@@ -18,6 +18,18 @@
     "d": "field files heat neighboring fields depth zero"
   },
   {
+    "t": "grok16 5.1",
+    "p": "index.html",
+    "g": "Home",
+    "d": "Stack fabric G1-G15 MCP stdio belt_2_0"
+  },
+  {
+    "t": "mcp grok16",
+    "p": "mcp.html",
+    "g": "Agents",
+    "d": "Custom stdio MCP toolchain bench rtx gate"
+  },
+  {
     "t": "grok16 5.0",
     "p": "index.html",
     "g": "Home",
