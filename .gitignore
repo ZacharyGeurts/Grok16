@@ -1,6 +1,7 @@
 # Installed compiler tree (build locally via forge)
 /bin/
-/lib/
+/lib/*
+!/lib/*.py
 /lib64/
 /libexec/
 /include/
