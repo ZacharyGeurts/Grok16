@@ -151,9 +151,23 @@ def build_plate(*, write: bool = True, bench: bool = False) -> dict[str, Any]:
     }
     chain = _chain_hash(material, prev)
 
+    stack_witness: dict[str, Any] = {}
+    sf = ROOT / "lib" / "g16-stack-fabric.py"
+    if sf.is_file():
+        try:
+            spec = importlib.util.spec_from_file_location("g16_stack_fabric_psp", sf)
+            if spec and spec.loader:
+                sfm = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(sfm)
+                if hasattr(sfm, "fabric_json"):
+                    stack_witness = {"available": True, "fabric": sfm.fabric_json()}
+        except Exception:
+            stack_witness = {"available": False}
+
     doc = {
         "schema": "g16-power-sort-plate/v1",
         "updated": _now(),
+        "stack_fabric": stack_witness,
         "title": doctrine.get("title") or "Power sort plate",
         "motto": doctrine.get("motto") or "",
         "meld_citation": doctrine.get("meld_citation") or "ironclad:meld:2",

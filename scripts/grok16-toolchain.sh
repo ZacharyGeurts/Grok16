@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|integrate-ammoos|verify-ammoos-surfaces|status|verify|verify-sealed|verify-python|discern|stack-fabric|combinatorics-status|bench-silent-gate|mcp-compile|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|binary-package|ammoos-stack-release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|integrate-ammoos|verify-ammoos-surfaces|status|verify|verify-sealed|verify-python|discern|stack-fabric|plate-rebuild|combinatorics-status|bench-silent-gate|mcp-compile|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|binary-package|ammoos-stack-release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -405,6 +405,10 @@ cmd_mcp_compile() {
   local mcp="$GROK16_ROOT/lib/g16-mcp-compile.py"
   [[ -f "$mcp" ]] || { echo "mcp-compile: missing $mcp" >&2; return 1; }
   exec python3 "$mcp"
+}
+
+cmd_plate_rebuild() {
+  exec "$GROK16_SCRIPTS/grok16-plate-rebuild.sh"
 }
 
 cmd_linker_verify() {
@@ -1021,6 +1025,7 @@ case "${1:-}" in
   verify-python) cmd_verify_python ;;
   discern) cmd_discern ;;
   stack-fabric) shift; cmd_stack_fabric "$@" ;;
+  plate-rebuild) cmd_plate_rebuild ;;
   combinatorics-status) cmd_combinatorics_status ;;
   bench-silent-gate) cmd_bench_silent_gate ;;
   mcp-compile) cmd_mcp_compile ;;

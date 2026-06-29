@@ -113,8 +113,9 @@ def meld_slice() -> dict[str, Any]:
 
 def main() -> int:
     cmd = (sys.argv[1] if len(sys.argv) > 1 else "json").strip().lower()
+    write = cmd in ("json", "panel") or "--write" in sys.argv[2:]
     if cmd in ("json", "panel", "detect", "spots"):
-        print(json.dumps(detect_spots(write=cmd in ("json", "panel")), ensure_ascii=False))
+        print(json.dumps(detect_spots(write=write), ensure_ascii=False))
         return 0
     if cmd == "meld":
         print(json.dumps(meld_slice(), ensure_ascii=False))

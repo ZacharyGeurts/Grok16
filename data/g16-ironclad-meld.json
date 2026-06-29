@@ -97,6 +97,42 @@
       ]
     },
     {
+      "id": "stack_fabric",
+      "title": "G16 Stack Fabric 5.1 — iron/steel plates under sealed meld",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Iron plate and steel plate panels seal with _g16_seal — g1id meld slice on cold identity rows (G15)."
+        },
+        {
+          "v": 2,
+          "text": "stack_fabric witness rides every CHIPS plate stack publish — truth gate floor 58 matches ZNetwork mesh."
+        },
+        {
+          "v": 3,
+          "text": "Thermal WATCH defers power sort plating — cool_sort first; iron/steel reorganize only when thermo_proxy allows."
+        }
+      ]
+    },
+    {
+      "id": "iron_steel_plates",
+      "title": "CHIPS Iron + Steel — plate stack meld under single fabric",
+      "verses": [
+        {
+          "v": 1,
+          "text": "Iron plate organizes chip_paths with composite_bsp THE sort — steel neural plates wire depth-4 across ironclad_chips."
+        },
+        {
+          "v": 2,
+          "text": "Steel family rewrite preserves 974 chip leaves in 138 modules — sovereign_linear_ns the only wire between plates."
+        },
+        {
+          "v": 3,
+          "text": "field-plate-meld.json fuses iron_plate_organize, chips_plate_stack, g16_power_sort after refresh — chain-hash monotonic."
+        }
+      ]
+    },
+    {
       "id": "spatial_existence",
       "title": "Spatial Existence — This One / That One on G16",
       "verses": [
