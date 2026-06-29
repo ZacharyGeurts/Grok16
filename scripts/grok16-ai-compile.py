@@ -17,6 +17,7 @@ G16 = PREFIX / "bin" / "g16"
 PROFILE = os.environ.get("G16_AI_PROFILE", "ai_agent")
 PROFILE_SCRIPT = ROOT / "scripts" / "grok16-profile-flags.py"
 COMB_SCRIPT = ROOT / "lib" / "g16-compile-combinatronics.py"
+RECEIPT_SCRIPT = ROOT / "lib" / "g16-compile-receipt.py"
 
 
 def _comb_mod():
@@ -24,6 +25,18 @@ def _comb_mod():
         return None
     import importlib.util
     spec = importlib.util.spec_from_file_location("g16_compile_combinatronics", COMB_SCRIPT)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _receipt_mod():
+    if not RECEIPT_SCRIPT.is_file():
+        return None
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("g16_compile_receipt", RECEIPT_SCRIPT)
     if not spec or not spec.loader:
         return None
     mod = importlib.util.module_from_spec(spec)
@@ -72,7 +85,16 @@ def compile_source(
     gate: dict = {}
     profile = PROFILE
     if comb_mod and hasattr(comb_mod, "compile_gate"):
-        gate = comb_mod.compile_gate(profile=PROFILE)
+        gate = comb_mod.compile_gate(profile=PROFILE, sustained=True)
+        if gate.get("blocked"):
+            return {
+                "schema": "grok16-ai-compile/v1",
+                "ok": False,
+                "blocked": True,
+                "reason": gate.get("reason"),
+                "truth": gate.get("truth"),
+                "profile": gate.get("profile"),
+            }
         profile = str(gate.get("profile") or PROFILE)
     suffix = ".cpp" if lang == "cxx" else ".c"
     std_flag = "-std=gnu++26" if lang == "cxx" else "-std=gnu17"
@@ -90,11 +112,20 @@ def compile_source(
         ms = int((time.time() - t0) * 1000)
         errors = _parse_errors(proc.stderr)
         stamp: dict = {}
+        receipt: dict = {}
         if proc.returncode == 0 and out.is_file() and comb_mod and hasattr(comb_mod, "stamp_compiled_artifact"):
             stamp = comb_mod.stamp_compiled_artifact(
                 out,
                 comb=gate.get("combinatronics"),
                 compile_meta={"profile": profile, "lang": lang, "compile_ms": ms},
+            )
+        rec_mod = _receipt_mod()
+        if rec_mod and hasattr(rec_mod, "record"):
+            receipt = rec_mod.record(
+                source_text=source,
+                binary_path=str(out) if out.is_file() else "",
+                profile=profile,
+                lang=lang,
             )
         return {
             "schema": "grok16-ai-compile/v1",
@@ -109,6 +140,7 @@ def compile_source(
             "binary": str(out) if out.is_file() else "",
             "combinatronics_gate": gate or None,
             "combinatronics_stamp": stamp or None,
+            "compile_receipt": receipt or None,
             "hostess_truth_floor": 58,
         }
 

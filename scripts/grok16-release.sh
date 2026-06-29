@@ -221,6 +221,15 @@ gh_release() {
   fi
 }
 
+seal_dist_artifacts() {
+  local seal="$GROK16_ROOT/lib/g16-sealed-release.py"
+  [[ -f "$seal" ]] || { log "WARN skip sealed dist (missing g16-sealed-release.py)"; return 0; }
+  [[ -d "$DIST" ]] || return 0
+  log "seal dist/ artifacts (G1)"
+  python3 "$seal" "$VERSION" seal
+  python3 "$seal" verify || { log "FAIL sealed dist verify"; return 1; }
+}
+
 main() {
   log "Grok16 upload ${VERSION} (${TAG}) — distro ${DISPLAY_VERSION} (${DISPLAY_TAG})"
   refresh_launch_paths
@@ -228,6 +237,7 @@ main() {
   write_platform_artifacts
   build_tarball
   build_binary_package
+  seal_dist_artifacts
   git_release
   gh_release
   log "release upload ${VERSION} complete (distro ${DISPLAY_VERSION})"

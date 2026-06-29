@@ -263,7 +263,9 @@
       ]
     },
     "vulkan_rtx": {
-      "description": "AMOURANTHRTX-style RTX prep — SIMD vectorization, shader-adjacent CPU paths",
+      "description": "AMOURANTHRTX-style RTX prep — SPIR-V-only lane; Queen owns GPU; no libvulkan (G14)",
+      "cmake_profile": "cmake/grok16-profile-vulkan.cmake",
+      "spirv_only": true,
       "cxx_std": "gnu++26",
       "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
       "cxx_flags": [
@@ -415,6 +417,56 @@
         "data/grok16-single-fabric-doctrine.json",
         "NewLatest/data/field-stack-layer-doctrine.json"
       ]
+    },
+    "znetwork_wire": {
+      "description": "ZNetwork field wire — field-io-packet structs; Hostess secure; no libvulkan (G5)",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "cmake_profile": "cmake/grok16-profile-znetwork_wire.cmake",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": [
+        "-std=gnu++26",
+        "-O2",
+        "-pipe",
+        "-march=native",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-fcf-protection=full",
+        "-fno-strict-aliasing",
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE"
+      ],
+      "c_flags": ["-std=gnu17", "-O2", "-fstack-protector-strong", "-D_FORTIFY_SOURCE=3", "-fPIE"],
+      "link_flags": ["-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,noexecstack", "-pie"],
+      "definitions": [
+        "GROK16_PROFILE_ZNETWORK_WIRE=1",
+        "GROK16_BELT_2_0=1",
+        "GROK16_HOSTESS_SECURE=1",
+        "G16_FIELD_MANDATE=1",
+        "G16_ZNETWORK_WIRE=1",
+        "FIELD_ENTROPY_DISPATCH=1",
+        "HOSTESS_TRUTH_FLOOR=58"
+      ],
+      "doctrine": ["data/grok16-znetwork-field-wire-doctrine.json"]
+    },
+    "single_fabric": {
+      "description": "Single-fabric link — belt_2_0 + ammoos + vulkan_rtx one ninja graph; switch at link (G13)",
+      "cxx_std": "gnu++26",
+      "c_std": "gnu17",
+      "cmake_profile": "cmake/grok16-profile-single-fabric.cmake",
+      "bench_source": "examples/field-nexus-bench/field_nexus_bench.cpp",
+      "cxx_flags": ["-std=gnu++26", "-O3", "-march=native", "-flto=thin", "-fstack-protector-strong", "-fPIE"],
+      "link_flags": ["-flto=thin", "-Wl,-z,relro", "-Wl,-z,now", "-pie"],
+      "definitions": [
+        "G16_SINGLE_FABRIC=1",
+        "GROK16_SINGLE_FABRIC_LINK=1",
+        "GROK16_BELT_2_0=1",
+        "GROK16_PROFILE_AMMOOS=1",
+        "GROK16_PROFILE_VULKAN=1",
+        "G16_IRONCLAD_MELD=1",
+        "HOSTESS_TRUTH_FLOOR=58"
+      ],
+      "doctrine": ["data/grok16-single-fabric-doctrine.json"]
     },
     "belt_2_0": {
       "description": "Belt 2.0 — chunked redata belt, wave-massive dispatch, single-location reads",

@@ -1,15 +1,15 @@
 {
-  "distro_version": "5.0.1",
-  "upload_version": "5.0.1",
+  "distro_version": "5.1.0",
+  "upload_version": "5.1.0",
   "release_track": {
-    "current": "5.0.1",
-    "previous": "5.0.0",
-    "next": "5.1.0",
+    "current": "5.1.0",
+    "previous": "5.0.1",
+    "next": "5.2.0",
     "status": "stable",
     "released": true,
-    "tag": "v5.0.1",
-    "upload_tag": "v5.0.1",
-    "upload_note": "5.0.1 — AmmoOS incorporation patch; pairs with AmmoOS 1.9.9h Grok Expert Review",
+    "tag": "v5.1.0",
+    "upload_tag": "v5.1.0",
+    "upload_note": "5.1.0 — stack fabric G1-G15; pairs with AmmoOS 2.0.0 Stack",
     "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
@@ -25,8 +25,8 @@
     "roadmap": "5.0.0 \u2014 compiler symlink replacements, always-optimal belt, full build-essential fabric"
   },
   "g16_version": "16.2.0",
-  "pkgversion": "Grok16-5.0.1",
-  "tag": "v5.0.1",
+  "pkgversion": "Grok16-5.1.0",
+  "tag": "v5.1.0",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -150,14 +150,20 @@
     "forge": "forge/compiler_symlink_tools.py",
     "policy": "symlink_replacement_always_optimal"
   },
+  "stack_fabric": {
+    "version": "1.0.0",
+    "doctrine": "data/g16-stack-fabric-doctrine.json",
+    "module": "lib/g16-stack-fabric.py",
+    "items": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13", "G14", "G15"]
+  },
   "ammoos_pair": {
-    "version": "1.9.9h",
-    "release": "Grok Expert Review",
+    "version": "2.0.0",
+    "release": "AmmoOS 2.0 Stack",
     "profile": "ammoos",
     "integrate_manifest": "data/grok16-ammoos-integrate.json",
     "review": "docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md"
   },
-  "notes": "Grok16 5.0.1 stable \u2014 AmmoOS ammoos profile, integrate + verify hooks, belt_2_0, Speed Bench v5",
+  "notes": "Grok16 5.1.0 \u2014 stack fabric G1-G15, sealed releases, truth gate, 243-filetype run, ZNetwork wire profile",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -165,6 +171,8 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "5.1.0: stack fabric G1-G15 \u2014 sealed dist, receipt chain, silent bench, profile autoload, znetwork_wire, truth gate, thermal downgrade, ammoos stack release, 243 run, MCP stdio, single-fabric link, SPIR-V-only rtx, g1id meld",
+    "5.1.0: ZNetwork network-comparison.html + DESIGN.md comparison section",
     "5.0.1: AmmoOS incorporation \u2014 ammoos profile, grok16-integrate.sh wiring, verify-ammoos-surfaces, smoke chamber",
     "5.0.1: docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md \u2014 Grok Build review input; pairs AmmoOS 1.9.9h",
     "5.0.1: wiki + GitHub.io sync \u2014 integration, field platform, ZNetwork connect pages",

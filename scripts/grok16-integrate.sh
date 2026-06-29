@@ -15,8 +15,13 @@ run() { echo "integrate: $1"; "$@"; }
 
 write_consumer_env() {
   local path="$GROK16_ROOT/data/grok16-integrate.env"
+  local autoload="${G16_BELT_PROFILE:-belt_2_0}"
+  local fab="$GROK16_ROOT/lib/g16-stack-fabric.py"
+  if [[ -f "$fab" ]]; then
+    autoload="$(python3 "$fab" profile 2>/dev/null || echo "$autoload")"
+  fi
   if [[ -f "$GROK16_ROOT/data/g16-always-optimal-panel.json" ]]; then
-    echo "integrate: grok16-integrate.env from always-optimal panel"
+    echo "integrate: grok16-integrate.env from always-optimal panel (profile autoload=$autoload)"
     return 0
   fi
   cat >"$path" <<EOF
@@ -25,12 +30,13 @@ export GROK16_ROOT="${GROK16_ROOT}"
 export G16_PREFIX="${G16_PREFIX}"
 export GROK16_SG_ROOT="${GROK16_SG_ROOT}"
 export GROK16_QUEEN_ROOT="${GROK16_QUEEN_ROOT}"
-export G16_BELT_PROFILE="${G16_BELT_PROFILE:-belt_2_0}"
-export G16_BENCH_PROFILE="${G16_BENCH_PROFILE:-belt_2_0}"
+export G16_BELT_PROFILE="${autoload}"
+export G16_BENCH_PROFILE="${autoload}"
 export G16_ALWAYS_OPTIMAL="1"
 export NEXUS_SINGLE_FIELD_DEPTH="${NEXUS_SINGLE_FIELD_DEPTH:-1}"
+export NEXUS_INSTALL_ROOT="${NEXUS_INSTALL_ROOT:-$SG/NewLatest}"
 EOF
-  echo "integrate: wrote $path"
+  echo "integrate: wrote $path (G4 autoload profile=$autoload)"
 }
 
 sync_queen_manifest() {

@@ -18,7 +18,7 @@ EXAMPLE_CMAKE="$GROK16_ROOT/examples/minimal-cmake-project"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 install|bootstrap|rebuild|consolidate|integrate|integrate-ammoos|verify-ammoos-surfaces|status|verify|verify-python|discern|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|binary-package|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
+Usage: $0 install|bootstrap|rebuild|consolidate|integrate|integrate-ammoos|verify-ammoos-surfaces|status|verify|verify-sealed|verify-python|discern|stack-fabric|combinatorics-status|bench-silent-gate|mcp-compile|test-battery|test-battery-expert|test-battery-heavy|test-battery-full|test-battery-release|test-battery-belt|launch-verify|release|binary-package|ammoos-stack-release|test-gate|test-gate-full|bench|bench-compare|bench-triad|bench-charts|bench-refresh|speed-demo|exec-compare|exec-full-bench|exec-bsp-bench|exec-comprehensive-bench|speed-diagnosis|field-bench|field-bench-real|bench-all|profile|profiler|profile-build|profile-launch|field-build|build-essential|paths|manifest|config
 
 Environment (see data/grok16-config.json):
   GROK16_ROOT G16_PREFIX GROK16_SG_ROOT GROK16_QUEEN_ROOT
@@ -362,8 +362,49 @@ EOF
   cmd_ironclad_sanity_verify || return 1
   cmd_linker_verify || return 1
   cmd_rtx_gate_verify || return 1
+  cmd_verify_sealed || return 1
 
   echo "verify: PASS"
+}
+
+cmd_verify_sealed() {
+  local seal="$GROK16_ROOT/lib/g16-sealed-output.py"
+  [[ -f "$seal" ]] || { echo "verify-sealed: missing $seal" >&2; return 1; }
+  # Silent on match — stderr only when digest mismatch.
+  python3 "$seal" verify-tree "$GROK16_ROOT/data" || return 1
+  if [[ -d "$GROK16_ROOT/.grok16-state" ]]; then
+    python3 "$seal" verify-tree "$GROK16_ROOT/.grok16-state" || return 1
+  fi
+  if [[ -d "$GROK16_ROOT/dist" ]]; then
+    local rel="$GROK16_ROOT/lib/g16-sealed-release.py"
+    [[ -f "$rel" ]] && python3 "$rel" verify || return 1
+  fi
+  local rcpt="$GROK16_ROOT/lib/g16-compile-receipt.py"
+  [[ -f "$rcpt" ]] && python3 "$rcpt" verify || return 1
+}
+
+cmd_stack_fabric() {
+  local fab="$GROK16_ROOT/lib/g16-stack-fabric.py"
+  [[ -f "$fab" ]] || { echo "stack-fabric: missing $fab" >&2; return 1; }
+  python3 "$fab" "${@:-json}"
+}
+
+cmd_combinatorics_status() {
+  local fab="$GROK16_ROOT/lib/g16-stack-fabric.py"
+  [[ -f "$fab" ]] || return 0
+  python3 "$fab" combinatorics-status
+}
+
+cmd_bench_silent_gate() {
+  local gate="$GROK16_ROOT/lib/g16-silent-bench.py"
+  [[ -f "$gate" ]] || { echo "bench-silent-gate: missing $gate" >&2; return 1; }
+  python3 "$gate"
+}
+
+cmd_mcp_compile() {
+  local mcp="$GROK16_ROOT/lib/g16-mcp-compile.py"
+  [[ -f "$mcp" ]] || { echo "mcp-compile: missing $mcp" >&2; return 1; }
+  exec python3 "$mcp"
 }
 
 cmd_linker_verify() {
@@ -976,8 +1017,13 @@ case "${1:-}" in
   consolidate) cmd_consolidate ;;
   status) cmd_status ;;
   verify) cmd_verify ;;
+  verify-sealed) cmd_verify_sealed ;;
   verify-python) cmd_verify_python ;;
   discern) cmd_discern ;;
+  stack-fabric) shift; cmd_stack_fabric "$@" ;;
+  combinatorics-status) cmd_combinatorics_status ;;
+  bench-silent-gate) cmd_bench_silent_gate ;;
+  mcp-compile) cmd_mcp_compile ;;
   test-gate|test-gate-smoke)
     exec "$GROK16_SCRIPTS/grok16-test-gate.sh" smoke
     ;;
@@ -990,6 +1036,10 @@ case "${1:-}" in
   release)
     shift
     exec "$GROK16_SCRIPTS/grok16-release.sh" "$@"
+    ;;
+  ammoos-stack-release)
+    shift
+    exec "$GROK16_SCRIPTS/grok16-ammoos-stack-release.sh" "$@"
     ;;
   binary-package)
     shift
