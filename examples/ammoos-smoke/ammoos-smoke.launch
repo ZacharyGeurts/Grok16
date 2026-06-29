@@ -12,8 +12,15 @@
   },
   "chamber": {
     "mode": "folder_mirror",
-    "include": ["**/*"],
-    "exclude": ["build", "dist", ".git", "__pycache__"]
+    "include": [
+      "**/*"
+    ],
+    "exclude": [
+      "build",
+      "dist",
+      ".git",
+      "__pycache__"
+    ]
   },
   "uncompiled": true,
   "organized_field": {
