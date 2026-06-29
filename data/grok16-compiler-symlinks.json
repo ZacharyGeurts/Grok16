@@ -1,6 +1,6 @@
 {
   "schema": "grok16-compiler-symlinks/v1",
-  "updated": "2026-06-27T16:47:35.921757+00:00",
+  "updated": "2026-06-29T06:30:12.223334+00:00",
   "policy": {
     "mode": "symlink_replacement",
     "best_settings": "always_optimal",
@@ -8,7 +8,7 @@
     "statement": "All compilers and build tools resolve via compat symlinks to g16-* field tools."
   },
   "product": "Grok16-compiler-symlinks",
-  "prefix": "${G16_PREFIX}",
+  "prefix": "/home/default/Desktop/SG/Grok16",
   "ready": true,
   "symlinks_ready": 50,
   "symlinks_total": 52,
@@ -24,8 +24,8 @@
     "G16_BENCH_PROFILE": "belt_2_0",
     "G16_ALWAYS_OPTIMAL": "1",
     "G16_FIELD_SPEED": "1",
-    "G16_OPTIMAL_RUNNER": "python",
-    "G16_OPTIMAL_PATTERN": "dev_organized_python",
+    "G16_OPTIMAL_RUNNER": "emulator",
+    "G16_OPTIMAL_PATTERN": "singular_native_bsp",
     "G16_COMPILER_SYMLINKS": "1",
     "G16_OPTIMAL_COMBINATRONICS_AT_COMPILE": "1"
   },

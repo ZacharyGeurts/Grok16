@@ -17,7 +17,11 @@
     },
     "knowing": "Fixed-size belt dispatch — operator truth is one fabric amplitude, not nested depth layers"
   },
+  "field_platform_ref": "data/grok16-field-platform-doctrine.json",
+  "warning": "DO NOT CREATE FIELD FILES — they heat neighboring fields; use 2D auto-field platform",
   "safety": {
+    "no_field_files": true,
+    "field_platform_2d": true,
     "depth_field_impossible": true,
     "depth_fields_sealed_and_destroyed": true,
     "creation_forbidden": true,

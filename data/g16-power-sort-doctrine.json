@@ -9,7 +9,7 @@
     "narrow_band_width": 16,
     "pipe_policy": "adjacent_narrow_only",
     "wide_piping_prevented": true,
-    "consumer": "chip_battery",
+    "consumer": "ironclad_chips",
     "hot_pipe": "narrow",
     "cold_pipe": "cold"
   },
@@ -33,7 +33,7 @@
     "file_list": {"gate": true, "cool": true, "consumer": "queen_files", "context": "file_list"},
     "drive_index": {"gate": true, "cool": true, "consumer": "field_drive_indexer", "context": "drive_index"},
     "recombinatorics": {"gate": true, "cool": true, "consumer": "combinatorics_bridge", "context": "recombinatorics"},
-    "chip_paths": {"gate": true, "cool": true, "consumer": "chip_battery", "context": "chip_paths", "algorithm": "narrow_band"},
+    "chip_paths": {"gate": true, "cool": true, "consumer": "ironclad_chips", "context": "chip_paths", "algorithm": "composite_bsp"},
     "bench_rank": {"gate": true, "cool": true, "consumer": "field_exec_bench", "context": "bench_rank"},
     "thermal_layers": {"gate": true, "cool": true, "consumer": "field_sanity", "context": "thermal_layers", "algorithm": "cool_sort"},
     "queen_files": {"gate": true, "cool": true, "consumer": "queen_file_browser", "context": "file_list"},
@@ -66,10 +66,12 @@
       "candidates": ["cool_sort"]
     },
     "chip_paths": {
-      "label": "Chip battery code path narrow bands",
-      "candidates": ["narrow_band"],
+      "label": "Ironclad chips code path — composite BSP via field-best-sort",
+      "candidates": ["composite_bsp"],
       "narrow_band_width": 16,
-      "pipe_policy": "adjacent_narrow_only"
+      "pipe_policy": "adjacent_narrow_only",
+      "best_sort_ref": "field-best-sort-panel.json",
+      "consumer": "ironclad_chips"
     },
     "format_table": {
       "label": "Field file format tables — family then label",

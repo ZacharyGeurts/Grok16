@@ -1,82 +1,50 @@
-# Grok16 @ 4.7.1
+# Grok16 5.0 — Version One
 
-**Stable release** — self-hosted `g16` @ **16.2.0**, **versioned speed bench**, benchmark chart refresh, uncompiled doctrine, Queen-themed manual.
+**Grok16 5.0 is a clean start.** Prior release numbering stays in git history; operator docs treat **5.0 as v1.0** — one sovereign Field compiler, one 2D platform, one belt.
 
 | | |
 |---|---|
-| **Web manual** | https://zacharygeurts.github.io/Grok16/ |
-| **Field Research book** | https://zacharygeurts.github.io/Field_Research/ |
-| **Speed bench** | https://zacharygeurts.github.io/Grok16/speed-bench.html |
-| **Repo** | https://github.com/ZacharyGeurts/Grok16 |
-| **Tag** | `v4.7.1` |
-| **Compiler** | `g16 (Grok16-16.2.0) 16.2.0` |
+| **Distro** | `5.0.1` · tag `v5.0.1` |
+| **Compiler** | `g16` @ `16.2.0` (`Grok16-5.0.1`) |
+| **AmmoOS pair** | [1.9.9e Grok Expert Review](https://github.com/ZacharyGeurts/AmmoOS/releases/tag/v1.9.9e) |
+| **Default belt** | `belt_2_0` — single fabric, 8192 redata chunk, 512 die slots |
+| **Production safety** | `field_physics` — no `-ffast-math`, thermal guard |
+| **GUI** | AmmoCode in binary package · memory vault · ZNetwork attach |
 
-## Speed bench (report v4.7.1)
+## Read this first
 
-| Category | Winner | Compile | Execution |
-|----------|--------|--------:|----------:|
-| **Fastest execution** | C++ host g++ -O2 | BSP hit | **95.3M ops/s** |
-| **Best g16 C++** | g16 belt_2_0 | BSP hit | **92.6M ops/s** |
-| **Fastest compile** | C g16 belt_1_0 | rocket | **357 ms** |
-| **Best Python** | host CPython 3 | — | **800K ops/s** |
+> **DO NOT CREATE FIELD FILES.** Standalone `.field`, depth-field, or subfield JSON heats neighboring fields on the fabric. Use the **[2D field platform](Field-Platform)** — placement on the plane *is* field at depth 0.
 
-Report: [SPEED-BENCH-REPORT.md](https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md) · Wiki: [Speed-Bench](Speed-Bench)
+## What ships in 5.0.1
 
-Refresh all charts:
+- **g16 prefix** — self-hosted toolchain, `g16-ld`, CMake/Ninja fabric
+- **AmmoOS incorporation** — `ammoos` profile, integrate + verify hooks ([Integration](Integration))
+- **Binary package** — `grok16-5.0.1-linux-x86_64.tar.gz` + AmmoCode + signed defaults
+- **2D auto-field platform** — flat plane, no nested amplitude files
+- **ZNetwork field wire** — convert at egress, deconvert at ingress ([design](ZNetwork-Connect))
+- **Benchmarks** — Speed Bench v5, belt triad, bench-all ([numbers](Speed-Bench))
 
-```bash
-./scripts/grok16-toolchain.sh bench-refresh
-```
-
-## What's new in 4.7
-
-- **bench-refresh** — triad + compare + bench-all + comprehensive exec + SVG charts + manual rebuild
-- **bench-charts** — `scripts/grok16-bench-charts.py` from live JSON
-- **gcc-14 host pin** — bench-triad and bench-compare witness Ubuntu gcc-14
-- **Legacy isolation chamber** — sealed BASIC/Pascal/VB tests in SG/NewLatest
-- **README front page** — GitHub Pages home mirrors repository README
-
-## MCP (since 4.0)
-
-**Model Context Protocol** — `mcp/grok16_mcp_server.py` exposes version, toolchain, RTX gate, speed bench, power sort. [Setup](https://github.com/ZacharyGeurts/Grok16/blob/main/mcp/README.md)
-
-## Field Research book (technology spine)
-
-Thirteen chapters from combinatorics endpoint to compatibility layers — [Field Research](Field-Research) wires the book into Grok16 doctrine (`g16-field-research-book.json`). Run `python3 lib/field-research-book.py verify` after pull.
-
-## Single fabric (2.0 technology)
-
-**Knowing is fixed-size.** Parallel I/O may fan in; truth collapses to **one belt amplitude** at depth 0.
-
-- `belt_2_0` — chunked redata (8192), wave-massive, single-location reads
-- Depth-field creation **forbidden** at integrated consumers
-- Time is **linear** — sovereign `linear_ns` (`ironclad:time:1`)
-
-## Start here
+## Quick start
 
 ```bash
 git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16 && git checkout v4.7.1
-export G16_PREFIX="$(pwd)"
-export G16_BELT_PROFILE=belt_2_0
-G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
-./scripts/grok16-toolchain.sh test-battery-release
-./scripts/grok16-toolchain.sh test-battery-belt
-./scripts/grok16-toolchain.sh bench-refresh
-./scripts/grok16-toolchain.sh integrate
+cd Grok16 && git checkout v5.0.1
+export G16_PREFIX="$(pwd)" G16_BELT_PROFILE=belt_2_0 SG_ROOT=/path/to/SG
+./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh verify
+./scripts/grok16-toolchain.sh integrate-ammoos
 ```
 
-## Manual map
+Binary package (no build):
 
-| Wiki | Web | Topic |
-|------|-----|-------|
-| [Speed Bench](Speed-Bench) | [speed-bench.html](https://zacharygeurts.github.io/Grok16/speed-bench.html) | Versioned compile + exec bench |
-| [Uncompiled Execution](Uncompiled-Execution) | [uncompiled.html](https://zacharygeurts.github.io/Grok16/uncompiled.html) | Python interpreter, chamber compile-ahead |
-| [CMake and Linking](CMake-and-Linking) | [cmake-linking.html](https://zacharygeurts.github.io/Grok16/cmake-linking.html) | Toolchain, g16-ld, speed_demo CMake |
-| [Release 4.7](Release) | [release.html](https://zacharygeurts.github.io/Grok16/release.html) | 4.7 changelog |
-| [Single Fabric](Single-Fabric) | [single-fabric.html](https://zacharygeurts.github.io/Grok16/single-fabric.html) | Belt knowing, one amplitude |
-| [Safety](Safety) | [safety.html](https://zacharygeurts.github.io/Grok16/safety.html) | Depth impossible, Ironclad |
-| [Getting Started](Getting-Started) | [getting-started.html](https://zacharygeurts.github.io/Grok16/getting-started.html) | Bootstrap, rebuild, verify |
-| [Performance](Performance) | [performance.html](https://zacharygeurts.github.io/Grok16/performance.html) | Belt triad + speed bench + charts |
-| [Integration](Integration) | [integration.html](https://zacharygeurts.github.io/Grok16/integration.html) | Queen, World_Redata, integrate |
-| [Field Research](Field-Research) | [field-research.html](https://zacharygeurts.github.io/Grok16/field-research.html) | Book spine, combinatorics → layers |
+```bash
+tar xzf grok16-5.0.1-linux-x86_64.tar.gz
+cd grok16-5.0.1-linux-x86_64 && source grok16-env.sh
+./share/ammocode/ammocode
+```
+
+## Manual
+
+**Web:** [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/)
+
+**Wiki:** you are here.

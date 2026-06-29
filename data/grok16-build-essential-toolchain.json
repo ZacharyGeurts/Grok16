@@ -1,6 +1,6 @@
 {
   "schema": "grok16-build-essential-toolchain/v1",
-  "updated": "2026-06-27T16:02:21.411559+00:00",
+  "updated": "2026-06-29T06:30:10.390964+00:00",
   "product": "Grok16-build-essential",
   "replaces": "ubuntu:build-essential",
   "field_version": "16.2.0",
@@ -88,8 +88,8 @@
     "ready": true,
     "unified_driver": true,
     "selfhosted": true,
-    "dumpversion": "16.1.1",
-    "version": "g16 (Grok16-16.1.1) 16.1.1 20260625",
+    "dumpversion": "16.2.0",
+    "version": "g16 (Grok16-5.0.0) 16.2.0",
     "paths": {
       "g16": "/home/default/Desktop/SG/Grok16/bin/g16",
       "g++16": "/home/default/Desktop/SG/Grok16/bin/g++16",
@@ -109,7 +109,7 @@
     "build_dir": "/home/default/Desktop/SG/Grok16/build/binutils",
     "prefix": "/home/default/Desktop/SG/Grok16",
     "ready": true,
-    "tools_ready": 12,
+    "tools_ready": 13,
     "tools_total": 14,
     "tools": {
       "as": {
@@ -174,9 +174,9 @@
       },
       "c++filt": {
         "field": "g16-c++filt",
-        "path": "",
-        "ready": false,
-        "compat": ""
+        "path": "/home/default/Desktop/SG/Grok16/bin/g16-c++filt",
+        "ready": true,
+        "compat": "/home/default/Desktop/SG/Grok16/bin/c++filt"
       },
       "elfedit": {
         "field": "g16-elfedit",
@@ -322,6 +322,8 @@
     "prefix": "/home/default/Desktop/SG/Grok16",
     "include_dirs": [
       "/home/default/Desktop/SG/Grok16/include",
+      "/home/default/Desktop/SG/Grok16/lib/gcc/x86_64-pc-linux-gnu/16.2.0/include",
+      "/home/default/Desktop/SG/Grok16/lib/gcc/x86_64-pc-linux-gnu/16.2.0/include-fixed",
       "/home/default/Desktop/SG/Grok16/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include",
       "/home/default/Desktop/SG/Grok16/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include-fixed",
       "/home/default/Desktop/SG/Grok16/lib/gcc/x86_64-pc-linux-gnu/16.1.0/include",

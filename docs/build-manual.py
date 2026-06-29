@@ -12,7 +12,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from readme_front import write_index as write_readme_index
-DISTRO = "5.0.0"
+DISTRO = "5.0.1"
 G16 = "16.2.0"
 CACHE = "v14"
 BENCH_REPORT = "5.0.0"
@@ -424,6 +424,7 @@ cmake --build build/g16 -j$(nproc)</code></pre>
     <li><strong>ZNetwork field wire</strong> — egress convert / ingress deconvert design</li>
     <li><strong>Speed bench v{meta['report']}</strong> — best exec <strong>{meta['best_exec_ops']}</strong> ops/s</li>
     <li>Compiler symlinks · build-essential fabric · AmmoCode field instill</li>
+    <li><strong>5.0.1 — AmmoOS</strong> — <code>ammoos</code> profile, <code>integrate-ammoos</code>, <code>verify-ammoos-surfaces</code> (pairs AmmoOS 1.9.9e)</li>
   </ul>
 
   <h2 id="checkout">Checkout</h2>

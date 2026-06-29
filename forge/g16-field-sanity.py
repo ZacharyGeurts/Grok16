@@ -44,6 +44,31 @@ def _append_ledger(row: dict[str, Any]) -> None:
         pass
 
 
+def _no_file_mod() -> Any | None:
+    sg = Path(os.environ.get("SG_ROOT", GROK16.parent))
+    py = sg / "NewLatest" / "lib" / "field-no-file-gate.py"
+    if not py.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("g16_no_file_gate", py)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _g16_no_file_mod() -> Any | None:
+    py = Path(__file__).resolve().parent / "g16-no-field-files.py"
+    if not py.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("g16_no_field_files", py)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def _ironclad_mod() -> Any | None:
     py = Path(__file__).resolve().parent / "g16-ironclad.py"
     if not py.is_file():
@@ -153,6 +178,10 @@ def field_sanity_operator(body: dict[str, Any] | None = None) -> dict[str, Any]:
     if not isinstance(raw, list):
         raw = []
     result = simplify_layers([L for L in raw if isinstance(L, dict)])
+    nexus_gate = _no_file_mod()
+    g16_gate = _g16_no_file_mod()
+    no_file = nexus_gate.preflight_body(body) if nexus_gate and hasattr(nexus_gate, "preflight_body") else {"ok": True}
+    g16_roots = g16_gate.roots_ready() if g16_gate and hasattr(g16_gate, "roots_ready") else {"ok": True}
     ic = _ironclad_mod()
     iron = ic.ironclad_grounding() if ic and hasattr(ic, "ironclad_grounding") else {"ok": False}
     integrity = iron.get("integrity") or {}
@@ -161,7 +190,13 @@ def field_sanity_operator(body: dict[str, Any] | None = None) -> dict[str, Any]:
     cite_fn = getattr(ic, "cite_g16_field_sanity", None) if ic else None
     citation = cite_fn(verse) if cite_fn else f"ironclad:field_sanity:{verse}"
     never_under_heat = result.get("hottest_proxy", 99) < 6.0 or result.get("heat_avoided", 0) > 0
-    operator_ok = bool(result.get("ok")) and never_under_heat and iron.get("ok") is not False
+    operator_ok = (
+        bool(result.get("ok"))
+        and never_under_heat
+        and iron.get("ok") is not False
+        and bool(no_file.get("ok"))
+        and bool(g16_roots.get("ok"))
+    )
     return {
         "schema": "g16-field-sanity/v1",
         "updated": _now(),
@@ -188,6 +223,9 @@ def field_sanity_operator(body: dict[str, Any] | None = None) -> dict[str, Any]:
         "verse": verse,
         "ok": operator_ok,
         "operator_ok": operator_ok,
+        "no_field_files": no_file,
+        "g16_roots": g16_roots,
+        "never_poison_the_well": bool(no_file.get("ok")) and bool(g16_roots.get("ok")),
         **result,
     }
 

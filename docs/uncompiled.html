@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 — Uncompiled</title>
-  <meta name="description" content="Grok16 4.7.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <meta name="description" content="Grok16 5.0.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/uncompiled.html" />
   <script>
   (function (d) {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v13"></script>
-  <script src="manual-search.js?v13"></script>
-  <script src="manual-layout.js?v13"></script>
-  <link rel="stylesheet" href="manual.css?v13" />
+  <script src="manual-theme.js?v14"></script>
+  <script src="manual-search.js?v14"></script>
+  <script src="manual-layout.js?v14"></script>
+  <link rel="stylesheet" href="manual.css?v14" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 4.7.1</span>
+        <span class="nav-version">distro 5.0.1</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -49,12 +49,13 @@
     </div>
     <div class="nav-links">
       <a href="index.html">Home</a>
-      <a href="speed-bench.html">Speed Bench</a>
-      <a href="uncompiled.html">Uncompiled</a>
-      <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 4.7</a>
-      <a href="single-fabric.html">Single Fabric</a>
+      <a href="field-platform.html">Field Platform</a>
       <a href="safety.html">Safety</a>
+      <a href="znetwork-connect.html">ZNetwork</a>
+      <a href="speed-bench.html">Speed Bench</a>
+      <a href="performance.html">Performance</a>
+      <a href="release.html">Release 5.0</a>
+      <a href="single-fabric.html">Single Fabric</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="batteries.html">Batteries</a>
@@ -72,7 +73,7 @@
   </nav>
 
   <h1>Uncompiled execution</h1>
-  <p>Grok16 <strong>4.7.1</strong> — dev runs at normal speed; compile is chamber-organized and <strong>ahead</strong>, not on every click.</p>
+  <p>Grok16 <strong>5.0.1</strong> — dev runs at normal speed; compile is chamber-organized and <strong>ahead</strong>, not on every click.</p>
 
   <figure class="fig-wide">
     <img src="assets/uncompiled-chamber-flow.svg" alt="Uncompiled chamber flow diagram" width="880" height="320" />
@@ -85,8 +86,8 @@
 
   <h2 id="lanes">Execution lanes</h2>
   <table>
-    <tr><th>Lane</th><th>Dev behavior</th><th>speed_demo @ 1s</th></tr>
-    <tr><td><strong>Python</strong></td><td>True interpreter (CPython / gpy-16 GrokVM)</td><td>~710,021 ops/s</td></tr>
+    <tr><th>Lane</th><th>Dev behavior</th><th>speed_demo @ 3s</th></tr>
+    <tr><td><strong>Python</strong></td><td>True interpreter (CPython / gpy-16 GrokVM)</td><td>~843,829 ops/s</td></tr>
     <tr><td><strong>C / C++</strong></td><td>Chamber <strong>compile ahead</strong> — no line-by-line interpreter</td><td>~87–95M ops/s after plane cache</td></tr>
     <tr><td><strong>CMake</strong></td><td>Configure + build once; bin reused</td><td>~93M ops/s</td></tr>
   </table>
@@ -114,10 +115,10 @@ SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench</code></pr
   <p><a href="speed-bench.html">Speed bench manual</a> · <a href="cmake-linking.html">CMake &amp; linking</a></p>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 4.7.1</a> ·
+    <a href="release.html">Release 5.0.1</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 4.7.1 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 5.0.1 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

@@ -5,8 +5,13 @@ set -euo pipefail
 
 GROK16_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SG_ROOT="${SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}"
-VERSION="${1:-4.7.1}"
+VERSION="${1:-}"
+if [[ -z "$VERSION" ]]; then
+  VERSION="$(python3 -c "import json;from pathlib import Path;p=Path('${GROK16_ROOT}/data/grok16-version.json');d=json.loads(p.read_text());print(d.get('upload_version') or d.get('distro_version','4.7.1'))")"
+fi
+DISPLAY_VERSION="$(python3 -c "import json;from pathlib import Path;p=Path('${GROK16_ROOT}/data/grok16-version.json');d=json.loads(p.read_text());print(d.get('distro_version', '${VERSION}'))")"
 TAG="v${VERSION}"
+DISPLAY_TAG="v${DISPLAY_VERSION}"
 PUSH=0
 NO_GH=0
 shift || true
@@ -27,6 +32,8 @@ STAGE="$DIST/grok16-${VERSION}"
 TARBALL="$DIST/grok16-${VERSION}-src.tar.gz"
 PLAT_JSON="$DIST/grok16-${VERSION}-platforms.json"
 PLAT_MD="$DIST/grok16-${VERSION}-PLATFORMS.md"
+BINARY_TARBALL="$DIST/grok16-${DISPLAY_VERSION}-linux-x86_64.tar.gz"
+BINARY_MANIFEST="$DIST/grok16-${DISPLAY_VERSION}-linux-x86_64-manifest.json"
 
 log() { printf '[%s] release %s\n' "$(date +%H:%M:%S)" "$*"; }
 
@@ -72,17 +79,21 @@ root = Path("$GROK16_ROOT")
 dist = Path("$DIST")
 ver = "$VERSION"
 tag = "$TAG"
+distro = "$DISPLAY_VERSION"
+distro_tag = "$DISPLAY_TAG"
 src = json.loads((root / "data/grok16-platform-release.json").read_text(encoding="utf-8"))
-src["distro_version"] = ver
-src["distro_tag"] = tag
+src["distro_version"] = distro
+src["distro_tag"] = distro_tag
+src["upload_version"] = ver
+src["upload_tag"] = tag
 src["released_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 out = dist / f"grok16-{ver}-platforms.json"
 out.write_text(json.dumps(src, indent=2) + "\\n", encoding="utf-8")
 
 lines = [
-    f"# Grok16 {ver} — platform bootstrap matrix",
+    f"# Grok16 {distro} — platform bootstrap matrix",
     "",
-    f"**Tag:** \`{tag}\` · **g16:** {src.get('g16_version')} · **Model:** source bootstrap per platform",
+    f"**Distro:** \`{distro_tag}\` · **Upload:** \`{tag}\` · **g16:** {src.get('g16_version')} · **Model:** source bootstrap per platform",
     "",
     "Grok16 releases **source + forge**. Build `g16` locally on each target (or cross from a Linux x86_64 host).",
     "",
@@ -138,6 +149,18 @@ print(out)
 PY
 }
 
+build_binary_package() {
+  if ! "$GROK16_ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then
+    log "WARN skip binary package (g16 not ready)"
+    return 0
+  fi
+  log "binary package: g16 + AmmoCode + default settings"
+  bash "$GROK16_ROOT/scripts/grok16-binary-package.sh" "$DISPLAY_VERSION" || {
+    log "WARN binary package build failed"
+    return 0
+  }
+}
+
 build_tarball() {
   log "stage source tarball"
   rm -rf "$STAGE" "$TARBALL"
@@ -184,26 +207,32 @@ gh_release() {
   [[ -f "$notes" ]] || notes="$PLAT_MD"
   if gh release view "$TAG" >/dev/null 2>&1; then
     log "GitHub release $TAG exists — upload assets"
-    gh release upload "$TAG" "$TARBALL" "$PLAT_JSON" "$PLAT_MD" --clobber
+    assets=("$TARBALL" "$PLAT_JSON" "$PLAT_MD")
+    [[ -f "$BINARY_TARBALL" ]] && assets+=("$BINARY_TARBALL" "$BINARY_MANIFEST")
+    gh release upload "$TAG" "${assets[@]}" --clobber
   else
+    assets=("$TARBALL" "$PLAT_JSON" "$PLAT_MD")
+    [[ -f "$BINARY_TARBALL" ]] && assets+=("$BINARY_TARBALL" "$BINARY_MANIFEST")
     gh release create "$TAG" \
       --title "Grok16 ${VERSION}" \
       --notes-file "$notes" \
-      "$TARBALL" "$PLAT_JSON" "$PLAT_MD"
+      "${assets[@]}"
     log "created GitHub release $TAG"
   fi
 }
 
 main() {
-  log "Grok16 release ${VERSION} (${TAG})"
+  log "Grok16 upload ${VERSION} (${TAG}) — distro ${DISPLAY_VERSION} (${DISPLAY_TAG})"
   refresh_launch_paths
   run_gates
   write_platform_artifacts
   build_tarball
+  build_binary_package
   git_release
   gh_release
-  log "release ${VERSION} complete"
+  log "release upload ${VERSION} complete (distro ${DISPLAY_VERSION})"
   log "  tarball: $TARBALL"
+  log "  binary: ${BINARY_TARBALL}"
   log "  platforms: $PLAT_JSON"
   log "  guide: $PLAT_MD"
 }

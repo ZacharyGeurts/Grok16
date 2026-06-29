@@ -1,15 +1,15 @@
 {
-  "distro_version": "5.0.0",
-  "upload_version": "4.9.0",
+  "distro_version": "5.0.1",
+  "upload_version": "5.0.1",
   "release_track": {
-    "current": "5.0.0",
-    "previous": "4.8.0",
-    "next": "5.0.0",
+    "current": "5.0.1",
+    "previous": "5.0.0",
+    "next": "5.1.0",
     "status": "stable",
     "released": true,
-    "tag": "v5.0.0",
-    "upload_tag": "v4.9.0",
-    "upload_note": "Assets upload as 4.9.0 — public distro_version and pkgversion remain 5.0.0",
+    "tag": "v5.0.1",
+    "upload_tag": "v5.0.1",
+    "upload_note": "5.0.1 — AmmoOS incorporation patch; pairs with AmmoOS 1.9.9e Grok Expert Review",
     "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
@@ -25,8 +25,8 @@
     "roadmap": "5.0.0 \u2014 compiler symlink replacements, always-optimal belt, full build-essential fabric"
   },
   "g16_version": "16.2.0",
-  "pkgversion": "Grok16-5.0.0",
-  "tag": "v5.0.0",
+  "pkgversion": "Grok16-5.0.1",
+  "tag": "v5.0.1",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -150,7 +150,14 @@
     "forge": "forge/compiler_symlink_tools.py",
     "policy": "symlink_replacement_always_optimal"
   },
-  "notes": "Grok16 5.0.0 stable \u2014 belt_2_0 default, Speed Bench v5, RISC-V + .launch, Queen/WRDT integration",
+  "ammoos_pair": {
+    "version": "1.9.9e",
+    "release": "Grok Expert Review",
+    "profile": "ammoos",
+    "integrate_manifest": "data/grok16-ammoos-integrate.json",
+    "review": "docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md"
+  },
+  "notes": "Grok16 5.0.1 stable \u2014 AmmoOS ammoos profile, integrate + verify hooks, belt_2_0, Speed Bench v5",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -158,6 +165,11 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "5.0.1: AmmoOS incorporation \u2014 ammoos profile, grok16-integrate.sh wiring, verify-ammoos-surfaces, smoke chamber",
+    "5.0.1: docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md \u2014 Grok Build review input; pairs AmmoOS 1.9.9e",
+    "5.0.1: wiki + GitHub.io sync \u2014 integration, field platform, ZNetwork connect pages",
+    "5.0.0: wiki + GitHub.io rewrite \u2014 v1.0 framing, field platform warning, ZNetwork field wire design, live benchmarks",
+    "5.0.0: binary package \u2014 g16 prefix + AmmoCode executable + ammocode-settings.secure.json preconfigured",
     "5.0.0: field_physics profile \u2014 belt_2_0 without -ffast-math + thermal guard for entropy/FP invariants",
     "5.0.0: AmmoCode field instill \u2014 flat field, no subfields, defield when resting on field; binary sidecar + linker witness",
     "5.0.0: upload_version 4.9.0 \u2014 GitHub assets ship as v4.9.0 while distro_version stays 5.0.0",

@@ -51,6 +51,7 @@ run_t combinatorics-verify 90 python3 "$GROK16_ROOT/lib/field_combinatorics.py" 
 run_t chip-battery 90 pythong "$NL/lib/field-chip-battery.py" verify
 run_t cpu-library 90 pythong "$NL/lib/field-cpu-library.py" verify
 run_t self-monitor 30 python3 "$GROK16_ROOT/tests/test_g16_self_monitor.py"
+run_t ammocode-field 60 python3 "$GROK16_ROOT/tests/test_g16_ammocode_field_instill.py"
 run_t launch-verify 300 bash "$GROK16_ROOT/scripts/grok16-launch-verify.sh"
 
 if [[ "$MODE" == "full" ]]; then

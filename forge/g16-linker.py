@@ -214,6 +214,30 @@ def discern_target(argv: list[str] | None = None) -> dict[str, Any]:
     }
 
 
+def _no_field_files_witness(argv: list[str]) -> dict[str, Any]:
+    nf = _mod(Path(__file__).resolve().parent / "g16-no-field-files.py", "g16_linker_no_field")
+    if not nf or not hasattr(nf, "gate_link_outputs"):
+        return {"ok": True, "skipped": "g16_no_field_files_missing"}
+    return nf.gate_link_outputs(argv)
+
+
+def _ammocode_field_witness() -> dict[str, Any]:
+    instill = _mod(Path(__file__).resolve().parent.parent / "lib" / "g16-ammocode-field-instill.py", "g16_linker_ammocode")
+    if not instill or not hasattr(instill, "meld_slice"):
+        return {"ok": False, "error": "ammocode_instill_missing"}
+    slice_doc = instill.meld_slice()
+    return {
+        "ok": bool(slice_doc.get("absorbed")) and slice_doc.get("no_subfields") is True,
+        "instilled": bool(slice_doc.get("instilled")),
+        "posture": slice_doc.get("posture"),
+        "field": slice_doc.get("field"),
+        "no_subfields": True,
+        "citation": slice_doc.get("citation") or "ammocode:field:no_subfields",
+        "meld_citation": slice_doc.get("meld_citation") or "ironclad:meld:2",
+        "ammocode_field": slice_doc,
+    }
+
+
 def _ironclad_witness() -> dict[str, Any]:
     ic = _mod(Path(__file__).resolve().parent / "g16-ironclad.py", "g16_linker_ironclad")
     fs = _mod(Path(__file__).resolve().parent / "g16-field-sanity.py", "g16_linker_sanity")
@@ -261,6 +285,8 @@ def linker_pass(argv: list[str] | None = None, *, witness_only: bool = False) ->
     disc = discern_target(argv)
     target = disc.get("target") or {}
     witness = _ironclad_witness()
+    ammocode = _ammocode_field_witness()
+    no_field = _no_field_files_witness(argv)
     mandate = _flatten_mandate_flags(target, for_ld=True)
     material = {
         "target": disc.get("id"),
@@ -270,16 +296,27 @@ def linker_pass(argv: list[str] | None = None, *, witness_only: bool = False) ->
         "page_size": disc.get("page_size"),
         "mandate": mandate,
         "witness_ok": witness.get("ok"),
+        "ammocode_field_ok": ammocode.get("ok"),
+        "ammocode_no_subfields": ammocode.get("no_subfields"),
+        "no_field_files_ok": no_field.get("ok"),
         "argv_len": len(argv),
     }
     chain = hashlib.sha256(json.dumps(material, sort_keys=True, default=str).encode()).hexdigest()
-    ok = bool(witness.get("ok")) and disc.get("active", True)
+    ok = (
+        bool(witness.get("ok"))
+        and bool(ammocode.get("ok"))
+        and bool(no_field.get("ok"))
+        and disc.get("active", True)
+    )
     doc = {
         "schema": "g16-linker-pass/v1",
         "updated": _now(),
         "ok": ok,
         "pass_ok": ok,
         "witness": witness,
+        "ammocode_field": ammocode,
+        "no_field_files": no_field,
+        "never_poison_the_well": bool(no_field.get("ok")),
         "discern": disc,
         "mandate_flags": mandate,
         "chain_hash": chain,
@@ -313,6 +350,29 @@ def _mandate_for_argv(mandate: list[str], argv: list[str]) -> list[str]:
     if kind in ("relocatable", "static"):
         return []
     return list(mandate)
+
+
+def _link_output(argv: list[str]) -> Path | None:
+    if "-o" not in argv:
+        return None
+    idx = argv.index("-o")
+    if idx + 1 >= len(argv):
+        return None
+    return Path(argv[idx + 1])
+
+
+def _instill_link_output(argv: list[str]) -> dict[str, Any] | None:
+    out = _link_output(argv)
+    if not out or not out.is_file():
+        return None
+    instill = _mod(Path(__file__).resolve().parent.parent / "lib" / "g16-ammocode-field-instill.py", "g16_linker_instill")
+    if not instill or not hasattr(instill, "instill_binary"):
+        return None
+    try:
+        surface = os.environ.get("G16_AMMOCODE_SURFACE", "").strip() or None
+        return instill.instill_binary(out, surface=surface, meta={"lane": "link"})
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:160]}
 
 
 def _inject_flags(argv: list[str], extra: list[str]) -> list[str]:
@@ -507,7 +567,15 @@ def link(argv: list[str]) -> int:
             f"({resolved.get('backend')})\n"
         )
         return 127
-    return _dispatch(argv, doc.get("discern") or {}, doc.get("mandate_flags") or [])
+    rc = _dispatch(argv, doc.get("discern") or {}, doc.get("mandate_flags") or [])
+    if rc == 0:
+        instill = _instill_link_output(argv)
+        if instill and instill.get("ok"):
+            doc["ammocode_field_instill"] = instill
+            _save(PANEL, {**doc, "panel_schema": "g16-linker-panel/v1", "argv_head": argv[:8]})
+        elif instill and not instill.get("ok"):
+            sys.stderr.write(f"g16-linker: ammocode field instill failed: {instill.get('error', instill)}\n")
+    return rc
 
 
 def list_targets() -> dict[str, Any]:

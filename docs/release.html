@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Grok16 — Release 4.7</title>
-  <meta name="description" content="Grok16 4.7.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
-  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-4.7.html" />
+  <title>Grok16 — Release 5.0</title>
+  <meta name="description" content="Grok16 5.0.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-5.0.html" />
   <script>
   (function (d) {
     try {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v13"></script>
-  <script src="manual-search.js?v13"></script>
-  <script src="manual-layout.js?v13"></script>
-  <link rel="stylesheet" href="manual.css?v13" />
+  <script src="manual-theme.js?v14"></script>
+  <script src="manual-search.js?v14"></script>
+  <script src="manual-layout.js?v14"></script>
+  <link rel="stylesheet" href="manual.css?v14" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 4.7.1</span>
+        <span class="nav-version">distro 5.0.1</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -49,12 +49,13 @@
     </div>
     <div class="nav-links">
       <a href="index.html">Home</a>
-      <a href="speed-bench.html">Speed Bench</a>
-      <a href="uncompiled.html">Uncompiled</a>
-      <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 4.7</a>
-      <a href="single-fabric.html">Single Fabric</a>
+      <a href="field-platform.html">Field Platform</a>
       <a href="safety.html">Safety</a>
+      <a href="znetwork-connect.html">ZNetwork</a>
+      <a href="speed-bench.html">Speed Bench</a>
+      <a href="performance.html">Performance</a>
+      <a href="release.html">Release 5.0</a>
+      <a href="single-fabric.html">Single Fabric</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="batteries.html">Batteries</a>
@@ -71,61 +72,50 @@
     </div>
   </nav>
 
-  <h1>Release 4.7.1</h1>
-  <p>Grok16 <strong>4.7</strong> — benchmark chart refresh pipeline, gcc-14 host pin, legacy isolation chamber, portable <code>.launch</code> chambers, 17-platform matrix (incl. RISC-V). Compiler <strong>16.2.0</strong>. Tag <code>v4.7.1</code>. Previous: <code>v4.2.0</code>.</p>
+  <h1>Release 5.0.1 — version one</h1>
+  <p>Grok16 <strong>5.0</strong> kicks off as <strong>v1.0</strong> operator framing. Compiler <strong>g16 @ 16.2.0</strong>. Tag <code>v5.0.1</code>. Prior 2.x–4.x remain in git history only.</p>
 
-  <h2 id="charts">Speed &amp; comparison charts</h2>
-  <pre><code>./scripts/grok16-toolchain.sh bench-refresh
-# stepwise: bench-triad · bench-compare · bench-all · exec-comprehensive-bench · bench-charts</code></pre>
-  <table>
-    <tr><th>Chart</th><th>Asset</th></tr>
-    <tr><td>speed_demo compile + exec</td><td><code>docs/assets/speed-bench-chart.svg</code></td></tr>
-    <tr><td>belt triad</td><td><code>docs/assets/triad-chart.svg</code></td></tr>
-    <tr><td>field vs host compare</td><td><code>docs/assets/compare-chart.svg</code></td></tr>
-    <tr><td>bench-all profiles</td><td><code>docs/assets/bench-all-chart.svg</code></td></tr>
-  </table>
-  <p>Manifest: <code>data/bench/charts-manifest.json</code> · Live JSON: <code>data/bench/triad-latest.json</code>, <code>compare-latest.json</code>, <code>docs/field-exec-full-bench.json</code></p>
+  <aside class="callout callout-warn">
+    <strong>Field platform:</strong> <a href="field-platform.html">Do not create field files</a> — use the 2D auto-field plane.
+  </aside>
+
+  <h2 id="shipped">What ships</h2>
+  <ul>
+    <li><strong>belt_2_0</strong> single fabric — 8192 redata chunk, 512 die slots</li>
+    <li><strong>field_physics</strong> — thermal guard, no <code>-ffast-math</code> for production</li>
+    <li><strong>Binary package</strong> — g16 + AmmoCode + signed settings (<code>binary-package</code>)</li>
+    <li><strong>2D field platform</strong> — <code>data/grok16-field-platform-doctrine.json</code></li>
+    <li><strong>ZNetwork field wire</strong> — egress convert / ingress deconvert design</li>
+    <li><strong>Speed bench v5.0.0</strong> — best exec <strong>102.84M</strong> ops/s</li>
+    <li>Compiler symlinks · build-essential fabric · AmmoCode field instill</li>
+    <li><strong>5.0.1 — AmmoOS</strong> — <code>ammoos</code> profile, <code>integrate-ammoos</code>, <code>verify-ammoos-surfaces</code> (pairs AmmoOS 1.9.9e)</li>
+  </ul>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16
-git checkout v4.7.1
-export G16_PREFIX="$(pwd)"
-export G16_BELT_PROFILE=belt_2_0
-G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild
-./scripts/grok16-toolchain.sh test-battery-release
+cd Grok16 && git checkout v5.0.1
+export G16_PREFIX="$(pwd)" G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-toolchain.sh verify
 ./scripts/grok16-toolchain.sh test-battery-belt
-./scripts/grok16-toolchain.sh bench-refresh
-./scripts/grok16-toolchain.sh integrate</code></pre>
+./scripts/grok16-toolchain.sh bench-refresh</code></pre>
 
-  <h2 id="shipped">What shipped</h2>
-  <ul>
-    <li><strong>bench-refresh</strong> — one-shot triad + compare + bench-all + comprehensive exec + SVG charts + manual rebuild</li>
-    <li><strong>bench-charts</strong> — <code>scripts/grok16-bench-charts.py</code> generates comparison SVGs from live JSON</li>
-    <li><strong>performance.html</strong> — embeds triad, compare, and bench-all charts with live triad table</li>
-    <li><strong>gcc-14 host pin</strong> — speed bench chart header stamps host toolchain</li>
-    <li><strong>Legacy isolation chamber</strong> — sealed BASIC/Pascal/VB tests in SG/NewLatest</li>
-    <li><strong>Speed bench v5.0.0</strong> — compile ms + execution ops/s with version stamps</li>
-    <li><code>speed_demo</code> suite @ 1.1.0 — C, C++, CMake, Python (host + gpy-16)</li>
-    <li>Portable <code>.launch</code> chambers — <code>./scripts/grok16-launch-verify.sh</code></li>
-    <li>Multi-platform release — <code>./scripts/grok16-release.sh 4.7.1 --push</code></li>
-  </ul>
+  <h2 id="binary">Binary package</h2>
+  <pre><code>./scripts/grok16-toolchain.sh binary-package
+tar xzf dist/grok16-5.0.1-linux-x86_64.tar.gz
+cd grok16-5.0.1-linux-x86_64 && source grok16-env.sh
+./share/ammocode/ammocode</code></pre>
 
-  <h2 id="upgrade">Upgrade from v4.2.0</h2>
-  <ol>
-    <li>Checkout <code>v4.7.1</code></li>
-    <li><code>G16_BELT_PROFILE=belt_2_0 G16_RELEASE_PROFILE=1 ./scripts/grok16-toolchain.sh rebuild</code></li>
-    <li><code>test-battery-release</code> then <code>test-battery-belt</code></li>
-    <li><code>./scripts/grok16-toolchain.sh bench-refresh</code></li>
-    <li><code>./scripts/grok16-integrate.sh</code> to publish env to SG consumers</li>
-  </ol>
-  <p>Full notes: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/RELEASE-4.7.md">RELEASE-4.7.md</a> · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="single-fabric.html">Single Fabric</a></p>
+  <h2 id="charts">Benchmarks</h2>
+  <pre><code>./scripts/grok16-toolchain.sh bench-triad
+./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
+  <p><a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="field-platform.html">Field Platform</a> · <a href="znetwork-connect.html">ZNetwork</a></p>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 4.7.1</a> ·
+    <a href="release.html">Release 5.0.1</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 4.7.1 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 5.0.1 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

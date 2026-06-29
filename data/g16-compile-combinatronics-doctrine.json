@@ -17,8 +17,15 @@
     "recombinatorics_cycle",
     "resolve_ideal_profile",
     "compile_with_profile",
-    "stamp_combinatronics_receipt"
+    "stamp_combinatronics_receipt",
+    "instill_ammocode_field"
   ],
+  "ammocode_field": {
+    "doctrine": "data/g16-ammocode-field-doctrine.json",
+    "module": "lib/g16-ammocode-field-instill.py",
+    "no_subfields": true,
+    "defield_if_resting_on_field": true
+  },
   "receipt": {
     "schema": "g16-compiled-combinatronics-stamp/v1",
     "suffix": ".combinatronics.json"

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Grok16 — Speed Bench</title>
-  <meta name="description" content="Grok16 4.7.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <meta name="description" content="Grok16 5.0.1 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
   <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/speed-bench.html" />
   <script>
   (function (d) {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v13"></script>
-  <script src="manual-search.js?v13"></script>
-  <script src="manual-layout.js?v13"></script>
-  <link rel="stylesheet" href="manual.css?v13" />
+  <script src="manual-theme.js?v14"></script>
+  <script src="manual-search.js?v14"></script>
+  <script src="manual-layout.js?v14"></script>
+  <link rel="stylesheet" href="manual.css?v14" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 4.7.1</span>
+        <span class="nav-version">distro 5.0.1</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -49,12 +49,13 @@
     </div>
     <div class="nav-links">
       <a href="index.html">Home</a>
-      <a href="speed-bench.html">Speed Bench</a>
-      <a href="uncompiled.html">Uncompiled</a>
-      <a href="cmake-linking.html">CMake & Link</a>
-      <a href="release.html">Release 4.7</a>
-      <a href="single-fabric.html">Single Fabric</a>
+      <a href="field-platform.html">Field Platform</a>
       <a href="safety.html">Safety</a>
+      <a href="znetwork-connect.html">ZNetwork</a>
+      <a href="speed-bench.html">Speed Bench</a>
+      <a href="performance.html">Performance</a>
+      <a href="release.html">Release 5.0</a>
+      <a href="single-fabric.html">Single Fabric</a>
       <a href="getting-started.html">Getting Started</a>
       <a href="architecture.html">Architecture</a>
       <a href="batteries.html">Batteries</a>
@@ -134,7 +135,7 @@
 
   <h2 id="reproduce">Reproduce (comprehensive)</h2>
   <pre><code>cd Grok16
-git checkout v4.7.1
+git checkout v5.0.1
 export G16_PREFIX="$(pwd)"
 export GROK16_SG_ROOT=/path/to/SG
 export NEXUS_STATE_DIR=$GROK16_SG_ROOT/NewLatest/state
@@ -143,10 +144,10 @@ G16_PLATE_MELD_CMD=fuse SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh ex
   <p>JSON: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/field-exec-full-bench.json">field-exec-full-bench.json</a> · MD: <a href="https://github.com/ZacharyGeurts/Grok16/blob/main/docs/SPEED-BENCH-REPORT.md">SPEED-BENCH-REPORT.md</a></p>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 4.7.1</a> ·
+    <a href="release.html">Release 5.0.1</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 4.7.1 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 5.0.1 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

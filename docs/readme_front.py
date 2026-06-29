@@ -169,7 +169,66 @@ def markdown_to_html(md: str) -> str:
     return "\n".join(parts)
 
 
+def v5_front_body(*, distro: str, g16: str, report: str) -> str:
+    """Grok16 5.0 home — written from code/doctrine, not README."""
+    md = f"""# Grok16 {distro} — Version One
+
+**5.0 is a clean start** (v1.0 operator framing). Self-hosted `g16` @ **{g16}**. One belt (`belt_2_0`). One 2D platform. No field files.
+
+> **DO NOT CREATE FIELD FILES** — they heat neighboring fields. Placement on the [field platform](field-platform.html) *is* field at depth 0.
+
+## Benchmarks (Speed Bench {report})
+
+| Result | Value |
+|--------|-------|
+| Fastest execution | **102.8M ops/s** — C++ g16 belt_2_0 |
+| Belt triad | [performance.html#triad](performance.html#triad) |
+| Full table | [speed-bench.html](speed-bench.html) |
+
+## Start
+
+```bash
+git clone https://github.com/ZacharyGeurts/Grok16.git
+cd Grok16 && git checkout v{distro}
+export G16_PREFIX="$(pwd)" G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh rebuild && ./scripts/grok16-toolchain.sh verify
+```
+
+Binary: `grok16-{distro}-linux-x86_64.tar.gz` → `source grok16-env.sh` → `./share/ammocode/ammocode`
+
+## Docs
+
+- [Field platform](field-platform.html) — 2D auto-field, **no field files**
+- [ZNetwork connect](znetwork-connect.html) — field wire, identity without phone
+- [Safety](safety.html) · [Release {distro}](release.html)
+"""
+    content = markdown_to_html(md)
+    return f"""
+  <figure class="fig-wide readme-charts">
+    <img src="assets/speed-bench-chart.svg" alt="Speed bench compile vs execution" width="920" height="280" loading="eager" />
+    <figcaption>Speed bench report v{report} · distro {distro} · <a href="speed-bench.html">full manual →</a></figcaption>
+  </figure>
+  <div class="figure-row readme-charts-row">
+    <figure class="fig-card">
+      <img src="assets/triad-chart.svg" alt="Belt triad comparison" width="640" height="280" loading="lazy" />
+      <figcaption><a href="performance.html#triad">bench-triad</a></figcaption>
+    </figure>
+    <figure class="fig-card">
+      <img src="assets/compare-chart.svg" alt="Field vs host compare" width="640" height="280" loading="lazy" />
+      <figcaption><a href="performance.html">bench-compare</a></figcaption>
+    </figure>
+  </div>
+  <article class="readme-prose">
+{content}
+  </article>
+"""
+
+
 def readme_body(*, distro: str, report: str) -> str:
+    return v5_front_body(distro=distro, g16="16.2.0", report=report)
+
+
+def _legacy_readme_body(*, distro: str, report: str) -> str:
     readme_path = Path(__file__).resolve().parent.parent / "README.md"
     md = readme_path.read_text(encoding="utf-8")
     content = markdown_to_html(md)
@@ -191,23 +250,15 @@ def readme_body(*, distro: str, report: str) -> str:
   <article class="readme-prose">
 {content}
   </article>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {{
-    if (window.mermaid) {{
-      mermaid.initialize({{ startOnLoad: true, theme: "dark", securityLevel: "loose" }});
-    }}
-  }});
-  </script>
 """
 
 
 def write_index(page_fn, *, distro: str, g16: str, report: str) -> None:
-    body = readme_body(distro=distro, report=report)
+    body = v5_front_body(distro=distro, g16=g16, report=report)
     out = page_fn("Home", body)
     out = out.replace(
         'href="https://zacharygeurts.github.io/Grok16/home.html"',
         'href="https://zacharygeurts.github.io/Grok16/"',
     )
     Path(__file__).resolve().parent.joinpath("index.html").write_text(out, encoding="utf-8")
-    print("wrote index.html (README front page)")
+    print("wrote index.html (Grok16 5.0 v1.0 front page)")

@@ -38,11 +38,11 @@
       "modes": ["organized_field", "singular_field", "compile"],
       "doctrine": "data/field-exec-uncompiled-doctrine.json"
     },
-    "chips_battery": {
-      "module": "NewLatest/lib/field-chip-battery.py",
-      "panel": "field-chip-battery-panel.json",
+    "ironclad_chips": {
+      "module": "NewLatest/lib/field-ironclad-chips-combinatorics.py",
+      "panel": "field-ironclad-chips-combinatorics-panel.json",
       "seed": "NewLatest/data/field-chip-battery-seed.json",
-      "doctrine": "NewLatest/data/field-chip-battery-doctrine.json",
+      "doctrine": "NewLatest/data/field-ironclad-chips-combinatorics-doctrine.json",
       "sources": ["seed", "mame", "chips_manifest", "queen_game_room", "isa_data"],
       "vendors": ["Cyrix", "Tandy", "MAME", "CHIPS", "Motorola", "Intel", "AMD"],
       "code_path_prediction": {
@@ -57,7 +57,7 @@
       "rebalance": "NewLatest/lib/g16-combinatronic-rebalance.py",
       "panel": "field-g16-universal-combinatronic-panel.json",
       "doctrine": "NewLatest/data/field-g16-universal-combinatronic-doctrine.json",
-      "sub_facets": ["chips_battery", "program_combinatronic", "sense_universal"],
+      "sub_facets": ["ironclad_chips", "program_combinatronic", "sense_universal"],
       "condense_group": "g16_universal",
       "motto": "G16 does everything — every chip, every language, one combinatronic."
     },
@@ -140,7 +140,13 @@
     "module": "lib/g16-compile-combinatronics.py",
     "doctrine": "data/g16-compile-combinatronics-doctrine.json",
     "always_at_creation": true,
-    "pipeline": ["fast_cycle", "resolve_ideal_profile", "compile_with_profile", "stamp_combinatronics_receipt"],
+    "pipeline": ["fast_cycle", "resolve_ideal_profile", "compile_with_profile", "stamp_combinatronics_receipt", "instill_ammocode_field"],
+    "ammocode_field": {
+      "doctrine": "data/g16-ammocode-field-doctrine.json",
+      "module": "lib/g16-ammocode-field-instill.py",
+      "no_subfields": true,
+      "defield_if_resting_on_field": true
+    },
     "receipt_suffix": ".combinatronics.json",
     "wired": [
       "scripts/grok16-ai-compile.py",

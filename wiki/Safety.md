@@ -1,34 +1,34 @@
-# Safety (2.0)
+# Safety — depth zero, no field files
 
-Web: [integration.html](https://zacharygeurts.github.io/Grok16/integration.html#gates)
+## Critical warning
 
-Grok16 2.0 safety is melded into Ironclad at integrate time — compile-time mandate plus consumer depth impossibility.
+**DO NOT CREATE FIELD FILES.** Nested field JSON heats neighboring fields before singularizer catches up. Use the [2D field platform](Field-Platform).
 
-## Depth fields sealed and destroyed
+## Ironclad rules (from code)
 
-| Gate | Behavior |
-|------|----------|
-| `field-depth-singularizer` | Seal and destroy `field_depth`, zero nested layers, ledger violations |
-| Queen field-net | `depth_field_impossible: true` on classify |
-| Queen browser | Navigate strips depth before tab persist |
-| NEXUS HTTP | 302 redirect when `?field_depth=` present |
+| Rule | Value |
+|------|-------|
+| `max_field_depth` | **0** |
+| Field-on-field | **forbidden** |
+| Depth field creation | **forbidden** |
+| Time | **linear** (`sovereign-linear-time`) |
+| Build under heat | **never** (`never_build_under_heat`) |
 
-**Rule:** one field, depth zero always. Creation cannot persist.
+Doctrine: `data/grok16-single-fabric-doctrine.json`, `NewLatest/data/single-field-depth-doctrine.json`
 
-## Ironclad meld
+## Profiles
 
-- `data/g16-ironclad-meld.json` — time linear, single fabric, field sanity verses
-- `g16-ironclad-sanity` gate in forge and batteries
-- `G16_FIELD_SAFETY_MANDATE_v1` on field targets
+| Profile | `-ffast-math` | Thermal guard | Use |
+|---------|---------------|---------------|-----|
+| `field_opt` / `belt_2_0` | yes | optional | bench throughput |
+| **`field_physics`** | **no** | **yes** | production NEXUS/CANVAS |
 
-## Sovereign time
+## Gates
 
-Time is linear (`ironclad:time:1`). G1ID meld uses `linear_ns` only — `t` forbidden in geometry.
+- `g16-field-mandate` · `g16-ironclad-sanity`
+- `field-depth-singularizer` · `queen-field-sanity`
+- `ironclad-field-sanity` (integral simplify pass)
 
-## Integrate
+## ZNetwork
 
-```bash
-./scripts/grok16-integrate.sh
-```
-
-Publishes `data/grok16-integrate.env` and wires Queen / World_Redata / ZOCR to canonical prefix + belt profile.
+Default `REVIEW_ONLY` — no OS mutation until review. See [ZNetwork Connect](ZNetwork-Connect).

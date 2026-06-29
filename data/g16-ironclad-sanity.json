@@ -23,7 +23,7 @@
       "integral": "one_pass_simplify",
       "heat_avoided": 0,
       "layers_out": 0,
-      "updated": "2026-06-27T13:14:19Z"
+      "updated": "2026-06-27T03:28:20Z"
     },
     "spatial_existence": {
       "id": "g16_spatial_existence",
@@ -48,7 +48,7 @@
         "lesson": "That one \u2014 there, uncorroborated"
       },
       "existence_correlation": 0.0,
-      "updated": "2026-06-27T13:27:44Z"
+      "updated": "2026-06-27T19:14:05Z"
     },
     "g1id": {
       "id": "g1id",
@@ -62,8 +62,8 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782566864654324422,
-        "derived_utc": "2026-06-27T13:27:44Z",
+        "linear_ns": 1782587645006334084,
+        "derived_utc": "2026-06-27T19:14:05Z",
         "sealed": true,
         "synced": true,
         "never_desync": true,
@@ -73,9 +73,9 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-06-27T13:27:44Z"
+      "updated": "2026-06-27T19:14:05Z"
     },
-    "updated": "2026-06-27T13:27:44Z"
+    "updated": "2026-06-27T19:14:04Z"
   },
   "field_sanity": {
     "id": "g16_field_sanity",
@@ -123,13 +123,13 @@
       "lesson": "That one \u2014 there, uncorroborated"
     },
     "existence_correlation": 0.0,
-    "updated": "2026-06-27T13:27:44Z"
+    "updated": "2026-06-27T19:14:05Z"
   },
   "iron_plate_spot": {
     "id": "iron_plate_spot",
     "absorbed": true,
     "ok": true,
-    "spot_count": 9,
+    "spot_count": 11,
     "coolest_spot": "chain:browser_display",
     "low_power": true,
     "meld_citation": "ironclad:meld:2",
@@ -156,7 +156,7 @@
     "spatial_existence_pass": true,
     "iron_plate_spot_detector": true,
     "iron_plate_spot_ok": true,
-    "iron_plate_spot_count": 9
+    "iron_plate_spot_count": 11
   },
   "score": 21,
   "max": 21,

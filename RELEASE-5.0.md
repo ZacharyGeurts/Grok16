@@ -29,6 +29,23 @@ Grok16 5.0.0 locks the **belt_2_0 single-fabric profile** as default. One unifie
 - G16_PKGVERSION now recommends Grok16-5.0.0
 - All prior 16.x compiler features carried forward; distro track now at 5.0 stable.
 
+## Binary package (g16 + AmmoCode)
+
+Ship a full prefix tarball for operators who want everything in one extract:
+
+```bash
+./scripts/grok16-toolchain.sh binary-package
+# → dist/grok16-5.0.0-linux-x86_64.tar.gz
+```
+
+Contents:
+- **Full g16 prefix** — `bin/`, `libexec/`, `lib/`, `include/`, `cmake/`, toolchain scripts
+- **`share/ammocode/ammocode`** — AmmoCode GUI (PyInstaller ELF when available, else launcher + bundle)
+- **`share/ammocode/ammocode-settings.secure.json`** — all options pre-set (`belt_2_0`, memory vault, theme, collab defaults)
+- **`grok16-env.sh`** — source once, then run `./share/ammocode/ammocode`
+
+First launch copies bundled settings to `~/.config/ammocode/` when none exist.
+
 ## Known Limits / Next (5.1+)
 - Deeper sub-micron / Casimir / Maxwell shader integration
 - Full one-canvas universal emulation (BBC Micro → modern browsers → Windows infinity)
