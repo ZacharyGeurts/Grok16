@@ -21,6 +21,8 @@ EXT_MAP = ROOT / "data" / "g16-universal-extensions.json"
 G16 = ROOT / "bin" / "g16"
 AI_COMPILE = ROOT / "scripts" / "grok16-ai-compile.py"
 FILETYPES = NEXUS / "lib" / "field-programming-filetypes.py"
+AUTOCORRECT = NEXUS / "lib" / "field-compile-autocorrect.py"
+SECURE_CHAMBER = NEXUS / "lib" / "g16-secure-chamber.py"
 
 
 def _now() -> str:
@@ -57,6 +59,43 @@ def _ai_compile_mod() -> Any | None:
     return mod
 
 
+def _autocorrect_mod() -> Any | None:
+    if not AUTOCORRECT.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("field_compile_autocorrect", AUTOCORRECT)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _attach_alerts(result: dict[str, Any], *, lang: str, content: str) -> dict[str, Any]:
+    ac = _autocorrect_mod()
+    if not ac or not hasattr(ac, "build_alert_layout"):
+        result.setdefault("continued", True)
+        return result
+    diags = result.get("diagnostics")
+    if not diags:
+        diags = ac.parse_diagnostics(
+            str(result.get("stderr") or result.get("detail") or result.get("stderr_tail") or ""),
+            lang=lang,
+        )
+    result["diagnostics"] = diags
+    result["alerts"] = ac.build_alert_layout(
+        ok=bool(result.get("ok")),
+        lang=lang,
+        diagnostics=diags,
+        applied=result.get("applied_fixes") or [],
+        attempts=result.get("attempts") or [{"attempt": 0, "ok": bool(result.get("ok"))}],
+        compile_result=result,
+    )
+    result["continued"] = True
+    if result.get("content_changed") and result.get("content"):
+        result["corrected_content"] = result["content"]
+    return result
+
+
 def _filetypes_mod() -> Any | None:
     if not FILETYPES.is_file():
         return None
@@ -66,6 +105,25 @@ def _filetypes_mod() -> Any | None:
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+def _secure_chamber_mod() -> Any | None:
+    if not SECURE_CHAMBER.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("g16_secure_chamber", SECURE_CHAMBER)
+    if not spec or not spec.loader:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _needs_secure_chamber(lang: str) -> bool:
+    sec = _secure_chamber_mod()
+    if sec and hasattr(sec, "needs_secure_chamber"):
+        return bool(sec.needs_secure_chamber(lang))
+    lang = (lang or "").lower()
+    return lang not in ("plaintext", "")
 
 
 def _stack_fabric_mod() -> Any | None:
@@ -168,55 +226,24 @@ def check(
             "message": "Blocked — bad code. See findings and use_instead.",
         }
     comp = _compiler_for(lang)
-    driver = str(comp.get("driver") or "bin/g16")
-    driver_path = ROOT / driver if not driver.startswith("/") else Path(driver)
     check_ok = True
     detail = ""
-    if lang in ("javascript", "typescript") and _which("node"):
-        with tempfile.NamedTemporaryFile("w", suffix=".js" if lang == "javascript" else ".ts", delete=False) as fh:
-            fh.write(content)
-            tmp = fh.name
-        try:
-            proc = subprocess.run(
-                [_which("node"), "--check", tmp],
-                capture_output=True, text=True, timeout=15,
-            )
-            check_ok = proc.returncode == 0
-            detail = proc.stderr or proc.stdout
-        finally:
-            Path(tmp).unlink(missing_ok=True)
-    elif lang == "python" and (_which("python3") or _which("pythong")):
-        py = _which("pythong") or _which("python3")
-        with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as fh:
-            fh.write(content)
-            tmp = fh.name
-        try:
-            proc = subprocess.run([py, "-m", "py_compile", tmp], capture_output=True, text=True, timeout=15)
-            check_ok = proc.returncode == 0
-            detail = proc.stderr
-        finally:
-            Path(tmp).unlink(missing_ok=True)
-    elif lang == "java" and _which("javac"):
-        with tempfile.TemporaryDirectory(prefix="g16-java-") as td:
-            src = Path(td) / "Main.java"
-            if "class " not in content:
-                content = f"public class Main {{\npublic static void main(String[] args) {{\n{content}\n}}\n}}\n"
-            src.write_text(content, encoding="utf-8")
-            proc = subprocess.run([_which("javac"), str(src)], capture_output=True, text=True, timeout=60)
-            check_ok = proc.returncode == 0
-            detail = proc.stderr
-    elif lang in ("c", "cxx", "asm", "objc") and G16.is_file():
-        ai = _ai_compile_mod()
-        if ai and hasattr(ai, "compile_source"):
-            out = ai.compile_source(content, lang="cxx" if lang in ("cxx", "objc") else "c")
-            check_ok = bool(out.get("ok"))
-            detail = out.get("stderr_tail") or ""
-        else:
-            check_ok = False
-            detail = "g16 ai compile unavailable"
-    else:
+    lower_py = ROOT / "lib" / "g16-lang-lower.py"
+    if lower_py.is_file() and lang not in ("plaintext", "shell", "html", "css", "json", "yaml", "markdown"):
+        spec = importlib.util.spec_from_file_location("g16_lang_lower_chk", lower_py)
+        if spec and spec.loader:
+            lmod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(lmod)
+            if hasattr(lmod, "compile_source"):
+                out = lmod.compile_source(content, lang=lang, out_name="g16_check")
+                check_ok = bool(out.get("ok"))
+                detail = str(out.get("stderr") or "")
+    elif lang in ("plaintext", "shell", "html", "css", "json", "yaml", "markdown"):
         check_ok = True
-        detail = f"check skipped — no host tool for {lang}; security gate passed"
+        detail = f"gate passed — {lang} not compiled by G16"
+    else:
+        check_ok = False
+        detail = "g16_lang_lower unavailable"
     return {
         "schema": "g16-universal-check/v1",
         "ok": check_ok and gate_doc.get("ok", True),
@@ -257,30 +284,88 @@ def compile_source(
     if chk.get("blocked"):
         return {**chk, "schema": "g16-universal-compile/v1", "compiled": False}
     if not chk.get("ok"):
-        return {**chk, "schema": "g16-universal-compile/v1", "compiled": False, "error": "check_failed"}
+        ac = _autocorrect_mod()
+        if ac and hasattr(ac, "compile_with_autocorrect"):
+            def _recheck_once(src: str) -> dict[str, Any]:
+                c = check(src, lang=lang, path=path, profile=profile)
+                c["schema"] = "g16-universal-check/v1"
+                c["compiled"] = False
+                if not c.get("diagnostics"):
+                    c["diagnostics"] = ac.parse_diagnostics(str(c.get("detail") or ""), lang=lang)
+                return c
+
+            rep = ac.compile_with_autocorrect(_recheck_once, content, lang=lang, profile=profile)
+            rep.setdefault("schema", "g16-universal-compile/v1")
+            rep.setdefault("compiled", False)
+            rep.setdefault("error", "check_failed")
+            return rep
+        fail = {**chk, "schema": "g16-universal-compile/v1", "compiled": False, "error": "check_failed"}
+        return _attach_alerts(fail, lang=lang, content=content)
+    if _needs_secure_chamber(lang):
+        sec = _secure_chamber_mod()
+        if sec and hasattr(sec, "compile_source"):
+            out = sec.compile_source(content, lang=lang, path=path)
+            out["schema"] = "g16-universal-compile/v1"
+            out["profile"] = profile
+            out["compiler"] = out.get("compiler") or "secure_chamber"
+            out["secure_chamber"] = True
+            if out.get("blocked"):
+                out["ok"] = False
+                out["compiled"] = False
+            return _attach_alerts(out, lang=lang, content=content)
+
     comp = _compiler_for(lang)
     ai = _ai_compile_mod()
+    ac = _autocorrect_mod()
+
+    def _g16_ai_once(src: str, *, kind: str) -> dict[str, Any]:
+        if not ai or not hasattr(ai, "compile_source"):
+            return {"ok": False, "error": "g16_ai_unavailable"}
+        out = ai.compile_source(src, lang=kind)
+        return {
+            "schema": "g16-universal-compile/v1",
+            "compiled": bool(out.get("ok")),
+            "lang": lang,
+            "compiler": "g16",
+            **out,
+        }
+
     if lang in ("c", "cxx", "asm", "objc") and ai and hasattr(ai, "compile_source"):
-        out = ai.compile_source(content, lang="cxx" if lang in ("cxx", "objc", "c") and "class " in content else ("cxx" if lang in ("cxx", "objc") else "c"))
-        return {"schema": "g16-universal-compile/v1", "compiled": bool(out.get("ok")), "lang": lang, "compiler": "g16", **out}
-    if lang == "java" and _which("javac"):
-        with tempfile.TemporaryDirectory(prefix="g16-java-") as td:
-            src = Path(td) / "Main.java"
-            if "class " not in content:
-                content = f"public class Main {{\npublic static void main(String[] args) throws Exception {{\n{content}\n}}\n}}\n"
-            src.write_text(content, encoding="utf-8")
-            t0 = time.perf_counter()
-            proc = subprocess.run([_which("javac"), str(src)], capture_output=True, text=True, timeout=120)
-            return {
-                "schema": "g16-universal-compile/v1",
-                "ok": proc.returncode == 0,
-                "compiled": proc.returncode == 0,
-                "lang": lang,
-                "compiler": "javac",
-                "compile_ms": int((time.perf_counter() - t0) * 1000),
-                "stderr": proc.stderr[:2000],
-                "classfile": str(Path(td) / "Main.class") if proc.returncode == 0 else "",
-            }
+        kind = "cxx" if lang in ("cxx", "objc", "c") and "class " in content else ("cxx" if lang in ("cxx", "objc") else "c")
+        if ac and hasattr(ac, "compile_with_autocorrect"):
+            rep = ac.compile_with_autocorrect(
+                lambda s: _g16_ai_once(s, kind=kind), content, lang=lang, profile=profile,
+            )
+            rep.setdefault("schema", "g16-universal-compile/v1")
+            rep.setdefault("lang", lang)
+            rep.setdefault("compiler", "g16")
+            return rep
+        out = _g16_ai_once(content, kind=kind)
+        return _attach_alerts(out, lang=lang, content=content)
+
+    if lang in ("java", "kotlin"):
+        jpy = ROOT / "lib" / "g16-java-compile.py"
+        def _g16_java_once(src: str) -> dict[str, Any]:
+            if not jpy.is_file():
+                return {"ok": False, "error": "g16_java_compile_missing", "compiler": "g16"}
+            spec = importlib.util.spec_from_file_location("g16_java_uni", jpy)
+            if not spec or not spec.loader:
+                return {"ok": False, "error": "g16_java_load_failed", "compiler": "g16"}
+            jmod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(jmod)
+            out = jmod.compile_source(src, lang=lang)
+            out.setdefault("schema", "g16-universal-compile/v1")
+            out.setdefault("compiler", "g16")
+            return out
+
+        if ac and hasattr(ac, "compile_with_autocorrect"):
+            rep = ac.compile_with_autocorrect(_g16_java_once, content, lang=lang, profile=profile)
+            rep.setdefault("schema", "g16-universal-compile/v1")
+            rep.setdefault("lang", lang)
+            rep.setdefault("compiler", "g16")
+            return rep
+        out = _g16_java_once(content)
+        return _attach_alerts(out, lang=lang, content=content)
     if lang in ("javascript", "typescript"):
         return {
             "schema": "g16-universal-compile/v1",
@@ -316,68 +401,42 @@ def compile_source(
 
 
 def run_file(path: str, *, lang: str = "", profile: str = "", mime: str = "") -> dict[str, Any]:
-    """G9 — run via 243-filetype DB when available, else universal lane."""
+    """G9 — run via sealed secure chamber; never bare host exec for user langs."""
     p = Path(path).expanduser().resolve()
     if not p.is_file():
         return {"schema": "g16-universal-run/v1", "ok": False, "error": "not_found", "path": str(p)}
     profile = _resolve_profile(profile or "belt_2_0")
-    ft = _filetypes_mod()
-    if ft and hasattr(ft, "run_path"):
-        out = ft.run_path(str(p), profile=profile)
-        if out.get("ok") is not False or out.get("error") != "no_runner":
-            return {"schema": "g16-universal-run/v1", **out}
     lang = lang or discern(str(p), mime=mime)
+    if _needs_secure_chamber(lang):
+        sec = _secure_chamber_mod()
+        if sec and hasattr(sec, "run_path"):
+            out = sec.run_path(str(p), lang=lang, profile=profile)
+            out["schema"] = "g16-universal-run/v1"
+            out["profile"] = profile
+            out["secure_chamber"] = True
+            return out
     content = p.read_text(encoding="utf-8", errors="replace")
     chk = check(content, lang=lang, path=str(p), profile=profile)
     if chk.get("blocked"):
         return {"schema": "g16-universal-run/v1", "ok": False, "blocked": True, **chk}
     if lang == "shell":
-        proc = subprocess.run(["/bin/bash", str(p)], capture_output=True, text=True, timeout=180, cwd=str(p.parent))
         return {
             "schema": "g16-universal-run/v1",
-            "ok": proc.returncode == 0,
+            "ok": False,
+            "blocked": True,
             "lang": lang,
-            "runner": "bash",
-            "returncode": proc.returncode,
-            "stdout": (proc.stdout or "")[-8000:],
-            "stderr": (proc.stderr or "")[-8000:],
-        }
-    if lang == "python":
-        py = _which("pythong") or _which("python3")
-        if py:
-            proc = subprocess.run([py, str(p)], capture_output=True, text=True, timeout=180, cwd=str(p.parent))
-            return {
-                "schema": "g16-universal-run/v1",
-                "ok": proc.returncode == 0,
-                "lang": lang,
-                "runner": py,
-                "returncode": proc.returncode,
-                "stdout": (proc.stdout or "")[-8000:],
-                "stderr": (proc.stderr or "")[-8000:],
-            }
-    if lang in ("javascript", "typescript") and _which("node"):
-        proc = subprocess.run([_which("node"), str(p)], capture_output=True, text=True, timeout=180, cwd=str(p.parent))
-        return {
-            "schema": "g16-universal-run/v1",
-            "ok": proc.returncode == 0,
-            "lang": lang,
-            "runner": "node",
-            "returncode": proc.returncode,
-            "stdout": (proc.stdout or "")[-8000:],
-            "stderr": (proc.stderr or "")[-8000:],
+            "error": "shell_direct_denied",
+            "message": "Shell scripts require secure chamber — use g16 check first",
         }
     comp = compile_source(content, lang=lang, path=str(p), profile=profile)
     if comp.get("binary") and Path(str(comp["binary"])).is_file():
-        proc = subprocess.run([str(comp["binary"])], capture_output=True, text=True, timeout=180, cwd=str(p.parent))
-        return {
-            "schema": "g16-universal-run/v1",
-            "ok": proc.returncode == 0,
-            "lang": lang,
-            "runner": comp["binary"],
-            "returncode": proc.returncode,
-            "stdout": (proc.stdout or "")[-8000:],
-            "stderr": (proc.stderr or "")[-8000:],
-        }
+        sec = _secure_chamber_mod()
+        if sec and hasattr(sec, "run_path"):
+            out = sec.run_path(str(p), lang=lang, profile=profile)
+            out["schema"] = "g16-universal-run/v1"
+            out["profile"] = profile
+            out["secure_chamber"] = True
+            return out
     return {
         "schema": "g16-universal-run/v1",
         "ok": bool(comp.get("ok")),

@@ -1,9 +1,10 @@
-**[Home](Home)** — Grok16 5.1 stack fabric
+**[Home](Home)** — Grok16 5.2 C64 + stack fabric
 
 ### Warning & platform
 - [Field Platform](Field-Platform) — **no field files**
 - [Safety](Safety)
 - [ZNetwork Connect](ZNetwork-Connect)
+- [C64 Ultimate](C64) — hardware pair (not classic 6510)
 
 ### Benchmarks
 - [Speed Bench](Speed-Bench)
@@ -15,7 +16,7 @@
 - [Profiles](Profiles)
 - [Batteries](Batteries)
 
-### Release 5.1
+### Release 5.2
 - [Release](Release)
 - [Integration](Integration)
 - [MCP](MCP) — custom agent tools

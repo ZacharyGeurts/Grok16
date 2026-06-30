@@ -1,8 +1,9 @@
 {
   "schema": "g16-universal-compilers/v1",
   "title": "Every compiler ever — Grok16 universal dispatch",
-  "motto": "One g16 stack · every language · browser tab · secured · transparent · insta-rewrite",
+  "motto": "Grok16 compiles everything — lower to C/C++, link with bin/g16, no third-party toolchains",
   "module": "lib/g16-universal-compiler.py",
+  "lower": "lib/g16-lang-lower.py",
   "security": "lib/g16-code-security.py",
   "browser_tab": {
     "ammocode_root": "../AmmoCode",
@@ -19,21 +20,10 @@
     "legacy": ["basic", "qbasic", "turbo_pascal", "fortran", "algol", "snobol", "forth", "apl", "ammolang", "field"]
   },
   "compilers": {
-    "g16": {"langs": ["c", "cxx", "asm", "objc"], "driver": "bin/g16", "compile": true},
-    "gpy16": {"langs": ["python"], "driver": "bin/gpy-16", "interpret": true},
-    "javac": {"langs": ["java"], "driver": "javac", "compile": true, "fallback": "g16-ai-compile"},
-    "rustc": {"langs": ["rust"], "driver": "rustc", "compile": true, "fallback": "g16"},
-    "go": {"langs": ["go"], "driver": "go", "compile": true, "fallback": "g16"},
-    "zig": {"langs": ["zig"], "driver": "zig", "compile": true, "fallback": "g16"},
-    "node": {"langs": ["javascript", "typescript"], "driver": "node", "check": true},
-    "php": {"langs": ["php"], "driver": "php", "check": true},
-    "ruby": {"langs": ["ruby"], "driver": "ruby", "check": true},
-    "perl": {"langs": ["perl"], "driver": "perl", "check": true},
-    "lua": {"langs": ["lua"], "driver": "lua", "check": true},
-    "kotlin": {"langs": ["kotlin"], "driver": "kotlinc", "compile": true, "fallback": "g16-ai-compile"},
-    "csharp": {"langs": ["csharp"], "driver": "mcs", "compile": true, "fallback": "g16-ai-compile"},
-    "swift": {"langs": ["swift"], "driver": "swiftc", "compile": true, "fallback": "g16-ai-compile"},
-    "shellcheck": {"langs": ["shell"], "driver": "shellcheck", "check": true}
+    "g16": {"langs": ["*"], "driver": "bin/g16", "compile": true, "lower": "g16-lang-lower.py", "host_toolchain": false},
+    "gpy16": {"langs": ["python"], "driver": "bin/gpy-16", "interpret": true, "builtin": true, "compile_fallback": "g16"},
+    "g16_java": {"langs": ["java", "kotlin"], "driver": "lib/g16-java-compile.py", "compile": true, "chamber": true, "lower": "java→cxx", "engine": "bin/g16"},
+    "g16_lang_lower": {"langs": ["*"], "driver": "lib/g16-lang-lower.py", "compile": true, "chamber": true, "engine": "bin/g16"}
   },
   "discern_fallback": "data/g16-universal-extensions.json"
 }

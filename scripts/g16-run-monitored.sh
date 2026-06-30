@@ -23,6 +23,7 @@ g16_monitor_cmd() {
     --stall "$stall" \
     --heartbeat "$HEARTBEAT_SEC" \
     -- "$@"
+  return $?
 }
 
 g16_monitor_fn() {
@@ -98,7 +99,7 @@ case "${1:-}" in
     ;;
   cmd|"")
     if [[ "${1:-}" == "cmd" ]]; then shift; fi
-    g16_monitor_cmd "$@"
+    g16_monitor_cmd "$@" || exit $?
     ;;
   -h|--help|help)
     sed -n '2,6p' "$0"

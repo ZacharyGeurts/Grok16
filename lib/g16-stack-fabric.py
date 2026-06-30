@@ -12,14 +12,38 @@ from typing import Any
 ROOT = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
 SG = Path(os.environ.get("SG_ROOT", ROOT.parent))
 NEXUS = Path(os.environ.get("NEXUS_INSTALL_ROOT", SG / "NewLatest"))
-TRUTH_FLOOR = int(os.environ.get("HOSTESS_TRUTH_FLOOR", "58"))
-
-
 def _load(path: Path, default: Any = None) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return default if default is not None else {}
+
+
+def _truth_floor() -> int:
+    raw = os.environ.get("HOSTESS_TRUTH_FLOOR", "58").strip()
+    if raw.isdigit():
+        return int(raw)
+    p = Path(raw)
+    if p.is_file():
+        doc = _load(p, {})
+        if isinstance(doc, dict):
+            tiers = doc.get("tiers") or {}
+            adapt = tiers.get("adapt") if isinstance(tiers, dict) else None
+            if isinstance(adapt, dict) and adapt.get("floor") is not None:
+                try:
+                    return int(adapt["floor"])
+                except (TypeError, ValueError):
+                    pass
+            for key in ("floor", "truth_floor", "min_score"):
+                if doc.get(key) is not None:
+                    try:
+                        return int(doc[key])
+                    except (TypeError, ValueError):
+                        pass
+    return 58
+
+
+TRUTH_FLOOR = _truth_floor()
 
 
 def _import_py(path: Path, name: str) -> Any | None:
@@ -68,7 +92,10 @@ def znetwork_thermal_level() -> str:
     state = Path(os.environ.get("NEXUS_STATE_DIR", NEXUS / ".nexus-state"))
     for name in ("znetwork-operator.json", "znetwork-relayer.json"):
         doc = _load(state / name, {})
-        therm = doc.get("thermal") or doc.get("thermal_level") or doc.get("posture", {}).get("thermal")
+        posture = doc.get("posture")
+        therm = doc.get("thermal") or doc.get("thermal_level")
+        if not therm and isinstance(posture, dict):
+            therm = posture.get("thermal")
         if therm:
             return str(therm).lower()
     return "normal"

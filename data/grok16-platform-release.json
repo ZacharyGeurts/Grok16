@@ -8,7 +8,9 @@
   "pkgversion": "Grok16-16.2.0",
   "upstream_gcc": "releases/gcc-15",
   "release_model": "source_bootstrap_per_platform",
-  "statement": "Grok16 ships source + forge; each silicon/OS family bootstraps locally. Linker doctrine witnesses 16+ targets including RISC-V.",
+  "statement": "Grok16 ships source + forge; each silicon/OS family bootstraps locally on the host. Hardware pairs (e.g. C64 Ultimate) document companion devices — g16 never runs on classic MOS 6510.",
+  "hardware_pair_count": 1,
+  "bootstrap_platform_count": 17,
   "doctrine": "data/g16-linker-doctrine.json",
   "launch": {
     "extension": ".launch",
@@ -193,6 +195,53 @@
       },
       "cross_prefix": "riscv64-linux-gnu-",
       "notes": "Bare-metal RISC-V"
+    },
+    {
+      "id": "pair-c64-ultimate",
+      "os": "commodore",
+      "arch": "fpga-artix7",
+      "format": "hardware_pair",
+      "pair": {
+        "grok16_host": "linux-gnu-x86_64",
+        "g16_runs_on": ["linux-gnu-x86_64", "darwin-aarch64", "darwin-x86_64", "win32-x86_64"],
+        "does_not_run_on": ["classic-c64-mos6510", "breadbin-1982", "original-c64c"],
+        "statement": "g16 never runs on classic 6510 silicon — pairs with new FPGA C64 Ultimate only"
+      },
+      "hardware": {
+        "vendor": "Commodore International Corporation",
+        "site": "https://commodore.net/computer/",
+        "models": [
+          {
+            "id": "c64u",
+            "label": "Commodore 64 Ultimate",
+            "form": "breadbin",
+            "sku": "c64u-bb",
+            "core": "AMD Xilinx Artix-7 FPGA",
+            "ship": "2025"
+          },
+          {
+            "id": "c64cu",
+            "label": "Commodore 64C Ultimate",
+            "form": "slimline",
+            "sku": "c64cu-bb",
+            "core": "AMD Xilinx Artix-7 FPGA",
+            "ship": "late-2026",
+            "note": "Original 1986 injection tooling"
+          }
+        ],
+        "compatibility": ">99.9% original C64 software and peripherals",
+        "sid": "6581/8580 sockets + 8 FPGA SIDs",
+        "media": [".prg", ".crt", ".d64", ".d71", ".d81", ".tap", ".t64", ".g64", ".rom"]
+      },
+      "chip_battery": "c64_ultimate_fpga",
+      "queen": {
+        "game_room": "c64_ultimate",
+        "app_id": "C64U",
+        "chips": "pair/C64Ultimate",
+        "classic_game_room": "c64",
+        "classic_chips": "CHIPS/C64"
+      },
+      "notes": "Hardware pair — Grok16 on host; C64 Ultimate FPGA runs PRG/media. Classic breadbin C64 is a separate Queen/catalog lane (retro_c64)."
     }
   ],
   "assets": [

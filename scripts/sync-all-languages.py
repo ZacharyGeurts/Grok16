@@ -223,6 +223,28 @@ INTERP: dict[str, dict[str, Any]] = {
     "apl": {"extensions": [".apl"], "belt": "belt_1_0", "runtime": "apl"},
     "algol": {"extensions": [".alg"], "belt": "belt_1_0", "runtime": "algol"},
     "snobol": {"extensions": [".sno"], "belt": "belt_1_0", "runtime": "snobol"},
+    "yaml": {"extensions": [".yaml", ".yml"], "belt": "belt_1_0", "runtime": "yaml"},
+    "json": {"extensions": [".json", ".jsonc"], "belt": "belt_1_0", "runtime": "json"},
+    "html": {"extensions": [".html", ".htm"], "belt": "belt_1_0", "runtime": "html"},
+    "css": {"extensions": [".css"], "belt": "belt_1_0", "runtime": "css"},
+    "markdown": {"extensions": [".md", ".markdown"], "belt": "belt_1_0", "runtime": "markdown"},
+    "toml": {"extensions": [".toml"], "belt": "belt_1_0", "runtime": "toml"},
+    "xml": {"extensions": [".xml"], "belt": "belt_1_0", "runtime": "xml"},
+    "dockerfile": {"extensions": [], "belt": "belt_1_0", "runtime": "dockerfile"},
+    "makefile": {"extensions": [], "belt": "belt_1_0", "runtime": "makefile"},
+    "cmake": {"extensions": [".cmake"], "belt": "belt_2_0", "runtime": "cmake"},
+    "glsl": {"extensions": [".glsl", ".frag", ".vert"], "belt": "belt_2_0", "runtime": "glsl"},
+    "graphql": {"extensions": [".graphql", ".gql"], "belt": "belt_1_0", "runtime": "graphql"},
+    "ini": {"extensions": [".ini", ".cfg"], "belt": "belt_1_0", "runtime": "ini"},
+    "log": {"extensions": [".log"], "belt": "belt_1_0", "runtime": "log"},
+    "diff": {"extensions": [".diff", ".patch"], "belt": "belt_1_0", "runtime": "diff"},
+    "plaintext": {"extensions": [".txt"], "belt": "belt_1_0", "runtime": "plaintext"},
+    "wasm": {"extensions": [".wasm"], "belt": "belt_2_0", "runtime": "wasm"},
+    "wat": {"extensions": [".wat"], "belt": "belt_2_0", "runtime": "wat"},
+    "scss": {"extensions": [".scss"], "belt": "belt_1_0", "runtime": "scss"},
+    "powershell": {"extensions": [".ps1", ".psm1"], "belt": "belt_1_0", "runtime": "powershell"},
+    "vbscript": {"extensions": [".vbs"], "belt": "belt_1_0", "runtime": "vbscript"},
+    "cobol_copy": {"extends": "cobol", "extensions": [".cpy"], "belt": "belt_1_0", "runtime": "cobol_copy"},
 }
 
 HELLO: dict[str, tuple[str, str]] = {
@@ -275,6 +297,28 @@ HELLO: dict[str, tuple[str, str]] = {
     "apl": ("hello.apl", '← \'grok16 apl\'\n'),
     "algol": ("hello.alg", 'begin printstring("grok16 algol") end\n'),
     "snobol": ("hello.sno", 'OUTPUT = "grok16 snobol"\nEND\n'),
+    "cobol_copy": ("hello.cob", '       IDENTIFICATION DIVISION.\n       PROGRAM-ID. HELLOCP.\n       PROCEDURE DIVISION.\n           DISPLAY "grok16 cobol copy".\n'),
+    "yaml": ("hello.yaml", '# grok16 yaml\nmessage: grok16 yaml\n'),
+    "json": ("hello.json", '{"message": "grok16 json"}\n'),
+    "html": ("hello.html", '<!DOCTYPE html><html><body><p>grok16 html</p></body></html>\n'),
+    "css": ("hello.css", '/* grok16 css */\nbody::before{content:"grok16 css";}\n'),
+    "markdown": ("hello.md", '# grok16 markdown\n'),
+    "toml": ("hello.toml", 'message = "grok16 toml"\n'),
+    "xml": ("hello.xml", '<?xml version="1.0"?><msg>grok16 xml</msg>\n'),
+    "dockerfile": ("hello.dockerfile", 'FROM scratch\n# grok16 dockerfile\n'),
+    "makefile": ("hello.makefile", 'all:\n\t@echo grok16 makefile\n'),
+    "cmake": ("hello.cmake", 'message(STATUS "grok16 cmake")\n'),
+    "glsl": ("hello.glsl", 'void main(){gl_FragColor=vec4(1.0);}\n'),
+    "graphql": ("hello.graphql", 'query { __typename }\n'),
+    "ini": ("hello.ini", '[grok16]\nmessage=grok16 ini\n'),
+    "log": ("hello.log", 'grok16 log sample\n'),
+    "diff": ("hello.diff", '--- a\n+++ b\n@@\n+grok16 diff\n'),
+    "plaintext": ("hello.txt", 'grok16 plaintext\n'),
+    "wasm": ("hello.wat", '(module (func (export "run") (result i32) i32.const 42))\n'),
+    "wat": ("hello.wat", '(module (func (export "run") (result i32) i32.const 42))\n'),
+    "scss": ("hello.scss", '$g16: "grok16 scss"; body::before{content:$g16;}\n'),
+    "powershell": ("hello.ps1", 'Write-Host "grok16 powershell"\n'),
+    "vbscript": ("hello.vbs", 'WScript.Echo "grok16 vbscript"\n'),
     "delphi": ("hello.dpr", 'program Hello; begin Writeln(\'grok16 delphi\'); end.\n'),
     "modula2": ("hello.mod", 'MODULE Hello; FROM InOut IMPORT WriteString; BEGIN WriteString("grok16 modula2") END Hello.\n'),
     "quickbasic": ("hello.qb", 'PRINT "grok16 quickbasic"\n'),
@@ -334,8 +378,6 @@ def _build_languages(seed_packs: set[str]) -> dict[str, dict[str, Any]]:
     # Ensure every seed pack has an entry
     for pack_id in sorted(seed_packs):
         pid = pack_id.lower()
-        if pid in ("cobol_copy",):
-            continue
         if pid not in langs:
             langs[pid] = {
                 "extensions": [f".{pid}"],

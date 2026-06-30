@@ -280,3 +280,25 @@ def compile_source(source: str) -> Code:
     from parser import parse_source
 
     return compile_module(parse_source(source))
+
+
+_COMPILE_CACHE: dict[str, Code] = {}
+_COMPILE_CACHE_MAX = 128
+
+
+def compile_source_cached(source: str) -> Code:
+    """Fast path — in-memory compile cache keyed by source hash."""
+    import hashlib
+    import os
+
+    if os.environ.get("GPY16_NO_CACHE", "").strip().lower() in ("1", "true", "yes"):
+        return compile_source(source)
+    key = hashlib.sha256(source.encode("utf-8")).hexdigest()[:24]
+    hit = _COMPILE_CACHE.get(key)
+    if hit is not None:
+        return hit
+    code = compile_source(source)
+    if len(_COMPILE_CACHE) >= _COMPILE_CACHE_MAX:
+        _COMPILE_CACHE.clear()
+    _COMPILE_CACHE[key] = code
+    return code

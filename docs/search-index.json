@@ -129,7 +129,31 @@
     "t": "g16-ld",
     "p": "linker.html",
     "g": "Linker",
-    "d": "Field linker 16 targets mandate flags"
+    "d": "Field linker 18 targets mandate flags"
+  },
+  {
+    "t": "C64",
+    "p": "c64.html",
+    "g": "Pair",
+    "d": "Commodore 64 classic vs Ultimate catalog lanes"
+  },
+  {
+    "t": "C64 classic",
+    "p": "c64-classic.html",
+    "g": "Queen",
+    "d": "retro_c64 breadbin 6510 CHIPS scaffold"
+  },
+  {
+    "t": "C64 Ultimate",
+    "p": "c64-ultimate.html",
+    "g": "Pair",
+    "d": "pair-c64-ultimate FPGA hardware pair"
+  },
+  {
+    "t": "platforms",
+    "p": "platforms.html",
+    "g": "Release",
+    "d": "17-platform bootstrap matrix"
   },
   {
     "t": "GPY-16",

@@ -1,6 +1,6 @@
 {
   "schema": "g16-power-sort-panel/v1",
-  "updated": "2026-06-29T06:30:10Z",
+  "updated": "2026-06-30T02:54:08Z",
   "ok": true,
   "always_best_sort": true,
   "plate_not_wire": true,
@@ -14,7 +14,7 @@
         "context_bench_id": "file_list_small",
         "algorithm": "dirs_first",
         "n": 200,
-        "bench_us": 31.04,
+        "bench_us": 21.78,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -23,7 +23,7 @@
         "context_bench_id": "file_list_large",
         "algorithm": "dirs_first",
         "n": 5000,
-        "bench_us": 200.13,
+        "bench_us": 187.14,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -32,7 +32,7 @@
         "context_bench_id": "file_list_small",
         "algorithm": "dirs_first",
         "n": 200,
-        "bench_us": 31.04,
+        "bench_us": 21.78,
         "cool": true,
         "statement": "power_sort_dirs_first_for_file_list"
       },
@@ -41,7 +41,7 @@
         "context_bench_id": "drive_index",
         "algorithm": "timsort_key",
         "n": null,
-        "bench_us": 683.42,
+        "bench_us": 712.93,
         "cool": true,
         "statement": "power_sort_timsort_key_for_drive_index"
       },
@@ -59,7 +59,7 @@
         "context_bench_id": "bench_rank",
         "algorithm": "desc_numeric",
         "n": null,
-        "bench_us": 4.17,
+        "bench_us": 5.34,
         "cool": true,
         "statement": "power_sort_desc_numeric_for_bench_rank"
       },
@@ -68,7 +68,7 @@
         "context_bench_id": "thermal_layers",
         "algorithm": "cool_sort",
         "n": null,
-        "bench_us": 3.04,
+        "bench_us": 4.52,
         "cool": true,
         "statement": "power_sort_cool_sort_for_thermal_layers"
       },
@@ -395,16 +395,48 @@
     "cool_required": false,
     "anomaly_active": false,
     "headroom_mult": null,
-    "peak_c": null
+    "peak_c": 62.85
   },
-  "bench_ref": "/home/default/Desktop/SG/Grok16/data/g16-power-sort-bench.json",
+  "bench_ref": "/home/default/Desktop/SG/NewLatest/Grok16/data/g16-power-sort-bench.json",
   "bench_deferred": false,
   "steps": [
     {
       "step": "bench",
       "ok": true,
-      "elapsed_ms": 21.56
+      "elapsed_ms": 23.87
     }
   ],
-  "elapsed_ms": 24.82
+  "elapsed_ms": 538.83,
+  "_g16_seal": {
+    "schema": "g16-sealed-output/v1",
+    "algorithm": "sha256",
+    "digest": "059f6e599b31f9c53f80711d447779f4512034bfbb9363a0d9da4c123e162a04",
+    "sealed_at": "2026-06-30T02:54:08Z",
+    "path": "/home/default/Desktop/SG/NewLatest/Grok16/data/g16-power-sort-panel.json",
+    "g1id_meld": {
+      "id": "g1id",
+      "absorbed": true,
+      "meld_citation": "ironclad:meld:2",
+      "citation": "ironclad:time:1",
+      "policy": "sovereign_time_only",
+      "time_is_linear": true,
+      "sovereign_time_ok": true,
+      "sovereign_time": {
+        "source": "lib/sovereign-time.py",
+        "clock": "lib/sovereign-clock.py",
+        "schema": "sovereign-time-meld-input/v1",
+        "linear_ns": 1782788048433692766,
+        "derived_utc": "2026-06-30T02:54:08Z",
+        "sealed": true,
+        "synced": false,
+        "never_desync": true,
+        "immutable_linear": true,
+        "witness_only": true,
+        "not_geometry_t": true,
+        "citation": "ironclad:g1id:2"
+      },
+      "example_valid": true,
+      "updated": "2026-06-30T02:54:08Z"
+    }
+  }
 }

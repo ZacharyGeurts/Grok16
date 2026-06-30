@@ -12,9 +12,9 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from readme_front import write_index as write_readme_index
-DISTRO = "5.1.0"
+DISTRO = "5.2.0"
 G16 = "16.2.0"
-CACHE = "v15"
+CACHE = "v16"
 BENCH_REPORT = "5.0.0"
 BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.1.0"
@@ -26,7 +26,11 @@ NAV = [
     ("znetwork-connect.html", "ZNetwork"),
     ("speed-bench.html", "Speed Bench"),
     ("performance.html", "Performance"),
-    ("release.html", "Release 5.1"),
+    ("release.html", "Release 5.2"),
+    ("platforms.html", "Platforms"),
+    ("c64.html", "C64"),
+    ("c64-classic.html", "C64 Classic"),
+    ("c64-ultimate.html", "C64 Ultimate"),
     ("mcp.html", "MCP"),
     ("single-fabric.html", "Single Fabric"),
     ("getting-started.html", "Getting Started"),
@@ -407,26 +411,23 @@ cmake --build build/g16 -j$(nproc)</code></pre>
 """,
     ),
     "release.html": (
-        "Release 5.0",
+        f"Release {DISTRO}",
         f"""
-  <h1>Release {DISTRO} — version one</h1>
-  <p>Grok16 <strong>5.0</strong> kicks off as <strong>v1.0</strong> operator framing. Compiler <strong>g16 @ {G16}</strong>. Tag <code>v{DISTRO}</code>. Prior 2.x–4.x remain in git history only.</p>
+  <h1>Release {DISTRO}</h1>
+  <p>Grok16 <strong>{DISTRO}</strong> — C64 Ultimate hardware pair, 17-target bootstrap matrix, AmmoLang adaptive ship timing. Compiler <strong>g16 @ {G16}</strong>. Tag <code>v{DISTRO}</code>.</p>
 
   <aside class="callout callout-warn">
     <strong>Field platform:</strong> <a href="field-platform.html">Do not create field files</a> — use the 2D auto-field plane.
   </aside>
 
-  <h2 id="shipped">What ships</h2>
+  <h2 id="shipped">What ships in {DISTRO}</h2>
   <ul>
-    <li><strong>belt_2_0</strong> single fabric — 8192 redata chunk, 512 die slots</li>
-    <li><strong>field_physics</strong> — thermal guard, no <code>-ffast-math</code> for production</li>
-    <li><strong>Binary package</strong> — g16 + AmmoCode + signed settings (<code>binary-package</code>)</li>
-    <li><strong>2D field platform</strong> — <code>data/grok16-field-platform-doctrine.json</code></li>
-    <li><strong>ZNetwork field wire</strong> — egress convert / ingress deconvert design</li>
+    <li><strong>C64 catalog split</strong> — <a href="c64-classic.html">classic 6510</a> · <a href="c64-ultimate.html">C64 Ultimate pair</a> · g16 does <strong>not</strong> run on breadbin silicon</li>
+    <li><strong>17 bootstrap platforms</strong> — <a href="platforms.html">Platform matrix</a> (Linux, Android, Darwin, iOS, Windows, bare-ELF, RISC-V)</li>
+    <li><strong>AmmoLang ship</strong> — <code>grok16_ship.aml</code> timing ledger · hang guard</li>
+    <li><strong>Stack fabric G1–G15</strong> — receipts, MCP stdio, truth gate, ZNetwork wire</li>
+    <li><strong>belt_2_0</strong> single fabric · <strong>field_physics</strong> safety · binary package lane</li>
     <li><strong>Speed bench v{meta['report']}</strong> — best exec <strong>{meta['best_exec_ops']}</strong> ops/s</li>
-    <li>Compiler symlinks · build-essential fabric · AmmoCode field instill</li>
-    <li><strong>5.1.0 — Stack fabric</strong> — G1–G15 receipts, MCP stdio, truth gate, ZNetwork wire profile</li>
-    <li><strong>5.0.1 — AmmoOS</strong> — <code>ammoos</code> profile, <code>integrate-ammoos</code>, <code>verify-ammoos-surfaces</code> (pairs AmmoOS 2.0.0-beta3)</li>
   </ul>
 
   <h2 id="checkout">Checkout</h2>
@@ -447,7 +448,95 @@ cd grok16-{DISTRO}-linux-x86_64 && source grok16-env.sh
   <h2 id="charts">Benchmarks</h2>
   <pre><code>./scripts/grok16-toolchain.sh bench-triad
 ./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
-  <p><a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="field-platform.html">Field Platform</a> · <a href="znetwork-connect.html">ZNetwork</a></p>
+  <p><a href="platforms.html">Platforms</a> · <a href="c64.html">C64</a> (<a href="c64-classic.html">classic</a> · <a href="c64-ultimate.html">Ultimate</a>) · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a></p>
+""",
+    ),
+    "platforms.html": (
+        "Platforms",
+        f"""
+  <h1>Platform bootstrap matrix — {DISTRO}</h1>
+  <p>Grok16 ships <strong>source + forge</strong>. Build <code>g16</code> locally on each target (or cross from Linux x86_64). Doctrine: <code>data/grok16-platform-release.json</code>.</p>
+  <p><strong>17 bootstrap platforms</strong> (g16 builds locally or cross). Every GitHub release attaches <code>grok16-{{version}}-platforms.json</code> and <code>PLATFORMS.md</code>.</p>
+  <h2 id="families">Bootstrap families</h2>
+  <table>
+    <tr><th>Family</th><th>IDs</th></tr>
+    <tr><td>Linux GNU</td><td><code>linux-gnu-x86_64</code>, <code>i386</code>, <code>aarch64</code>, <code>arm</code>, <code>riscv64</code></td></tr>
+    <tr><td>Android NDK</td><td><code>android-aarch64</code>, <code>arm</code>, <code>x86_64</code></td></tr>
+    <tr><td>Apple</td><td><code>darwin-x86_64</code>, <code>darwin-aarch64</code>, <code>ios-aarch64</code></td></tr>
+    <tr><td>Windows</td><td><code>win32-x86_64</code>, <code>win32-aarch64</code></td></tr>
+    <tr><td>Bare ELF</td><td><code>bare-elf-x86_64</code>, <code>aarch64</code>, <code>riscv64</code></td></tr>
+  </table>
+  <h2 id="pairs">Hardware pairs (g16 does not run here)</h2>
+  <p><a href="c64-ultimate.html">Commodore 64 Ultimate</a> — <code>pair-c64-ultimate</code>. Grok16 stays on your host; the new FPGA C64 runs PRG/media. <a href="c64-classic.html">Classic breadbin 6510</a> is Queen CHIPS only — <strong>not</strong> a g16 target.</p>
+  <h2 id="quick">Quick start (Linux x86_64)</h2>
+  <pre><code>tar xzf grok16-{DISTRO}-src.tar.gz && cd grok16-{DISTRO}-src
+export G16_PREFIX=$(pwd) G16_PKGVERSION=Grok16-{G16}
+./scripts/grok16-toolchain.sh bootstrap
+./scripts/grok16-toolchain.sh rebuild
+./scripts/grok16-launch-verify.sh</code></pre>
+  <p>See <a href="linker.html">Linker</a> · <a href="getting-started.html">Getting Started</a> · <a href="release.html">Release</a></p>
+""",
+    ),
+    "c64.html": (
+        "Commodore 64 — catalog",
+        f"""
+  <h1>Commodore 64 — two catalog lanes</h1>
+  <p>Grok16 <strong>{DISTRO}</strong> keeps classic and Ultimate hardware in separate Dewey books and Queen Game Room tiles.</p>
+  <aside class="callout callout-warn">
+    <strong>g16 does not run on MOS 6510 silicon.</strong> Neither lane is a Grok16 bootstrap target.
+  </aside>
+  <table>
+    <tr><th>Lane</th><th>Hardware</th><th>Queen</th><th>CHIPS stack</th></tr>
+    <tr><td><a href="c64-classic.html">Classic C64</a></td><td>1982 breadbin · MOS 6510</td><td><code>c64</code> · <code>CHIPS/C64</code></td><td><code>retro_c64</code></td></tr>
+    <tr><td><a href="c64-ultimate.html">C64 Ultimate</a></td><td>2025–2026 FPGA · Artix-7</td><td><code>c64_ultimate</code> · <code>pair/C64Ultimate</code></td><td><code>c64_ultimate_fpga</code></td></tr>
+  </table>
+  <p><a href="platforms.html">Bootstrap platforms</a> · <a href="batteries.html">Batteries</a></p>
+""",
+    ),
+    "c64-classic.html": (
+        "Commodore 64 Classic",
+        f"""
+  <h1>Commodore 64 (classic) — Queen CHIPS</h1>
+  <p>1982 breadbin Commodore 64 — MOS <strong>6510</strong>, VIC-II, SID, dual CIA. Catalog: <code>004-computers/c64</code> · stack <code>retro_c64</code>.</p>
+  <aside class="callout callout-warn">
+    <strong>Not a g16 target.</strong> Queen emulates via CHIPS scaffold; Grok16 builds on your host only.
+  </aside>
+  <h2 id="silicon">Silicon stack</h2>
+  <ul>
+    <li><code>c64_6510</code> — MOS 6510 CPU</li>
+    <li><code>c64_vic2</code> · <code>c64_sid6581</code> / <code>c64_sid8580</code> · <code>c64_cia1</code> / <code>c64_cia2</code></li>
+    <li>Queen game room <code>app_id: C64</code> · <code>CHIPS/C64</code></li>
+  </ul>
+  <p>See also <a href="c64-ultimate.html">C64 Ultimate</a> (separate FPGA hardware pair).</p>
+""",
+    ),
+    "c64-ultimate.html": (
+        "C64 Ultimate Pair",
+        f"""
+  <h1>Commodore 64 Ultimate — hardware pair</h1>
+  <p>Pair ID <code>pair-c64-ultimate</code> · Grok16 <strong>{DISTRO}</strong> · catalog <code>004-computers/c64_ultimate</code>.</p>
+
+  <aside class="callout callout-warn">
+    <strong>g16 does not run on classic 6510 breadbin.</strong> This page documents pairing with the <em>new</em> FPGA machines from <a href="https://commodore.net/computer/">commodore.net</a> only.
+  </aside>
+
+  <h2 id="new-c64">The new C64 (2025–2026)</h2>
+  <table>
+    <tr><th>Model</th><th>Form</th><th>Core</th></tr>
+    <tr><td><strong>Commodore 64 Ultimate</strong> (c64u)</td><td>Breadbin · 2025</td><td rowspan="2">AMD Xilinx Artix-7 FPGA · dual SID sockets + 8 FPGA SIDs</td></tr>
+    <tr><td><strong>Commodore 64C Ultimate</strong> (c64cu)</td><td>Slimline · late 2026</td></tr>
+  </table>
+  <p>Media on the C64: <code>.PRG</code> <code>.D64</code> <code>.TAP</code> etc. — loaded on the machine, not compiled by <code>g16</code>.</p>
+
+  <h2 id="grok16-role">What Grok16 does</h2>
+  <ul>
+    <li>Build <code>g16</code> on normal host platforms (<a href="platforms.html">Linux, macOS, Windows…</a>)</li>
+    <li><code>c64_ultimate_fpga</code> chip battery for Queen pairing</li>
+    <li>Queen game room <code>c64_ultimate</code> · <code>app_id: C64U</code> · <code>pair/C64Ultimate</code></li>
+  </ul>
+  <pre><code>export G16_PREFIX=$(pwd) G16_BELT_PROFILE=belt_2_0
+./scripts/grok16-toolchain.sh rebuild   # on your Linux/macOS/Windows host</code></pre>
+  <p><a href="c64-classic.html">Classic C64</a> · <a href="platforms.html">Bootstrap platforms</a> · <a href="batteries.html">Batteries</a></p>
 """,
     ),
     "field-platform.html": (
@@ -711,7 +800,7 @@ pythong forge/g16-linker.py json</code></pre>
   </table>
 
   <h2 id="targets">Target families</h2>
-  <p>linux-gnu (x86_64, aarch64, arm, riscv), android (NDK), darwin/ios (mach-o), win32 (PE), bare-elf.</p>
+  <p>linux-gnu (x86_64, aarch64, arm, riscv), android (NDK), darwin/ios (mach-o), win32 (PE), bare-elf. <a href="c64-ultimate.html">C64 Ultimate</a> is a hardware pair — not a linker backend. <a href="c64-classic.html">Classic C64</a> is Queen CHIPS only.</p>
   <p>Env overrides: <code>G16_LINK_TARGET</code>, <code>ANDROID_NDK_ROOT</code>, <code>G16_CROSS_PREFIX</code>.</p>
 """,
     ),
@@ -981,7 +1070,11 @@ SEARCH_INDEX = [
     {"t": "ironclad:time:1", "p": "safety.html#time", "g": "Safety", "d": "Sovereign linear time linear_ns only"},
     {"t": "test-battery-release", "p": "batteries.html#release", "g": "Battery", "d": "Production gate heavy py forever binutils verify"},
     {"t": "test-battery-expert", "p": "batteries.html#expert", "g": "Battery", "d": "Ironclad linker RTX expert profile"},
-    {"t": "g16-ld", "p": "linker.html", "g": "Linker", "d": "Field linker 16 targets mandate flags"},
+    {"t": "g16-ld", "p": "linker.html", "g": "Linker", "d": "Field linker 18 targets mandate flags"},
+    {"t": "C64", "p": "c64.html", "g": "Pair", "d": "Commodore 64 classic vs Ultimate catalog lanes"},
+    {"t": "C64 classic", "p": "c64-classic.html", "g": "Queen", "d": "retro_c64 breadbin 6510 CHIPS scaffold"},
+    {"t": "C64 Ultimate", "p": "c64-ultimate.html", "g": "Pair", "d": "pair-c64-ultimate FPGA hardware pair"},
+    {"t": "platforms", "p": "platforms.html", "g": "Release", "d": "17-platform bootstrap matrix"},
     {"t": "GPY-16", "p": "toolkits.html#gpy16", "g": "Toolkit", "d": "Built-in Python GrokVM gpy-16"},
     {"t": "v4.7.1", "p": "release.html", "g": "Release", "d": "Bench refresh charts gcc-14 legacy isolation chamber"},
     {"t": "queen theme", "p": "index.html", "g": "UI", "d": "Queen navy gold emerald manual theme"},

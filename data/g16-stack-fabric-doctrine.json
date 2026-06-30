@@ -86,6 +86,13 @@
       "module": "lib/g16-sealed-output.py attach_seal",
       "forge": "forge/g16-g1id.py",
       "env": "G16_SEAL_G1ID_MELD=1"
+    },
+    "Grok15": {
+      "name": "Language core condense — Explaining series non-redundant with Grok16",
+      "module": "lib/grok15-language-core.py",
+      "doctrine": "data/grok15-language-core-doctrine.json",
+      "core_shelf": "library/dewey/000-computer-science/explaining_core",
+      "pairs_with": "G15"
     }
   }
 }

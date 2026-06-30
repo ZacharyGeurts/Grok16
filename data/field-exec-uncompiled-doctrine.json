@@ -70,6 +70,7 @@
       "schema": "g16-compile-combinatronics/v1",
       "module": "lib/g16-compile-combinatronics.py",
       "doctrine": "data/g16-compile-combinatronics-doctrine.json",
+    "sealed_output": "data/g16-sealed-output-doctrine.json",
       "always_at_creation": true,
       "gate": "compile_gate",
       "stamp": "stamp_compiled_artifact",

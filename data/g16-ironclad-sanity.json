@@ -1,7 +1,7 @@
 {
   "schema": "grok16-ironclad-sanity/v1",
   "product": "Grok16",
-  "grok16_root": "/home/default/Desktop/SG/Grok16",
+  "grok16_root": "/home/default/Desktop/SG/NewLatest/Grok16",
   "nexus_install": "/home/default/Desktop/SG/NewLatest",
   "meld_citation": "ironclad:meld:2",
   "citation": "ironclad:field_sanity:2 \u2014 classify, strip, dedupe, flatten, cool_sort \u2014 never obtuse; never stack hot rebuild paths under thermo heat.",
@@ -10,7 +10,7 @@
     "absorbed": true,
     "meld_citation": "ironclad:meld:2",
     "citation": "ironclad:field_sanity:1 \u2014 Grok16 forge layers meld into Ironclad \u2014 one integral pass across driver, compiler, mandate, profiles.",
-    "ironclad_sealed": true,
+    "ironclad_sealed": false,
     "canonical_hash": "df82e0ec4ad9168d5499416d20911b8f6574f5d2e547ca66f3dcfeacc2d7c402",
     "field_sanity": {
       "id": "field_sanity",
@@ -23,7 +23,7 @@
       "integral": "one_pass_simplify",
       "heat_avoided": 0,
       "layers_out": 0,
-      "updated": "2026-06-27T03:28:20Z"
+      "updated": "2026-06-30T00:10:13Z"
     },
     "spatial_existence": {
       "id": "g16_spatial_existence",
@@ -48,7 +48,7 @@
         "lesson": "That one \u2014 there, uncorroborated"
       },
       "existence_correlation": 0.0,
-      "updated": "2026-06-27T19:14:05Z"
+      "updated": "2026-06-30T02:53:55Z"
     },
     "g1id": {
       "id": "g1id",
@@ -62,10 +62,10 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782587645006334084,
-        "derived_utc": "2026-06-27T19:14:05Z",
+        "linear_ns": 1782788035119100940,
+        "derived_utc": "2026-06-30T02:53:55Z",
         "sealed": true,
-        "synced": true,
+        "synced": false,
         "never_desync": true,
         "immutable_linear": true,
         "witness_only": true,
@@ -73,9 +73,9 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-06-27T19:14:05Z"
+      "updated": "2026-06-30T02:53:55Z"
     },
-    "updated": "2026-06-27T19:14:04Z"
+    "updated": "2026-06-30T02:53:55Z"
   },
   "field_sanity": {
     "id": "g16_field_sanity",
@@ -123,13 +123,13 @@
       "lesson": "That one \u2014 there, uncorroborated"
     },
     "existence_correlation": 0.0,
-    "updated": "2026-06-27T19:14:05Z"
+    "updated": "2026-06-30T02:53:55Z"
   },
   "iron_plate_spot": {
     "id": "iron_plate_spot",
     "absorbed": true,
     "ok": true,
-    "spot_count": 11,
+    "spot_count": 9,
     "coolest_spot": "chain:browser_display",
     "low_power": true,
     "meld_citation": "ironclad:meld:2",
@@ -156,7 +156,7 @@
     "spatial_existence_pass": true,
     "iron_plate_spot_detector": true,
     "iron_plate_spot_ok": true,
-    "iron_plate_spot_count": 11
+    "iron_plate_spot_count": 9
   },
   "score": 21,
   "max": 21,

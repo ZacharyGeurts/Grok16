@@ -378,7 +378,44 @@ def scan_roots(
         stack = carve_stack_block(all_blocks, roots_label="field-stack")
         if stack:
             all_blocks.append(stack)
+    ammoos = _ammoos_stack_ref(state)
+    if ammoos:
+        bid = str(ammoos.get("id") or "")
+        if bid and bid not in seen:
+            seen.add(bid)
+            all_blocks.append(ammoos)
     return all_blocks
+
+
+def _ammoos_stack_ref(state_dir: Path) -> dict[str, Any] | None:
+    """AmmoOS root block holds CHIPs, codecs, display — cross-ref when panel published."""
+    panel_path = state_dir / "field-ammoos-blocks-panel.json"
+    if not panel_path.is_file():
+        install = Path(os.environ.get("NEXUS_INSTALL_ROOT", str(ROOT.parent / "AmmoOS")))
+        panel_path = Path(os.environ.get("NEXUS_STATE_DIR", install / "state")) / "field-ammoos-blocks-panel.json"
+    doc = _load(panel_path, {})
+    stack = doc.get("stack")
+    if not stack or not stack.get("held"):
+        return None
+    return {
+        "schema": "g16-truth-block/v1",
+        "id": str(stack.get("id") or "ammoos-stack"),
+        "tier": "stack",
+        "stem": "ammoos",
+        "plate": "ammoos",
+        "truth": True,
+        "identical": bool(doc.get("thermal_safe")),
+        "bytes": int(stack.get("bytes") or doc.get("total_bytes") or 0),
+        "meld_bytes": int(stack.get("meld_bytes") or doc.get("total_bytes") or 0),
+        "size_class": "stack",
+        "kernel": stack.get("kernel") or [],
+        "kernel_markers": int(stack.get("kernel_markers") or 0),
+        "meld_eligible": bool(stack.get("meld_eligible")),
+        "source": "field-ammoos-blocks-panel",
+        "children": stack.get("children") or [],
+        "chips_held": stack.get("chips_held"),
+        "codecs_held": stack.get("codecs_held"),
+    }
 
 
 def free_meld_posture(blocks: list[dict[str, Any]] | None = None) -> dict[str, Any]:

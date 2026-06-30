@@ -1,15 +1,15 @@
 {
-  "distro_version": "5.1.0",
-  "upload_version": "5.1.0",
+  "distro_version": "5.2.0",
+  "upload_version": "5.2.0",
   "release_track": {
-    "current": "5.1.0",
-    "previous": "5.0.1",
-    "next": "5.2.0",
+    "current": "5.2.0",
+    "previous": "5.1.0",
+    "next": "5.3.0",
     "status": "stable",
     "released": true,
-    "tag": "v5.1.0",
-    "upload_tag": "v5.1.0",
-    "upload_note": "5.1.0 — stack fabric G1-G15; pairs with AmmoOS 2.0.0 Stack",
+    "tag": "v5.2.0",
+    "upload_tag": "v5.2.0",
+    "upload_note": "5.2.0 — C64 Ultimate hardware pair, 17 bootstrap platforms, AmmoLang ship timing",
     "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
@@ -25,8 +25,8 @@
     "roadmap": "5.0.0 \u2014 compiler symlink replacements, always-optimal belt, full build-essential fabric"
   },
   "g16_version": "16.2.0",
-  "pkgversion": "Grok16-5.1.0",
-  "tag": "v5.1.0",
+  "pkgversion": "Grok16-5.2.0",
+  "tag": "v5.2.0",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -130,6 +130,7 @@
     "manifest": "data/grok16-platform-release.json",
     "script": "scripts/grok16-release.sh",
     "targets": 17,
+    "hardware_pairs": 1,
     "includes_riscv": true
   },
   "field_build": {
@@ -163,7 +164,7 @@
     "integrate_manifest": "data/grok16-ammoos-integrate.json",
     "review": "docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md"
   },
-  "notes": "Grok16 5.1.0 \u2014 stack fabric G1-G15, sealed releases, truth gate, 243-filetype run, ZNetwork wire profile",
+  "notes": "Grok16 5.2.0 \u2014 C64 Ultimate hardware pair (g16 not on classic 6510), 17 bootstrap platforms, AmmoLang ship timing",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -171,6 +172,9 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "5.2.0: C64 Ultimate hardware pair \u2014 pair-c64-ultimate; g16 does not run on classic MOS 6510 breadbin",
+    "5.2.0: AmmoLang ship route \u2014 grok16_ship.aml, timing ledger last_ms+3s hang guard, g16_self_monitor on RUN ops",
+    "5.2.0: pythong fallback \u2014 Grok16/bin/gpy-16 when GrokPy absent; 17 bootstrap + 1 hardware pair",
     "5.1.0: stack fabric G1-G15 \u2014 sealed dist, receipt chain, silent bench, profile autoload, znetwork_wire, truth gate, thermal downgrade, ammoos stack release, 243 run, MCP stdio, single-fabric link, SPIR-V-only rtx, g1id meld",
     "5.1.0: ZNetwork network-comparison.html + DESIGN.md comparison section",
     "5.0.1: AmmoOS incorporation \u2014 ammoos profile, grok16-integrate.sh wiring, verify-ammoos-surfaces, smoke chamber",

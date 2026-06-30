@@ -1,6 +1,6 @@
-# Grok16 MCP Server (4.0)
+# Grok16 MCP Server (5.1)
 
-Model Context Protocol server for **Grok16 4.0.0** — exposes toolchain status, RTX gate, speed bench, and power sort to Cursor, Claude Desktop, and other MCP clients.
+Model Context Protocol server for **Grok16 5.1.0** — custom stdio tools for toolchain status, RTX gate, speed bench, power sort, and forge state. AmmoOS GitHub publish uses the separate private layer in `NewLatest/data/ammoos-mcp-layer.json`.
 
 ## Install
 
@@ -35,7 +35,7 @@ See [cursor-mcp.json.example](cursor-mcp.json.example).
 
 | Tool | Description |
 |------|-------------|
-| `grok16_version` | Distro `4.0.0`, g16 `16.2.0`, belt/speed_bench stamps |
+| `grok16_version` | Distro `5.1.0`, g16 `16.2.0`, belt/speed_bench stamps |
 | `grok16_toolchain` | Allowlisted `grok16-toolchain.sh` commands |
 | `grok16_rtx_gate` | `queen_rtx` / `vulkan_rtx` permit from `forge/rtx_gate.py` |
 | `grok16_speed_bench` | Published `docs/field-exec-full-bench.json` |

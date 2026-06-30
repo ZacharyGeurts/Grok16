@@ -28,11 +28,18 @@ else
 fi
 
 if [[ -f "$NL/scripts/ammoos-launch-verify.sh" ]]; then
-  log "AmmoOS launch-verify"
-  if bash "$NL/scripts/ammoos-launch-verify.sh" 2>&1 | tail -5; then
-    log "PASS ammoos-launch-verify"
+  if [[ "${KILROY_KERNEL_TEST:-}" == "1" ]]; then
+    log "SKIP ammoos-launch-verify (kernel regression — file checks only)"
+    for rel in data/ammoos-version.json data/queen-ammoos-sovereignty-doctrine.json Queen/world/browser.html; do
+      [[ -e "$NL/$rel" ]] && log "PASS present $rel" || { log "WARN missing $rel"; FAIL=1; }
+    done
   else
-    log "WARN ammoos-launch-verify partial (non-fatal)"
+    log "AmmoOS launch-verify"
+    if timeout 120 bash "$NL/scripts/ammoos-launch-verify.sh" 2>&1 | tail -5; then
+      log "PASS ammoos-launch-verify"
+    else
+      log "WARN ammoos-launch-verify partial (non-fatal)"
+    fi
   fi
 fi
 
