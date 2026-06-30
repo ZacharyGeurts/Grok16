@@ -27,7 +27,7 @@ ALLOWED_TOOLCHAIN = frozenset({
 mcp = FastMCP(
     "Grok16",
     instructions=(
-        "Grok16 4.0 — self-hosted G16 field compiler @ 16.2.0. "
+        "Grok16 5.1 — self-hosted G16 field compiler @ 16.2.0. "
         "Use grok16_version for distro stamp; grok16_toolchain for status/verify/bench; "
         "grok16_rtx_gate for queen_rtx permit; grok16_speed_bench for published JSON."
     ),

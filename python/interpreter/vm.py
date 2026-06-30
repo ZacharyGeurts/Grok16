@@ -49,17 +49,45 @@ class Frame:
         self.globals[self.code.names[idx]] = value
 
 
+_VM_SINGLETON: "GrokVM | None" = None
+
+
+def _fast_mode() -> bool:
+    return os.environ.get("GPY16_FAST", "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _skip_ai_boot() -> bool:
+    return _fast_mode() or os.environ.get("GPY16_SKIP_AI_BOOT", "").strip().lower() in ("1", "true", "yes")
+
+
 class GrokVM:
     def __init__(self) -> None:
         self.globals: dict[str, Any] = dict(make_builtins())
-        if os.environ.get("GROKPY_FIELD") == "1" or os.environ.get("PYTHONG_FIELD") == "1":
+        if not _skip_ai_boot() and (
+            os.environ.get("GROKPY_FIELD") == "1" or os.environ.get("PYTHONG_FIELD") == "1"
+        ):
             self.globals["__truth_floor__"] = grok_truth_floor()
             self.globals["__grokpy_ai__"] = grok_ai_status()
 
-    def run_source(self, source: str) -> Any:
-        from compiler import compile_source
+    def run_source(self, source: str, *, path: str | None = None) -> Any:
+        from pathlib import Path
 
-        return self.run_code(compile_source(source))
+        from compiler import compile_source_cached
+        from grok_core.cache import load_bytecode, store_bytecode
+
+        src_path = Path(path) if path else None
+        cached = load_bytecode(source=source, path=src_path)
+        if cached is not None:
+            return self.run_code(cached)
+        code = compile_source_cached(source)
+        store_bytecode(code, source=source, path=src_path)
+        return self.run_code(code)
+
+    def run_file(self, path: str) -> Any:
+        from pathlib import Path
+
+        p = Path(path)
+        return self.run_source(p.read_text(encoding="utf-8"), path=str(p.resolve()))
 
     def run_code(self, code: Code) -> Any:
         frame = Frame(code, self.globals)
@@ -204,3 +232,11 @@ class GrokVM:
             child_globals.update(fn.closure)
         frame = Frame(fn.code, child_globals, local)
         return self._run_frame(frame)
+
+
+def get_vm(*, reset: bool = False) -> GrokVM:
+    """Singleton GrokVM — reuse across hot invocations when GPY16_FAST=1."""
+    global _VM_SINGLETON
+    if reset or _VM_SINGLETON is None:
+        _VM_SINGLETON = GrokVM()
+    return _VM_SINGLETON

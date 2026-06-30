@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Grok16 — Release 5.0</title>
-  <meta name="description" content="Grok16 5.1.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
-  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-5.0.html" />
+  <title>Grok16 — Release 5.2.0</title>
+  <meta name="description" content="Grok16 5.2.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
+  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/release-5.2.0.html" />
   <script>
   (function (d) {
     try {
@@ -17,17 +17,17 @@
     }
   })(document);
   </script>
-  <script src="manual-theme.js?v15"></script>
-  <script src="manual-search.js?v15"></script>
-  <script src="manual-layout.js?v15"></script>
-  <link rel="stylesheet" href="manual.css?v15" />
+  <script src="manual-theme.js?v16"></script>
+  <script src="manual-search.js?v16"></script>
+  <script src="manual-layout.js?v16"></script>
+  <link rel="stylesheet" href="manual.css?v16" />
 </head>
 <body>
   <nav>
     <div class="nav-top">
       <div class="nav-brand">
         <strong>Grok16</strong>
-        <span class="nav-version">distro 5.1.0</span>
+        <span class="nav-version">distro 5.2.0</span>
         <span class="nav-g16">g16 @ 16.2.0</span>
       </div>
       <div class="nav-controls" aria-label="Display preferences">
@@ -54,7 +54,11 @@
       <a href="znetwork-connect.html">ZNetwork</a>
       <a href="speed-bench.html">Speed Bench</a>
       <a href="performance.html">Performance</a>
-      <a href="release.html">Release 5.1</a>
+      <a href="release.html">Release 5.2</a>
+      <a href="platforms.html">Platforms</a>
+      <a href="c64.html">C64</a>
+      <a href="c64-classic.html">C64 Classic</a>
+      <a href="c64-ultimate.html">C64 Ultimate</a>
       <a href="mcp.html">MCP</a>
       <a href="single-fabric.html">Single Fabric</a>
       <a href="getting-started.html">Getting Started</a>
@@ -73,29 +77,26 @@
     </div>
   </nav>
 
-  <h1>Release 5.1.0 — version one</h1>
-  <p>Grok16 <strong>5.0</strong> kicks off as <strong>v1.0</strong> operator framing. Compiler <strong>g16 @ 16.2.0</strong>. Tag <code>v5.1.0</code>. Prior 2.x–4.x remain in git history only.</p>
+  <h1>Release 5.2.0</h1>
+  <p>Grok16 <strong>5.2.0</strong> — C64 Ultimate hardware pair, 17-target bootstrap matrix, AmmoLang adaptive ship timing. Compiler <strong>g16 @ 16.2.0</strong>. Tag <code>v5.2.0</code>.</p>
 
   <aside class="callout callout-warn">
     <strong>Field platform:</strong> <a href="field-platform.html">Do not create field files</a> — use the 2D auto-field plane.
   </aside>
 
-  <h2 id="shipped">What ships</h2>
+  <h2 id="shipped">What ships in 5.2.0</h2>
   <ul>
-    <li><strong>belt_2_0</strong> single fabric — 8192 redata chunk, 512 die slots</li>
-    <li><strong>field_physics</strong> — thermal guard, no <code>-ffast-math</code> for production</li>
-    <li><strong>Binary package</strong> — g16 + AmmoCode + signed settings (<code>binary-package</code>)</li>
-    <li><strong>2D field platform</strong> — <code>data/grok16-field-platform-doctrine.json</code></li>
-    <li><strong>ZNetwork field wire</strong> — egress convert / ingress deconvert design</li>
+    <li><strong>C64 catalog split</strong> — <a href="c64-classic.html">classic 6510</a> · <a href="c64-ultimate.html">C64 Ultimate pair</a> · g16 does <strong>not</strong> run on breadbin silicon</li>
+    <li><strong>17 bootstrap platforms</strong> — <a href="platforms.html">Platform matrix</a> (Linux, Android, Darwin, iOS, Windows, bare-ELF, RISC-V)</li>
+    <li><strong>AmmoLang ship</strong> — <code>grok16_ship.aml</code> timing ledger · hang guard</li>
+    <li><strong>Stack fabric G1–G15</strong> — receipts, MCP stdio, truth gate, ZNetwork wire</li>
+    <li><strong>belt_2_0</strong> single fabric · <strong>field_physics</strong> safety · binary package lane</li>
     <li><strong>Speed bench v5.0.0</strong> — best exec <strong>102.84M</strong> ops/s</li>
-    <li>Compiler symlinks · build-essential fabric · AmmoCode field instill</li>
-    <li><strong>5.1.0 — Stack fabric</strong> — G1–G15 receipts, MCP stdio, truth gate, ZNetwork wire profile</li>
-    <li><strong>5.0.1 — AmmoOS</strong> — <code>ammoos</code> profile, <code>integrate-ammoos</code>, <code>verify-ammoos-surfaces</code> (pairs AmmoOS 2.0.0-beta3)</li>
   </ul>
 
   <h2 id="checkout">Checkout</h2>
   <pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16 && git checkout v5.1.0
+cd Grok16 && git checkout v5.2.0
 export G16_PREFIX="$(pwd)" G16_BELT_PROFILE=belt_2_0
 ./scripts/grok16-toolchain.sh rebuild
 ./scripts/grok16-toolchain.sh verify
@@ -104,20 +105,20 @@ export G16_PREFIX="$(pwd)" G16_BELT_PROFILE=belt_2_0
 
   <h2 id="binary">Binary package</h2>
   <pre><code>./scripts/grok16-toolchain.sh binary-package
-tar xzf dist/grok16-5.1.0-linux-x86_64.tar.gz
-cd grok16-5.1.0-linux-x86_64 && source grok16-env.sh
+tar xzf dist/grok16-5.2.0-linux-x86_64.tar.gz
+cd grok16-5.2.0-linux-x86_64 && source grok16-env.sh
 ./share/ammocode/ammocode</code></pre>
 
   <h2 id="charts">Benchmarks</h2>
   <pre><code>./scripts/grok16-toolchain.sh bench-triad
 ./scripts/grok16-toolchain.sh exec-full-bench</code></pre>
-  <p><a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a> · <a href="field-platform.html">Field Platform</a> · <a href="znetwork-connect.html">ZNetwork</a></p>
+  <p><a href="platforms.html">Platforms</a> · <a href="c64.html">C64</a> (<a href="c64-classic.html">classic</a> · <a href="c64-ultimate.html">Ultimate</a>) · <a href="speed-bench.html">Speed Bench</a> · <a href="performance.html">Performance</a></p>
   <footer>
     <a href="index.html">Home</a> ·
-    <a href="release.html">Release 5.1.0</a> ·
+    <a href="release.html">Release 5.2.0</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
-    <p class="footer-meta">Grok16 5.1.0 · g16 @ 16.2.0 · GPLv3</p>
+    <p class="footer-meta">Grok16 5.2.0 · g16 @ 16.2.0 · GPLv3</p>
   </footer>
 </body>
 </html>

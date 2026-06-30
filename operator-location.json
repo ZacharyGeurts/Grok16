@@ -1,0 +1,17 @@
+{
+  "lat": 45.845976,
+  "lon": -87.055759,
+  "label": "8259 W BURNTWOOD P 15 DR, GLADSTONE, MI, 49837",
+  "address": "8259 W Burntwood P.15 Drive, Gladstone, MI 49837",
+  "display_name": "Zachary Geurts",
+  "source": "operator_default",
+  "remember": true,
+  "default_for_all": true,
+  "urls": [
+    "https://github.com/ZacharyGeurts",
+    "https://x.com/ZacharyGeurts"
+  ],
+  "github": "https://github.com/ZacharyGeurts",
+  "x": "https://x.com/ZacharyGeurts",
+  "updated": "2026-06-27T16:58:38Z"
+}

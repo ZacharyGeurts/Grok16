@@ -226,6 +226,28 @@ resolve_ammoos_root() {
   return 1
 }
 
+sync_kilroy() {
+  local kilroy=""
+  for candidate in \
+    "${KILROY_ROOT:-}" \
+    "${GROK16_SG_ROOT:-$SG}/KILROY" \
+    "${GROK16_SG_ROOT:-$SG}/NewLatest/KILROY"; do
+    [[ -n "$candidate" && -f "$candidate/scripts/kilroy-grok16-sync.sh" ]] || continue
+    kilroy="$candidate"
+    break
+  done
+  if [[ -z "$kilroy" ]]; then
+    echo "integrate: KILROY not found (skip kilroy wire)"
+    return 0
+  fi
+  echo "integrate: KILROY @ $kilroy"
+  KILROY_ROOT="$kilroy" GROK16_ROOT="$GROK16_ROOT" bash "$kilroy/scripts/kilroy-grok16-sync.sh"
+  if [[ -f "$kilroy/data/kilroy-grok16-bridge.json" && -d "$QUEEN/data" ]]; then
+    cp -f "$kilroy/data/kilroy-grok16-bridge.json" "$QUEEN/data/kilroy-grok16-bridge.json"
+    echo "integrate: Queen/data/kilroy-grok16-bridge.json ← KILROY"
+  fi
+}
+
 sync_ammoos() {
   local ammoos
   ammoos="$(resolve_ammoos_root)" || {
@@ -308,6 +330,7 @@ cmd_integrate() {
   sync_compiler_symlinks
   sync_compile_combinatronics_env
   sync_field_research_book
+  sync_kilroy
   sync_ammoos
   if [[ -x "$GROK16_ROOT/scripts/grok16-bench-triad.sh" ]] && \
      "$GROK16_ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then

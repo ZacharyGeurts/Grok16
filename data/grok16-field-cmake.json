@@ -1,7 +1,7 @@
 {
   "schema": "grok16-field-cmake/v1",
   "product": "Grok16 Field CMake",
-  "grok16_root": "/home/default/Desktop/SG/Grok16",
+  "grok16_root": "/home/default/Desktop/SG/NewLatest/Grok16",
   "entry": {
     "toolchain": "cmake/grok16-toolchain.cmake",
     "project_include": "cmake/grok16-field.cmake",
@@ -28,16 +28,16 @@
   "generator": "Ninja",
   "status": {
     "product": "Grok16 Field CMake",
-    "grok16_root": "/home/default/Desktop/SG/Grok16",
-    "toolchain": "/home/default/Desktop/SG/Grok16/cmake/grok16-toolchain.cmake",
-    "field_cmake": "/home/default/Desktop/SG/Grok16/cmake/grok16-field.cmake",
-    "field_cmake_script": "/home/default/Desktop/SG/Grok16/scripts/field-cmake.sh",
+    "grok16_root": "/home/default/Desktop/SG/NewLatest/Grok16",
+    "toolchain": "/home/default/Desktop/SG/NewLatest/Grok16/cmake/grok16-toolchain.cmake",
+    "field_cmake": "/home/default/Desktop/SG/NewLatest/Grok16/cmake/grok16-field.cmake",
+    "field_cmake_script": "/home/default/Desktop/SG/NewLatest/Grok16/scripts/field-cmake.sh",
     "ninja": true,
     "g16_ready": true,
-    "rtx_source": "/home/default/Desktop/SG/AMOURANTHRTX",
+    "rtx_source": "/home/default/Desktop/SG/NewLatest/AMOURANTHRTX",
     "rtx_build": "/home/default/Desktop/SG/NewLatest/Queen/build/rtx",
-    "cache_ok": true,
-    "binary": "/home/default/Desktop/SG/NewLatest/Queen/build/rtx/bin/Linux/queen-browser",
-    "generator": "Ninja"
+    "cache_ok": false,
+    "binary": "",
+    "generator": null
   }
 }

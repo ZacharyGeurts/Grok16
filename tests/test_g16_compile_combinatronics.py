@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SG = ROOT.parent
-NEXUS = SG / "NewLatest"
+NEXUS = Path(os.environ.get("NEXUS_INSTALL_ROOT", str(ROOT.parent)))
+SG = Path(os.environ.get("SG_ROOT", str(NEXUS.parent)))
 sys.path.insert(0, str(ROOT / "lib"))
 
 import importlib.util

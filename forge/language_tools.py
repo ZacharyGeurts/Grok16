@@ -44,83 +44,60 @@ def _write_exec(path: Path, body: str) -> None:
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
-def _wrapper_rust(prefix: Path) -> str:
-    ld = prefix / "bin" / "g16-ld"
+def _wrapper_g16_native(prefix: Path, *, name: str, lang: str, blurb: str) -> str:
+    """Grok16-owned compiler wrapper — never delegates to host toolchains."""
     return f"""#!/usr/bin/env bash
-# G16-Rust — field Rust driver (memory-safe, g16-ld linker)
+# {blurb}
 set -euo pipefail
 G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-export RUSTFLAGS="${{RUSTFLAGS:-}} -C linker=$G16_PREFIX/bin/g16-ld -C link-arg=-fuse-ld=bfd -D warnings"
-export CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER="$G16_PREFIX/bin/g16-ld"
-export CARGO_ENCODED_RUSTFLAGS="${{CARGO_ENCODED_RUSTFLAGS:-}}"
-if command -v rustc >/dev/null 2>&1; then exec rustc "$@"; fi
-echo "g16-rust: install rustc or set PATH" >&2
-exit 127
+PY="${{PYTHONG:-python3}}"
+COMPILER="$G16_PREFIX/lib/g16-native-compile.py"
+SRC=""
+OUT=""
+for a in "$@"; do
+  [[ "$a" == -o ]] && continue
+  [[ -f "$a" ]] && SRC="$a"
+  [[ "$a" == *.o ]] && OUT="$a"
+done
+[[ -n "$SRC" ]] || {{ echo "{name}: usage {name} -o out src" >&2; exit 2; }}
+TD="$(mktemp -d)"
+trap 'rm -rf "$TD"' EXIT
+DOC="$("$PY" "$COMPILER" compile --lang {lang} --out-dir "$TD" "$SRC")"
+BIN="$(printf '%s' "$DOC" | "$PY" -c "import json,sys; d=json.load(sys.stdin); print(d.get('binary') or '')")"
+[[ -n "$BIN" && -f "$BIN" ]] || {{ echo "$DOC" >&2; exit 1; }}
+if [[ -n "$OUT" ]]; then cp "$BIN" "$OUT"; chmod +x "$OUT" 2>/dev/null || true; else cp "$BIN" "${{SRC%.*}}" 2>/dev/null || cp "$BIN" "$TD/program"; fi
+exit 0
 """
+
+
+def _wrapper_rust(prefix: Path) -> str:
+    return _wrapper_g16_native(prefix, name="g16-rust", lang="rust",
+                               blurb="G16-Rust — Grok16-owned Rust front-end")
 
 
 def _wrapper_go(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-# G16-Go — field Go driver (secure cgo via g16)
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-export CC="${{CC:-$G16_PREFIX/bin/g16}}"
-export CXX="${{CXX:-$G16_PREFIX/bin/g16}}"
-export CGO_ENABLED="${{CGO_ENABLED:-1}}"
-if command -v go >/dev/null 2>&1; then exec go "$@"; fi
-echo "g16-go: install go toolchain" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-go", lang="go",
+                               blurb="G16-Go — Grok16-owned Go front-end")
 
 
 def _wrapper_zig(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-# G16-Zig — field Zig driver (comptime-safe, g16 backend)
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-export CC="${{CC:-$G16_PREFIX/bin/g16}}"
-export CXX="${{CXX:-$G16_PREFIX/bin/g16}}"
-if command -v zig >/dev/null 2>&1; then exec zig "$@"; fi
-echo "g16-zig: install zig compiler" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-zig", lang="zig",
+                               blurb="G16-Zig — Grok16-owned Zig front-end")
 
 
 def _wrapper_gfortran(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-# G16-Fortran — field Fortran via gfortran or g16-gfortran
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-for c in "$G16_PREFIX/bin/g16-gfortran" gfortran; do
-  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
-done
-echo "g16-gfortran: enable fortran in Grok16 rebuild or install gfortran" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-gfortran", lang="fortran",
+                               blurb="G16-Fortran — Grok16-owned Fortran compiler")
 
 
 def _wrapper_gdc(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-for c in "$G16_PREFIX/bin/g16-gdc" gdc; do
-  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
-done
-echo "g16-gdc: install gdc" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-gdc", lang="d",
+                               blurb="G16-D — Grok16-owned D front-end")
 
 
 def _wrapper_gnat(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-for c in "$G16_PREFIX/bin/g16-gnat" gnatmake; do
-  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
-done
-echo "g16-gnat: install gnat" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-gnat", lang="ada",
+                               blurb="G16-Ada — Grok16-owned Ada front-end")
 
 
 def _wrapper_objc(prefix: Path) -> str:
@@ -132,91 +109,60 @@ exec "$G16_PREFIX/bin/g16" -x objective-c++ "$@"
 
 
 def _wrapper_fpc(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-# G16-FPC — Pascal / Turbo Pascal field driver
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-for c in "$G16_PREFIX/bin/g16-fpc" fpc; do
-  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
-done
-echo "g16-fpc: install Free Pascal (fpc) for Pascal/Turbo Pascal" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-fpc", lang="pascal",
+                               blurb="G16-Pascal — Grok16-owned Pascal/Turbo Pascal compiler")
 
 
 def _wrapper_aml(prefix: Path) -> str:
     nexus = os.environ.get("NEXUS_INSTALL_ROOT", str(prefix.parent / "NewLatest"))
     return f"""#!/usr/bin/env bash
-# G16-AmmoLang — AmmoOS combinatorics sequence language
+# G16-AmmoLang #1 — sovereign build · compile · execute
 set -euo pipefail
 G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
 NEXUS="${{NEXUS_INSTALL_ROOT:-{nexus}}}"
 PY="${{PYTHONG:-pythong}}"
+export AML_BUILD="${{AML_BUILD:-1}}" AML_FAST="${{AML_FAST:-1}}"
+export G16_OPTIMAL_COMBINATRONICS_AT_COMPILE="${{G16_OPTIMAL_COMBINATRONICS_AT_COMPILE:-0}}"
 AML=""
 for a in "$@"; do [[ "$a" == *.aml ]] && AML="$a"; done
 if [[ -z "$AML" ]]; then
-  echo "g16-aml: usage g16-aml [--compile|-c] file.aml" >&2
+  echo "g16-aml: usage g16-aml [--compile|-c|--build|-b] file.aml" >&2
   exit 2
 fi
 if [[ "${{1:-}}" == "--compile" ]] || [[ "${{1:-}}" == "-c" ]]; then
   exec "$PY" "$NEXUS/lib/field-ammolang.py" compile "$AML"
+fi
+if [[ "${{1:-}}" == "--build" ]] || [[ "${{1:-}}" == "-b" ]]; then
+  exec "$PY" "$NEXUS/lib/field-ammolang-build.py" run "$AML"
 fi
 exec "$PY" "$NEXUS/lib/field-ammolang.py" run "$AML" --live
 """
 
 
 def _wrapper_qbasic(prefix: Path) -> str:
-    return f"""#!/usr/bin/env bash
-# G16-QBasic — BASIC / QBasic field driver
-set -euo pipefail
-G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
-for c in "$G16_PREFIX/bin/g16-qb64" qb64 qb64-ng; do
-  if command -v "$c" >/dev/null 2>&1; then exec "$c" "$@"; fi
-done
-echo "g16-qbasic: install QB64 for BASIC/QBasic combinatronic compile" >&2
-exit 127
-"""
+    return _wrapper_g16_native(prefix, name="g16-qbasic", lang="basic",
+                               blurb="G16-BASIC — Grok16-owned BASIC/QBasic compiler")
 
 
 def _wrapper_interp(prefix: Path) -> str:
     nexus = os.environ.get("NEXUS_INSTALL_ROOT", str(prefix.parent / "NewLatest"))
     return f"""#!/usr/bin/env bash
-# G16-Interp — uncompiled field runner (no compile on launch)
+# G16-Interp — Grok16 compiles then runs (no host node/ruby/java)
 set -euo pipefail
 G16_PREFIX="${{G16_PREFIX:-{prefix}}}"
 NEXUS="${{NEXUS_INSTALL_ROOT:-{nexus}}}"
-PY="${{PYTHONG:-pythong}}"
+PY="${{PYTHONG:-python3}}"
+COMPILER="$G16_PREFIX/lib/g16-native-compile.py"
 SRC=""
 for a in "$@"; do [[ -f "$a" ]] && SRC="$a"; done
 [[ -n "$SRC" ]] || {{ echo "g16-interp: usage g16-interp file" >&2; exit 2; }}
-ext="${{SRC##*.}}"
-ext_lc="$(printf '%s' "$ext" | tr '[:upper:]' '[:lower:]')"
-run() {{ command -v "$1" >/dev/null 2>&1 && exec "$1" "${{@:2}}"; }}
+ext_lc="$(printf '%s' "${{SRC##*.}}" | tr '[:upper:]' '[:lower:]')"
 case "$ext_lc" in
-  js|mjs|cjs|jsx) run node "$SRC" ;;
-  ts|tsx) run ts-node "$SRC" || run node "$SRC" ;;
-  rb) run ruby "$SRC" ;;
-  php) run php "$SRC" ;;
-  lua) run lua "$SRC" ;;
-  pl|pm) run perl "$SRC" ;;
-  jl) run julia "$SRC" ;;
-  ex|exs) run elixir "$SRC" ;;
-  erl) run erl -noshell -s hello main -s init stop ;;
-  hs) run runghc "$SRC" || run ghc -e 'main' "$SRC" ;;
-  clj|cljs|cljc) run clojure "$SRC" ;;
-  scala|sc) run scala "$SRC" ;;
-  cs) run dotnet run --project "$(dirname "$SRC")" ;;
-  swift) run swift "$SRC" ;;
-  java|kt|kts) run java "$SRC" 2>/dev/null || run kotlinc "$SRC" -include-runtime -d /tmp/g16-kt.jar && run java -jar /tmp/g16-kt.jar ;;
-  sh|bash|zsh|ps1) run bash "$SRC" ;;
-  sql) run sqlite3 :memory: < "$SRC" || cat "$SRC" ;;
   fld) exec "$PY" "$NEXUS/lib/field-plate-field.py" json ;;
   aml) exec "$PY" "$NEXUS/lib/field-ammolang.py" run "$SRC" --live ;;
-  m) exec "$PY" -c "exec(open('$SRC').read())" ;;
-  *) exec "$PY" "$SRC" ;;
+  py|gpy) exec "$G16_PREFIX/bin/gpy-16" "$SRC" ;;
 esac
-echo "g16-interp: no runner for .$ext_lc — install toolchain or use pythong" >&2
-exit 127
+exec "$PY" "$COMPILER" run "$SRC"
 """
 
 
@@ -265,6 +211,28 @@ WRAPPERS: dict[str, Any] = {
 }
 
 
+def _ensure_chips_compiler_designs(engine: ForgeEngine | None = None) -> dict[str, Any]:
+    """CHIPs universal — write compiler.design.json + stamp every language."""
+    script = ctx_queen() / "lib" / "g16-chips-compiler-design.py"
+    if not script.is_file():
+        return {"ok": False, "error": "g16_chips_compiler_design_missing"}
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("g16_chips_compiler_design", script)
+    if not spec or not spec.loader:
+        return {"ok": False, "error": "import_failed"}
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    out = mod.ensure_all_compilers_written() if hasattr(mod, "ensure_all_compilers_written") else {}
+    if engine and out.get("written"):
+        engine.log(f"languages: CHIPs universal — {out.get('written')}/{out.get('total')} compiler designs written")
+    return out
+
+
+def ctx_queen() -> Path:
+    env = os.environ.get("GROK16_ROOT", "").strip()
+    return Path(env) if env else Path(__file__).resolve().parents[1]
+
+
 def install_language_wrappers(ctx: ForgeContext, engine: ForgeEngine | None = None) -> int:
     prefix = _prefix(ctx)
     count = 0
@@ -274,6 +242,7 @@ def install_language_wrappers(ctx: ForgeContext, engine: ForgeEngine | None = No
         path = prefix / "bin" / name
         _write_exec(path, factory(prefix))
         count += 1
+    _ensure_chips_compiler_designs(engine)
     if engine:
         engine.log(f"languages: installed {count} field drivers in {prefix / 'bin'}")
     return count
@@ -314,11 +283,14 @@ def language_status(ctx: ForgeContext) -> dict[str, Any]:
         ok = path.is_file() and os.access(path, os.X_OK)
         if ok:
             ready += 1
+        exts = spec.get("extensions") or []
+        ext = exts[0] if exts else f".{lang_id}"
         rows[lang_id] = {
             **spec,
             "path": str(path) if path.is_file() else "",
             "ready": ok,
-            "discern": _probe_discern(g16, f"foo{spec.get('extensions', ['.x'])[0]}") if g16.is_file() else "",
+            "compiler_written": bool(spec.get("compiler_written")),
+            "discern": _probe_discern(g16, f"foo{ext}") if g16.is_file() else "",
         }
     hostess = meta.get("hostess7", {})
     gate = hostess_gate(ctx)

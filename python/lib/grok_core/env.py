@@ -41,6 +41,18 @@ def field_env(*, profile: str | None = None) -> dict[str, str]:
     prof = profile or os.environ.get("GROKPY_PROFILE", os.environ.get("PYTHONG_PROFILE", "field_opt"))
     env["GROKPY_PROFILE"] = prof
     env["PYTHONG_PROFILE"] = prof
+    env["GPY16_PROFILE"] = os.environ.get("GPY16_PROFILE", prof)
+    if prof in ("fastest", "field_opt"):
+        env.setdefault("G16_OPTIMAL_COMBINATRONICS_AT_COMPILE", "0")
+    if prof == "fastest":
+        for k, v in (
+            ("GPY16_FAST", "1"),
+            ("GPY16_CACHE", "1"),
+            ("GPY16_SKIP_AI_BOOT", "1"),
+            ("G16_AI_PROFILE", "ai_agent"),
+            ("AML_FAST", "1"),
+        ):
+            env.setdefault(k, v)
     if prof == "hostess_brain":
         env["GROKPY_HOSTESS_LANE"] = "1"
         env["PYTHONG_HOSTESS_LANE"] = "1"

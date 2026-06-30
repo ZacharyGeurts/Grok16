@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -51,8 +52,14 @@ def test_single_fabric_doctrine() -> None:
 
 
 def test_integrate_script() -> None:
+    if os.environ.get("G16_BELT_SKIP_INTEGRATE", "").strip().lower() in ("1", "true", "yes"):
+        script = ROOT / "scripts" / "grok16-integrate.sh"
+        assert script.is_file()
+        print("test_integrate_script: SKIP (G16_BELT_SKIP_INTEGRATE)", flush=True)
+        return
     script = ROOT / "scripts" / "grok16-integrate.sh"
     assert script.is_file()
+    print("test_integrate_script: running grok16-integrate.sh integrate", flush=True)
     proc = subprocess.run(["bash", str(script), "integrate"], capture_output=True, text=True, timeout=120, check=False)
     assert proc.returncode == 0, proc.stderr or proc.stdout
     env_file = ROOT / "data" / "grok16-integrate.env"

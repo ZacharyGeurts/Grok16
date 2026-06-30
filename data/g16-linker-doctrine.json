@@ -46,6 +46,14 @@
     {"id": "bare-elf-aarch64", "os": "none", "abi": "elf", "arch": "aarch64", "format": "elf", "backend": "bfd", "emulation": "aarch64linux", "page_size": 16384, "active": true},
     {"id": "bare-elf-riscv64", "os": "none", "abi": "elf", "arch": "riscv64", "format": "elf", "backend": "bfd", "emulation": "elf64lriscv", "page_size": 4096, "active": true}
   ],
+  "hardware_pairs": [
+    {
+      "id": "pair-c64-ultimate",
+      "label": "Commodore 64 Ultimate (C64U / C64CU)",
+      "g16_linker": false,
+      "note": "g16 does not link for classic MOS 6510 — pair documents C64 Ultimate FPGA hardware + retro_c64 chip battery"
+    }
+  ],
   "pass": ["discern", "ironclad_witness", "field_sanity", "silicon_mandate", "backend_resolve", "backend_dispatch", "receipt"],
   "layers": [
     {"id": "linker_driver", "path": "forge/g16-linker.py", "role": "field linker orchestrator", "internal": true},

@@ -48,13 +48,27 @@ def _version_doc() -> dict[str, Any]:
     return {}
 
 
+def _fast_mode() -> bool:
+    return os.environ.get("GPY16_FAST", "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _apply_speed_doctrine() -> None:
+    g16 = grok16_root()
+    doc = read_json(g16 / "data" / "gpy-16-speed-doctrine.json", {})
+    for key, val in (doc.get("fast_env") or {}).items():
+        os.environ.setdefault(str(key), str(val))
+
+
 def _apply_field_env() -> None:
-    for key, val in field_env().items():
+    prof = os.environ.get("GPY16_PROFILE", os.environ.get("GROKPY_PROFILE", "fastest"))
+    for key, val in field_env(profile=prof).items():
         os.environ[key] = val
     os.environ["GROKPY_FIELD"] = "1"
     os.environ["GPY16_FIELD"] = "1"
     os.environ["PYTHONG_FIELD"] = "1"
     os.environ["GPY16_BUILTIN"] = "1"
+    if prof == "fastest" or _fast_mode():
+        _apply_speed_doctrine()
 
 
 def _neural_stack() -> dict[str, Any]:
@@ -80,13 +94,16 @@ def _ai_field_slice() -> dict[str, Any]:
 
 
 def _vm() -> Any:
-    from vm import GrokVM  # type: ignore
+    from vm import get_vm  # type: ignore
 
-    vm = GrokVM()
-    ai = _ai_field_slice()
-    vm.globals["__grokpy_ai__"] = ai
-    vm.globals["__grok16_ai__"] = ai
-    vm.globals["__truth_floor__"] = ai["truth_floor"]
+    vm = get_vm()
+    if not _fast_mode() and os.environ.get("GPY16_SKIP_AI_BOOT", "").strip().lower() not in (
+        "1", "true", "yes",
+    ):
+        ai = _ai_field_slice()
+        vm.globals["__grokpy_ai__"] = ai
+        vm.globals["__grok16_ai__"] = ai
+        vm.globals["__truth_floor__"] = ai["truth_floor"]
     return vm
 
 
@@ -135,7 +152,7 @@ def run_vm_file(path: Path) -> int:
     from vm import VMError  # type: ignore
 
     try:
-        _vm().run_source(path.read_text(encoding="utf-8"))
+        _vm().run_file(str(path.resolve()))
         return 0
     except (VMError, Exception):
         enter_tooling(sys.argv)
@@ -146,6 +163,8 @@ def wants_tooling(path: Path) -> bool:
 
 
 def health() -> dict[str, Any]:
+    from grok_core.cache import cache_stats  # noqa: E402
+
     root = gpy16_root()
     g16 = grok16_root()
     driver = g16 / "bin" / "gpy-16"
@@ -171,7 +190,10 @@ def health() -> dict[str, Any]:
         "builtin": True,
         "field_cpython": sys.executable,
         "checks": checks,
-        "ai_field": _ai_field_slice(),
+        "ai_field": _ai_field_slice() if not _fast_mode() else {"fast_mode": True},
+        "bytecode_cache": cache_stats(),
+        "fast_mode": _fast_mode(),
+        "profile": os.environ.get("GPY16_PROFILE", "field_opt"),
     }
 
 

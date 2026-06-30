@@ -1,7 +1,7 @@
 {
   "schema": "g16-field-research-book-panel/v1",
-  "updated": "2026-06-29T06:30:12Z",
-  "ok": true,
+  "updated": "2026-06-30T02:53:59Z",
+  "ok": false,
   "title": "Field Research — Grok16 technology spine",
   "edition": "1.0",
   "site_base": "https://zacharygeurts.github.io/Field_Research",
@@ -147,7 +147,7 @@
       "modules_total": 4,
       "sg_modules_ok": 0,
       "sg_modules_total": 0,
-      "doctrine_ok": 1,
+      "doctrine_ok": 0,
       "doctrine_total": 1
     },
     {
@@ -159,7 +159,7 @@
       "modules_total": 2,
       "sg_modules_ok": 0,
       "sg_modules_total": 0,
-      "doctrine_ok": 2,
+      "doctrine_ok": 1,
       "doctrine_total": 2
     },
     {
@@ -181,7 +181,7 @@
       "grok16_owned": true,
       "modules_ok": 1,
       "modules_total": 1,
-      "sg_modules_ok": 1,
+      "sg_modules_ok": 0,
       "sg_modules_total": 1,
       "doctrine_ok": 1,
       "doctrine_total": 1
@@ -193,7 +193,7 @@
       "grok16_owned": false,
       "modules_ok": 0,
       "modules_total": 0,
-      "sg_modules_ok": 1,
+      "sg_modules_ok": 0,
       "sg_modules_total": 1,
       "doctrine_ok": 1,
       "doctrine_total": 1
@@ -205,9 +205,9 @@
       "grok16_owned": false,
       "modules_ok": 0,
       "modules_total": 0,
-      "sg_modules_ok": 1,
+      "sg_modules_ok": 0,
       "sg_modules_total": 1,
-      "doctrine_ok": 1,
+      "doctrine_ok": 0,
       "doctrine_total": 1
     },
     {
@@ -224,12 +224,19 @@
     }
   ],
   "verify": {
-    "ok": true,
+    "ok": false,
     "schema": "g16-field-research-verify/v1",
-    "updated": "2026-06-29T06:30:12Z",
+    "updated": "2026-06-30T02:53:59Z",
     "manifest_ok": true,
     "chapters": 13,
-    "missing_modules": [],
+    "missing_modules": [
+      "NewLatest/data/g16-compiler-sense-doctrine.json",
+      "NewLatest/data/single-field-depth-doctrine.json",
+      "NewLatest/lib/field-plate-combinatorics-bridge.py",
+      "NewLatest/lib/field-plate-meld.py",
+      "NewLatest/lib/field-compatibility-layers.py",
+      "NewLatest/data/field-compatibility-layers-doctrine.json"
+    ],
     "spine": [
       {
         "chapter": 4,
@@ -240,7 +247,7 @@
         "modules_total": 4,
         "sg_modules_ok": 0,
         "sg_modules_total": 0,
-        "doctrine_ok": 1,
+        "doctrine_ok": 0,
         "doctrine_total": 1
       },
       {
@@ -252,7 +259,7 @@
         "modules_total": 2,
         "sg_modules_ok": 0,
         "sg_modules_total": 0,
-        "doctrine_ok": 2,
+        "doctrine_ok": 1,
         "doctrine_total": 2
       },
       {
@@ -274,7 +281,7 @@
         "grok16_owned": true,
         "modules_ok": 1,
         "modules_total": 1,
-        "sg_modules_ok": 1,
+        "sg_modules_ok": 0,
         "sg_modules_total": 1,
         "doctrine_ok": 1,
         "doctrine_total": 1
@@ -286,7 +293,7 @@
         "grok16_owned": false,
         "modules_ok": 0,
         "modules_total": 0,
-        "sg_modules_ok": 1,
+        "sg_modules_ok": 0,
         "sg_modules_total": 1,
         "doctrine_ok": 1,
         "doctrine_total": 1
@@ -298,9 +305,9 @@
         "grok16_owned": false,
         "modules_ok": 0,
         "modules_total": 0,
-        "sg_modules_ok": 1,
+        "sg_modules_ok": 0,
         "sg_modules_total": 1,
-        "doctrine_ok": 1,
+        "doctrine_ok": 0,
         "doctrine_total": 1
       },
       {
@@ -340,6 +347,38 @@
     "source": "docs/field-exec-full-bench.json",
     "label": "Implemented"
   },
-  "grok16_root": "/home/default/Desktop/SG/Grok16",
-  "sg_root": "/home/default/Desktop/SG"
+  "grok16_root": "/home/default/Desktop/SG/NewLatest/Grok16",
+  "sg_root": "/home/default/Desktop/SG/NewLatest",
+  "_g16_seal": {
+    "schema": "g16-sealed-output/v1",
+    "algorithm": "sha256",
+    "digest": "45814137de63433f2665775732a4c412e30bb1478b64ed423a435c8077f31073",
+    "sealed_at": "2026-06-30T02:53:59Z",
+    "path": "/home/default/Desktop/SG/NewLatest/Grok16/data/g16-field-research-book-panel.json",
+    "g1id_meld": {
+      "id": "g1id",
+      "absorbed": true,
+      "meld_citation": "ironclad:meld:2",
+      "citation": "ironclad:time:1",
+      "policy": "sovereign_time_only",
+      "time_is_linear": true,
+      "sovereign_time_ok": true,
+      "sovereign_time": {
+        "source": "lib/sovereign-time.py",
+        "clock": "lib/sovereign-clock.py",
+        "schema": "sovereign-time-meld-input/v1",
+        "linear_ns": 1782788039258319803,
+        "derived_utc": "2026-06-30T02:53:59Z",
+        "sealed": true,
+        "synced": false,
+        "never_desync": true,
+        "immutable_linear": true,
+        "witness_only": true,
+        "not_geometry_t": true,
+        "citation": "ironclad:g1id:2"
+      },
+      "example_valid": true,
+      "updated": "2026-06-30T02:53:59Z"
+    }
+  }
 }

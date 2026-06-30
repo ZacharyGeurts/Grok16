@@ -5,19 +5,40 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 import time
 from pathlib import Path
 
-ROOT = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
-PREFIX = Path(os.environ.get("G16_PREFIX", ROOT))
+ROOT = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1])).resolve()
+PREFIX = Path(os.environ.get("G16_PREFIX", ROOT)).resolve()
+os.environ.setdefault("GROK16_ROOT", str(ROOT))
+os.environ.setdefault("G16_PREFIX", str(PREFIX))
 G16 = PREFIX / "bin" / "g16"
 PROFILE = os.environ.get("G16_AI_PROFILE", "ai_agent")
 PROFILE_SCRIPT = ROOT / "scripts" / "grok16-profile-flags.py"
 COMB_SCRIPT = ROOT / "lib" / "g16-compile-combinatronics.py"
 RECEIPT_SCRIPT = ROOT / "lib" / "g16-compile-receipt.py"
+
+# Grok16 crt objects are non-PIE — strip profile PIE and static-link executables.
+_PIE_FLAGS = frozenset({"-fPIE", "-pie", "-fpie", "-fpic", "-fPIC", "-Wl,-pie"})
+
+
+def _exec_link_fixup(flags: list[str]) -> list[str]:
+    cleaned = [
+        f for f in flags
+        if f not in _PIE_FLAGS and not f.startswith("-Wl,-pie")
+    ]
+    for req in ("-fno-pie", "-no-pie", "-static"):
+        if req not in cleaned:
+            cleaned.append(req)
+    extra = os.environ.get("G16_EXTRA_LINK_FLAGS", "").strip().split()
+    for f in extra:
+        if f and f not in cleaned:
+            cleaned.append(f)
+    return cleaned
 
 
 def _comb_mod():
@@ -78,6 +99,7 @@ def compile_source(
     *,
     lang: str = "cxx",
     out_name: str = "g16_ai_out",
+    out_dir: str | Path | None = None,
 ) -> dict:
     if not G16.is_file():
         return {"ok": False, "error": f"missing g16 at {G16}"}
@@ -106,6 +128,7 @@ def compile_source(
         flags = _profile_flags("cxx" if lang == "cxx" else "c", profile=profile)
         if std_flag not in flags:
             flags = [std_flag, *flags]
+        flags = _exec_link_fixup(flags)
         cmd = [str(G16), *flags, "-o", str(out), str(src)]
         t0 = time.time()
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=120, env=env)
@@ -119,11 +142,25 @@ def compile_source(
                 comb=gate.get("combinatronics"),
                 compile_meta={"profile": profile, "lang": lang, "compile_ms": ms},
             )
+        binary_path = ""
+        if proc.returncode == 0 and out.is_file():
+            persist = out_dir or os.environ.get("G16_COMPILE_PERSIST_DIR", "").strip()
+            if persist:
+                dest = Path(persist) / out_name
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(out, dest)
+                binary_path = str(dest)
+            else:
+                state = Path(os.environ.get("NEXUS_STATE_DIR", ROOT / ".grok16-state"))
+                state.mkdir(parents=True, exist_ok=True)
+                dest = state / f"{out_name}-{int(time.time() * 1000)}"
+                shutil.copy2(out, dest)
+                binary_path = str(dest)
         rec_mod = _receipt_mod()
         if rec_mod and hasattr(rec_mod, "record"):
             receipt = rec_mod.record(
                 source_text=source,
-                binary_path=str(out) if out.is_file() else "",
+                binary_path=binary_path,
                 profile=profile,
                 lang=lang,
             )
@@ -137,7 +174,7 @@ def compile_source(
             "diagnostics": errors,
             "stderr_tail": proc.stderr[-4000:] if proc.stderr else "",
             "stdout": proc.stdout.strip(),
-            "binary": str(out) if out.is_file() else "",
+            "binary": binary_path,
             "combinatronics_gate": gate or None,
             "combinatronics_stamp": stamp or None,
             "compile_receipt": receipt or None,
