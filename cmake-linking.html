@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Grok16 — Home</title>
+  <title>Grok16 — CMake & Link</title>
   <meta name="description" content="Grok16 5.2.0 programmer manual — unified g16 @ 16.2.0, batteries, linker, profiles." />
-  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/" />
+  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/cmake-&-link.html" />
   <script>
   (function (d) {
     try {
@@ -77,44 +77,50 @@
     </div>
   </nav>
 
-  <figure class="fig-wide readme-charts">
-    <img src="assets/speed-bench-chart.svg" alt="Speed bench compile vs execution" width="920" height="280" loading="eager" />
-    <figcaption>Speed bench report v5.0.0 · distro 5.0.0 · <a href="speed-bench.html">full manual →</a></figcaption>
+  <h1>CMake and linking</h1>
+  <p>Canonical Grok16 Field CMake + <code>g16-ld</code> mandate for <code>speed_demo</code> and all field targets.</p>
+
+  <figure class="fig-wide">
+    <img src="assets/cmake-link-pipeline.svg" alt="CMake configure build link pipeline" width="920" height="300" />
+    <figcaption>Configure → g16 compile → g16-ld link with field mandate flags</figcaption>
   </figure>
-  <div class="figure-row readme-charts-row">
-    <figure class="fig-card">
-      <img src="assets/triad-chart.svg" alt="Belt triad comparison" width="640" height="280" loading="lazy" />
-      <figcaption><a href="performance.html#triad">bench-triad</a></figcaption>
-    </figure>
-    <figure class="fig-card">
-      <img src="assets/compare-chart.svg" alt="Field vs host compare" width="640" height="280" loading="lazy" />
-      <figcaption><a href="performance.html">bench-compare</a></figcaption>
-    </figure>
-  </div>
-  <article class="readme-prose">
-<h1>Grok16 5.0.0 — Version One</h1>
-<p><strong>5.0 is a clean start</strong> (v1.0 operator framing). Self-hosted <code>g16</code> @ <strong>16.2.0</strong>. One belt (<code>belt_2_0</code>). One 2D platform. No field files.</p>
-<blockquote><p><strong>DO NOT CREATE FIELD FILES</strong> — they heat neighboring fields. Placement on the <a href="field-platform.html">field platform</a> *is* field at depth 0.</p></blockquote>
-<h2>Benchmarks (Speed Bench 5.0.0)</h2>
-<table>
-<tr><th>Result</th><th>Value</th></tr>
-<tr><td>Fastest execution</td><td><strong>102.8M ops/s</strong> — C++ g16 belt_2_0</td></tr>
-<tr><td>Belt triad</td><td><a href="performance.html#triad">performance.html#triad</a></td></tr>
-<tr><td>Full table</td><td><a href="speed-bench.html">speed-bench.html</a></td></tr>
-</table>
-<h2>Start</h2>
-<pre><code>git clone https://github.com/ZacharyGeurts/Grok16.git
-cd Grok16 &amp;&amp; git checkout v5.0.0
-export G16_PREFIX=&quot;$(pwd)&quot; G16_BELT_PROFILE=belt_2_0
-./scripts/grok16-toolchain.sh rebuild &amp;&amp; ./scripts/grok16-toolchain.sh verify</code></pre>
-<p>Binary: <code>grok16-5.0.0-linux-x86_64.tar.gz</code> → <code>source grok16-env.sh</code> → <code>./share/ammocode/ammocode</code></p>
-<h2>Docs</h2>
-<ul>
-<li><a href="field-platform.html">Field platform</a> — 2D auto-field, <strong>no field files</strong></li>
-<li><a href="znetwork-connect.html">ZNetwork connect</a> — field wire, identity without phone</li>
-<li><a href="safety.html">Safety</a> · <a href="release.html">Release 5.0.0</a></li>
-</ul>
-  </article>
+
+  <h2 id="speed-demo">speed_demo CMake project</h2>
+  <p><code>examples/speed-demo/CMakeLists.txt</code> builds <code>grok16_speed_demo</code> from <code>speed_demo.cpp</code>.</p>
+
+  <h3>Host plane</h3>
+  <pre><code>cmake -S examples/speed-demo -B build/host \
+  -DCMAKE_CXX_COMPILER=$(which g++) \
+  -DGROK16_HOST_PLANE=ON
+cmake --build build/host -j$(nproc)</code></pre>
+
+  <h3>G16 belt plane</h3>
+  <pre><code>cmake -S examples/speed-demo -B build/g16 \
+  -DCMAKE_TOOLCHAIN_FILE=$G16_PREFIX/cmake/grok16-toolchain.cmake \
+  -DGROK16_PROFILE=belt_2_0
+cmake --build build/g16 -j$(nproc)</code></pre>
+
+  <h2 id="toolchain">Toolchain file</h2>
+  <p><code>cmake/grok16-toolchain.cmake</code> sets:</p>
+  <ul>
+    <li><code>CMAKE_C_COMPILER</code> / <code>CMAKE_CXX_COMPILER</code> → <code>g16</code></li>
+    <li>Profile flags from <code>data/grok16-profiles.json</code></li>
+    <li>Linker wrapper → <code>g16-ld</code></li>
+  </ul>
+
+  <h2 id="mandate">Linking mandate</h2>
+  <table>
+    <tr><th>File</th><th>Role</th></tr>
+    <tr><td><code>cmake/g16-linker-mandate.cmake</code></td><td>Field link flags, <code>-pie</code>, shared rules</td></tr>
+    <tr><td><code>cmake/g16-field-mandate.cmake</code></td><td><code>G16_FIELD_SAFETY_MANDATE_v1</code> on field targets</td></tr>
+    <tr><td><code>forge/g16-linker.py</code></td><td><code>g16-ld</code> backend — 16 target families</td></tr>
+  </table>
+  <p>Full linker manual: <a href="linker.html">Linker</a></p>
+
+  <h2 id="bench">Bench with CMake row</h2>
+  <pre><code>SPEED_DEMO_TARGET_SEC=3 ./scripts/grok16-toolchain.sh exec-full-bench
+./scripts/field-exec-stage.py</code></pre>
+  <p>CMake runner included in speed bench report v5.0.0. Versions: <code>data/grok16-speed-bench-version.json</code></p>
   <footer>
     <a href="index.html">Home</a> ·
     <a href="release.html">Release 5.2.0</a> ·
