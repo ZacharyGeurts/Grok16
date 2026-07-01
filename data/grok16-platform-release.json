@@ -1,7 +1,7 @@
 {
   "schema": "grok16-platform-release/v1",
-  "distro_version": "5.0.0",
-  "distro_tag": "v5.0.0",
+  "distro_version": "5.3.2",
+  "distro_tag": "v5.3.2",
   "staging_from": "4.8.0",
   "shipped_as": "4.8-update",
   "g16_version": "16.2.0",
@@ -57,7 +57,7 @@
         "host": "linux-gnu-x86_64"
       },
       "cross_prefix": "aarch64-linux-gnu-",
-      "notes": "ARM64 Linux \u2014 cross bootstrap from x86_64 host"
+      "notes": "ARM64 Linux — cross bootstrap from x86_64 host"
     },
     {
       "id": "linux-gnu-arm",
@@ -79,7 +79,7 @@
         "host": "linux-gnu-x86_64"
       },
       "cross_prefix": "riscv64-linux-gnu-",
-      "notes": "RISC-V 64 \u2014 cross GCC + binutils; g16 linker emulation elf64lriscv"
+      "notes": "RISC-V 64 — cross GCC + binutils; g16 linker emulation elf64lriscv"
     },
     {
       "id": "android-aarch64",
@@ -122,7 +122,7 @@
         "CC": "clang",
         "CXX": "clang++"
       },
-      "notes": "macOS Intel \u2014 bootstrap on host"
+      "notes": "macOS Intel — bootstrap on host"
     },
     {
       "id": "darwin-aarch64",
@@ -203,8 +203,17 @@
       "format": "hardware_pair",
       "pair": {
         "grok16_host": "linux-gnu-x86_64",
-        "g16_runs_on": ["linux-gnu-x86_64", "darwin-aarch64", "darwin-x86_64", "win32-x86_64"],
-        "does_not_run_on": ["classic-c64-mos6510", "breadbin-1982", "original-c64c"],
+        "g16_runs_on": [
+          "linux-gnu-x86_64",
+          "darwin-aarch64",
+          "darwin-x86_64",
+          "win32-x86_64"
+        ],
+        "does_not_run_on": [
+          "classic-c64-mos6510",
+          "breadbin-1982",
+          "original-c64c"
+        ],
         "statement": "g16 never runs on classic 6510 silicon — pairs with new FPGA C64 Ultimate only"
       },
       "hardware": {
@@ -231,7 +240,17 @@
         ],
         "compatibility": ">99.9% original C64 software and peripherals",
         "sid": "6581/8580 sockets + 8 FPGA SIDs",
-        "media": [".prg", ".crt", ".d64", ".d71", ".d81", ".tap", ".t64", ".g64", ".rom"]
+        "media": [
+          ".prg",
+          ".crt",
+          ".d64",
+          ".d71",
+          ".d81",
+          ".tap",
+          ".t64",
+          ".g64",
+          ".rom"
+        ]
       },
       "chip_battery": "c64_ultimate_fpga",
       "queen": {

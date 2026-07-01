@@ -23,7 +23,13 @@ set -euo pipefail
 
 GROK16_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SG_ROOT="${SG_ROOT:-$(cd "$GROK16_ROOT/.." && pwd)}"
-AMMOCODE_ROOT="${AMMOCODE_ROOT:-$SG_ROOT/AmmoCode}"
+if [[ -z "${AMMOCODE_ROOT:-}" ]]; then
+  if [[ -d "$SG_ROOT/NewLatest/AmmoCode" ]]; then
+    AMMOCODE_ROOT="$SG_ROOT/NewLatest/AmmoCode"
+  else
+    AMMOCODE_ROOT="$SG_ROOT/AmmoCode"
+  fi
+fi
 # shellcheck source=grok16-config.sh
 source "$GROK16_ROOT/scripts/grok16-config.sh"
 

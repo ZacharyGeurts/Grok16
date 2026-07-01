@@ -12,7 +12,17 @@ from pathlib import Path
 
 GROK16_ROOT = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
 SG_ROOT = Path(os.environ.get("SG_ROOT", GROK16_ROOT.parent))
-AMMOCODE = Path(os.environ.get("AMMOCODE_ROOT", SG_ROOT / "AmmoCode"))
+def _ammocode_root() -> Path:
+    env = os.environ.get("AMMOCODE_ROOT")
+    if env:
+        return Path(env)
+    for candidate in (SG_ROOT / "NewLatest" / "AmmoCode", SG_ROOT / "AmmoCode"):
+        if candidate.is_dir():
+            return candidate
+    return SG_ROOT / "AmmoCode"
+
+
+AMMOCODE = _ammocode_root()
 OUT_DIR = Path(os.environ.get("GROK16_AMMOCODE_SHARE", GROK16_ROOT / "share" / "ammocode"))
 
 PACKAGE_KEY_SEED = os.environ.get(
