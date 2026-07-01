@@ -268,6 +268,10 @@ gh_release() {
 }
 
 seal_dist_artifacts() {
+  if [[ "${GROK16_RELEASE_SKIP_SEAL:-0}" == "1" ]]; then
+    log "seal: skipped (GROK16_RELEASE_SKIP_SEAL=1)"
+    return 0
+  fi
   local seal="$GROK16_ROOT/lib/g16-sealed-release.py"
   [[ -f "$seal" ]] || { log "WARN skip sealed dist (missing g16-sealed-release.py)"; return 0; }
   [[ -d "$DIST" ]] || return 0
