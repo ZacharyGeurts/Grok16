@@ -1,37 +1,37 @@
 {
   "schema": "g16-power-sort-bench/v1",
-  "updated": "2026-07-01T04:48:29Z",
+  "updated": "2026-07-01T07:48:49Z",
   "ok": true,
-  "elapsed_ms": 26.74,
+  "elapsed_ms": 19.13,
   "contexts": {
     "file_list_small": {
       "best": "locale_ci",
       "candidates": [
         {
           "algorithm": "locale_ci",
-          "elapsed_us": 23.73,
-          "ops_per_sec": 8429689.7,
+          "elapsed_us": 21.13,
+          "ops_per_sec": 9463871.9,
           "n": 200
         },
         {
           "algorithm": "timsort_key",
-          "elapsed_us": 37.8,
-          "ops_per_sec": 5291565.26,
-          "n": 200
-        },
-        {
-          "algorithm": "radix_bucket_name",
-          "elapsed_us": 51.09,
-          "ops_per_sec": 3914558.64,
+          "elapsed_us": 34.6,
+          "ops_per_sec": 5780680.45,
           "n": 200
         },
         {
           "algorithm": "dirs_first",
-          "elapsed_us": 67.75,
-          "ops_per_sec": 2952029.45,
+          "elapsed_us": 44.83,
+          "ops_per_sec": 4460900.72,
           "n": 200,
           "semantic_bonus": 0.92,
-          "effective_us": 62.33
+          "effective_us": 41.24
+        },
+        {
+          "algorithm": "radix_bucket_name",
+          "elapsed_us": 42.3,
+          "ops_per_sec": 4727833.99,
+          "n": 200
         }
       ],
       "n": 200
@@ -41,29 +41,29 @@
       "candidates": [
         {
           "algorithm": "locale_ci",
-          "elapsed_us": 231.58,
-          "ops_per_sec": 5181764.81,
+          "elapsed_us": 231.49,
+          "ops_per_sec": 5183876.47,
           "n": 1200
         },
         {
           "algorithm": "radix_bucket_name",
-          "elapsed_us": 412.9,
-          "ops_per_sec": 2906275.09,
-          "n": 1200
-        },
-        {
-          "algorithm": "timsort_key",
-          "elapsed_us": 434.17,
-          "ops_per_sec": 2763892.22,
+          "elapsed_us": 299.31,
+          "ops_per_sec": 4009207.81,
           "n": 1200
         },
         {
           "algorithm": "dirs_first",
-          "elapsed_us": 707.59,
-          "ops_per_sec": 1695899.76,
+          "elapsed_us": 412.08,
+          "ops_per_sec": 2912039.39,
           "n": 1200,
           "semantic_bonus": 0.92,
-          "effective_us": 650.98
+          "effective_us": 379.11
+        },
+        {
+          "algorithm": "timsort_key",
+          "elapsed_us": 396.71,
+          "ops_per_sec": 3024879.67,
+          "n": 1200
         }
       ],
       "n": 1200
@@ -73,14 +73,14 @@
       "candidates": [
         {
           "algorithm": "radix_bucket_256",
-          "elapsed_us": 512.91,
-          "ops_per_sec": 15597126.41,
+          "elapsed_us": 463.37,
+          "ops_per_sec": 17264858.69,
           "n": 8000
         },
         {
           "algorithm": "timsort",
-          "elapsed_us": 638.28,
-          "ops_per_sec": 12533763.03,
+          "elapsed_us": 601.85,
+          "ops_per_sec": 13292392.65,
           "n": 8000
         }
       ],
@@ -91,14 +91,14 @@
       "candidates": [
         {
           "algorithm": "timsort",
-          "elapsed_us": 166.11,
-          "ops_per_sec": 48161153.79,
+          "elapsed_us": 137.84,
+          "ops_per_sec": 58039154.97,
           "n": 8000
         },
         {
           "algorithm": "radix_bucket_256",
-          "elapsed_us": 276.02,
-          "ops_per_sec": 28983406.95,
+          "elapsed_us": 257.09,
+          "ops_per_sec": 31117264.91,
           "n": 8000
         }
       ],
@@ -109,14 +109,14 @@
       "candidates": [
         {
           "algorithm": "timsort",
-          "elapsed_us": 49.45,
-          "ops_per_sec": 161795864.75,
+          "elapsed_us": 32.73,
+          "ops_per_sec": 244409131.4,
           "n": 8000
         },
         {
           "algorithm": "radix_bucket_256",
-          "elapsed_us": 228.73,
-          "ops_per_sec": 34975891.15,
+          "elapsed_us": 203.59,
+          "ops_per_sec": 39294274.0,
           "n": 8000
         }
       ],
@@ -127,8 +127,8 @@
       "candidates": [
         {
           "algorithm": "cool_sort",
-          "elapsed_us": 3.28,
-          "ops_per_sec": 14620776.41,
+          "elapsed_us": 3.12,
+          "ops_per_sec": 15371478.76,
           "n": 48
         }
       ],
@@ -139,8 +139,8 @@
       "candidates": [
         {
           "algorithm": "desc_numeric",
-          "elapsed_us": 4.27,
-          "ops_per_sec": 14995317.03,
+          "elapsed_us": 4.21,
+          "ops_per_sec": 15198310.32,
           "n": 64
         }
       ],
@@ -151,14 +151,14 @@
       "candidates": [
         {
           "algorithm": "radix_bucket_256",
-          "elapsed_us": 1165.76,
-          "ops_per_sec": 10293722.61,
+          "elapsed_us": 649.95,
+          "ops_per_sec": 18463015.7,
           "n": 12000
         },
         {
           "algorithm": "timsort_key",
-          "elapsed_us": 8327.13,
-          "ops_per_sec": 1441072.39,
+          "elapsed_us": 5547.52,
+          "ops_per_sec": 2163129.53,
           "n": 12000
         }
       ],
@@ -168,9 +168,9 @@
   "_g16_seal": {
     "schema": "g16-sealed-output/v1",
     "algorithm": "sha256",
-    "digest": "825e84315c5d19823a0cc699076662c5079ca1eea14c6d80efcdb6808e9e3e0b",
-    "sealed_at": "2026-07-01T04:48:29Z",
-    "path": "/home/default/Desktop/SG/NewLatest/Grok16/data/g16-power-sort-bench.json",
+    "digest": "92bdf2fa19e2d404e165f854745c0d7c64bc25a17062cc5a5bbfad5b12453342",
+    "sealed_at": "2026-07-01T07:48:49Z",
+    "path": "/home/default/Desktop/SG/Grok16/data/g16-power-sort-bench.json",
     "g1id_meld": {
       "id": "g1id",
       "absorbed": true,
@@ -183,8 +183,8 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782881309374373058,
-        "derived_utc": "2026-07-01T04:48:29Z",
+        "linear_ns": 1782892129582471181,
+        "derived_utc": "2026-07-01T07:48:49Z",
         "sealed": true,
         "synced": false,
         "never_desync": true,
@@ -194,7 +194,7 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-07-01T04:48:29Z"
+      "updated": "2026-07-01T07:48:49Z"
     }
   }
 }

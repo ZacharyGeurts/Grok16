@@ -1,6 +1,6 @@
 {
   "schema": "g16-always-optimal-panel/v1",
-  "updated": "2026-07-01T04:48:29Z",
+  "updated": "2026-07-01T07:48:41Z",
   "ok": true,
   "always_optimal": true,
   "degraded_gate": true,
@@ -33,7 +33,7 @@
           "context_bench_id": "file_list_small",
           "algorithm": "dirs_first",
           "n": 200,
-          "bench_us": 23.73,
+          "bench_us": 20.63,
           "cool": true,
           "statement": "power_sort_dirs_first_for_file_list"
         },
@@ -42,7 +42,7 @@
           "context_bench_id": "file_list_large",
           "algorithm": "dirs_first",
           "n": 5000,
-          "bench_us": 231.58,
+          "bench_us": 223.23,
           "cool": true,
           "statement": "power_sort_dirs_first_for_file_list"
         },
@@ -51,7 +51,7 @@
           "context_bench_id": "file_list_small",
           "algorithm": "dirs_first",
           "n": 200,
-          "bench_us": 23.73,
+          "bench_us": 20.63,
           "cool": true,
           "statement": "power_sort_dirs_first_for_file_list"
         },
@@ -60,7 +60,7 @@
           "context_bench_id": "drive_index",
           "algorithm": "timsort_key",
           "n": null,
-          "bench_us": 1165.76,
+          "bench_us": 657.77,
           "cool": true,
           "statement": "power_sort_timsort_key_for_drive_index"
         },
@@ -78,7 +78,7 @@
           "context_bench_id": "bench_rank",
           "algorithm": "desc_numeric",
           "n": null,
-          "bench_us": 4.27,
+          "bench_us": 4.14,
           "cool": true,
           "statement": "power_sort_desc_numeric_for_bench_rank"
         },
@@ -87,7 +87,7 @@
           "context_bench_id": "thermal_layers",
           "algorithm": "cool_sort",
           "n": null,
-          "bench_us": 3.28,
+          "bench_us": 3.25,
           "cool": true,
           "statement": "power_sort_cool_sort_for_thermal_layers"
         },
@@ -412,32 +412,27 @@
     {
       "step": "fast_cycle",
       "ok": true,
-      "elapsed_ms": 824.08
+      "elapsed_ms": 354.42
     },
     {
       "step": "bridge",
       "ok": false,
-      "elapsed_ms": 595.95
-    },
-    {
-      "step": "compatibility_refresh",
-      "ok": true,
-      "elapsed_ms": 98.28
+      "elapsed_ms": 542.62
     },
     {
       "step": "power_sort",
       "ok": true,
-      "elapsed_ms": 67.19
+      "elapsed_ms": 47.97
     }
   ],
-  "elapsed_ms": 1591.73,
-  "integrate_env": "/home/default/Desktop/SG/NewLatest/Grok16/data/grok16-integrate.env",
+  "elapsed_ms": 949.05,
+  "integrate_env": "/home/default/Desktop/SG/Grok16/data/grok16-integrate.env",
   "_g16_seal": {
     "schema": "g16-sealed-output/v1",
     "algorithm": "sha256",
-    "digest": "e58ea0c6c181858ac969c8245060b76b9a2c08415199c6b1418738c5d1f5fd60",
-    "sealed_at": "2026-07-01T04:48:29Z",
-    "path": "/home/default/Desktop/SG/NewLatest/Grok16/data/g16-always-optimal-panel.json",
+    "digest": "8f480159e275609c6ff17c0b29347d48dc8472c6aea6c90012003d1a562b848b",
+    "sealed_at": "2026-07-01T07:48:41Z",
+    "path": "/home/default/Desktop/SG/Grok16/data/g16-always-optimal-panel.json",
     "g1id_meld": {
       "id": "g1id",
       "absorbed": true,
@@ -450,8 +445,8 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782881309414458993,
-        "derived_utc": "2026-07-01T04:48:29Z",
+        "linear_ns": 1782892121182234371,
+        "derived_utc": "2026-07-01T07:48:41Z",
         "sealed": true,
         "synced": false,
         "never_desync": true,
@@ -461,7 +456,7 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-07-01T04:48:29Z"
+      "updated": "2026-07-01T07:48:41Z"
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "g16-field-research-book-panel/v1",
-  "updated": "2026-06-30T20:23:54Z",
+  "updated": "2026-07-01T07:48:41Z",
   "ok": true,
   "title": "Field Research — Grok16 technology spine",
   "edition": "1.0",
@@ -226,7 +226,7 @@
   "verify": {
     "ok": true,
     "schema": "g16-field-research-verify/v1",
-    "updated": "2026-06-30T20:23:54Z",
+    "updated": "2026-07-01T07:48:41Z",
     "manifest_ok": true,
     "chapters": 13,
     "missing_modules": [],
@@ -340,14 +340,14 @@
     "source": "docs/field-exec-full-bench.json",
     "label": "Implemented"
   },
-  "grok16_root": "/home/default/Desktop/SG/NewLatest/Grok16",
+  "grok16_root": "/home/default/Desktop/SG/Grok16",
   "sg_root": "/home/default/Desktop/SG",
   "_g16_seal": {
     "schema": "g16-sealed-output/v1",
     "algorithm": "sha256",
-    "digest": "d08e200ed6767819eeeab8af94c1b5ac897f7c638c6cf2ec10600b78609d3e19",
-    "sealed_at": "2026-06-30T20:23:54Z",
-    "path": "/home/default/Desktop/SG/NewLatest/Grok16/data/g16-field-research-book-panel.json",
+    "digest": "d82763b994b0c141684e615b76ddc16ab76d53f92615ed42707f77932ca124c3",
+    "sealed_at": "2026-07-01T07:48:41Z",
+    "path": "/home/default/Desktop/SG/Grok16/data/g16-field-research-book-panel.json",
     "g1id_meld": {
       "id": "g1id",
       "absorbed": true,
@@ -360,8 +360,8 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782851034866667740,
-        "derived_utc": "2026-06-30T20:23:54Z",
+        "linear_ns": 1782892121367466186,
+        "derived_utc": "2026-07-01T07:48:41Z",
         "sealed": true,
         "synced": false,
         "never_desync": true,
@@ -371,7 +371,7 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-06-30T20:23:54Z"
+      "updated": "2026-07-01T07:48:41Z"
     }
   }
 }

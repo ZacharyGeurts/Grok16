@@ -3,9 +3,9 @@
   "kilroy_root": "/home/default/Desktop/SG/NewLatest/KILROY",
   "kilroy_version": "1.0.0",
   "kilroy_abi": "kilroy-field-1.0",
-  "grok16_pair": "5.2.0",
+  "grok16_pair": "5.3.1",
   "g16_version": "16.2.0",
-  "synced_at": "2026-06-30T20:24:21Z",
+  "synced_at": "2026-07-01T07:48:41Z",
   "kernel_test": "scripts/kilroy-kernel-test.sh",
   "queen_api": "http://127.0.0.1:9481/api/kilroy"
 }
