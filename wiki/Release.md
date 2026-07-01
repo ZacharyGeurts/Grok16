@@ -1,3 +1,18 @@
+# Release 5.3.2 — Platforms + C64 Ultimate
+
+Tag: `v5.3.2` · `distro_version: 5.3.2` · `g16` @ `16.2.0`
+
+## Shipped in 5.3.2
+
+| Area | Detail |
+|------|--------|
+| Platforms | **17 bootstrap** + **`pair-c64-ultimate`** (Commodore 64 Ultimate FPGA) |
+| GitHub assets | src tarball, platforms JSON, PLATFORMS.md, binary manifest |
+| Binary | Build locally — `grok16-5.3.2-linux-x86_64.tar.gz` (~2.7G, over GitHub 2GB cap) |
+| Web | [AmmoCode editor](https://zacharygeurts.github.io/Grok16/) + [manual](https://zacharygeurts.github.io/Grok16/manual.html) |
+
+---
+
 # Release 5.3.1 — Programmerland · own GitHub
 
 Tag: `v5.3.1` · `distro_version: 5.3.1` · `g16` @ `16.2.0`

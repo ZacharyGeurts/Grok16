@@ -32,8 +32,8 @@
 | `grok16-5.3.2-src.tar.gz` | Full source + forge |
 | `grok16-5.3.2-platforms.json` | 17 bootstrap + C64 Ultimate pair |
 | `grok16-5.3.2-PLATFORMS.md` | Human-readable matrix |
-| `grok16-5.3.2-linux-x86_64.tar.gz` | Pre-built g16 + AmmoCode (this host) |
-| `grok16-5.3.2-linux-x86_64-manifest.json` | Binary package manifest |
+| `grok16-5.3.2-linux-x86_64-manifest.json` | Binary package manifest (on release) |
+| `grok16-5.3.2-linux-x86_64.tar.gz` | Built locally (~2.7G) — exceeds GitHub 2GB asset cap; run `scripts/grok16-binary-package.sh 5.3.2` |
 
 ## Quick start
 
