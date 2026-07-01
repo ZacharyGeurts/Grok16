@@ -23,7 +23,7 @@
       "integral": "one_pass_simplify",
       "heat_avoided": 0,
       "layers_out": 0,
-      "updated": "2026-06-30T00:10:13Z"
+      "updated": "2026-06-30T13:27:57Z"
     },
     "spatial_existence": {
       "id": "g16_spatial_existence",
@@ -48,7 +48,7 @@
         "lesson": "That one \u2014 there, uncorroborated"
       },
       "existence_correlation": 0.0,
-      "updated": "2026-06-30T02:53:55Z"
+      "updated": "2026-06-30T13:27:59Z"
     },
     "g1id": {
       "id": "g1id",
@@ -62,10 +62,10 @@
         "source": "lib/sovereign-time.py",
         "clock": "lib/sovereign-clock.py",
         "schema": "sovereign-time-meld-input/v1",
-        "linear_ns": 1782788035119100940,
-        "derived_utc": "2026-06-30T02:53:55Z",
+        "linear_ns": 1782826079405104389,
+        "derived_utc": "2026-06-30T13:27:59Z",
         "sealed": true,
-        "synced": false,
+        "synced": true,
         "never_desync": true,
         "immutable_linear": true,
         "witness_only": true,
@@ -73,9 +73,9 @@
         "citation": "ironclad:g1id:2"
       },
       "example_valid": true,
-      "updated": "2026-06-30T02:53:55Z"
+      "updated": "2026-06-30T13:27:59Z"
     },
-    "updated": "2026-06-30T02:53:55Z"
+    "updated": "2026-06-30T13:27:59Z"
   },
   "field_sanity": {
     "id": "g16_field_sanity",
@@ -84,13 +84,13 @@
     "citation": "ironclad:field_sanity:2 \u2014 classify, strip, dedupe, flatten, cool_sort \u2014 never obtuse; never stack hot rebuild paths under thermo heat.",
     "ok": true,
     "operator_ok": true,
-    "layers_out": 9,
-    "heat_avoided": 8,
-    "updated": "2026-06-26T21:48:01Z",
+    "layers_out": 12,
+    "heat_avoided": 11,
+    "updated": "2026-06-30T03:58:18Z",
     "ironclad": {
       "schema": "g16-field-sanity-receipt/v1",
       "absorbed": true,
-      "ironclad_sealed": true,
+      "ironclad_sealed": false,
       "canonical_hash": "df82e0ec4ad9168d5499416d20911b8f6574f5d2e547ca66f3dcfeacc2d7c402",
       "meld_citation": "ironclad:meld:2",
       "citation": "ironclad:field_sanity:2 \u2014 classify, strip, dedupe, flatten, cool_sort \u2014 never obtuse; never stack hot rebuild paths under thermo heat.",
@@ -123,13 +123,13 @@
       "lesson": "That one \u2014 there, uncorroborated"
     },
     "existence_correlation": 0.0,
-    "updated": "2026-06-30T02:53:55Z"
+    "updated": "2026-06-30T13:27:59Z"
   },
   "iron_plate_spot": {
     "id": "iron_plate_spot",
     "absorbed": true,
     "ok": true,
-    "spot_count": 9,
+    "spot_count": 11,
     "coolest_spot": "chain:browser_display",
     "low_power": true,
     "meld_citation": "ironclad:meld:2",
@@ -156,7 +156,7 @@
     "spatial_existence_pass": true,
     "iron_plate_spot_detector": true,
     "iron_plate_spot_ok": true,
-    "iron_plate_spot_count": 9
+    "iron_plate_spot_count": 11
   },
   "score": 21,
   "max": 21,

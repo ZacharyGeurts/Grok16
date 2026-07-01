@@ -45,12 +45,7 @@ def test_silent_bench_skips_without_data():
 
 def test_doctrine_present():
     doc = json.loads((ROOT / "data" / "g16-stack-fabric-doctrine.json").read_text())
-    items = doc["items"]
-    if isinstance(items, dict):
-        assert len(items) >= 15
-        assert "G1" in items and "G15" in items
-    else:
-        assert len(items) == 15
+    assert len(doc["items"]) == 15
 
 
 if __name__ == "__main__":

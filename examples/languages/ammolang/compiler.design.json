@@ -29,9 +29,20 @@
     "design_note": "CHIPs universal — x86 ISA informs lowering, dispatch tables, and field_opt hot paths."
   },
   "frontend": "lib/field-ammolang.py",
+  "build_executor": "lib/field-ammolang-build.py",
+  "test_executor": "lib/field-ammolang-test.py",
+  "build_ops": [
+    "RUN",
+    "TEST",
+    "ASSERT",
+    "GROUP",
+    "SUITE",
+    "INVOKE",
+    "invoke py:"
+  ],
   "lowering": null,
   "native_module": null,
   "profile": "belt_2_0",
   "written": true,
-  "updated": "2026-06-29T20:57:03Z"
+  "updated": "2026-06-30T12:00:00Z"
 }

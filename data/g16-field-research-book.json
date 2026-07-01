@@ -5,7 +5,7 @@
   "edition": "1.0",
   "year": 2026,
   "motto": "Problems detected → research recorded → conclusions shipped with receipts.",
-  "book_manifest": "Field_Research/content/book-manifest.json",
+  "book_manifest": "NewLatest/Field_Research/content/book-manifest.json",
   "site_base": "https://zacharygeurts.github.io/Field_Research",
   "repo": "https://github.com/ZacharyGeurts/Field_Research",
   "panel": "g16-field-research-book-panel.json",

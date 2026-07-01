@@ -1,3 +1,21 @@
+# AmmoLang boundary route — AML_BUILD=1 universal boundary
+_aml_find_root() {
+  local d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  while [[ "$d" != "/" ]]; do
+    [[ -f "$d/lib/ammolang-run.sh" ]] && echo "$d" && return 0
+    d="$(dirname "$d")"
+  done
+  return 1
+}
+if [[ "${AML_BUILD:-1}" != "0" ]] && [[ -z "${AML_BOUNDARY_ACTIVE:-}" ]]; then
+  _AML_ROOT="$(_aml_find_root 2>/dev/null || true)"
+  if [[ -n "$_AML_ROOT" ]]; then
+    export AML_BOUNDARY_ACTIVE=1
+    exec bash "${_AML_ROOT}/lib/ammolang-run.sh" exec "script:Grok16/scripts/g16-run-monitored.sh" "$@"
+  fi
+fi
+unset -f _aml_find_root 2>/dev/null || true
+
 #!/usr/bin/env bash
 # Grok16 monitored runner — heartbeat + stall/timeout drop-out (no empty waits).
 # Usage:
@@ -23,7 +41,6 @@ g16_monitor_cmd() {
     --stall "$stall" \
     --heartbeat "$HEARTBEAT_SEC" \
     -- "$@"
-  return $?
 }
 
 g16_monitor_fn() {
@@ -99,7 +116,7 @@ case "${1:-}" in
     ;;
   cmd|"")
     if [[ "${1:-}" == "cmd" ]]; then shift; fi
-    g16_monitor_cmd "$@" || exit $?
+    g16_monitor_cmd "$@"
     ;;
   -h|--help|help)
     sed -n '2,6p' "$0"

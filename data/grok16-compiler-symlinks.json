@@ -1,6 +1,6 @@
 {
   "schema": "grok16-compiler-symlinks/v1",
-  "updated": "2026-06-30T02:53:59.131497+00:00",
+  "updated": "2026-06-30T11:31:49.358842+00:00",
   "policy": {
     "mode": "symlink_replacement",
     "best_settings": "always_optimal",
@@ -24,8 +24,8 @@
     "G16_BENCH_PROFILE": "belt_2_0",
     "G16_ALWAYS_OPTIMAL": "1",
     "G16_FIELD_SPEED": "1",
-    "G16_OPTIMAL_RUNNER": "python",
-    "G16_OPTIMAL_PATTERN": "dev_organized_python",
+    "G16_OPTIMAL_RUNNER": "emulator",
+    "G16_OPTIMAL_PATTERN": "singular_native_bsp",
     "G16_COMPILER_SYMLINKS": "1",
     "G16_OPTIMAL_COMBINATRONICS_AT_COMPILE": "1"
   },

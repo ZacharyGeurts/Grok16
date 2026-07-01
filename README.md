@@ -1,13 +1,12 @@
 # Grok16
 
-![Status](https://img.shields.io/badge/release-5.2.0_Sanctuary-green)
+![Status](https://img.shields.io/badge/release-5.0.1-stable-green)
 ![Bench](https://img.shields.io/badge/speed__bench-v5.0.0-gold)
 ![Launch](https://img.shields.io/badge/.launch-ready-blue)
 ![Version](https://img.shields.io/badge/G16-16.2.0-blue)
 ![Belt](https://img.shields.io/badge/belt-2.0-purple)
-![Track](https://img.shields.io/badge/shipped-5.2.0-stable-lightgrey)
-![AmmoOS](https://img.shields.io/badge/AmmoOS-2.0.0--beta3-blue)
-![KILROY](https://img.shields.io/badge/KILROY-1.1.0_Sanctuary-teal)
+![Track](https://img.shields.io/badge/shipped-5.0.1-stable-lightgrey)
+![AmmoOS](https://img.shields.io/badge/AmmoOS-1.9.9h-blue)
 ![RISC](https://img.shields.io/badge/RISC--V-linux--gnu--riscv64-orange)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Base](https://img.shields.io/badge/upstream-gcc--15-lightgrey)

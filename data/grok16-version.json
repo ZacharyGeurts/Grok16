@@ -1,15 +1,15 @@
 {
-  "distro_version": "5.2.0",
-  "upload_version": "5.2.0",
+  "distro_version": "5.3.0",
+  "upload_version": "5.3.0",
   "release_track": {
-    "current": "5.2.0",
-    "previous": "5.1.0",
-    "next": "5.3.0",
+    "current": "5.3.0",
+    "previous": "5.2.0",
+    "next": "5.4.0",
     "status": "stable",
     "released": true,
-    "tag": "v5.2.0",
-    "upload_tag": "v5.2.0",
-    "upload_note": "5.2.0 — C64 Ultimate hardware pair, 17 bootstrap platforms, AmmoLang ship timing",
+    "tag": "v5.3.0",
+    "upload_tag": "v5.3.0",
+    "upload_note": "5.3.0 — common runtime boot prompt, AmmoCode field pair, full GitHub source",
     "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
@@ -25,8 +25,8 @@
     "roadmap": "5.0.0 \u2014 compiler symlink replacements, always-optimal belt, full build-essential fabric"
   },
   "g16_version": "16.2.0",
-  "pkgversion": "Grok16-5.2.0",
-  "tag": "v5.2.0",
+  "pkgversion": "Grok16-5.3.0",
+  "tag": "v5.3.0",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -164,7 +164,7 @@
     "integrate_manifest": "data/grok16-ammoos-integrate.json",
     "review": "docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md"
   },
-  "notes": "Grok16 5.2.0 \u2014 C64 Ultimate hardware pair (g16 not on classic 6510), 17 bootstrap platforms, AmmoLang ship timing",
+  "notes": "Grok16 5.3.0 \u2014 common runtime boot + 10s full-clone prompt, AmmoCode field instill pair, GitHub always full source",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -172,6 +172,9 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "5.3.0: Boot prompt \u2014 NewLatest grok16-boot-prompt.sh ensures common runtime; 10s Y/N for full GitHub clone (79+ languages)",
+    "5.3.0: AmmoCode pair \u2014 g16-ammocode-field-doctrine paths SG/Grok16 + SG/NewLatest/AmmoCode; sg_paths grok16_root",
+    "5.3.0: GitHub full source \u2014 repo ships forge/scripts; Hostess7 embeds common runtime only",
     "5.2.0: C64 Ultimate hardware pair \u2014 pair-c64-ultimate; g16 does not run on classic MOS 6510 breadbin",
     "5.2.0: AmmoLang ship route \u2014 grok16_ship.aml, timing ledger last_ms+3s hang guard, g16_self_monitor on RUN ops",
     "5.2.0: pythong fallback \u2014 Grok16/bin/gpy-16 when GrokPy absent; 17 bootstrap + 1 hardware pair",

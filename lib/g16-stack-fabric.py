@@ -93,9 +93,8 @@ def znetwork_thermal_level() -> str:
     for name in ("znetwork-operator.json", "znetwork-relayer.json"):
         doc = _load(state / name, {})
         posture = doc.get("posture")
-        therm = doc.get("thermal") or doc.get("thermal_level")
-        if not therm and isinstance(posture, dict):
-            therm = posture.get("thermal")
+        posture_therm = posture.get("thermal") if isinstance(posture, dict) else None
+        therm = doc.get("thermal") or doc.get("thermal_level") or posture_therm
         if therm:
             return str(therm).lower()
     return "normal"

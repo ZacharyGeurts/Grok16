@@ -1,28 +1,27 @@
-# Release 5.2.0 — C64 Ultimate pair + 17 bootstrap platforms
+# Release 5.3.0 — Common runtime boot + AmmoCode pair
 
-Tag: `v5.2.0` · `distro_version: 5.2.0` · `g16` @ `16.2.0`  
-Pairs with: **[AmmoOS 2.0 Stack](https://github.com/ZacharyGeurts/AmmoOS)** · **[C64 Ultimate](https://commodore.net/computer/)**
+Tag: `v5.3.0` · `distro_version: 5.3.0` · `g16` @ `16.2.0`
 
-## Shipped in 5.2.0
+## Shipped in 5.3.0
 
-- **C64 Ultimate hardware pair** — `pair-c64-ultimate` · g16 stays on host · [C64 wiki](C64)
-- **17 bootstrap platforms** — Linux, Android, Darwin, iOS, Windows, bare-ELF, RISC-V
-- **AmmoLang ship** — `grok16_ship.aml` adaptive timing
-- **GPY-16 built-in** — `pythong` → `Grok16/bin/gpy-16`
+| Area | Detail |
+|------|--------|
+| Boot | `NewLatest/lib/grok16-boot-prompt.sh` — common runtime always; 10s Y/N for full clone |
+| GitHub | Full source (forge, scripts, doctrine); vendor/bin built on host |
+| AmmoCode | `g16-ammocode-field-doctrine.json` — `SG/Grok16` ↔ `SG/NewLatest/AmmoCode` |
+| Hostess7 | Embeds common runtime only (~400MB); full tree optional at boot |
+| Languages | 79+ in `grok16-languages.json` (full tree) |
 
-**Not shipped:** g16 on classic MOS 6510 / breadbin C64.
-
-## Carried from 5.1.0
-
-- Stack fabric G1–G15, MCP stdio, truth gate, ZNetwork wire profile
-- belt_2_0, field_physics, AmmoOS integrate hooks
-
-## Validation gates
+## Boot prompt
 
 ```bash
-./scripts/grok16-toolchain.sh verify
-./scripts/grok16-test-gate.sh smoke
-./scripts/grok16-launch-verify.sh
+bash NewLatest/lib/grok16-boot-prompt.sh boot
+# GROK16_BOOT_PROMPT=0     — headless / CI
+# GROK16_BOOT_PROMPT_SECS=10
 ```
 
-Full notes: `RELEASE-5.2.0.md` in repo.
+## Previous 5.2.0
+
+- C64 Ultimate hardware pair · 17 bootstrap platforms · AmmoLang ship timing
+
+Full notes: `RELEASE-5.3.0.md` in repo.

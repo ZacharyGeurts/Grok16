@@ -1,3 +1,21 @@
+# AmmoLang boundary route — AML_BUILD=1 universal boundary
+_aml_find_root() {
+  local d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  while [[ "$d" != "/" ]]; do
+    [[ -f "$d/lib/ammolang-run.sh" ]] && echo "$d" && return 0
+    d="$(dirname "$d")"
+  done
+  return 1
+}
+if [[ "${AML_BUILD:-1}" != "0" ]] && [[ -z "${AML_BOUNDARY_ACTIVE:-}" ]]; then
+  _AML_ROOT="$(_aml_find_root 2>/dev/null || true)"
+  if [[ -n "$_AML_ROOT" ]]; then
+    export AML_BOUNDARY_ACTIVE=1
+    exec bash "${_AML_ROOT}/lib/ammolang-run.sh" exec "script:Grok16/scripts/grok16-verify-ammoos.sh" "$@"
+  fi
+fi
+unset -f _aml_find_root 2>/dev/null || true
+
 #!/usr/bin/env bash
 # Verify AmmoOS surfaces wired to Grok16 — profile smoke + launch-verify hooks
 set -euo pipefail
@@ -28,18 +46,11 @@ else
 fi
 
 if [[ -f "$NL/scripts/ammoos-launch-verify.sh" ]]; then
-  if [[ "${KILROY_KERNEL_TEST:-}" == "1" ]]; then
-    log "SKIP ammoos-launch-verify (kernel regression — file checks only)"
-    for rel in data/ammoos-version.json data/queen-ammoos-sovereignty-doctrine.json Queen/world/browser.html; do
-      [[ -e "$NL/$rel" ]] && log "PASS present $rel" || { log "WARN missing $rel"; FAIL=1; }
-    done
+  log "AmmoOS launch-verify"
+  if bash "$NL/scripts/ammoos-launch-verify.sh" 2>&1 | tail -5; then
+    log "PASS ammoos-launch-verify"
   else
-    log "AmmoOS launch-verify"
-    if timeout 120 bash "$NL/scripts/ammoos-launch-verify.sh" 2>&1 | tail -5; then
-      log "PASS ammoos-launch-verify"
-    else
-      log "WARN ammoos-launch-verify partial (non-fatal)"
-    fi
+    log "WARN ammoos-launch-verify partial (non-fatal)"
   fi
 fi
 

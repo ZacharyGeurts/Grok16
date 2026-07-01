@@ -101,11 +101,14 @@ def _write_exec(path: Path, body: str) -> None:
 
 def _host_path_lookup() -> str:
     return """_g16_host_path() {
-  local p
+  local p norm g16bin
+  g16bin="$(readlink -f "$G16_PREFIX/bin" 2>/dev/null || echo "$G16_PREFIX/bin")"
   _G16_HOST_PATH=""
   IFS=':' read -ra _g16_pp <<< "${PATH:-/usr/bin:/bin}"
   for p in "${_g16_pp[@]}"; do
-    [[ -n "$p" && "$p" != "$G16_PREFIX/bin" ]] || continue
+    [[ -n "$p" ]] || continue
+    norm="$(readlink -f "$p" 2>/dev/null || echo "$p")"
+    [[ "$norm" == "$g16bin" || "$norm" == */Grok16/bin ]] && continue
     _G16_HOST_PATH="${_G16_HOST_PATH:+"$_G16_HOST_PATH:"}$p"
   done
   _G16_HOST_PATH="${_G16_HOST_PATH:-/usr/bin:/bin}"
@@ -144,14 +147,31 @@ export GROK16_FIELD_BUILD=1
 """
 
 
+def _wrapper_fast_path(upstream: str, aliases: list[str]) -> str:
+    names = [upstream, *aliases]
+    lines: list[str] = []
+    if "awk" in names or "gawk" in names:
+        lines.append('if [[ -x /usr/bin/gawk ]]; then exec /usr/bin/gawk "$@"; fi')
+        lines.append('if [[ -x /usr/bin/awk ]]; then exec /usr/bin/awk "$@"; fi')
+    for name in names:
+        if name in ("awk", "gawk"):
+            continue
+        lines.append(f'if [[ -x /usr/bin/{name} ]]; then exec /usr/bin/{name} "$@"; fi')
+        lines.append(f'if [[ -x /bin/{name} ]]; then exec /bin/{name} "$@"; fi')
+    if not lines:
+        return ""
+    return "# Fast path — avoid Grok16/bin wrapper recursion on PATH\n" + "\n".join(lines) + "\n"
+
+
 def _wrapper_generic(prefix: Path, root: Path, upstream: str, field: str, aliases: list[str]) -> str:
     lookup = "\n".join(
         f'  u="$(_g16_upstream "{a}")" && [[ -n "$u" ]] && exec "$u" "$@"' for a in aliases
     )
+    fast = _wrapper_fast_path(upstream, aliases)
     return f"""#!/usr/bin/env bash
 # Grok16 build-essential — {field}
 set -euo pipefail
-{_field_env_block(prefix, root)}
+{fast}{_field_env_block(prefix, root)}
 FIELD_BIN="$G16_PREFIX/bin/{field}"
 if [[ -x "$FIELD_BIN" && "$(head -c2 "$FIELD_BIN" 2>/dev/null || true)" != "#!" ]]; then
   exec "$FIELD_BIN" "$@"

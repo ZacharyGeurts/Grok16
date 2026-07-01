@@ -3,7 +3,10 @@
   "title": "AmmoCode field \u2014 flat field only, defield when resting on a field",
   "motto": "AmmoCode is a field. No subfields. Resting on a field \u2192 defield.",
   "module": "lib/g16-ammocode-field-instill.py",
-  "ammocode_root": "NewLatest/AmmoCode",
+  "ammocode_root": "SG/NewLatest/AmmoCode",
+  "grok16_root": "SG/Grok16",
+  "grok16_common_root": "SG/Grok16-common",
+  "grok16_repo": "https://github.com/ZacharyGeurts/Grok16.git",
   "policy": {
     "ammocode_is_field": true,
     "no_subfields": true,
@@ -41,5 +44,7 @@
   ],
   "universal": "data/g16-universal-compilers.json",
   "filetypes_db": "NewLatest/data/field-programming-filetypes.json",
-  "stack_version": "6.0.0"
+  "stack_version": "6.1.0",
+  "boot_prompt": "NewLatest/lib/grok16-boot-prompt.sh",
+  "notes": "AmmoCode pairs with Grok16 common runtime at boot; full forge tree optional via 10s Y/N clone."
 }

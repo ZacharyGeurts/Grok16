@@ -79,6 +79,55 @@ def _pipe_reader(pipe: Any, chunks: list[str], activity: list[float]) -> None:
             pass
 
 
+def _proc_cpu_ticks(pid: int) -> tuple[int, str] | None:
+    try:
+        raw = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+        rparen = raw.rfind(")")
+        if rparen < 0:
+            return None
+        parts = raw[rparen + 2 :].split()
+        if len(parts) < 13:
+            return None
+        return int(parts[11]) + int(parts[12]), parts[0]
+    except (OSError, ValueError):
+        return None
+
+
+def _tree_busy(root_pid: int, prev_ticks: dict[int, int]) -> tuple[bool, dict[int, int]]:
+    """Stdout silence ≠ stall when the process tree is still computing."""
+    busy = False
+    cur: dict[int, int] = {}
+    queue = [root_pid]
+    seen: set[int] = set()
+    while queue and len(seen) < 48:
+        pid = queue.pop(0)
+        if pid in seen or pid <= 1:
+            continue
+        seen.add(pid)
+        row = _proc_cpu_ticks(pid)
+        if row:
+            ticks, state = row
+            cur[pid] = ticks
+            if state in ("R", "D"):
+                busy = True
+            elif prev_ticks.get(pid) is not None and ticks > prev_ticks[pid]:
+                busy = True
+        try:
+            for entry in Path("/proc").iterdir():
+                if not entry.name.isdigit():
+                    continue
+                stat = (entry / "stat").read_text(encoding="utf-8")
+                rp = stat.rfind(")")
+                if rp < 0:
+                    continue
+                rest = stat[rp + 2 :].split()
+                if len(rest) > 1 and int(rest[1]) == pid:
+                    queue.append(int(entry.name))
+        except OSError:
+            pass
+    return busy, cur
+
+
 def _terminate(proc: subprocess.Popen[str], *, grace: float = 1.0) -> None:
     if proc.poll() is not None:
         return
@@ -151,6 +200,7 @@ def run_monitored(
     out_chunks: list[str] = []
     err_chunks: list[str] = []
     activity = [t0]
+    cpu_prev: dict[int, int] = {}
     readers: list[threading.Thread] = []
     if capture_output and proc.stdout:
         readers.append(threading.Thread(target=_pipe_reader, args=(proc.stdout, out_chunks, activity), daemon=True))
@@ -174,17 +224,23 @@ def run_monitored(
             break
 
         stall_age = now - last_activity
+        if proc.pid:
+            tree_busy, cpu_prev = _tree_busy(proc.pid, cpu_prev)
+            if tree_busy:
+                activity[0] = now
+                stall_age = 0.0
         if stall_age >= stall_sec and elapsed >= heartbeat_sec:
             result.dropped = True
             result.drop_reason = "stall"
             if log_heartbeats:
-                _log(label, f"STALL no activity {stall_age:.0f}s — dropping pid={proc.pid}")
+                _log(label, f"STALL tree idle {stall_age:.0f}s — dropping pid={proc.pid}")
             _terminate(proc)
             break
 
         if log_heartbeats and now >= next_heartbeat:
             result.heartbeat_ticks += 1
-            _log(label, f"HEARTBEAT elapsed={elapsed:.0f}s stall_age={stall_age:.0f}s pid={proc.pid}")
+            if stall_age >= stall_sec * 0.5:
+                _log(label, f"HEARTBEAT elapsed={elapsed:.0f}s quiet={stall_age:.0f}s pid={proc.pid}")
             next_heartbeat = now + heartbeat_sec
 
         time.sleep(0.05)

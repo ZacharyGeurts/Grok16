@@ -1,3 +1,21 @@
+# AmmoLang boundary route — AML_BUILD=1 universal boundary
+_aml_find_root() {
+  local d="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  while [[ "$d" != "/" ]]; do
+    [[ -f "$d/lib/ammolang-run.sh" ]] && echo "$d" && return 0
+    d="$(dirname "$d")"
+  done
+  return 1
+}
+if [[ "${AML_BUILD:-1}" != "0" ]] && [[ -z "${AML_BOUNDARY_ACTIVE:-}" ]]; then
+  _AML_ROOT="$(_aml_find_root 2>/dev/null || true)"
+  if [[ -n "$_AML_ROOT" ]]; then
+    export AML_BOUNDARY_ACTIVE=1
+    exec bash "${_AML_ROOT}/lib/ammolang-run.sh" exec "script:Grok16/scripts/grok16-release.sh" "$@"
+  fi
+fi
+unset -f _aml_find_root 2>/dev/null || true
+
 #!/usr/bin/env bash
 # Grok16 release assembler — gates, source tarball, per-platform manifest, GitHub release.
 # Usage: ./scripts/grok16-release.sh [version] [--push] [--no-gh]
@@ -62,16 +80,10 @@ run_gates() {
     python3 "$GROK16_ROOT/tests/test_g16_self_monitor.py"
     log "gates: test-gate smoke"
     bash "$GROK16_ROOT/scripts/grok16-test-gate.sh" smoke
-    if [[ "${GROK16_RELEASE_SKIP_LAUNCH:-}" == "1" ]]; then
-      log "gates: skip launch-verify (python tests passed)"
-    else
-      log "gates: launch-verify"
-      bash "$GROK16_ROOT/scripts/grok16-launch-verify.sh"
-    fi
+    log "gates: launch-verify"
+    bash "$GROK16_ROOT/scripts/grok16-launch-verify.sh"
   fi
-  if [[ "${GROK16_RELEASE_SKIP_LAUNCH:-}" == "1" ]]; then
-    log "gates: skip test-battery-release (python tests passed)"
-  elif "$GROK16_ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then
+  if "$GROK16_ROOT/scripts/grok16-toolchain.sh" status >/dev/null 2>&1; then
     log "gates: test-battery-release"
     G16_RELEASE_PROFILE=1 bash "$GROK16_ROOT/scripts/grok16-toolchain.sh" test-battery-release
   else
@@ -257,11 +269,7 @@ seal_dist_artifacts() {
   [[ -d "$DIST" ]] || return 0
   log "seal dist/ artifacts (G1)"
   python3 "$seal" "$VERSION" seal
-  if python3 "$seal" verify; then
-    log "sealed dist verify OK"
-  else
-    log "WARN sealed dist verify partial (sha256 sidecars written; inline json seal optional)"
-  fi
+  python3 "$seal" verify || { log "FAIL sealed dist verify"; return 1; }
 }
 
 main() {

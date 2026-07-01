@@ -1,6 +1,6 @@
 {
   "schema": "grok16-build-essential-toolchain/v1",
-  "updated": "2026-06-30T02:53:57.608098+00:00",
+  "updated": "2026-06-30T13:27:59.314995+00:00",
   "product": "Grok16-build-essential",
   "replaces": "ubuntu:build-essential",
   "field_version": "16.2.0",
@@ -34,7 +34,7 @@
       "health": {
         "ok": true,
         "schema": "gpy-16-health/v1",
-        "score": 9,
+        "score": 6,
         "max": 9,
         "runtime": "grok_vm",
         "field_native": true,
@@ -42,10 +42,10 @@
         "field_cpython": "/usr/bin/python3",
         "checks": {
           "gpy16_builtin_tree": true,
-          "gpy16_root": true,
+          "gpy16_root": false,
           "gpy16_driver": true,
-          "interpreter_vm": true,
-          "grok_core": true,
+          "interpreter_vm": false,
+          "grok_core": false,
           "field_env": true,
           "g16_pair": true,
           "toolkits_manifest": true,
@@ -58,16 +58,16 @@
           "enabled": true,
           "version": "16.1.1-fast1",
           "memory_entries": 0,
-          "disk_entries": 2,
-          "cache_dir": "/home/default/Desktop/SG/NewLatest/.nexus-field-drive/nexus-field/state/gpy16-bytecode-cache"
+          "disk_entries": 0,
+          "cache_dir": "/tmp/tmp.630LRkJAFv/gpy16-bytecode-cache"
         },
         "fast_mode": true,
         "profile": "fastest",
         "ready": true,
         "driver": "/home/default/Desktop/SG/NewLatest/Grok16/bin/gpy-16"
       },
-      "version": "16.1.1",
-      "pkgversion": "GPY-16.1.1"
+      "version": "",
+      "pkgversion": ""
     },
     "discern_probe": {
       "c": "c",
@@ -80,7 +80,7 @@
     "branch": "releases/gcc-15",
     "repo": "https://gcc.gnu.org/git/gcc.git",
     "src": "/home/default/Desktop/SG/NewLatest/Grok16/vendor/gcc",
-    "src_ready": true,
+    "src_ready": false,
     "prereqs_ready": true,
     "build_dir": "/home/default/Desktop/SG/NewLatest/Grok16/build/gcc",
     "prefix": "/home/default/Desktop/SG/NewLatest/Grok16",
@@ -105,7 +105,7 @@
     "branch": "binutils-2_44-branch",
     "repo": "https://sourceware.org/git/binutils-gdb.git",
     "src": "/home/default/Desktop/SG/NewLatest/Grok16/vendor/binutils",
-    "src_ready": true,
+    "src_ready": false,
     "build_dir": "/home/default/Desktop/SG/NewLatest/Grok16/build/binutils",
     "prefix": "/home/default/Desktop/SG/NewLatest/Grok16",
     "ready": true,
