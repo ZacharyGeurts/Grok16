@@ -20,7 +20,7 @@ BENCH_SUITE = "speed_demo"
 BENCH_SUITE_VER = "1.1.0"
 
 NAV = [
-    ("index.html", "Home"),
+    ("manual.html", "Manual"),
     ("field-platform.html", "Field Platform"),
     ("safety.html", "Safety"),
     ("znetwork-connect.html", "ZNetwork"),
@@ -227,7 +227,8 @@ def nav() -> str:
 
 def foot() -> str:
     return f"""  <footer>
-    <a href="index.html">Home</a> ·
+    <a href="index.html">Editor</a> ·
+    <a href="manual.html">Manual</a> ·
     <a href="release.html">Release {DISTRO}</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16">GitHub</a> ·
     <a href="https://github.com/ZacharyGeurts/Grok16/wiki">Wiki</a>
@@ -1110,10 +1111,11 @@ def patch_legacy_pages() -> None:
         "master-coder.html", "master-coder-c.html", "master-coder-cxx.html",
     ]
     new_links = "\n".join(
-        f'      <a href="{h}">{l}</a>' for h, l in NAV if h != "index.html"
+        f'      <a href="{h}">{l}</a>' for h, l in NAV if h != "manual.html"
     )
     new_nav_block = f"""    <div class="nav-links">
-      <a href="index.html">Home</a>
+      <a href="index.html">Editor</a>
+      <a href="manual.html">Manual</a>
 {new_links}
     </div>"""
     cache_pat = re.compile(r"manual-(?:css|theme|search|layout)\.js\?v\d+|manual\.css\?v\d+")
@@ -1176,6 +1178,9 @@ def main() -> int:
     gen = ROOT / "gen-master-pages.py"
     if gen.is_file():
         subprocess.run([sys.executable, str(gen)], check=False)
+    editor_build = ROOT / "build-editor.py"
+    if editor_build.is_file():
+        subprocess.run([sys.executable, str(editor_build)], check=False)
     return 0
 
 

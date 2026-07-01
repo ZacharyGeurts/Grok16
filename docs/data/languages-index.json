@@ -1,0 +1,1089 @@
+{
+  "schema": "grok16-editor-languages/v1",
+  "updated": "2026-07-01T08:05:31Z",
+  "count": 79,
+  "extensions": {
+    ".S": "asm",
+    ".adb": "ada",
+    ".ads": "ada",
+    ".alg": "algol",
+    ".aml": "ammolang",
+    ".apl": "apl",
+    ".asm": "asm",
+    ".bas": "vba",
+    ".bash": "shell",
+    ".bi": "freebasic",
+    ".bib": "plaintext",
+    ".c": "cxx",
+    ".cbl": "cobol",
+    ".cc": "cxx",
+    ".cfg": "ini",
+    ".cjs": "typescript",
+    ".cl": "lisp",
+    ".clj": "clojure",
+    ".cljc": "clojure",
+    ".cljs": "clojure",
+    ".cmake": "cmake",
+    ".cob": "cobol",
+    ".comp": "glsl",
+    ".conf": "ini",
+    ".cpp": "cxx",
+    ".cs": "csharp",
+    ".css": "css",
+    ".cxx": "cxx",
+    ".d": "d",
+    ".dart": "dart",
+    ".dfm": "delphi",
+    ".diff": "diff",
+    ".dockerfile": "dockerfile",
+    ".dpr": "delphi",
+    ".erl": "erlang",
+    ".ex": "elixir",
+    ".exs": "elixir",
+    ".f": "fortran",
+    ".f03": "fortran",
+    ".f90": "fortran",
+    ".f95": "fortran",
+    ".fb": "freebasic",
+    ".fbi": "freebasic",
+    ".fld": "field",
+    ".for": "fortran",
+    ".frag": "glsl",
+    ".fs": "forth",
+    ".fth": "forth",
+    ".glsl": "glsl",
+    ".go": "go",
+    ".gpy": "python",
+    ".gql": "graphql",
+    ".graphql": "graphql",
+    ".h": "c",
+    ".hh": "cxx",
+    ".hpp": "cxx",
+    ".hrl": "erlang",
+    ".hs": "haskell",
+    ".htm": "html",
+    ".html": "html",
+    ".inc": "vba",
+    ".ini": "ini",
+    ".ixx": "cxx",
+    ".java": "kotlin",
+    ".jl": "julia",
+    ".js": "typescript",
+    ".json": "json",
+    ".jsonc": "json",
+    ".jsx": "typescript",
+    ".kt": "kotlin",
+    ".kts": "kotlin",
+    ".less": "css",
+    ".lhs": "haskell",
+    ".lisp": "lisp",
+    ".log": "log",
+    ".lsp": "lisp",
+    ".lua": "lua",
+    ".m": "matlab",
+    ".markdown": "markdown",
+    ".md": "markdown",
+    ".mjs": "typescript",
+    ".mk": "makefile",
+    ".ml": "ocaml",
+    ".mli": "ocaml",
+    ".mm": "objc",
+    ".mod": "modula2",
+    ".nim": "nim",
+    ".pas": "modula2",
+    ".patch": "diff",
+    ".php": "php",
+    ".pl": "perl",
+    ".pm": "perl",
+    ".pp": "modula2",
+    ".pro": "prolog",
+    ".ps1": "shell",
+    ".py": "python",
+    ".pyw": "python",
+    ".qb": "freebasic",
+    ".qbi": "freebasic",
+    ".qbs": "freebasic",
+    ".r": "r",
+    ".rb": "ruby",
+    ".rs": "rust",
+    ".s": "asm",
+    ".sc": "scala",
+    ".scala": "scala",
+    ".scss": "css",
+    ".sh": "shell",
+    ".sno": "snobol",
+    ".sql": "sql",
+    ".st": "smalltalk",
+    ".sv": "verilog",
+    ".svg": "xml",
+    ".swift": "swift",
+    ".tex": "markdown",
+    ".toml": "toml",
+    ".tp": "turbo_pascal",
+    ".tpu": "turbo_pascal",
+    ".ts": "typescript",
+    ".tsx": "typescript",
+    ".v": "verilog",
+    ".vb": "vba",
+    ".vba": "vba",
+    ".vbs": "vba",
+    ".vert": "glsl",
+    ".vhdl": "plaintext",
+    ".wasm": "asm",
+    ".wat": "asm",
+    ".xhtml": "html",
+    ".xml": "xml",
+    ".yaml": "yaml",
+    ".yml": "yaml",
+    ".zig": "zig",
+    ".zsh": "shell"
+  },
+  "languages": [
+    {
+      "id": "ada",
+      "label": "Ada",
+      "extensions": [
+        ".adb",
+        ".ads"
+      ],
+      "book_id": "explaining_ada",
+      "has_manual": true,
+      "driver": "g16-gnat",
+      "memory": "manual"
+    },
+    {
+      "id": "algol",
+      "label": "Algol",
+      "extensions": [
+        ".alg"
+      ],
+      "book_id": "explaining_algol",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "ammolang",
+      "label": "Ammolang",
+      "extensions": [
+        ".aml"
+      ],
+      "book_id": "explaining_ammolang",
+      "has_manual": true,
+      "driver": "g16-aml",
+      "memory": "gc"
+    },
+    {
+      "id": "apl",
+      "label": "Apl",
+      "extensions": [
+        ".apl"
+      ],
+      "book_id": "explaining_apl",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "asm",
+      "label": "Asm",
+      "extensions": [
+        ".s",
+        ".S",
+        ".asm"
+      ],
+      "book_id": "explaining_asm",
+      "has_manual": true,
+      "driver": "g16-as",
+      "memory": "manual"
+    },
+    {
+      "id": "basic",
+      "label": "Basic",
+      "extensions": [
+        ".bas",
+        ".inc"
+      ],
+      "book_id": "explaining_basic",
+      "has_manual": true,
+      "driver": "g16-qbasic",
+      "memory": "manual"
+    },
+    {
+      "id": "c",
+      "label": "C",
+      "extensions": [
+        ".c",
+        ".h"
+      ],
+      "book_id": "explaining_c",
+      "has_manual": true,
+      "driver": "g16-cc",
+      "memory": "manual"
+    },
+    {
+      "id": "clojure",
+      "label": "Clojure",
+      "extensions": [
+        ".clj",
+        ".cljs",
+        ".cljc"
+      ],
+      "book_id": "explaining_clojure",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "cmake",
+      "label": "Cmake",
+      "extensions": [
+        ".cmake"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "cobol",
+      "label": "Cobol",
+      "extensions": [
+        ".cob",
+        ".cbl"
+      ],
+      "book_id": "explaining_cobol",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "cobol_copy",
+      "label": "Cobol Copy",
+      "extensions": [
+        ".cbl",
+        ".cob",
+        ".cpy"
+      ],
+      "book_id": "explaining_cobol_copy",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "csharp",
+      "label": "Csharp",
+      "extensions": [
+        ".cs"
+      ],
+      "book_id": "explaining_csharp",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "css",
+      "label": "Css",
+      "extensions": [
+        ".css"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "cxx",
+      "label": "Cxx",
+      "extensions": [
+        ".cpp",
+        ".cxx",
+        ".cc",
+        ".C",
+        ".hpp",
+        ".hh",
+        ".ixx"
+      ],
+      "book_id": "explaining_cxx",
+      "has_manual": true,
+      "driver": "g16-cxx",
+      "memory": "manual+RAII"
+    },
+    {
+      "id": "d",
+      "label": "D",
+      "extensions": [
+        ".d"
+      ],
+      "book_id": "explaining_d",
+      "has_manual": true,
+      "driver": "g16-gdc",
+      "memory": "gc_optional"
+    },
+    {
+      "id": "dart",
+      "label": "Dart",
+      "extensions": [
+        ".dart"
+      ],
+      "book_id": "explaining_dart",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "delphi",
+      "label": "Delphi",
+      "extensions": [
+        ".dfm",
+        ".dpr",
+        ".pas",
+        ".pp"
+      ],
+      "book_id": "explaining_delphi",
+      "has_manual": true,
+      "driver": "g16-fpc",
+      "memory": "manual"
+    },
+    {
+      "id": "diff",
+      "label": "Diff",
+      "extensions": [
+        ".diff",
+        ".patch"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "dockerfile",
+      "label": "Dockerfile",
+      "extensions": [],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "economics",
+      "label": "Economics",
+      "extensions": [
+        ".economics"
+      ],
+      "book_id": "explaining_economics",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "elixir",
+      "label": "Elixir",
+      "extensions": [
+        ".ex",
+        ".exs"
+      ],
+      "book_id": "explaining_elixir",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "erlang",
+      "label": "Erlang",
+      "extensions": [
+        ".erl",
+        ".hrl"
+      ],
+      "book_id": "explaining_erlang",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "field",
+      "label": "Field",
+      "extensions": [
+        ".fld"
+      ],
+      "book_id": "explaining_field",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "forth",
+      "label": "Forth",
+      "extensions": [
+        ".fs",
+        ".fth"
+      ],
+      "book_id": "explaining_forth",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "fortran",
+      "label": "Fortran",
+      "extensions": [
+        ".f",
+        ".f90",
+        ".f95",
+        ".f03",
+        ".for"
+      ],
+      "book_id": "explaining_fortran",
+      "has_manual": true,
+      "driver": "g16-gfortran",
+      "memory": "manual"
+    },
+    {
+      "id": "freebasic",
+      "label": "Freebasic",
+      "extensions": [
+        ".bi",
+        ".fb",
+        ".fbi",
+        ".qb",
+        ".qbi",
+        ".qbs"
+      ],
+      "book_id": "explaining_freebasic",
+      "has_manual": true,
+      "driver": "g16-fpc",
+      "memory": "manual"
+    },
+    {
+      "id": "glsl",
+      "label": "Glsl",
+      "extensions": [
+        ".glsl",
+        ".frag",
+        ".vert"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "go",
+      "label": "Go",
+      "extensions": [
+        ".go"
+      ],
+      "book_id": "explaining_go",
+      "has_manual": true,
+      "driver": "g16-go",
+      "memory": "gc"
+    },
+    {
+      "id": "graphql",
+      "label": "Graphql",
+      "extensions": [
+        ".graphql",
+        ".gql"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "haskell",
+      "label": "Haskell",
+      "extensions": [
+        ".hs",
+        ".lhs"
+      ],
+      "book_id": "explaining_haskell",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "html",
+      "label": "Html",
+      "extensions": [
+        ".html",
+        ".htm"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "ini",
+      "label": "Ini",
+      "extensions": [
+        ".ini",
+        ".cfg"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "java",
+      "label": "Java",
+      "extensions": [
+        ".java",
+        ".kt",
+        ".kts"
+      ],
+      "book_id": "explaining_java",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "javascript",
+      "label": "Javascript",
+      "extensions": [
+        ".js",
+        ".mjs",
+        ".cjs",
+        ".jsx"
+      ],
+      "book_id": "explaining_javascript",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "json",
+      "label": "Json",
+      "extensions": [
+        ".json",
+        ".jsonc"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "julia",
+      "label": "Julia",
+      "extensions": [
+        ".jl"
+      ],
+      "book_id": "explaining_julia",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "kotlin",
+      "label": "Kotlin",
+      "extensions": [
+        ".java",
+        ".kt",
+        ".kts"
+      ],
+      "book_id": "explaining_kotlin",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "linux",
+      "label": "Linux",
+      "extensions": [
+        ".linux"
+      ],
+      "book_id": "explaining_linux",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "lisp",
+      "label": "Lisp",
+      "extensions": [
+        ".lisp",
+        ".lsp",
+        ".cl"
+      ],
+      "book_id": "explaining_lisp",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "log",
+      "label": "Log",
+      "extensions": [
+        ".log"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "lua",
+      "label": "Lua",
+      "extensions": [
+        ".lua"
+      ],
+      "book_id": "explaining_lua",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "makefile",
+      "label": "Makefile",
+      "extensions": [],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "markdown",
+      "label": "Markdown",
+      "extensions": [
+        ".md",
+        ".markdown"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "matlab",
+      "label": "Matlab",
+      "extensions": [
+        ".m"
+      ],
+      "book_id": "explaining_matlab",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "modula2",
+      "label": "Modula2",
+      "extensions": [
+        ".mod",
+        ".pas",
+        ".pp"
+      ],
+      "book_id": "explaining_modula2",
+      "has_manual": true,
+      "driver": "g16-fpc",
+      "memory": "manual"
+    },
+    {
+      "id": "nim",
+      "label": "Nim",
+      "extensions": [
+        ".nim"
+      ],
+      "book_id": "explaining_nim",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "objc",
+      "label": "Objc",
+      "extensions": [
+        ".m",
+        ".mm"
+      ],
+      "book_id": "explaining_objc",
+      "has_manual": true,
+      "driver": "g16-objc",
+      "memory": "arc"
+    },
+    {
+      "id": "ocaml",
+      "label": "Ocaml",
+      "extensions": [
+        ".ml",
+        ".mli"
+      ],
+      "book_id": "explaining_ocaml",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "pascal",
+      "label": "Pascal",
+      "extensions": [
+        ".pas",
+        ".pp"
+      ],
+      "book_id": "explaining_pascal",
+      "has_manual": true,
+      "driver": "g16-fpc",
+      "memory": "manual"
+    },
+    {
+      "id": "perl",
+      "label": "Perl",
+      "extensions": [
+        ".pl",
+        ".pm"
+      ],
+      "book_id": "explaining_perl",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "php",
+      "label": "Php",
+      "extensions": [
+        ".php"
+      ],
+      "book_id": "explaining_php",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "plaintext",
+      "label": "Plaintext",
+      "extensions": [
+        ".txt"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "powershell",
+      "label": "Powershell",
+      "extensions": [
+        ".ps1",
+        ".psm1"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "prolog",
+      "label": "Prolog",
+      "extensions": [
+        ".pl",
+        ".pro"
+      ],
+      "book_id": "explaining_prolog",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "python",
+      "label": "Python",
+      "extensions": [
+        ".py",
+        ".gpy"
+      ],
+      "book_id": "explaining_python",
+      "has_manual": true,
+      "driver": "gpy-16",
+      "memory": "gc"
+    },
+    {
+      "id": "qbasic",
+      "label": "Qbasic",
+      "extensions": [
+        ".qb",
+        ".qbs"
+      ],
+      "book_id": "explaining_qbasic",
+      "has_manual": true,
+      "driver": "g16-qbasic",
+      "memory": "manual"
+    },
+    {
+      "id": "quickbasic",
+      "label": "Quickbasic",
+      "extensions": [
+        ".qb",
+        ".qbi",
+        ".qbs"
+      ],
+      "book_id": "explaining_quickbasic",
+      "has_manual": true,
+      "driver": "g16-qbasic",
+      "memory": "manual"
+    },
+    {
+      "id": "r",
+      "label": "R",
+      "extensions": [
+        ".r",
+        ".R"
+      ],
+      "book_id": "explaining_r",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "ruby",
+      "label": "Ruby",
+      "extensions": [
+        ".rb"
+      ],
+      "book_id": "explaining_ruby",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "rust",
+      "label": "Rust",
+      "extensions": [
+        ".rs"
+      ],
+      "book_id": "explaining_rust",
+      "has_manual": true,
+      "driver": "g16-rust",
+      "memory": "ownership"
+    },
+    {
+      "id": "scala",
+      "label": "Scala",
+      "extensions": [
+        ".scala",
+        ".sc"
+      ],
+      "book_id": "explaining_scala",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "scss",
+      "label": "Scss",
+      "extensions": [
+        ".scss"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "shell",
+      "label": "Shell",
+      "extensions": [
+        ".sh",
+        ".bash",
+        ".zsh",
+        ".ps1"
+      ],
+      "book_id": "explaining_shell",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "smalltalk",
+      "label": "Smalltalk",
+      "extensions": [
+        ".st"
+      ],
+      "book_id": "explaining_smalltalk",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "snobol",
+      "label": "Snobol",
+      "extensions": [
+        ".sno"
+      ],
+      "book_id": "explaining_snobol",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "sql",
+      "label": "Sql",
+      "extensions": [
+        ".sql"
+      ],
+      "book_id": "explaining_sql",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "swift",
+      "label": "Swift",
+      "extensions": [
+        ".swift"
+      ],
+      "book_id": "explaining_swift",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "toml",
+      "label": "Toml",
+      "extensions": [
+        ".toml"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "turbo_pascal",
+      "label": "Turbo Pascal",
+      "extensions": [
+        ".tp",
+        ".tpu"
+      ],
+      "book_id": "explaining_turbo_pascal",
+      "has_manual": true,
+      "driver": "g16-fpc",
+      "memory": "manual"
+    },
+    {
+      "id": "typescript",
+      "label": "Typescript",
+      "extensions": [
+        ".cjs",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".ts",
+        ".tsx"
+      ],
+      "book_id": "explaining_typescript",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "vba",
+      "label": "Vba",
+      "extensions": [
+        ".bas",
+        ".inc",
+        ".vb",
+        ".vba",
+        ".vbs"
+      ],
+      "book_id": "explaining_vba",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "manual"
+    },
+    {
+      "id": "vbscript",
+      "label": "Vbscript",
+      "extensions": [
+        ".vbs"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "verilog",
+      "label": "Verilog",
+      "extensions": [
+        ".v",
+        ".sv"
+      ],
+      "book_id": "explaining_verilog",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "visual_basic",
+      "label": "Visual Basic",
+      "extensions": [
+        ".bas",
+        ".inc",
+        ".vb",
+        ".vbs"
+      ],
+      "book_id": "explaining_visual_basic",
+      "has_manual": true,
+      "driver": "g16-interp",
+      "memory": "manual"
+    },
+    {
+      "id": "wasm",
+      "label": "Wasm",
+      "extensions": [
+        ".wasm"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "wat",
+      "label": "Wat",
+      "extensions": [
+        ".wat"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "xml",
+      "label": "Xml",
+      "extensions": [
+        ".xml"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "yaml",
+      "label": "Yaml",
+      "extensions": [
+        ".yaml",
+        ".yml"
+      ],
+      "book_id": null,
+      "has_manual": false,
+      "driver": "g16-interp",
+      "memory": "gc"
+    },
+    {
+      "id": "zig",
+      "label": "Zig",
+      "extensions": [
+        ".zig"
+      ],
+      "book_id": "explaining_zig",
+      "has_manual": true,
+      "driver": "g16-zig",
+      "memory": "manual+comptime"
+    }
+  ]
+}

@@ -18,7 +18,8 @@ Programmerland is the design theme for Grok16, AmmoCode, and the AmmoOS stack: c
 
 | Surface | URL | Role |
 |---------|-----|------|
-| **AmmoCode manual** | [zacharygeurts.github.io/AmmoCode](https://zacharygeurts.github.io/AmmoCode/) | Primary **GitHub Pages** home for programmers |
+| **Grok16 editor** | [zacharygeurts.github.io/Grok16](https://zacharygeurts.github.io/Grok16/) | **AmmoCode syntax editor** + Hostess7 library flyout |
+| **AmmoCode manual** | [zacharygeurts.github.io/AmmoCode](https://zacharygeurts.github.io/AmmoCode/) | Programmerland docs |
 | **Grok16 repo** | [github.com/ZacharyGeurts/Grok16](https://github.com/ZacharyGeurts/Grok16) | Compiler distro — own GitHub, `v5.3.1` |
 | **Grok16 wiki** | [Grok16 wiki](Home) | Deep reference (you are here) |
 | **Local editor** | `http://127.0.0.1:9555/` | AmmoCode stack editor |

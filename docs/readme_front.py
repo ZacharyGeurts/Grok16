@@ -260,5 +260,5 @@ def write_index(page_fn, *, distro: str, g16: str, report: str) -> None:
         'href="https://zacharygeurts.github.io/Grok16/home.html"',
         'href="https://zacharygeurts.github.io/Grok16/"',
     )
-    Path(__file__).resolve().parent.joinpath("index.html").write_text(out, encoding="utf-8")
-    print("wrote index.html (Grok16 5.0 v1.0 front page)")
+    Path(__file__).resolve().parent.joinpath("manual.html").write_text(out, encoding="utf-8")
+    print("wrote manual.html (compiler manual front page)")

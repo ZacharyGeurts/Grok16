@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Web home (programmers)** | [AmmoCode on GitHub Pages](https://zacharygeurts.github.io/AmmoCode/) |
+| **Web home (programmers)** | [Grok16 AmmoCode editor](https://zacharygeurts.github.io/Grok16/) · [AmmoCode Pages](https://zacharygeurts.github.io/AmmoCode/) |
 | **This repo** | [github.com/ZacharyGeurts/Grok16](https://github.com/ZacharyGeurts/Grok16) |
 | **Languages** | **79** in `data/grok16-languages.json` |
 | **AmmoCode pair** | [AmmoCode 6.1](https://github.com/ZacharyGeurts/AmmoCode) |
