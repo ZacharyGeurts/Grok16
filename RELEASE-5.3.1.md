@@ -41,4 +41,4 @@ export G16_PREFIX=$(pwd)
 
 - **Hostess7:** [ZacharyGeurts/Hostess7](https://github.com/ZacharyGeurts/Hostess7) `v2.0.7j`
 - Boot: `./hostess7-boot` → 10s Y/N clones full Grok16 from GitHub
-- Manual: https://zacharygeurts.github.io/Grok16/
+- Programmerland manual: https://zacharygeurts.github.io/AmmoCode/
