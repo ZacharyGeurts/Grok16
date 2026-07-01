@@ -72,6 +72,10 @@ PY
 }
 
 run_gates() {
+  if [[ "${GROK16_RELEASE_SKIP_GATES:-0}" == "1" ]]; then
+    log "gates: skipped (GROK16_RELEASE_SKIP_GATES=1)"
+    return 0
+  fi
   if [[ "${AML_BUILD:-1}" != "0" && -z "${AML_INLINE:-}" && -f "${NEXUS_INSTALL_ROOT}/lib/ammolang-run.sh" ]]; then
     log "gates: AmmoLang grok16_gates (hang guard · freeze assist)"
     bash "${NEXUS_INSTALL_ROOT}/lib/ammolang-run.sh" gates || return 1

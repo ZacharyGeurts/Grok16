@@ -1,15 +1,15 @@
 {
-  "distro_version": "5.3.0",
-  "upload_version": "5.3.0",
+  "distro_version": "5.3.1",
+  "upload_version": "5.3.1",
   "release_track": {
-    "current": "5.3.0",
-    "previous": "5.2.0",
+    "current": "5.3.1",
+    "previous": "5.3.0",
     "next": "5.4.0",
     "status": "stable",
     "released": true,
-    "tag": "v5.3.0",
-    "upload_tag": "v5.3.0",
-    "upload_note": "5.3.0 — common runtime boot prompt, AmmoCode field pair, full GitHub source",
+    "tag": "v5.3.1",
+    "upload_tag": "v5.3.1",
+    "upload_note": "5.3.1 — own GitHub releases; Hostess7 drops H7e, pairs via grok16-github-pair.json",
     "staging_note": "Promoted to stable 2026-06-27 — tag v5.0.0 ready, upload 4.9 pending final review",
     "shipped_as": "5.0.0-stable",
     "validation_tiers": [
@@ -25,8 +25,8 @@
     "roadmap": "5.0.0 \u2014 compiler symlink replacements, always-optimal belt, full build-essential fabric"
   },
   "g16_version": "16.2.0",
-  "pkgversion": "Grok16-5.3.0",
-  "tag": "v5.3.0",
+  "pkgversion": "Grok16-5.3.1",
+  "tag": "v5.3.1",
   "cxx_std_default": "gnu++26",
   "c_std_default": "gnu17",
   "driver": "unified",
@@ -164,7 +164,7 @@
     "integrate_manifest": "data/grok16-ammoos-integrate.json",
     "review": "docs/AMMOOS-REVIEW-FOR-GROK-BUILD.md"
   },
-  "notes": "Grok16 5.3.0 \u2014 common runtime boot + 10s full-clone prompt, AmmoCode field instill pair, GitHub always full source",
+  "notes": "Grok16 5.3.1 \u2014 separate GitHub distro; Hostess7 plain tar.gz pairs here, no H7e embed",
   "mcp": {
     "schema": "grok16-mcp/v1",
     "server": "mcp/grok16_mcp_server.py",
@@ -172,6 +172,7 @@
     "requirements": "requirements-mcp.txt"
   },
   "changelog": [
+    "5.3.1: Own GitHub releases \u2014 full src tarball + platforms; Hostess7 2.0.7j drops H7e, pairs via doctrine/grok16-github-pair.json",
     "5.3.0: Boot prompt \u2014 NewLatest grok16-boot-prompt.sh ensures common runtime; 10s Y/N for full GitHub clone (79+ languages)",
     "5.3.0: AmmoCode pair \u2014 g16-ammocode-field-doctrine paths SG/Grok16 + SG/NewLatest/AmmoCode; sg_paths grok16_root",
     "5.3.0: GitHub full source \u2014 repo ships forge/scripts; Hostess7 embeds common runtime only",

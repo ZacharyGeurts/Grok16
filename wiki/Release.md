@@ -1,27 +1,33 @@
-# Release 5.3.0 — Common runtime boot + AmmoCode pair
+# Release 5.3.1 — Programmerland · own GitHub
 
-Tag: `v5.3.0` · `distro_version: 5.3.0` · `g16` @ `16.2.0`
+Tag: `v5.3.1` · `distro_version: 5.3.1` · `g16` @ `16.2.0`
 
-## Shipped in 5.3.0
+## Shipped in 5.3.1
 
 | Area | Detail |
 |------|--------|
-| Boot | `NewLatest/lib/grok16-boot-prompt.sh` — common runtime always; 10s Y/N for full clone |
-| GitHub | Full source (forge, scripts, doctrine); vendor/bin built on host |
-| AmmoCode | `g16-ammocode-field-doctrine.json` — `SG/Grok16` ↔ `SG/NewLatest/AmmoCode` |
-| Hostess7 | Embeds common runtime only (~400MB); full tree optional at boot |
-| Languages | 79+ in `grok16-languages.json` (full tree) |
+| GitHub | Full source tarball + platforms JSON — **Grok16 is its own repo** |
+| Hostess7 pair | Plain `tar.gz`/`zip` stacks; `grok16-github-pair.json`; no H7e |
+| AmmoCode Pages | [zacharygeurts.github.io/AmmoCode](https://zacharygeurts.github.io/AmmoCode/) — programmer manual |
+| Wiki | [Programmerland](Programmerland) theme |
+| Languages | **79** in `grok16-languages.json` — unchanged |
 
-## Boot prompt
+## Boot (Hostess7 / NewLatest)
 
 ```bash
-bash NewLatest/lib/grok16-boot-prompt.sh boot
-# GROK16_BOOT_PROMPT=0     — headless / CI
-# GROK16_BOOT_PROMPT_SECS=10
+./hostess7-boot
+# Common runtime bundled; 10s Y/N clones full Grok16 from GitHub
 ```
 
-## Previous 5.2.0
+```bash
+git clone https://github.com/ZacharyGeurts/Grok16.git
+# → SG/Grok16 — full forge + 79 langs
+```
 
-- C64 Ultimate hardware pair · 17 bootstrap platforms · AmmoLang ship timing
+## Assets
 
-Full notes: `RELEASE-5.3.0.md` in repo.
+- `grok16-5.3.1-src.tar.gz`
+- `grok16-5.3.1-platforms.json`
+- `grok16-5.3.1-PLATFORMS.md`
+
+Full notes: `RELEASE-5.3.1.md` in repo.
