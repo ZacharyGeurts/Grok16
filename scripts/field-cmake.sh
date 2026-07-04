@@ -82,11 +82,16 @@ default_source() {
     echo "$GROK16_CMAKE_SOURCE"
     return
   fi
-  if [[ -n "${QUEEN_ROOT:-}" && -d "${QUEEN_ROOT}/engine/AMOURANTHRTX" ]]; then
+  local hub="${GROK16_SG_ROOT:-}/NewLatest/.pages-hub-AMOURANTHRTX"
+  if [[ -f "$hub/CMakeLists.txt" ]]; then
+    echo "$hub"
+    return
+  fi
+  if [[ -n "${QUEEN_ROOT:-}" && -f "${QUEEN_ROOT}/engine/AMOURANTHRTX/CMakeLists.txt" ]]; then
     readlink -f "${QUEEN_ROOT}/engine/AMOURANTHRTX" 2>/dev/null || echo "${QUEEN_ROOT}/engine/AMOURANTHRTX"
     return
   fi
-  if [[ -d "${GROK16_SG_ROOT:-}/NewLatest/AMOURANTHRTX" ]]; then
+  if [[ -f "${GROK16_SG_ROOT:-}/NewLatest/AMOURANTHRTX/CMakeLists.txt" ]]; then
     echo "${GROK16_SG_ROOT}/NewLatest/AMOURANTHRTX"
     return
   fi
