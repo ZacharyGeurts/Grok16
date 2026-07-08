@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="g16-editor ac-nexus-c2 ac-theme-nexus-c2">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grok16 — AmmoCode Syntax Editor</title>
+  <meta name="description" content="Grok16 GitHub Pages — AmmoCode syntax editor, 79 languages, Hostess7 textbook library flyout. Programmerland: kind to programmers and AI." />
+  <link rel="canonical" href="https://zacharygeurts.github.io/Grok16/" />
+  <link rel="stylesheet" href="assets/ammocode-nexus-c2.css" />
+  <link rel="stylesheet" href="assets/ammocode-syntax.css" />
+  <link rel="stylesheet" href="assets/editor-pages.css" />
+</head>
+<body>
+  <div class="g16-app">
+    <aside class="g16-library" aria-label="Hostess7 library">
+      <div class="g16-lib-head">
+        <button type="button" id="g16-lib-toggle" class="g16-lib-toggle" aria-expanded="true" title="Collapse library" aria-label="Toggle library sidebar"></button>
+        <div class="g16-lib-title">
+          Library
+          <span>Hostess7 · Dewey 000</span>
+        </div>
+      </div>
+      <div class="g16-lib-body">
+        <section id="g16-guess-section" class="g16-guess-section" hidden>
+          <p class="g16-section-label">Best guesses from your code</p>
+          <div id="g16-guesses" class="g16-guesses"></div>
+        </section>
+        <section>
+          <p class="g16-section-label">Language (79)</p>
+          <input type="search" id="g16-lang-filter" class="g16-lang-filter" placeholder="Filter languages…" aria-label="Filter languages" />
+          <select id="g16-lang-select" class="g16-lang-select" size="8" aria-label="Programming language"></select>
+        </section>
+        <section>
+          <p class="g16-section-label">Textbooks</p>
+          <div id="g16-book-list" class="g16-book-list"></div>
+        </section>
+      </div>
+    </aside>
+
+    <aside id="g16-reader-flyout" class="g16-reader-flyout" hidden aria-label="Textbook reader">
+      <div class="g16-reader-head">
+        <strong id="g16-reader-title">Manual</strong>
+        <button type="button" id="g16-reader-close" class="g16-reader-close">Close</button>
+      </div>
+      <div id="g16-reader-body" class="g16-reader-body">
+        <p class="g16-reader-loading">Select a textbook from the library.</p>
+      </div>
+    </aside>
+
+    <div class="g16-main">
+      <header class="g16-titlebar">
+        <div class="g16-brand">
+          <strong>AmmoCode</strong>
+          <span>Grok16 · Programmerland</span>
+        </div>
+        <div class="g16-titlebar-actions">
+          <button type="button" id="g16-open-btn" class="g16-btn">Open file</button>
+          <button type="button" id="g16-export-btn" class="g16-btn">Export</button>
+          <button type="button" id="g16-clear-btn" class="g16-btn g16-btn-ghost">Clear</button>
+          <a class="g16-btn g16-btn-ghost" href="manual.html">Compiler manual</a>
+          <a class="g16-btn g16-btn-ghost" href="https://zacharygeurts.github.io/AmmoCode/">AmmoCode Pages</a>
+        </div>
+      </header>
+
+      <div class="g16-infobar">
+        <span>Language: <strong id="g16-lang-label">plaintext</strong></span>
+        <span id="g16-path-label">untitled</span>
+        <span id="g16-discern-pill">discern: —</span>
+      </div>
+
+      <div class="g16-editor-wrap">
+        <pre class="g16-gutter" id="g16-gutter" aria-hidden="true">1</pre>
+        <div class="g16-editor-stack">
+          <pre class="ac-highlight g16-highlight" id="g16-highlight" aria-hidden="true"></pre>
+          <textarea class="ac-editor g16-editor" id="g16-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="// Paste code — we guess the language and surface Hostess7 textbooks at the top"></textarea>
+        </div>
+      </div>
+
+      <footer class="g16-statusbar">
+        <span id="g16-status">static editor · non-destructive export</span>
+        <span>79 languages · textbooks from Hostess7</span>
+        <span>local compile: <code>python3 ammocode.py</code> → :9555</span>
+      </footer>
+    </div>
+  </div>
+
+  <input type="file" id="g16-file-input" hidden accept="*/*" />
+
+  <script src="lib/highlight.js"></script>
+  <script src="lib/editor-discern.js"></script>
+  <script src="lib/editor-library.js"></script>
+  <script src="lib/editor-pages.js"></script>
+</body>
+</html>
