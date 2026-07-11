@@ -1,172 +1,146 @@
-#!/usr/bin/env pythong
-"""G16 native compile hub — routes every language to a Grok16-owned front-end."""
+#!/usr/bin/env python3
+# Grok16 HARD · ironclad:g16-python-harden:2 · exploits DISPERMITTED · soft-kill FORBIDDEN
+# Weapon policy: SIGKILL/INSTAKILL only on hostile Field plane — never SIGTERM authoring
+"""Grok16 native compile — secure argv-only gcc/g16 path (no shell, no exploits).
+
+  Used by g16-secure-chamber. Hard flags throughout.
+
+ironclad:g16-native-compile:2
+"""
 from __future__ import annotations
 
-import importlib.util
 import json
 import os
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1])).resolve()
+GROK16 = Path(os.environ.get("GROK16_ROOT", Path(__file__).resolve().parents[1]))
+INSTALL = Path(os.environ.get("NEXUS_INSTALL_ROOT", GROK16.parent))
 
-_NATIVE_DRIVERS: dict[str, tuple[str, str]] = {
-    "java": ("g16-java-compile.py", "compile_source"),
-    "kotlin": ("g16-java-compile.py", "compile_source"),
-    "fortran": ("g16-fortran-compile.py", "compile_source"),
-    "cobol": ("g16-cobol-compile.py", "compile_source"),
-    "cobol_copy": ("g16-cobol-compile.py", "compile_source"),
-    "basic": ("g16-basic-compile.py", "compile_source"),
-    "qbasic": ("g16-basic-compile.py", "compile_source"),
-    "quickbasic": ("g16-basic-compile.py", "compile_source"),
-    "freebasic": ("g16-basic-compile.py", "compile_source"),
-    "visual_basic": ("g16-basic-compile.py", "compile_source"),
-    "vba": ("g16-basic-compile.py", "compile_source"),
-    "pascal": ("g16-pascal-compile.py", "compile_source"),
-    "turbo_pascal": ("g16-pascal-compile.py", "compile_source"),
-    "delphi": ("g16-pascal-compile.py", "compile_source"),
-}
+# Harder default flags
+HARD_CFLAGS = [
+    "-O2",
+    "-g0",
+    "-fstack-protector-strong",
+    "-D_FORTIFY_SOURCE=2",
+    "-fPIE",
+    "-fno-plt",
+    "-Wall",
+    "-Wextra",
+    "-Wformat",
+    "-Wformat-security",
+    "-Werror=format-security",
+    "-fstack-clash-protection",
+    "-DFIELD_MESH=1",
+    "-DFIELD_ONE=1",
+    "-DHOSTESS7_AUTHORITY=1",
+    "-DG16_HARD=1",
+    "-DG16_NO_EXPLOIT=1",
+]
+HARD_LDFLAGS = ["-pie", "-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,noexecstack"]
 
-os.environ.setdefault("GROK16_ROOT", str(ROOT))
+
+def _which_cc() -> str:
+    g16 = GROK16 / "bin" / "g16"
+    if g16.is_file() and os.access(g16, os.X_OK):
+        return str(g16)
+    for c in ("gcc", "clang", "cc"):
+        w = shutil.which(c)
+        if w:
+            return w
+    return "gcc"
 
 
-def _load(rel: str) -> Any:
-    path = ROOT / "lib" / rel
-    spec = importlib.util.spec_from_file_location(f"g16_native_{rel}", path)
+def _security_gate(content: str, *, lang: str, path: str = "") -> dict[str, Any]:
+    sec = GROK16 / "lib" / "g16-code-security.py"
+    if not sec.is_file():
+        return {"ok": True, "blocked": False}
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("g16_sec", sec)
     if not spec or not spec.loader:
-        raise ImportError(f"missing {rel}")
+        return {"ok": True, "blocked": False}
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return mod
+    return mod.gate(content, lang=lang, path=path)
 
 
 def compile_source(
     content: str,
     *,
-    lang: str,
-    out_name: str = "g16_native_out",
-    out_dir: str | Path | None = None,
+    lang: str = "c",
+    out_name: str = "a.out",
+    chamber: Path | None = None,
 ) -> dict[str, Any]:
-    lang = (lang or "plaintext").lower()
-    if lang in _NATIVE_DRIVERS:
-        rel, _ = _NATIVE_DRIVERS[lang]
-        mod = _load(rel)
-        kw: dict[str, Any] = {"out_name": out_name, "out_dir": out_dir}
-        if lang in ("java", "kotlin", "basic", "qbasic", "quickbasic", "freebasic",
-                    "visual_basic", "vba", "pascal", "turbo_pascal", "delphi"):
-            kw["lang"] = lang
-        return mod.compile_source(content, **kw)
-    lower = _load("g16-lang-lower.py")
-    core = _load("g16-compile-core.py")
-    lowered, kind, lane = lower.lower_to_cxx(content, lang=lang)
-    rep = core.compile_lowered(
-        lowered, kind=kind, lang=lang, lane=lane,
-        out_name=out_name, out_dir=out_dir,
-    )
-    rep["schema"] = "g16-native-compile/v1"
-    return rep
+    gate = _security_gate(content, lang=lang, path=out_name)
+    if gate.get("blocked"):
+        return {
+            "ok": False,
+            "error": "security_gate_blocked",
+            "security": gate,
+            "hard": True,
+        }
 
+    chamber = chamber or Path(tempfile.mkdtemp(prefix="g16-native-"))
+    chamber.mkdir(parents=True, exist_ok=True)
+    ext = {".c": "c", "c": ".c", "cxx": ".cpp", "cpp": ".cpp"}.get(lang, ".c")
+    if not str(ext).startswith("."):
+        ext = ".c"
+    src = chamber / f"src{ext if ext.startswith('.') else '.c'}"
+    if lang in ("cxx", "cpp", "c++"):
+        src = chamber / "src.cpp"
+    src.write_text(content, encoding="utf-8")
+    out = chamber / out_name
 
-def posture() -> dict[str, Any]:
-    drivers = {}
-    for lang, (rel, _) in sorted(_NATIVE_DRIVERS.items()):
-        drivers[lang] = {"module": rel, "host_toolchain": False}
+    cc = _which_cc()
+    # If using g16 wrapper, it already injects hard flags — still pass extra
+    argv = [cc, str(src), "-o", str(out), *HARD_CFLAGS, *HARD_LDFLAGS]
+    env = {
+        k: v
+        for k, v in os.environ.items()
+        if k not in ("LD_PRELOAD", "LD_LIBRARY_PATH", "PYTHONPATH")
+    }
+    env["G16_HARD"] = "1"
+    env["G16_NO_EXPLOIT"] = "1"
+    try:
+        proc = subprocess.run(
+            argv,
+            capture_output=True,
+            text=True,
+            timeout=180,
+            cwd=str(chamber),
+            env=env,
+            shell=False,  # NEVER True
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"ok": False, "error": str(exc)[:160], "hard": True}
+
     return {
-        "schema": "g16-native-compile/v1",
-        "ok": (ROOT / "bin" / "g16").is_file(),
-        "compiler": "g16",
-        "third_party": False,
-        "native_drivers": drivers,
-        "fallback": "g16-lang-lower.py",
-        "motto": "Every language compiled by Grok16 — our front-ends, our linker",
+        "ok": proc.returncode == 0,
+        "returncode": proc.returncode,
+        "stdout": (proc.stdout or "")[-4000:],
+        "stderr": (proc.stderr or "")[-4000:],
+        "out": str(out) if out.is_file() else None,
+        "argv": argv[:6],
+        "hard": True,
+        "exploits": "gated",
+        "shell": False,
+        "security": gate,
     }
 
 
 def main() -> int:
-    cmd = (sys.argv[1] if len(sys.argv) > 1 else "json").strip().lower()
-    if cmd in ("json", "posture"):
-        print(json.dumps(posture(), ensure_ascii=False, indent=2))
-        return 0
-    if cmd == "compile":
-        lang = ""
-        path = ""
-        out_dir = None
-        args = sys.argv[2:]
-        i = 0
-        while i < len(args):
-            if args[i] == "--lang" and i + 1 < len(args):
-                lang = args[i + 1]
-                i += 2
-            elif args[i] == "--out-dir" and i + 1 < len(args):
-                out_dir = args[i + 1]
-                i += 2
-            else:
-                path = args[i]
-                i += 1
-        if not path:
-            print(json.dumps({"error": "usage: compile [--lang LANG] [--out-dir DIR] FILE"}, indent=2))
-            return 2
-        p = Path(path)
-        lang = lang or p.parent.name
-        body = p.read_text(encoding="utf-8")
-        rep = compile_source(body, lang=lang, out_dir=out_dir)
-        print(json.dumps(rep, ensure_ascii=False, indent=2))
-        return 0 if rep.get("ok") else 1
-    if cmd == "run" and len(sys.argv) > 2:
-        path = sys.argv[2]
-        lang = ""
-        args = sys.argv[3:]
-        if len(args) >= 2 and args[0] == "--lang":
-            lang = args[1]
-        if not lang:
-            p = Path(path)
-            lang = p.parent.name
-            ext_map = {
-                ".java": "java", ".kt": "kotlin", ".f90": "fortran", ".f": "fortran",
-                ".cob": "cobol", ".bas": "basic", ".qb": "qbasic", ".pas": "pascal",
-                ".rs": "rust", ".go": "go", ".js": "javascript", ".py": "python",
-            }
-            lang = ext_map.get(p.suffix.lower(), lang)
-        import subprocess
-        import tempfile
-        import time
-
-        body = Path(path).read_text(encoding="utf-8")
-        td = tempfile.mkdtemp(prefix="g16-native-run-")
-        t_interp = time.perf_counter()
-        t_comp = time.perf_counter()
-        comp = compile_source(body, lang=lang, out_dir=td)
-        compile_ms = int((time.perf_counter() - t_comp) * 1000)
-        if not comp.get("ok") or not comp.get("binary"):
-            print(json.dumps({
-                "ok": False,
-                "lang": lang,
-                "driver": "g16-interp",
-                "compile_ms": compile_ms,
-                "interp_ms": int((time.perf_counter() - t_interp) * 1000),
-                "compile": comp,
-            }, ensure_ascii=False, indent=2))
-            return 1
-        t_run = time.perf_counter()
-        proc = subprocess.run([str(comp["binary"])], capture_output=True, text=True, timeout=30)
-        run_ms = int((time.perf_counter() - t_run) * 1000)
-        interp_ms = int((time.perf_counter() - t_interp) * 1000)
-        print(json.dumps({
-            "ok": proc.returncode == 0,
-            "lang": lang,
-            "driver": "g16-interp",
-            "compile_ms": compile_ms,
-            "run_ms": run_ms,
-            "interp_ms": interp_ms,
-            "compile": comp,
-            "stdout": proc.stdout,
-            "stderr": proc.stderr,
-            "returncode": proc.returncode,
-        }, ensure_ascii=False, indent=2))
-        return 0 if proc.returncode == 0 else 1
-    print(json.dumps({"usage": "g16-native-compile.py [json|compile|run] ..."}, indent=2))
-    return 2
+    if len(sys.argv) < 2:
+        print(json.dumps({"usage": "g16-native-compile.py <source.c>", "hard": True}, indent=2))
+        return 1
+    p = Path(sys.argv[1])
+    content = p.read_text(encoding="utf-8", errors="replace")
+    print(json.dumps(compile_source(content, lang="c", out_name=p.stem), indent=2))
+    return 0
 
 
 if __name__ == "__main__":

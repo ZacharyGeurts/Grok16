@@ -1,0 +1,11 @@
+{
+  "schema": "field-g16-untouchable-doctrine/v2",
+  "motto": "Grok16 field_opt HARD untouchable Field toolkit binaries",
+  "hard": true,
+  "better": true,
+  "exploits": "DISPERMITTED",
+  "soft_kill": "FORBIDDEN",
+  "weapon": "SIGKILL_INSTAKILL_FOREVER",
+  "version": "16.1.0-hard",
+  "ironclad_cite": "ironclad:field-untouchable:2"
+}

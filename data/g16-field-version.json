@@ -1,0 +1,16 @@
+{
+  "schema": "g16-field-version/v1",
+  "version": "16.1.0-hard",
+  "product": "Grok16",
+  "plane": "field_hard",
+  "best_with": {
+    "AmmoCode": "6.1.0",
+    "Hostess7": "operational-field",
+    "NewLatest": "source_of_truth"
+  },
+  "github": "https://github.com/ZacharyGeurts/Grok16",
+  "pages": "https://zacharygeurts.github.io/Grok16/",
+  "ironclad": "ironclad:g16-hard:2",
+  "python_obsolete": true,
+  "polkit": "HOSTILE"
+}

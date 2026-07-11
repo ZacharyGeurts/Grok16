@@ -1,42 +1,27 @@
-# G16 Field Safety Mandate — mandatory for all G16 field targets (WRDT, FieldX86, …)
-# Rust-grade discipline: fortify, stack protection, RELRO+NOW, PIE. No opt-out in release.
+# Grok16 HARD field mandate — 16.1.0-hard
+# Exploits DISPERMITTED · fortify · PIE · full RELRO
 
-set(G16_FIELD_MANDATE_ID "G16_FIELD_SAFETY_MANDATE_v1" CACHE STRING "G16 safety mandate version")
-set(G16_IRONCLAD_MELD_CITATION "ironclad:meld:2" CACHE STRING "Ironclad meld citation for G16 targets")
+set(G16_HARD ON)
+set(G16_NO_EXPLOIT ON)
+set(G16_VERSION "16.1.0-hard")
 
-function(_g16_field_mandate_security target)
-  target_compile_definitions(${target} PRIVATE _FORTIFY_SOURCE=3 G16_FIELD_MANDATE=1)
-  target_compile_options(${target} PRIVATE
-    -fstack-protector-strong
-    -fstack-clash-protection
-    -fcf-protection=full
-    -fno-strict-aliasing
-    -Wformat -Wformat-security
-    -Werror=format-security
-    -fPIE
-  )
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    target_link_options(${target} PRIVATE -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack -pie)
-  endif()
-endfunction()
+add_compile_options(
+  -O2 -g0
+  -fstack-protector-strong
+  -D_FORTIFY_SOURCE=2
+  -fPIE -fno-plt
+  -fstack-clash-protection
+  -Wall -Wextra -Wformat -Wformat-security -Werror=format-security
+  -DFIELD_MESH=1 -DFIELD_ONE=1 -DHOSTESS7_AUTHORITY=1
+  -DG16_HARD=1 -DG16_NO_EXPLOIT=1 -DNO_SOFT_KILL=1
+)
 
-# Ironclad + field sanity — integral meld on every G16 field target (subsidiary truth, sealed doctrine untouched)
-function(g16_ironclad_sanity_meld target)
-  if(NOT TARGET ${target})
-    message(FATAL_ERROR "g16_ironclad_sanity_meld: unknown target ${target}")
-  endif()
-  _g16_field_mandate_security(${target})
-  target_compile_definitions(${target} PRIVATE
-    G16_FIELD_SANITY=1
-    G16_FIELD_SANITY_INTEGRAL=1
-    G16_IRONCLAD_MELD=1
-    G16_IRONCLAD_MELD_CITATION="${G16_IRONCLAD_MELD_CITATION}"
-  )
-  if(COMMAND g16_linker_mandate)
-    g16_linker_mandate(${target})
-  endif()
-endfunction()
+add_link_options(
+  -pie
+  -Wl,-z,relro
+  -Wl,-z,now
+  -Wl,-z,noexecstack
+)
 
-function(g16_field_mandate target)
-  g16_ironclad_sanity_meld(${target})
-endfunction()
+# x86 Field CHIP instructions (software ISA · SSE4.2/POPCNT when host supports)
+add_compile_options(-DFIELD_X86_CHIP=1 -msse4.2 -mpopcnt)

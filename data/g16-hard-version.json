@@ -1,0 +1,12 @@
+{
+  "schema": "grok16-version/v2",
+  "version": "16.1.0-hard",
+  "updated": "2026-07-10T19:23:18Z",
+  "hard": true,
+  "better": true,
+  "exploits": "DISPERMITTED",
+  "soft_kill_source": "FORBIDDEN",
+  "weapon": "SIGKILL_INSTAKILL_FOREVER_on_hostile_plane",
+  "ironclad_cite": "ironclad:g16-python-harden:2",
+  "motto": "Grok16 HARD \u00b7 better \u00b7 exploit-free Python \u00b7 Field Ironclad"
+}

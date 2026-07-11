@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# g16 — Grok16 HARD Field Mesh C compiler (16.1.0-hard)
+# Exploits DISPERMITTED · soft-kill FORBIDDEN · fortify · PIE · RELRO
+# Steel: field-g16-compiler-mesh · ironclad:g16-hard:2
+set -euo pipefail
+
+export G16_HARD=1
+export G16_NO_EXPLOIT=1
+export G16_VERSION="${G16_VERSION:-16.1.0-hard}"
+# Scrub preload inject surface
+unset LD_PRELOAD || true
+
+REAL_CC="${FIELD_G16_REAL_CC:-gcc}"
+
+# Harder throughout — never drop these for Field plane
+exec "$REAL_CC" \
+  -O2 -g0 \
+  -fstack-protector-strong \
+  -D_FORTIFY_SOURCE=2 \
+  -fPIE -fno-plt \
+  -fstack-clash-protection \
+  -Wall -Wextra -Wformat -Wformat-security -Werror=format-security \
+  -DFIELD_MESH=1 -DFIELD_ONE=1 -DHOSTESS7_AUTHORITY=1 \
+  -DFIELD_NATIVE_SIGNALS=1 -DZERO_COST_MESH=1 -DNEXUS_C2=1 -DFIELD_X86_CHIP=1 \
+  -msse4.2 -mpopcnt \
+  -DG16_HARD=1 -DG16_NO_EXPLOIT=1 -DG16_VERSION=16100 \
+  -DNO_SOFT_KILL=1 -DINSTAKILL_POLICY=1 \
+  "$@"
