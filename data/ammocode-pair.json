@@ -1,0 +1,12 @@
+{
+  "schema": "g16-ammocode-pair/v1",
+  "grok16": "16.1.0-hard",
+  "ammocode": "6.2.0",
+  "editor": "https://zacharygeurts.github.io/AmmoCode/",
+  "repo": "https://github.com/ZacharyGeurts/AmmoCode",
+  "role": {
+    "ammocode": "full_compiler_suite_and_editor",
+    "grok16": "field_hard_compiler_plane"
+  },
+  "motto": "Open in AmmoCode · compile with Grok16 hard"
+}
